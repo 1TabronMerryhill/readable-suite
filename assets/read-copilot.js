@@ -371,12 +371,14 @@
     };
   }
 
-  function startConversation(mountId, onDone) {
+  function startConversation(mountId, onDone, opts) {
     var mount = document.getElementById(mountId);
     if (!mount) return;
+    opts = opts || {};
     var messages = [];
     var busy = false;
     var reviewShown = false;
+    var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     mount.innerHTML = "";
     var wrap = el("div", "rc-chat");
@@ -418,6 +420,16 @@
       log.appendChild(d);
       scrollDown();
       return d;
+    }
+    function streamInto(d, safeHtml) {
+      var toks = safeHtml.split(/(\s+)/);
+      var i = 0, out = "";
+      var timer = setInterval(function () {
+        if (i >= toks.length) { clearInterval(timer); d.innerHTML = out; scrollDown(); return; }
+        out += toks[i++];
+        d.innerHTML = out + '<span class="rc-stream-caret"></span>';
+        if (i % 4 === 0) scrollDown();
+      }, 26);
     }
 
     bubble("read", "Hey — I'm Read. Forget the form: just tell me about the workflow in your own words. What's the problem you're trying to solve?");
@@ -463,7 +475,10 @@
         var ready = /\[\[READY\]\]/.test(reply);
         reply = reply.replace(/\[\[READY\]\]/g, "").trim();
         messages.push({ role: "assistant", content: reply });
-        bubble("read", esc(reply).replace(/\n/g, "<br>"));
+        var rb = bubble("read", "");
+        var safe = esc(reply).replace(/\n/g, "<br>");
+        if (REDUCED || !opts.stream) { rb.innerHTML = safe; scrollDown(); }
+        else streamInto(rb, safe);
         if (ready) showReview();
       }).catch(function () {
         busy = false;
@@ -475,6 +490,10 @@
     sendBtn.onclick = send;
     input.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
     input.focus();
+    if (opts.initialMessage) {
+      input.value = opts.initialMessage;
+      setTimeout(send, 400);
+    }
 
     function requestExtract() {
       if (busy) return;
@@ -552,7 +571,7 @@
     wrap.appendChild(aProblem); wrap.appendChild(aSteps); wrap.appendChild(aMeasure);
 
     var scores = {};
-    DIMENSIONS.forEach(function (d) {
+    DIMENSIONS.forEach(function (d, di) {
       var h = heard[d.id] || {};
       var s = (h.score === 0 || h.score === 1 || h.score === 2) ? h.score : 1;
       scores[d.id] = s;
@@ -579,6 +598,8 @@
       card.appendChild(pick);
       var quote = String(h.quote || "").trim();
       if (quote) card.appendChild(el("p", "rc-evidence", "You said: “" + esc(quote) + "”"));
+      card.classList.add("rc-rise");
+      card.style.animationDelay = (di * 70) + "ms";
       wrap.appendChild(card);
     });
 
@@ -720,6 +741,7 @@
     startInterview: startInterview,
     startConversation: startConversation,
     probeChat: probeChat,
+    wireMic: wireMic,
     renderReport: renderReport,
     scoreAssessment: scoreAssessment,
     postSubmission: postSubmission,
