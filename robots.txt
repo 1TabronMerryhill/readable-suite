@@ -1,0 +1,38 @@
+# Readable — crawler governance.
+# AI crawlers are kept out of intake routes and the API by policy.
+# This is deliberate: governed intake means human-reviewed, not scraped.
+
+User-agent: GPTBot
+Disallow: /api/
+Disallow: /academy/apply/
+Disallow: /readiness/apply/
+Disallow: /cohorts/start/
+
+User-agent: ChatGPT-User
+Disallow: /api/
+Disallow: /academy/apply/
+Disallow: /readiness/apply/
+Disallow: /cohorts/start/
+
+User-agent: OAI-SearchBot
+Disallow: /api/
+Disallow: /academy/apply/
+Disallow: /readiness/apply/
+Disallow: /cohorts/start/
+
+User-agent: ClaudeBot
+Disallow: /api/
+Disallow: /academy/apply/
+Disallow: /readiness/apply/
+Disallow: /cohorts/start/
+
+User-agent: PerplexityBot
+Disallow: /api/
+Disallow: /academy/apply/
+Disallow: /readiness/apply/
+Disallow: /cohorts/start/
+
+User-agent: *
+Disallow: /api/
+
+Sitemap: https://readable.tabronmerryhill.com/sitemap.xml
