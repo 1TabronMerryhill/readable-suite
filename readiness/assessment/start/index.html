@@ -43,6 +43,33 @@ textarea.rc-text{min-height:110px;resize:vertical}
 .rc-note{font-size:.9rem;opacity:.75}
 .rc-method{border-top:2px solid #e7e2d5;margin-top:32px;padding-top:20px;font-size:.9rem;opacity:.85}
 .rc-gate{text-align:center;padding:40px 0}
+.rc-chat{display:flex;flex-direction:column}
+.rc-log{display:flex;flex-direction:column;gap:10px;max-height:52vh;overflow-y:auto;padding:6px 2px;margin-bottom:14px}
+.rc-msg{max-width:88%;padding:12px 16px;border-radius:14px;line-height:1.5;font-size:1rem}
+.rc-msg.read{align-self:flex-start;background:#eef5f0;border:1px solid #d9e8e1;border-bottom-left-radius:4px}
+.rc-msg.user{align-self:flex-end;background:#2f6b4f;color:#fff;border-bottom-right-radius:4px}
+.rc-msg.error{background:#fbe9e9;border:1px solid #e0b4b4}
+.rc-dots i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2f6b4f;margin-right:5px;opacity:.35;animation:rcblink 1.1s infinite}
+.rc-dots i:nth-child(2){animation-delay:.2s}
+.rc-dots i:nth-child(3){animation-delay:.4s}
+@keyframes rcblink{0%,100%{opacity:.25}50%{opacity:1}}
+.rc-inputrow{display:flex;gap:8px}
+.rc-chatinput{flex:1;min-width:0;padding:14px;font-size:1rem;border:2px solid #d9e8e1;border-radius:12px;font-family:inherit}
+.rc-chatinput:focus{outline:none;border-color:#2f6b4f}
+.rc-send{background:#2f6b4f;color:#fff;border:0;border-radius:12px;min-height:48px;padding:0 20px;font-size:1rem;font-weight:700;cursor:pointer}
+.rc-mic{background:#fff;border:2px solid #d9e8e1;border-radius:12px;min-width:52px;min-height:48px;cursor:pointer;font-size:1.25rem}
+.rc-mic.live{border-color:#8c2f2f;background:#fbe9e9}
+.rc-reviewrow{margin:2px 0 12px;min-height:8px}
+.rc-review{background:transparent;border:2px solid #2f6b4f;color:#2f6b4f;border-radius:10px;min-height:48px;padding:0 20px;font-weight:700;cursor:pointer;font-size:1rem}
+.rc-review:disabled{opacity:.6;cursor:wait}
+.rc-confirm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.rc-field{margin:0 0 14px}
+.rc-field label{display:block;font-weight:700;margin-bottom:6px;font-size:.95rem}
+.rc-dimedit{background:#fff;border:1px solid #e7e2d5;border-radius:10px;padding:16px;margin:0 0 12px}
+.rc-scorepick{display:flex;gap:8px;margin:10px 0 4px}
+.rc-scorepick button{width:52px;height:52px;border-radius:10px;border:2px solid #d9e8e1;background:#fff;font-size:1.15rem;font-weight:700;cursor:pointer}
+.rc-scorepick button.sel{border-color:#2f6b4f;background:#eef5f0;box-shadow:3px 3px 0 #2f6b4f}
+@media(max-width:520px){.rc-confirm-grid{grid-template-columns:1fr}}
 @media print{
   .site-header,.site-footer,.rc-nav,#rc-gate,.noprint{display:none!important}
   .hero{padding:24px 0}
@@ -71,7 +98,8 @@ textarea.rc-text{min-height:110px;resize:vertical}
   <div class="wrap">
     <p class="kicker">Read&thinsp;/&thinsp;co-pilot · Readiness Assessment</p>
     <h1>Let's look at one workflow.</h1>
-    <p class="lead">I'm Read, Readable's co-pilot. I'll ask about a single workflow — the problem, where AI fits, who decides, how you check the work, and what happens when it fails. Answer honestly; the rubric does the judging.</p>
+    <p class="lead">I'm Read, Readable's co-pilot. Talk in your own words — I'll ask follow-ups until I understand the workflow: the problem, where AI fits, who decides, how you check the work, and what happens when it fails. Then you confirm what I heard, and the rubric does the judging.</p>
+    <p class="rc-note">Your conversation isn't stored or used to train anything. Only the answers you confirm and your report are kept.</p>
   </div>
 </section>
 
@@ -142,9 +170,9 @@ textarea.rc-text{min-height:110px;resize:vertical}
   }
   try { sessionStorage.setItem("read_paid", "1"); } catch (e) {}
   var submitted = false;
-  ReadCopilot.startInterview("rc-app", function (answers, answerText) {
+  function onDone(answers, answerText, extra) {
     document.getElementById("rc-app").hidden = true;
-    var meta = { business_name: answers.business_name };
+    var meta = { business_name: answers.business_name, mode: (extra && extra.mode) || "structured" };
     var out = ReadCopilot.renderReport("rc-report", answers, answerText, meta);
     document.getElementById("rc-done").hidden = false;
     if (submitted || !out) return;
@@ -158,16 +186,22 @@ textarea.rc-text{min-height:110px;resize:vertical}
       contact_name: answers.contact_name || "",
       contact_role: answers.contact_role || "",
       workflow_description: "Problem: " + (answers.q_problem || "") + "\n\nWorkflow steps:\n" + (answers.q_steps || ""),
-      intended_outcome: "Outcome measurability: " + (answerText.q_outcome || ""),
+      intended_outcome: "90-day measure: " + (answers.q_measure || ""),
       verdict: out.verdict.title,
       score: out.result.total + "/16",
       verdict_summary: "Verdict: " + out.verdict.title + " (" + out.result.total + "/16, rubric v" +
-        window.READ_COPILOT_RUBRIC_VERSION + "). Weakest dimensions: " + weakest + ". Report " + out.reportId + ".",
+        window.READ_COPILOT_RUBRIC_VERSION + ", " + meta.mode + " evidence). Weakest dimensions: " + weakest + ". Report " + out.reportId + ".",
       recommended_intervention: out.interventionKey === "sprint"
         ? "Business Visibility Sprint ($2,500) — extract and design the workflow before AI touches it."
         : "Readable Academy (from $1,000) — train the team to evaluate AI outputs against evidence."
     };
     ReadCopilot.postSubmission(fields).catch(function () { /* report already rendered; lead capture is best-effort */ });
+  }
+  /* Conversational Read when the backend is wired; the structured interview
+     stays as the fallback so the product keeps working (and selling). */
+  ReadCopilot.probeChat(function (available) {
+    if (available) ReadCopilot.startConversation("rc-app", onDone);
+    else ReadCopilot.startInterview("rc-app", onDone);
   });
 })();
 </script>
