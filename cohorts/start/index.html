@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request an Organization Cohort | Readable</title>
+<meta name="description" content="Request a private, sponsored, hosted, or community cohort designed around your people. Governed intake — a human reviews every request.">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/forms.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+    <nav class="site-nav">
+      <a href="/registry/">Registry</a>
+      <a href="/trust-audit/">Trust Audit</a>
+      <a href="/business-systems/">Business Systems</a>
+      <a href="/academy/">Academy</a>
+      <a href="/readiness/">AI Readiness</a>
+      <a href="/cohorts/">Cohorts</a>
+      <a class="cta" href="/trust-audit/">Apply</a>
+    </nav>
+  </div>
+</header>
+
+<section class="block sage" id="request">
+  <div class="wrap">
+    <p class="kicker">Organization cohort request</p>
+    <h2>Start a cohort for your people.</h2>
+    <p class="lead">Private, sponsored, hosted, employee, member, student, or community cohorts — designed around your organization. Tell us what you're imagining.</p>
+    <div class="form-card mt">
+      <form data-form-id="cohorts-start" novalidate>
+        <div class="field">
+          <label for="cs-org">Organization name <span class="req">*</span></label>
+          <input type="text" id="cs-org" name="organization_name" required>
+        </div>
+        <div class="field">
+          <label for="cs-type">Organization type</label>
+          <select id="cs-type" name="organization_type">
+            <option value="">Select…</option>
+            <option>Youth Mentoring Organization</option>
+            <option>Church / Faith Community</option>
+            <option>Library</option>
+            <option>Workforce Development Organization</option>
+            <option>School / District</option>
+            <option>Community College</option>
+            <option>Youth Development Organization</option>
+            <option>Senior Center / Aging Organization</option>
+            <option>Disability Services Organization</option>
+            <option>Reentry / Justice-Impacted Organization</option>
+            <option>Housing / Homelessness Organization</option>
+            <option>Veterans Organization</option>
+            <option>Immigrant / Refugee Organization</option>
+            <option>Rural Community Organization</option>
+            <option>Community Nonprofit</option>
+            <option>Government Agency</option>
+            <option>Employer / Workforce Sponsor</option>
+            <option>Foundation / Funder</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="cs-contact">Primary contact <span class="req">*</span></label>
+          <input type="text" id="cs-contact" name="primary_contact" required>
+        </div>
+        <div class="field">
+          <label for="cs-email">Contact email <span class="req">*</span></label>
+          <input type="email" id="cs-email" name="contact_email" required>
+        </div>
+        <div class="field">
+          <label for="cs-phone">Contact phone</label>
+          <input type="tel" id="cs-phone" name="contact_phone">
+        </div>
+        <div class="field">
+          <label for="cs-web">Website URL</label>
+          <input type="url" id="cs-web" name="website_url" placeholder="https://">
+        </div>
+        <div class="field">
+          <label for="cs-city">City / region</label>
+          <input type="text" id="cs-city" name="city_region">
+        </div>
+        <div class="field">
+          <label for="cs-model">Cohort model</label>
+          <select id="cs-model" name="cohort_request_model">
+            <option value="">Select…</option>
+            <option>Private Organization Cohort</option>
+            <option>Sponsored Community Cohort</option>
+            <option>Hosted Public Cohort</option>
+            <option>Member / Employee Cohort</option>
+            <option>Student / Learner Cohort</option>
+            <option>Referral Partner</option>
+            <option>Co-Delivery Partner</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="cs-participants">Estimated participants</label>
+          <input type="number" id="cs-participants" name="estimated_participants" min="1">
+        </div>
+        <div class="field">
+          <label for="cs-audience">Intended participant group</label>
+          <textarea id="cs-audience" name="intended_participant_group" placeholder="Who would attend? Roles, backgrounds…"></textarea>
+        </div>
+        <div class="field">
+          <label for="cs-goal">Organization cohort goal</label>
+          <textarea id="cs-goal" name="organization_cohort_goal" placeholder="What should change for your people because of this cohort?"></textarea>
+        </div>
+        <div class="field">
+          <label for="cs-window">Desired start window</label>
+          <input type="text" id="cs-window" name="desired_start_window" placeholder="e.g., Q1 2027">
+        </div>
+        <div class="field">
+          <label for="cs-access">Accessibility / accommodation needs</label>
+          <textarea id="cs-access" name="accessibility_needs"></textarea>
+        </div>
+        <div class="field">
+          <label for="cs-lang">Language needs</label>
+          <input type="text" id="cs-lang" name="language_needs">
+        </div>
+        <div class="field">
+          <label for="cs-constraints">Constraints we should know about</label>
+          <textarea id="cs-constraints" name="constraints" placeholder="Budget, timing, technology, anything that shapes the design."></textarea>
+        </div>
+        <div class="field">
+          <div class="checks">
+            <label><input type="checkbox" name="cohort_request_consent" required> I understand this request creates one intake record for human review, with no cohort, date, or price commitment. <span class="req">*</span></label>
+          </div>
+        </div>
+        <div class="disclaimer">Governed intake: your submission creates one Community AI Partner intake record for human review. No cohort, date, or price is committed by submitting.</div>
+        <button class="btn" type="submit">Request cohort</button>
+        <p class="form-status" role="status"></p>
+      </form>
+    </div>
+    <p class="note mt"><a href="/cohorts/">Back to all cohort paths</a>.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+        <p class="note" style="margin-top:14px;color:#adbbb5">The workflow between what an organization senses and what it does.</p>
+      </div>
+      <div>
+        <h4>Paths</h4>
+        <a href="/registry/">Registry</a>
+        <a href="/trust-audit/">Trust Audit</a>
+        <a href="/business-systems/">Business Systems</a>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <a href="/academy/">Academy</a>
+        <a href="/academy/apply/">Academy enrollment</a>
+        <a href="/readiness/">AI Readiness</a>
+        <a href="/cohorts/">Cohorts</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="mailto:TabronMerryhill@gmail.com">TabronMerryhill@gmail.com</a>
+        <a href="tel:+18164469393">(816) 446-9393</a>
+        <a href="https://tabronmerryhill.com">Tabron Merryhill Systems</a>
+      </div>
+    </div>
+    <div class="fine">
+      <span>© 2026 Readable · Tabron Merryhill Systems Division, Columbia, MO</span>
+      <span>AI access alone does not create capacity.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
