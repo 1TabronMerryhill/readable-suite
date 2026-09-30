@@ -50,7 +50,7 @@
       .then(function (res) {
         if (res.ok && res.body && res.body.ok) {
           form.reset();
-          setStatus(form, true, "Received. A human will review your submission — this is not an enrollment or purchase.");
+          setStatus(form, true, form.getAttribute("data-success") || "Received. A human will review your submission — this is not an enrollment or purchase.");
         } else {
           setStatus(form, false, "Something went wrong submitting the form. Please try again, or email TabronMerryhill@gmail.com.");
         }
@@ -61,5 +61,44 @@
       .finally(function () {
         if (btn) { btn.disabled = false; btn.textContent = original; }
       });
+  });
+})();
+
+/* Readable suite — mobile navigation.
+   Injects a hamburger toggle + slide-down panel (cloned from .site-nav)
+   on viewports where the desktop nav is hidden. */
+(function () {
+  var header = document.querySelector(".site-header");
+  var inner = document.querySelector(".site-header .wrap");
+  var nav = document.querySelector(".site-nav");
+  if (!header || !inner || !nav) return;
+
+  var btn = document.createElement("button");
+  btn.className = "nav-toggle";
+  btn.type = "button";
+  btn.setAttribute("aria-label", "Open menu");
+  btn.setAttribute("aria-expanded", "false");
+  btn.innerHTML = "<span></span><span></span><span></span>";
+  inner.appendChild(btn);
+
+  var panel = document.createElement("nav");
+  panel.className = "mobile-nav";
+  panel.setAttribute("aria-label", "Mobile");
+  panel.innerHTML = nav.innerHTML;
+  header.appendChild(panel);
+
+  function setOpen(open) {
+    document.body.classList.toggle("nav-open", open);
+    btn.setAttribute("aria-expanded", String(open));
+    btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  }
+  btn.addEventListener("click", function () {
+    setOpen(!document.body.classList.contains("nav-open"));
+  });
+  panel.addEventListener("click", function (e) {
+    if (e.target.closest("a")) setOpen(false);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") setOpen(false);
   });
 })();
