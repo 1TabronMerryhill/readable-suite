@@ -15,8 +15,8 @@ const FORMS = {
   "readiness-apply": {
     table: "tblhb98tLxJNbApBs", // Partnership Opportunities
     map: {
-      organization_name: "fldfG9B8IWEBQ1POR",
-      organization_type: "fldbceSoaarsvIw8Z",
+      organization_name: "fldrFsPCKwN6HGz45", // Buyer Organization
+      organization_type: "fldfG9B8IWEBQ1POR", // Buyer Organization Type
       contact_email: "fldjyLuOWlKHKu9m2",
       contact_phone: "fldgrQjhFGPwhHGv8",
       buyer_website: "fldu9cfY5ari0X0lO",
@@ -85,7 +85,7 @@ const FORMS = {
       current_workaround: "fld36aJCG5xymo3Zj",
       evidence_links: "fldHYg0WU5SM1Lnvk",
     },
-    statics: { fldzeI2YhQbplji0: "Queued" }, // Request Status
+    statics: { fldzeI2YhQbplWji0: "Queued" }, // Request Status
     timestamps: ["fld3nQUy7Oiul8XLG"], // Submitted At
     required: ["business_name", "contact_email", "submitted_problem"],
     // Business name + contact email have no dedicated fields in this table:
@@ -135,6 +135,26 @@ const FORMS = {
         { key: "confidentiality_needs", label: "Confidentiality" },
         { key: "rights_notes", label: "Rights notes" },
       ],
+    },
+  },
+  "readiness-assessment": {
+    table: "tblyfZXpRoR90YENt", // Business Systems Requests (the Sprint pipeline)
+    map: {
+      workflow_description: "fldGZxcTCpcZU7O1W", // Submitted Problem
+      intended_outcome: "fldM5Ocs2Js9G2pPC", // Desired Outcome
+      verdict_summary: "fldFlE4L5gWSYcoDz", // Working Diagnosis / Hypothesis
+      recommended_intervention: "fldnBcXfK2LrCLNEy", // Recommended Smallest Test
+    },
+    statics: { fldzeI2YhQbplWji0: "Queued" }, // Request Status
+    timestamps: ["fld3nQUy7Oiul8XLG"], // Submitted At
+    required: ["business_name", "contact_email", "workflow_description"],
+    compose: {
+      titleField: "fldrTfl6UDrq9u4Zo", // Request (title)
+      titleFrom: "business_name",
+      titlePrefix: "Readiness Assessment",
+      contactField: "fldvkf3V8oebrLVCn", // Next Action
+      contactFrom: "contact_email",
+      contactTemplate: "Verdict: {verdict} ({score}) — {intervention}. Contact: {email} ({name}, {role}).",
     },
   },
   "subscribe": {
@@ -189,7 +209,15 @@ function buildFields(def, fields) {
     out[def.compose.titleField] = `${prefix}${name} — ${now.slice(0, 10)}`;
     if (def.compose.contactField) {
       const email = (fields[def.compose.contactFrom] || "").toString().trim();
-      if (email) out[def.compose.contactField] = `Contact: ${email} — awaiting human review.`;
+      const tpl = def.compose.contactTemplate || "Contact: {email} — awaiting human review.";
+      const text = tpl
+        .replace("{email}", email)
+        .replace("{name}", (fields.contact_name || "").toString().trim())
+        .replace("{role}", (fields.contact_role || "").toString().trim())
+        .replace("{verdict}", (fields.verdict || "").toString().trim())
+        .replace("{score}", (fields.score || "").toString().trim())
+        .replace("{intervention}", (fields.recommended_intervention || "").toString().trim());
+      if (email || fields.verdict) out[def.compose.contactField] = text;
     }
     if (def.compose.notesField && Array.isArray(def.compose.notes)) {
       const lines = def.compose.notes
