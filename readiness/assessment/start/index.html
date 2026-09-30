@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Your assessment — Read/co-pilot | Readable</title>
-<meta name="description" content="Your Read/co-pilot interview for the Readiness Assessment. Answer honestly; the rubric does the judging.">
+<meta name="description" content="Talk with Read, Readable's co-pilot, about one workflow. Confirm what it heard; the rubric does the judging.">
 <link rel="stylesheet" href="/assets/site.css">
 <style>
 .rc-shell{max-width:720px;margin:0 auto}
@@ -70,6 +70,51 @@ textarea.rc-text{min-height:110px;resize:vertical}
 .rc-scorepick button{width:52px;height:52px;border-radius:10px;border:2px solid #d9e8e1;background:#fff;font-size:1.15rem;font-weight:700;cursor:pointer}
 .rc-scorepick button.sel{border-color:#2f6b4f;background:#eef5f0;box-shadow:3px 3px 0 #2f6b4f}
 @media(max-width:520px){.rc-confirm-grid{grid-template-columns:1fr}}
+
+/* ---------- Cinematic Read front door ---------- */
+.rc-ambient{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.rc-blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;transition:opacity .8s;animation:rcdrift 26s ease-in-out infinite alternate}
+.rc-blob.b1{width:58vw;height:58vw;left:-14vw;top:-16vw;background:#cfe3d4}
+.rc-blob.b2{width:50vw;height:50vw;right:-16vw;top:26vh;background:#e9e0c8;animation-delay:-9s}
+.rc-blob.b3{width:42vw;height:42vw;left:24vw;bottom:-18vw;background:#bcd9c6;animation-delay:-17s}
+@keyframes rcdrift{from{transform:translate(0,0) scale(1)}to{transform:translate(6vw,5vh) scale(1.12)}}
+body.rc-chatting .rc-blob{opacity:.22}
+.rc-hero{position:relative;z-index:1;text-align:center;padding:76px 0 96px;transition:opacity .48s ease,transform .48s ease,filter .48s ease}
+.rc-hero h1{font-size:clamp(48px,10vw,96px);margin:0 0 20px}
+.rc-hero .rc-sub{max-width:600px;margin:0 auto}
+.rc-pill{display:flex;align-items:center;gap:4px;background:#fff;border-radius:999px;padding:8px 8px 8px 28px;max-width:660px;margin:38px auto 0;border:1px solid rgba(13,31,28,.09);box-shadow:0 24px 60px -20px rgba(13,31,28,.35),0 2px 8px rgba(13,31,28,.08);transition:box-shadow .3s,transform .3s}
+.rc-pill:focus-within{box-shadow:0 28px 70px -20px rgba(23,78,59,.5),0 2px 8px rgba(13,31,28,.08);transform:translateY(-2px)}
+.rc-pill-input{flex:1;min-width:0;border:0;outline:none;background:transparent;font:inherit;font-size:1.06rem;color:var(--ink)}
+.rc-pill-input::placeholder{color:#8a978f;transition:opacity .2s}
+.rc-pill-input.rc-ph-out::placeholder{opacity:0}
+.rc-pill-mic{background:transparent;border:0;border-radius:50%;min-width:52px;min-height:52px;font-size:1.35rem;cursor:pointer}
+.rc-pill-mic.live{background:#fbe9e9}
+.rc-pill-send{flex:0 0 58px;width:58px;height:58px;border-radius:50%;border:0;background:var(--brand);color:#fff;font-size:1.6rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s}
+.rc-pill-send:hover{background:#0d1f1c;transform:scale(1.06)}
+.rc-pill-send:disabled{opacity:.6;cursor:wait;transform:none}
+.rc-pill-note{margin-top:16px}
+.rc-hero-exit{opacity:0;transform:translateY(-28px);filter:blur(6px);pointer-events:none}
+.rc-stage-enter{animation:rcrise .6s cubic-bezier(.2,.7,.3,1) both}
+@keyframes rcrise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.rc-msg{animation:rcmsgin .45s cubic-bezier(.2,.7,.3,1) both}
+@keyframes rcmsgin{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.rc-rise{animation:rcrise .55s cubic-bezier(.2,.7,.3,1) both}
+.rc-stream-caret{display:inline-block;width:2px;height:1.05em;background:#2f6b4f;vertical-align:-.15em;margin-left:2px;animation:rcblink 1s steps(2) infinite}
+.rc-review{animation:rcrise .5s cubic-bezier(.2,.7,.3,1) both}
+#rc-report .rc-report>*{animation:rcrise .55s cubic-bezier(.2,.7,.3,1) both}
+#rc-report .rc-report>*:nth-child(2){animation-delay:.07s}
+#rc-report .rc-report>*:nth-child(3){animation-delay:.14s}
+#rc-report .rc-report>*:nth-child(4){animation-delay:.21s}
+#rc-report .rc-report>*:nth-child(5){animation-delay:.28s}
+#rc-report .rc-report>*:nth-child(6){animation-delay:.35s}
+#rc-report .rc-report>*:nth-child(7){animation-delay:.42s}
+#rc-report .rc-report>*:nth-child(8){animation-delay:.49s}
+@media(max-width:520px){.rc-hero{padding:56px 0 72px}.rc-pill{padding-left:20px}}
+@media(prefers-reduced-motion:reduce){
+  .rc-blob{animation:none}
+  .rc-hero,.rc-pill,.rc-pill-send{transition:none}
+  .rc-msg,.rc-rise,.rc-stage-enter,.rc-review,#rc-report .rc-report>*{animation:none!important}
+}
 @media print{
   .site-header,.site-footer,.rc-nav,#rc-gate,.noprint{display:none!important}
   .hero{padding:24px 0}
@@ -94,12 +139,23 @@ textarea.rc-text{min-height:110px;resize:vertical}
   </div>
 </header>
 
-<section class="hero">
+<div class="rc-ambient" aria-hidden="true"><i class="rc-blob b1"></i><i class="rc-blob b2"></i><i class="rc-blob b3"></i></div>
+
+<section class="hero rc-hero" id="rc-hero">
   <div class="wrap">
     <p class="kicker">Read&thinsp;/&thinsp;co-pilot · Readiness Assessment</p>
-    <h1>Let's look at one workflow.</h1>
-    <p class="lead">I'm Read, Readable's co-pilot. Talk in your own words — I'll ask follow-ups until I understand the workflow: the problem, where AI fits, who decides, how you check the work, and what happens when it fails. Then you confirm what I heard, and the rubric does the judging.</p>
-    <p class="rc-note">Your conversation isn't stored or used to train anything. Only the answers you confirm and your report are kept.</p>
+    <h1>Let&rsquo;s talk about<br>the work.</h1>
+    <p class="lead rc-sub">Whatever you need to know before trusting AI with it, start here.</p>
+    <div id="rc-pillwrap">
+      <form id="rc-pillform" class="rc-pill" autocomplete="off">
+        <input id="rc-pillinput" class="rc-pill-input" type="text" aria-label="Describe the workflow you want judged" placeholder="Try &lsquo;Our intake emails pile up every Monday&hellip;&rsquo;">
+        <button id="rc-pillmic" class="rc-pill-mic" type="button" aria-label="Dictate your answer">&#127908;</button>
+        <button class="rc-pill-send" type="submit" aria-label="Send">&rarr;</button>
+      </form>
+      <p class="rc-note rc-pill-note">No account. Your conversation isn&rsquo;t stored &mdash; only the answers you confirm and your report are kept.</p>
+    </div>
+    <p id="rc-classic-wrap" hidden><button id="rc-classic-begin" class="btn">Begin the interview &rarr;</button></p>
+    <p id="rc-hero-cta" hidden><a class="btn" href="/readiness/assessment/checkout/">Get assessed &mdash; $150</a></p>
   </div>
 </section>
 
@@ -166,15 +222,19 @@ textarea.rc-text{min-height:110px;resize:vertical}
   try { if (sessionStorage.getItem("read_paid") === "1") paid = true; } catch (e) {}
   if (!paid) {
     document.getElementById("rc-gate").hidden = false;
+    document.getElementById("rc-pillwrap").hidden = true;
+    document.getElementById("rc-hero-cta").hidden = false;
     return;
   }
   try { sessionStorage.setItem("read_paid", "1"); } catch (e) {}
+  var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var submitted = false;
   function onDone(answers, answerText, extra) {
     document.getElementById("rc-app").hidden = true;
     var meta = { business_name: answers.business_name, mode: (extra && extra.mode) || "structured" };
     var out = ReadCopilot.renderReport("rc-report", answers, answerText, meta);
     document.getElementById("rc-done").hidden = false;
+    window.scrollTo(0, 0);
     if (submitted || !out) return;
     submitted = true;
     var weakest = ["D1","D2","D3","D4","D5","D6","D7","D8"]
@@ -197,11 +257,96 @@ textarea.rc-text{min-height:110px;resize:vertical}
     };
     ReadCopilot.postSubmission(fields).catch(function () { /* report already rendered; lead capture is best-effort */ });
   }
+
+  var hero = document.getElementById("rc-hero");
+  var app = document.getElementById("rc-app");
+  var pillForm = document.getElementById("rc-pillform");
+  var pillInput = document.getElementById("rc-pillinput");
+  var pillSend = pillForm.querySelector(".rc-pill-send");
+  var pillWrap = document.getElementById("rc-pillwrap");
+  var classicWrap = document.getElementById("rc-classic-wrap");
+  var classicBtn = document.getElementById("rc-classic-begin");
+  var probeState = null, pillUsed = false;
+
+  /* Rotating example prompts inside the pill */
+  var hints = [
+    "Try \u2018Our intake emails pile up every Monday\u2026\u2019",
+    "Try \u2018We want AI to draft our client quotes\u2026\u2019",
+    "Try \u2018Nobody checks the AI\u2019s numbers before they go out\u2026\u2019",
+    "Try \u2018Our crew won\u2019t touch the new scheduling tool\u2026\u2019"
+  ];
+  var hi = 0, hintTimer = null;
+  function nextHint() {
+    if (document.activeElement === pillInput || pillInput.value) return;
+    pillInput.classList.add("rc-ph-out");
+    setTimeout(function () {
+      hi = (hi + 1) % hints.length;
+      pillInput.setAttribute("placeholder", hints[hi]);
+      pillInput.classList.remove("rc-ph-out");
+    }, 200);
+  }
+  if (!REDUCED) hintTimer = setInterval(nextHint, 3600);
+
+  function exitHero(cb) {
+    pillUsed = true;
+    if (hintTimer) clearInterval(hintTimer);
+    document.body.classList.add("rc-chatting");
+    hero.classList.add("rc-hero-exit");
+    setTimeout(function () {
+      hero.hidden = true;
+      app.hidden = false;
+      app.classList.add("rc-stage-enter");
+      window.scrollTo(0, 0);
+      cb();
+    }, REDUCED ? 0 : 480);
+  }
+  function beginChat(text) {
+    exitHero(function () {
+      ReadCopilot.startConversation("rc-app", onDone, { initialMessage: text, stream: true });
+    });
+  }
+  function beginClassic() {
+    exitHero(function () { ReadCopilot.startInterview("rc-app", onDone); });
+  }
+  function showClassic() {
+    pillWrap.hidden = true;
+    classicWrap.hidden = false;
+  }
+
+  pillForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (pillUsed) return;
+    var text = pillInput.value.trim();
+    if (!text) {
+      pillForm.classList.add("rc-shake");
+      setTimeout(function () { pillForm.classList.remove("rc-shake"); }, 400);
+      pillInput.focus();
+      return;
+    }
+    if (probeState === null) {
+      pillSend.disabled = true;
+      var wait = setInterval(function () {
+        if (probeState === null) return;
+        clearInterval(wait);
+        pillSend.disabled = false;
+        if (probeState) beginChat(text); else showClassic();
+      }, 250);
+      return;
+    }
+    if (probeState) beginChat(text);
+    else showClassic();
+  });
+  classicBtn.addEventListener("click", beginClassic);
+
   /* Conversational Read when the backend is wired; the structured interview
      stays as the fallback so the product keeps working (and selling). */
   ReadCopilot.probeChat(function (available) {
-    if (available) ReadCopilot.startConversation("rc-app", onDone);
-    else ReadCopilot.startInterview("rc-app", onDone);
+    probeState = available;
+    if (available) {
+      ReadCopilot.wireMic(document.getElementById("rc-pillmic"), pillInput);
+    } else if (!pillUsed) {
+      showClassic();
+    }
   });
 })();
 </script>
