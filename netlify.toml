@@ -1,0 +1,14 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Intake function is invoked at /.netlify/functions/intake by the site's forms.
+# Required env var (set in the Netlify dashboard, never committed):
+#   AIRTABLE_TOKEN — Airtable personal access token scoped to the Readable base.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
