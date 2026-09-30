@@ -333,6 +333,305 @@
     render();
   }
 
+  /* ---------------- Conversational Read (v1.1) ---------------- */
+  /* Open conversation via /.netlify/functions/read-chat. The LLM structures
+     evidence; the buyer confirms it; the deterministic scorer judges it.
+     Falls back to startInterview when the chat backend isn't configured. */
+
+  var CHAT_ENDPOINT = "/.netlify/functions/read-chat";
+
+  function probeChat(cb) {
+    fetch(CHAT_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: "probe" })
+    }).then(function (r) { return r.json(); })
+      .then(function (j) { cb(!!(j && j.ok && j.configured)); })
+      .catch(function () { cb(false); });
+  }
+
+  function wireMic(btn, input) {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { btn.hidden = true; return; }
+    var rec = new SR();
+    rec.lang = "en-US";
+    rec.interimResults = false;
+    var live = false;
+    btn.onclick = function () {
+      if (live) { try { rec.stop(); } catch (e) {} return; }
+      try { rec.start(); } catch (e) {}
+    };
+    rec.onstart = function () { live = true; btn.classList.add("live"); };
+    rec.onend = function () { live = false; btn.classList.remove("live"); };
+    rec.onerror = function () { live = false; btn.classList.remove("live"); };
+    rec.onresult = function (e) {
+      var t = e.results[e.results.length - 1][0].transcript;
+      input.value = (input.value ? input.value + " " : "") + t;
+      input.focus();
+    };
+  }
+
+  function startConversation(mountId, onDone) {
+    var mount = document.getElementById(mountId);
+    if (!mount) return;
+    var messages = [];
+    var busy = false;
+    var reviewShown = false;
+
+    mount.innerHTML = "";
+    var wrap = el("div", "rc-chat");
+    var log = el("div", "rc-log");
+    log.setAttribute("aria-live", "polite");
+    var reviewRow = el("div", "rc-reviewrow");
+    var reviewBtn = el("button", "rc-review", "Review what I heard &rarr;");
+    reviewBtn.type = "button";
+    reviewBtn.hidden = true;
+    reviewBtn.onclick = requestExtract;
+    reviewRow.appendChild(reviewBtn);
+    var formRow = el("div", "rc-inputrow");
+    var micBtn = el("button", "rc-mic", "&#127908;");
+    micBtn.type = "button";
+    micBtn.title = "Dictate";
+    micBtn.setAttribute("aria-label", "Dictate your answer");
+    var input = document.createElement("input");
+    input.className = "rc-chatinput";
+    input.type = "text";
+    input.placeholder = "Talk in your own words…";
+    input.setAttribute("aria-label", "Your message to Read");
+    input.setAttribute("autocomplete", "off");
+    var sendBtn = el("button", "rc-send", "Send");
+    sendBtn.type = "button";
+    formRow.appendChild(micBtn);
+    formRow.appendChild(input);
+    formRow.appendChild(sendBtn);
+    wrap.appendChild(log);
+    wrap.appendChild(reviewRow);
+    wrap.appendChild(formRow);
+    wrap.appendChild(el("p", "rc-note", "This conversation isn't stored or used to train anything. Only the answers you confirm and your report are kept."));
+    mount.appendChild(wrap);
+
+    wireMic(micBtn, input);
+
+    function scrollDown() { log.scrollTop = log.scrollHeight; }
+    function bubble(role, html, isError) {
+      var d = el("div", "rc-msg " + role + (isError ? " error" : ""), html);
+      log.appendChild(d);
+      scrollDown();
+      return d;
+    }
+
+    bubble("read", "Hey — I'm Read. Forget the form: just tell me about the workflow in your own words. What's the problem you're trying to solve?");
+
+    function showReview() {
+      if (reviewShown) return;
+      reviewShown = true;
+      reviewBtn.hidden = false;
+      scrollDown();
+    }
+
+    function userTurns() {
+      return messages.filter(function (m) { return m.role === "user"; }).length;
+    }
+
+    function send() {
+      var text = input.value.trim();
+      if (!text || busy) return;
+      input.value = "";
+      messages.push({ role: "user", content: text });
+      bubble("user", esc(text));
+      if (userTurns() >= 6) showReview();
+      busy = true;
+      var t = bubble("read", '<span class="rc-dots"><i></i><i></i><i></i></span>');
+      fetch(CHAT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "chat", messages: messages })
+      }).then(function (r) { return r.json(); }).then(function (data) {
+        busy = false;
+        if (t.parentNode) t.parentNode.removeChild(t);
+        if (data && data.ok === false && data.reason === "not_configured") {
+          mount.innerHTML = "";
+          mount.appendChild(el("p", "rc-note", "Read's conversation mode isn't wired up yet — the structured interview below gets you the same report."));
+          var sub = el("div", "");
+          sub.id = "rc-fallback";
+          mount.appendChild(sub);
+          startInterview("rc-fallback", onDone);
+          return;
+        }
+        if (!data || !data.ok || !data.text) throw new Error("bad response");
+        var reply = String(data.text);
+        var ready = /\[\[READY\]\]/.test(reply);
+        reply = reply.replace(/\[\[READY\]\]/g, "").trim();
+        messages.push({ role: "assistant", content: reply });
+        bubble("read", esc(reply).replace(/\n/g, "<br>"));
+        if (ready) showReview();
+      }).catch(function () {
+        busy = false;
+        if (t.parentNode) t.parentNode.removeChild(t);
+        bubble("read", "I lost the thread there — say that again?", true);
+      });
+    }
+
+    sendBtn.onclick = send;
+    input.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
+    input.focus();
+
+    function requestExtract() {
+      if (busy) return;
+      busy = true;
+      reviewBtn.disabled = true;
+      reviewBtn.textContent = "Pulling together what I heard…";
+      fetch(CHAT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "extract", messages: messages })
+      }).then(function (r) { return r.json(); }).then(function (data) {
+        busy = false;
+        if (!data || !data.ok || !data.packet) throw new Error("bad extract");
+        renderConfirm(mount, data.packet, onDone);
+      }).catch(function () {
+        busy = false;
+        reviewBtn.disabled = false;
+        reviewBtn.innerHTML = "Review what I heard &rarr;";
+        bubble("read", "I couldn't pull that together — give the button another try in a moment?", true);
+      });
+    }
+  }
+
+  /* Buyer confirms the structured evidence before the rubric judges it. */
+  function renderConfirm(mount, packet, onConfirm) {
+    mount.innerHTML = "";
+    packet = packet || {};
+    var contact = packet.contact || {};
+    var context = packet.context || {};
+    var heard = {};
+    (packet.dimensions || []).forEach(function (d) { if (d && d.id) heard[d.id] = d; });
+
+    var wrap = el("div", "rc-confirm");
+    wrap.appendChild(el("p", "rc-kicker", "Read&thinsp;/&thinsp;co-pilot · confirm the evidence"));
+    wrap.appendChild(el("h2", "rc-prompt", "Here's what I heard."));
+    wrap.appendChild(el("p", "rc-hint", "Check it. Change any score. Nothing is judged until you confirm."));
+
+    function labeledInput(label, value, required, type) {
+      var f = el("div", "rc-field");
+      f.appendChild(el("label", "", esc(label) + (required ? " *" : "")));
+      var inp = document.createElement("input");
+      inp.type = type || "text";
+      inp.className = "rc-text";
+      inp.value = value || "";
+      f.appendChild(inp);
+      f._input = inp;
+      f._required = !!required;
+      return f;
+    }
+
+    var grid = el("div", "rc-confirm-grid");
+    var fName = labeledInput("Your name", contact.name, true);
+    var fOrg = labeledInput("Organization", contact.org, true);
+    var fRole = labeledInput("Your role", contact.role, false);
+    var fEmail = labeledInput("Work email", "", true, "email");
+    fEmail.querySelector("input").placeholder = "Your report goes here.";
+    grid.appendChild(fName); grid.appendChild(fOrg);
+    grid.appendChild(fRole); grid.appendChild(fEmail);
+    wrap.appendChild(grid);
+
+    function labeledArea(label, value) {
+      var f = el("div", "rc-field");
+      f.appendChild(el("label", "", esc(label)));
+      var ta = document.createElement("textarea");
+      ta.className = "rc-text";
+      ta.rows = 3;
+      ta.value = value || "";
+      f.appendChild(ta);
+      f._input = ta;
+      return f;
+    }
+    var aProblem = labeledArea("The problem, in your words", context.problem);
+    var aSteps = labeledArea("The workflow steps", context.steps);
+    var aMeasure = labeledArea("How you'll know in 90 days it worked", context.measure);
+    wrap.appendChild(aProblem); wrap.appendChild(aSteps); wrap.appendChild(aMeasure);
+
+    var scores = {};
+    DIMENSIONS.forEach(function (d) {
+      var h = heard[d.id] || {};
+      var s = (h.score === 0 || h.score === 1 || h.score === 2) ? h.score : 1;
+      scores[d.id] = s;
+      var card = el("div", "rc-dimedit");
+      card.appendChild(el("div", "rc-dim-head", "<strong>" + esc(d.id + " · " + d.name) + "</strong>"));
+      card.appendChild(el("p", "rc-note", "Solid looks like: " + esc(d.solid)));
+      var pick = el("div", "rc-scorepick");
+      pick.setAttribute("role", "group");
+      pick.setAttribute("aria-label", d.name + " score");
+      [0, 1, 2].forEach(function (v) {
+        var b = el("button", v === s ? "sel" : "", String(v));
+        b.type = "button";
+        b.setAttribute("aria-pressed", v === s ? "true" : "false");
+        b.onclick = function () {
+          scores[d.id] = v;
+          var kids = pick.querySelectorAll("button");
+          for (var i = 0; i < kids.length; i++) {
+            kids[i].className = kids[i].textContent === String(v) ? "sel" : "";
+            kids[i].setAttribute("aria-pressed", kids[i].textContent === String(v) ? "true" : "false");
+          }
+        };
+        pick.appendChild(b);
+      });
+      card.appendChild(pick);
+      var quote = String(h.quote || "").trim();
+      if (quote) card.appendChild(el("p", "rc-evidence", "You said: “" + esc(quote) + "”"));
+      wrap.appendChild(card);
+    });
+
+    var err = el("p", "rc-note", "");
+    err.style.color = "#8c2f2f";
+    wrap.appendChild(err);
+
+    var nav = el("div", "rc-nav");
+    var confirmBtn = el("button", "rc-next", "Confirm & see my report →");
+    confirmBtn.type = "button";
+    confirmBtn.onclick = function () {
+      var required = [fName, fOrg, fEmail];
+      for (var i = 0; i < required.length; i++) {
+        var inp = required[i]._input;
+        if (!inp.value.trim()) {
+          err.textContent = "Name, organization, and work email are required.";
+          inp.focus();
+          return;
+        }
+      }
+      var em = fEmail._input.value.trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) {
+        err.textContent = "That email doesn't look right.";
+        fEmail._input.focus();
+        return;
+      }
+      err.textContent = "";
+      var answers = {
+        contact_name: fName._input.value.trim(),
+        contact_email: em,
+        business_name: fOrg._input.value.trim(),
+        contact_role: fRole._input.value.trim(),
+        q_problem: aProblem._input.value.trim(),
+        q_steps: aSteps._input.value.trim(),
+        q_measure: aMeasure._input.value.trim()
+      };
+      var answerText = {};
+      DIMENSIONS.forEach(function (d) {
+        var s = scores[d.id];
+        var q = String((heard[d.id] || {}).quote || "").trim();
+        (DIM_QUESTIONS[d.id] || []).forEach(function (qid) {
+          answers[qid] = s;
+          answerText[qid] = q;
+        });
+      });
+      onConfirm(answers, answerText, { mode: "conversational" });
+    };
+    nav.appendChild(confirmBtn);
+    wrap.appendChild(nav);
+    mount.appendChild(wrap);
+    window.scrollTo(0, 0);
+  }
+
   /* ---------------- Report ---------------- */
 
   function lowestDims(result, n) {
@@ -396,7 +695,11 @@
 
       '<div class="rc-method">' +
       '<p><strong>Method.</strong> Machine-scored from Tabron Merryhill\u2019s published Readiness Rubric v' + READ_COPILOT_RUBRIC_VERSION +
-      ' (8 dimensions, 0–2 each, deterministic). Sampled human audits calibrate the rubric behind the scenes; no human gates your report. ' +
+      ' (8 dimensions, 0–2 each, deterministic). ' +
+      (meta.mode === "conversational"
+        ? "Evidence was gathered in open conversation with Read/co-pilot and confirmed by the buyer before scoring. "
+        : "Evidence was gathered through Read/co-pilot\u2019s structured interview. ") +
+      'Sampled human audits calibrate the rubric behind the scenes; no human gates your report. ' +
       'Rubric derived from the Practical AI Readiness capstone objectives (Courses 4, Objectives 1–3). This is not a consulting engagement.</p>' +
       '<p class="rc-note">Report ' + esc(rid) + ' · ' + esc(meta.business_name || "") + ' · ' + esc(date) + '</p></div>' +
       '</div>';
@@ -415,6 +718,8 @@
 
   window.ReadCopilot = {
     startInterview: startInterview,
+    startConversation: startConversation,
+    probeChat: probeChat,
     renderReport: renderReport,
     scoreAssessment: scoreAssessment,
     postSubmission: postSubmission,
