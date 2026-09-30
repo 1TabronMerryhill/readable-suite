@@ -112,7 +112,21 @@
     <p class="kicker">Stay in the loop</p>
     <h2>Get the Readable briefing.</h2>
     <p class="lead">Occasional, useful notes on AI readiness, systems thinking, and what we're learning. No hype.</p>
-    <iframe class="embed-frame mt" title="Readable email signup" src="https://airtable.com/appHDR9CU6WjHYZdy/shrR3ZNLMuymmh12N"></iframe>
+    <form class="subscribe-form" data-form-id="subscribe" data-success="You're on the list. The next briefing lands in your inbox." novalidate>
+      <div class="row">
+        <div class="field">
+          <label for="sub-name">Name</label>
+          <input id="sub-name" name="name" type="text" autocomplete="name" placeholder="Jane Smith">
+        </div>
+        <div class="field">
+          <label for="sub-email">Email <span class="req">*</span></label>
+          <input id="sub-email" name="email" type="email" required autocomplete="email" placeholder="jane@example.org">
+        </div>
+      </div>
+      <button class="btn" type="submit">Get the briefing</button>
+      <p class="form-status" aria-live="polite"></p>
+      <p class="form-note">One email when there's something worth sending. Unsubscribe anytime.</p>
+    </form>
   </div>
 </section>
 
