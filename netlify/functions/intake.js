@@ -1,6 +1,7 @@
 /* Readable suite — governed intake function.
-   Accepts POST JSON {form_id, fields} and creates one record in the
-   Readable Airtable base (appio2HRVGqJEzZeP).
+   Accepts POST JSON {form_id, fields} and creates one record in Airtable.
+   Most forms write to the Readable base (appio2HRVGqJEzZeP); "subscribe"
+   writes to List Subscribers in the SPIN base (appHDR9CU6WjHYZdy).
    Auth: Airtable personal access token in env AIRTABLE_TOKEN (never logged). */
 
 const BASE_ID = "appio2HRVGqJEzZeP";
@@ -96,6 +97,20 @@ const FORMS = {
       contactFrom: "contact_email",
     },
   },
+  "subscribe": {
+    base: "appHDR9CU6WjHYZdy", // SPIN Operating Control Center (not the Readable base)
+    table: "tblQGrrB2GN1rjxi2", // List Subscribers
+    map: {
+      name: "fldRp6gAAxtaXE0IK", // Name
+      email: "fldWWhc7Io5txRY0N", // Email
+    },
+    statics: {
+      fldGHMLNQJVSeRJIy: "Website", // Source
+      fldoP4G0fD1a9M6CF: "Active", // Status
+    },
+    timestamps: ["fldVP7k4OWKzxeUYx"], // Consent Date
+    required: ["email"],
+  },
 };
 
 function bad(status, message) {
@@ -173,7 +188,7 @@ exports.handler = async (event) => {
 
   let resp;
   try {
-    resp = await fetch(`${AIRTABLE_API}/${BASE_ID}/${def.table}`, {
+    resp = await fetch(`${AIRTABLE_API}/${def.base || BASE_ID}/${def.table}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`, // never logged
