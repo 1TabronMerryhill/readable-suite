@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Founding Partner Application — Practical AI Readiness | Readable</title>
+<meta name="description" content="Apply to the Practical AI Readiness Founding Partner cohort. Governed intake — a human reviews every application.">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/forms.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+    <nav class="site-nav">
+      <a href="/registry/">Registry</a>
+      <a href="/trust-audit/">Trust Audit</a>
+      <a href="/business-systems/">Business Systems</a>
+      <a href="/academy/">Academy</a>
+      <a href="/readiness/">AI Readiness</a>
+      <a href="/cohorts/">Cohorts</a>
+      <a class="cta" href="/trust-audit/">Apply</a>
+    </nav>
+  </div>
+</header>
+
+<section class="block sage" id="apply">
+  <div class="wrap">
+    <p class="kicker">Founding Partner application</p>
+    <h2>Apply to the cohort.</h2>
+    <p class="lead">Tell us about your organization and the work that's straining. A human reviews every application.</p>
+    <div class="form-card mt">
+      <form data-form-id="readiness-apply" novalidate>
+        <div class="field">
+          <label for="ra-org">Organization name <span class="req">*</span></label>
+          <input type="text" id="ra-org" name="organization_name" required>
+        </div>
+        <div class="field">
+          <label for="ra-type">Organization type</label>
+          <select id="ra-type" name="organization_type">
+            <option value="">Select…</option>
+            <option>Nonprofit</option>
+            <option>Community Foundation</option>
+            <option>Chamber of Commerce</option>
+            <option>Workforce Organization</option>
+            <option>School / College</option>
+            <option>Church / Faith Community</option>
+            <option>Community Development Organization</option>
+            <option>Municipal Government</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ra-email">Contact email <span class="req">*</span></label>
+          <input type="email" id="ra-email" name="contact_email" required>
+        </div>
+        <div class="field">
+          <label for="ra-phone">Contact phone</label>
+          <input type="tel" id="ra-phone" name="contact_phone">
+        </div>
+        <div class="field">
+          <label for="ra-web">Organization website</label>
+          <input type="url" id="ra-web" name="buyer_website" placeholder="https://">
+        </div>
+        <div class="field">
+          <label for="ra-city">City / region</label>
+          <input type="text" id="ra-city" name="city_region">
+        </div>
+        <div class="field">
+          <label for="ra-capacity">Where is capacity most constrained? <span class="req">*</span></label>
+          <textarea id="ra-capacity" name="capacity_pressures" required placeholder="Which work is overwhelming the team right now?"></textarea>
+        </div>
+        <div class="field">
+          <label for="ra-workflows">Which workflows most need improvement?</label>
+          <textarea id="ra-workflows" name="priority_workflows" placeholder="Recurring work — reporting, communications, research, coordination…"></textarea>
+        </div>
+        <div class="field">
+          <label>Desired outcomes <span class="note">(check all that apply)</span></label>
+          <div class="checks">
+            <label><input type="checkbox" name="desired_outcomes[]" value="Staff capacity"> Staff capacity</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Productivity"> Productivity</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Better reporting"> Better reporting</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Fundraising / grants"> Fundraising / grants</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Community outreach"> Community outreach</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Workforce readiness"> Workforce readiness</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Student services"> Student services</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Citizen services"> Citizen services</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Responsible AI practices"> Responsible AI practices</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Documented workflows"> Documented workflows</label>
+            <label><input type="checkbox" name="desired_outcomes[]" value="Other"> Other</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ra-aiuse">Current AI use</label>
+          <select id="ra-aiuse" name="current_ai_use">
+            <option value="">Select…</option>
+            <option>Never used AI</option>
+            <option>Individual experimentation</option>
+            <option>Some team use</option>
+            <option>Piloting with guidance</option>
+            <option>Organization-wide use</option>
+            <option>Unsure</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ra-stakeholders">Who would participate in discovery?</label>
+          <textarea id="ra-stakeholders" name="stakeholders" placeholder="Roles — e.g., executive director, program staff, operations lead…"></textarea>
+        </div>
+        <div class="field">
+          <label for="ra-timing">Start window</label>
+          <select id="ra-timing" name="discovery_timing">
+            <option value="">Select…</option>
+            <option>As soon as possible</option>
+            <option>Within 30 days</option>
+            <option>Within 90 days</option>
+            <option>This year</option>
+            <option>Exploring only</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ra-budget">Budget position</label>
+          <select id="ra-budget" name="budget_position">
+            <option value="">Select…</option>
+            <option>Budget approved</option>
+            <option>Budget being identified</option>
+            <option>Sponsor or grant needed</option>
+            <option>Need scope before budgeting</option>
+            <option>Not sure</option>
+          </select>
+        </div>
+        <div class="disclaimer">Governed intake: your submission creates one opportunity record, linked to the requested cohort, for human review. It is not an enrollment, a purchase, or a commitment — payment terms are confirmed separately.</div>
+        <button class="btn" type="submit">Submit application</button>
+        <p class="form-status" role="status"></p>
+      </form>
+    </div>
+    <p class="note mt">Not the right path? <a href="/cohorts/">See all cohort options</a> or <a href="/readiness/">back to AI Readiness</a>.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+        <p class="note" style="margin-top:14px;color:#adbbb5">The workflow between what an organization senses and what it does.</p>
+      </div>
+      <div>
+        <h4>Paths</h4>
+        <a href="/registry/">Registry</a>
+        <a href="/trust-audit/">Trust Audit</a>
+        <a href="/business-systems/">Business Systems</a>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <a href="/academy/">Academy</a>
+        <a href="/academy/apply/">Academy enrollment</a>
+        <a href="/readiness/">AI Readiness</a>
+        <a href="/cohorts/">Cohorts</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="mailto:TabronMerryhill@gmail.com">TabronMerryhill@gmail.com</a>
+        <a href="tel:+18164469393">(816) 446-9393</a>
+        <a href="https://tabronmerryhill.com">Tabron Merryhill Systems</a>
+      </div>
+    </div>
+    <div class="fine">
+      <span>© 2026 Readable · Tabron Merryhill Systems Division, Columbia, MO</span>
+      <span>AI access alone does not create capacity.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
