@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout — Readiness Assessment | Readable</title>
+<meta name="description" content="Checkout for the $150 Readiness Assessment. Secure payment, then your Read/co-pilot interview begins immediately.">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+    <nav class="site-nav">
+      <a href="/registry/">Registry</a>
+      <a href="/trust-audit/">Trust Audit</a>
+      <a href="/business-systems/">Business Systems</a>
+      <a href="/academy/">Academy</a>
+      <a href="/readiness/">AI Readiness</a>
+      <a href="/cohorts/">Cohorts</a>
+      <a href="/field-network/">Field Network</a>
+      <a class="cta" href="/trust-audit/">Apply</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="kicker">Checkout · Readiness Assessment</p>
+    <h1>$150. Seven minutes. Your verdict tonight.</h1>
+    <p class="lead">Payment is processed securely. The moment it clears, your Read&thinsp;/&thinsp;co-pilot interview begins — and your measured report is instant.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="grid cols-2 mt">
+      <div class="card">
+        <h3>What happens next</h3>
+        <ol class="num-list">
+          <li><strong>Pay $150</strong> securely.</li>
+          <li><strong>Answer</strong> the guided interview — about seven minutes, one workflow.</li>
+          <li><strong>Receive</strong> your measured report instantly: verdict, scored dimensions, recommended intervention, 90-day measure.</li>
+        </ol>
+        <p class="note">No sales call. No waiting on a human. The rubric does the judging.</p>
+      </div>
+      <div class="card" id="pay-card">
+        <p class="kicker">Secure checkout</p>
+        <h3>Readiness Assessment — $150</h3>
+        <p>One workflow · instant measured report · rubric v1.0</p>
+        <div id="pay-live" hidden>
+          <p><a class="btn" id="pay-btn" href="#">Pay $150 securely</a></p>
+          <p class="note">You will return here automatically after payment.</p>
+        </div>
+        <div id="pay-soon">
+          <p><strong>Checkout opens soon.</strong> Leave your email and we will notify you the moment the $150 assessment is live.</p>
+          <form data-form-id="subscribe" data-success="You're on the list. We'll email you the moment checkout opens." novalidate>
+            <p><label>Your name<br><input type="text" name="name" class="rc-text" autocomplete="name"></label></p>
+            <p><label>Work email<br><input type="email" name="email" class="rc-text" required autocomplete="email"></label></p>
+            <p><button class="btn" type="submit">Notify me</button></p>
+            <p class="form-status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+    <p class="mt"><a href="/readiness/assessment/">← Back to the assessment details</a></p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+        <p class="note" style="margin-top:14px;color:#adbbb5">The workflow between what an organization senses and what it does.</p>
+      </div>
+      <div>
+        <h4>Paths</h4>
+        <a href="/registry/">Registry</a>
+        <a href="/trust-audit/">Trust Audit</a>
+        <a href="/business-systems/">Business Systems</a>
+        <a href="/field-network/">Field Network</a>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <a href="/academy/">Academy</a>
+        <a href="/academy/apply/">Academy enrollment</a>
+        <a href="/readiness/">AI Readiness</a>
+        <a href="/readiness/assessment/">Readiness assessment</a>
+        <a href="/cohorts/">Cohorts</a>
+        <a href="/partner-intake/">Partner intake</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="mailto:TabronMerryhill@gmail.com">TabronMerryhill@gmail.com</a>
+        <a href="tel:+18164469393">(816) 446-9393</a>
+        <a href="https://tabronmerryhill.com">Tabron Merryhill Systems</a>
+      </div>
+    </div>
+    <div class="fine">
+      <span>© 2026 Readable · Tabron Merryhill Systems Division, Columbia, MO</span>
+      <span>AI access alone does not create capacity.</span>
+    </div>
+  </div>
+</footer>
+<script src="/assets/forms.js"></script>
+<script>
+/* Stripe Payment Link goes here when Milly wires it.
+   Set the link's success URL to:
+   https://readable.tabronmerryhill.com/readiness/assessment/start/?paid=1 */
+var STRIPE_PAYMENT_LINK = "";
+(function () {
+  if (STRIPE_PAYMENT_LINK) {
+    document.getElementById("pay-live").hidden = false;
+    document.getElementById("pay-soon").hidden = true;
+    var btn = document.getElementById("pay-btn");
+    btn.href = STRIPE_PAYMENT_LINK;
+    btn.onclick = function () { try { sessionStorage.setItem("read_paid", "1"); } catch (e) {} };
+  }
+})();
+</script>
+
+</body>
+</html>
