@@ -97,6 +97,46 @@ const FORMS = {
       contactFrom: "contact_email",
     },
   },
+  "partner-intake": {
+    table: "tblhb98tLxJNbApBs", // Partnership Opportunities
+    map: {
+      organization_name: "fldrFsPCKwN6HGz45", // Buyer Organization
+      organization_type: "fldfG9B8IWEBQ1POR", // Buyer Organization Type
+      contact_email: "fldjyLuOWlKHKu9m2", // Contact Email
+      contact_phone: "fldgrQjhFGPwhHGv8", // Contact Phone
+      buyer_website: "fldu9cfY5ari0X0lO", // Buyer Website
+      city_region: "fldEwmA6DwVCLIMP4", // City / Region
+      workflow_description: "fld0Zds610PqIVYAS", // Priority Workflows
+      affected_users: "fldjtUOarfBbNjJeZ", // Stakeholders to Involve
+      current_evidence: "fldp2NDjP762PZJzO", // Capacity Pressures
+      travel_need: "fld4yc3y8bF9rh0Pl", // Travel Condition
+      consent: "fld3HND1uWKf6p1wA", // Website Consent (checkbox)
+    },
+    statics: {
+      fld9GokGyaso2EXzm: "Identified", // Opportunity Status
+      fldbceSoaarsvIw8Z: "Field Network", // Opportunity Type
+      fldlRNkUDH0r4OpG7: "Website — Partner Intake", // Intake Source
+    },
+    timestamps: ["fldWOyIHYEjy9DCAa"], // Submitted At
+    required: ["organization_name", "contact_name", "contact_email", "workflow_description"],
+    requiredTrue: ["consent"],
+    // Contact name, desired outcome, urgency, confidentiality, and rights have no
+    // dedicated fields: title is composed from org + date, the rest goes to notes.
+    compose: {
+      titleField: "fld0WF9hJ6zWCupx0", // Partnership Opportunity (title)
+      titleFrom: "organization_name",
+      titlePrefix: "Partner Intake",
+      notesField: "fldVvP3mlv2sitdEO", // Human Qualification Notes
+      notes: [
+        { key: "contact_name", label: "Contact" },
+        { key: "contact_email", label: "Email" },
+        { key: "desired_outcome", label: "Desired outcome" },
+        { key: "urgency", label: "Urgency" },
+        { key: "confidentiality_needs", label: "Confidentiality" },
+        { key: "rights_notes", label: "Rights notes" },
+      ],
+    },
+  },
   "subscribe": {
     base: "appHDR9CU6WjHYZdy", // SPIN Operating Control Center (not the Readable base)
     table: "tblQGrrB2GN1rjxi2", // List Subscribers
@@ -129,7 +169,7 @@ function buildFields(def, fields) {
     let v = fields[key];
     if (v === undefined || v === null || v === "") continue;
     // checkbox fields
-    if (key === "cohort_request_consent" || key === "founding_100" || key === "sponsored_seat" || key === "trust_audit_interest") {
+    if (key === "cohort_request_consent" || key === "founding_100" || key === "sponsored_seat" || key === "trust_audit_interest" || key === "consent") {
       out[fieldId] = asBool(v);
     } else if (key === "estimated_participants") {
       const n = parseInt(v, 10);
@@ -145,9 +185,21 @@ function buildFields(def, fields) {
   for (const fieldId of def.timestamps || []) out[fieldId] = now;
   if (def.compose) {
     const name = (fields[def.compose.titleFrom] || "Website inquiry").toString().trim();
-    out[def.compose.titleField] = `${name} — ${now.slice(0, 10)}`;
-    const email = (fields[def.compose.contactFrom] || "").toString().trim();
-    if (email) out[def.compose.contactField] = `Contact: ${email} — awaiting human review.`;
+    const prefix = def.compose.titlePrefix ? def.compose.titlePrefix + " — " : "";
+    out[def.compose.titleField] = `${prefix}${name} — ${now.slice(0, 10)}`;
+    if (def.compose.contactField) {
+      const email = (fields[def.compose.contactFrom] || "").toString().trim();
+      if (email) out[def.compose.contactField] = `Contact: ${email} — awaiting human review.`;
+    }
+    if (def.compose.notesField && Array.isArray(def.compose.notes)) {
+      const lines = def.compose.notes
+        .map((n) => {
+          const v = (fields[n.key] || "").toString().trim();
+          return v ? `${n.label}: ${v}` : "";
+        })
+        .filter(Boolean);
+      if (lines.length) out[def.compose.notesField] = lines.join("\n");
+    }
   }
   return out;
 }
@@ -172,6 +224,9 @@ exports.handler = async (event) => {
     if (v === undefined || v === null || String(v).trim() === "") {
       return bad(400, `Missing required field: ${key}`);
     }
+  }
+  for (const key of def.requiredTrue || []) {
+    if (!asBool(fields[key])) return bad(400, `Required confirmation missing: ${key}`);
   }
   if (fields.contact_email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(fields.contact_email))) {
     return bad(400, "Invalid email address");
