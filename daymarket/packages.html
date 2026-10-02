@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DayMarket — Workplace packages</title>
 <meta name="description" content="DayMarket workplace packages: occasion-sized catering priced by attendance, not by the dozen. Ordered a day ahead, delivered on set days.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/dm.css">
 </head>
 <body>
@@ -16,6 +19,13 @@
     <p class="kicker">For workplaces</p>
     <h2>Packages, <span class="accent">not dozens.</span></h2>
     <p class="sub" style="margin:0 auto">Priced by attendance, not by the dozen. Ordered a day ahead, delivered on set calendar days.</p>
+    <div class="occ-row" style="justify-content:center">
+      <a href="#occ-breakfast"><span class="occ occ-breakfast">Breakfast</span></a>
+      <a href="#occ-team"><span class="occ occ-team">Team</span></a>
+      <a href="#occ-appreciation"><span class="occ occ-appreciation">Appreciation</span></a>
+      <a href="#occ-celebration"><span class="occ occ-celebration">Celebration</span></a>
+      <a href="#occ-recurring"><span class="occ occ-recurring">Recurring</span></a>
+    </div>
   </div>
 </section>
 
@@ -23,37 +33,37 @@
   <div class="wrap">
     <div class="grid cols-2">
       <div class="pkg-card">
-        <h3>Meeting Box</h3>
+        <span id="occ-breakfast"></span><p class="occ occ-breakfast">Breakfast</p><h3>Meeting Box</h3>
         <p class="from">from $99</p>
         <p>Donuts sized to expected attendance. The baseline — every meeting, every week.</p>
       </div>
       <div class="pkg-card">
-        <h3>Morning Meeting</h3>
+        <p class="occ occ-breakfast">Breakfast</p><h3>Morning Meeting</h3>
         <p class="from">from $129</p>
         <p>Donuts plus brewed coffee. The default way to start a workday meeting.</p>
       </div>
       <div class="pkg-card">
-        <h3>Huddle Box</h3>
+        <span id="occ-team"></span><p class="occ occ-team">Team</p><h3>Huddle Box</h3>
         <p class="from">from $89</p>
         <p>5–10 people: one premium branded box blending standard favorites with high-end savory items, napkins and branded flavor labels.</p>
       </div>
       <div class="pkg-card">
-        <h3>Executive Boardroom</h3>
+        <p class="occ occ-team">Team</p><h3>Executive Boardroom</h3>
         <p class="from">from $199</p>
         <p>12–20 people: sweet, savory, and premium pastries arranged symmetrically, plus an integrated premium coffee and beverage station.</p>
       </div>
       <div class="pkg-card">
-        <h3>Employee Appreciation</h3>
+        <span id="occ-appreciation"></span><p class="occ occ-appreciation">Appreciation</p><h3>Employee Appreciation</h3>
         <p class="from">from $389</p>
         <p>25–40 people: premium assortment, beverages, individual packaging. White-glove breakroom setup with tiered display stands — collected after, or kept at a premium.</p>
       </div>
       <div class="pkg-card">
-        <h3>Birthday Box</h3>
+        <span id="occ-celebration"></span><p class="occ occ-celebration">Celebration</p><h3>Birthday Box</h3>
         <p class="from">from $59</p>
         <p>Donuts with balloons. The easiest win on the menu.</p>
       </div>
       <div class="pkg-card">
-        <h3>Monthly Workplace Plan</h3>
+        <span id="occ-recurring"></span><p class="occ occ-recurring">Recurring</p><h3>Monthly Workplace Plan</h3>
         <p class="from">custom</p>
         <p>Scheduled recurring delivery. The standing order that makes revenue predictable.</p>
       </div>
