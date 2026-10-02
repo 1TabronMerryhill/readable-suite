@@ -171,6 +171,24 @@ const FORMS = {
     timestamps: ["fldVP7k4OWKzxeUYx"], // Consent Date
     required: ["email"],
   },
+  "daymarket": {
+    base: "appHDR9CU6WjHYZdy", // SPIN base — List Subscribers
+    table: "tblQGrrB2GN1rjxi2",
+    map: {
+      name: "fldRp6gAAxtaXE0IK", // Name
+      email: "fldWWhc7Io5txRY0N", // Email
+      interest: "fldYeGmLeFIEL7QZp", // Notes — frontend sends "DayMarket — <interest>"
+    },
+    statics: {
+      // Source has no "DayMarket" option and the token cannot create select
+      // options; attribution lives in Notes. If "DayMarket" is added as a
+      // Source option in the Airtable UI, switch this static to "DayMarket".
+      fldGHMLNQJVSeRJIy: "Website", // Source
+      fldoP4G0fD1a9M6CF: "Active", // Status
+    },
+    timestamps: ["fldVP7k4OWKzxeUYx"], // Consent Date
+    required: ["email"],
+  },
 };
 
 function bad(status, message) {
