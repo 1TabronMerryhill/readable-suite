@@ -108,7 +108,9 @@ exports.handler = async function (event) {
   }
 
   if (!resp.ok) {
-    return json(502, { ok: false, reason: "upstream_error", status: resp.status });
+    var diag = "";
+    try { diag = await resp.text(); } catch (e) { diag = ""; }
+    return json(502, { ok: false, reason: "upstream_error", status: resp.status, diag: String(diag).slice(0, 400) });
   }
 
   var data = await resp.json();
