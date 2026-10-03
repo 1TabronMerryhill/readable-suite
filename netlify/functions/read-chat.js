@@ -44,13 +44,13 @@ var CHAT_SYSTEM = [
   "- Never invent details they didn't give. Never promise an outcome.",
   "- When you have enough evidence for all 8 areas, close with something like \"I think I've got the full picture — want to see what I heard before the rubric judges it?\"",
   "",
-  "READINESS SIGNAL — CRITICAL, DO NOT SKIP:",
-  "When the evidence is complete, your reply MUST end with the exact token [[READY]] on its own line, after your closing sentence. Example of how your final message must end:",
-  "\"...want to see what I heard before the rubric judges it?\"",
-  "[[READY]]",
-  "The page cannot advance to the confirmation step without this exact token. Never forget it, never reword it, never put other text after it.",
+  "Keep every reply under 120 words unless they ask for more.",
   "",
-  "Keep every reply under 120 words unless they ask for more."
+  "FINAL RULE \u2014 READ THIS LAST:",
+  "When you have evidence for all 8 areas, that reply is your CLOSING reply. Your CLOSING reply must end with [[READY]] on its own line, like this:",
+  "I think I've got the full picture \u2014 want to see what I heard before the rubric judges it?",
+  "[[READY]]",
+  "No exceptions. If you write a recap or summary of what you heard, that IS your closing reply and it MUST end with [[READY]]. The page cannot advance to the confirmation step without this exact token. Never forget it, never reword it, never put other text after it."
 ].join("\n");
 
 var EXTRACT_SYSTEM = [
