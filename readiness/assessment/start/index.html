@@ -326,11 +326,13 @@ body.rc-still .rc-blob{animation:none}
       }
       var dtranscript = (window.ReadCopilot && window.ReadCopilot.lastTranscript) || [];
       if (dtranscript.length) {
+        var repEl = document.getElementById("rc-report");
         ddb.chats.unshift({
           id: "chat" + Date.now().toString(36),
           date: new Date().toISOString().slice(0, 10),
           reportId: out.reportId,
           verdict: out.verdict.title,
+          reportHTML: repEl ? repEl.innerHTML.slice(0, 120000) : "",
           transcript: dtranscript.map(function (m) { return { role: m.role, content: m.content }; })
         });
         ddb.chats = ddb.chats.slice(0, 25);
