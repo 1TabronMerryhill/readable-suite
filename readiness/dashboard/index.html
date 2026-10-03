@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your dashboard — Read | Readable</title>
+<meta name="description" content="Your Read dashboard: profile chat, past conversations, goals, and where the load sits.">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.dash{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:34px 20px 20px;display:grid;grid-template-columns:320px minmax(0,1fr);gap:20px;align-items:start}
+.dash-side{background:#fff;border:1px solid #e7e2d5;border-radius:18px;overflow:hidden;box-shadow:0 18px 44px -28px rgba(13,31,28,.3)}
+.dash-tabs{display:flex;border-bottom:1px solid #e7e2d5}
+.dash-tab{flex:1;background:transparent;border:0;padding:14px 6px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer;color:#6b7278;border-bottom:3px solid transparent}
+.dash-tab[aria-selected="true"]{color:#0d1f1c;border-bottom-color:#2f6b4f}
+.dash-pane{padding:16px;min-height:420px;max-height:62vh;overflow-y:auto}
+.dash-pane h3{margin:0 0 4px;font-size:1.05rem}
+.dash-pane .rc-note{margin:0 0 14px}
+.dash-chat-item{border:1px solid #e7e2d5;border-radius:12px;padding:12px;margin:0 0 10px;cursor:pointer;background:#fff}
+.dash-chat-item:hover{border-color:#2f6b4f}
+.dash-chat-item .t{font-weight:700;font-size:.95rem}
+.dash-chat-item .m{font-size:.82rem;opacity:.7}
+.dash-chat-item details{margin-top:8px;font-size:.88rem}
+.dash-chat-item summary{cursor:pointer;color:#2f6b4f;font-weight:600;font-size:.85rem}
+.dash-transcript{white-space:pre-wrap;font-size:.85rem;line-height:1.5;max-height:220px;overflow-y:auto;margin-top:8px;padding:10px;background:#f7f6f1;border-radius:8px}
+.dash-goal{display:flex;gap:10px;align-items:flex-start;border:1px solid #e7e2d5;border-radius:12px;padding:12px;margin:0 0 10px;background:#fff}
+.dash-goal.done{opacity:.6}
+.dash-goal.done .gt{text-decoration:line-through}
+.dash-goal .gt{flex:1;font-size:.95rem}
+.dash-goal .gs{font-size:.78rem;opacity:.65;display:block;margin-top:4px}
+.dash-goal button{border:0;background:transparent;cursor:pointer;font-size:1rem;opacity:.6}
+.dash-goal button:hover{opacity:1}
+.dash-addrow{display:flex;gap:8px;margin-top:12px}
+.dash-addrow input{flex:1;border:2px solid #d9e8e1;border-radius:10px;padding:10px 12px;font:inherit;font-size:.92rem}
+.dash-load{border:1px solid #e7e2d5;border-radius:12px;padding:14px;margin:0 0 12px;background:#fff}
+.dash-load .lt{font-weight:700;font-size:.98rem;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.dash-sev{font-size:.75rem;font-weight:700;background:#eef5f0;border:1px solid #d9e8e1;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.dash-load p{font-size:.9rem;margin:8px 0}
+.dash-load .ev{font-style:italic;opacity:.75;font-size:.85rem}
+.dash-load .row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.dash-btn-sm{display:inline-block;border:2px solid #2f6b4f;color:#2f6b4f;background:transparent;border-radius:10px;padding:8px 14px;font-size:.85rem;font-weight:700;cursor:pointer;text-decoration:none}
+.dash-btn-sm.solid{background:#2f6b4f;color:#fff}
+.dash-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.dash-profile{background:#fff;border:1px solid #e7e2d5;border-radius:18px;padding:20px 22px;box-shadow:0 18px 44px -28px rgba(13,31,28,.3)}
+.dash-profile h2{margin:0 0 4px;font-size:1.4rem}
+.dash-profile .who{font-size:.9rem;opacity:.7;margin:0 0 10px}
+.dash-profile .sum{font-size:.98rem;line-height:1.55;margin:0 0 10px}
+.dash-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.dash-chip{background:#eef5f0;border:1px solid #d9e8e1;border-radius:999px;padding:5px 12px;font-size:.82rem}
+.dash-chat{background:#fff;border:1px solid #e7e2d5;border-radius:18px;box-shadow:0 18px 44px -28px rgba(13,31,28,.3);display:flex;flex-direction:column;overflow:hidden}
+.dash-chat-head{padding:16px 20px;border-bottom:1px solid #e7e2d5}
+.dash-chat-head h3{margin:0;font-size:1.05rem}
+.dash-chat-head p{margin:4px 0 0;font-size:.85rem;opacity:.7}
+.dash-log{display:flex;flex-direction:column;gap:10px;padding:18px;min-height:300px;max-height:52vh;overflow-y:auto}
+.dash-foot{padding:14px 16px;border-top:1px solid #e7e2d5}
+.dash-inputrow{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid rgba(13,31,28,.12);border-radius:999px;padding:8px 8px 8px 20px;box-shadow:0 14px 34px -18px rgba(13,31,28,.3)}
+.dash-inputrow input{flex:1;border:0;outline:none;background:transparent;font:inherit;font-size:1rem;min-width:0}
+.dash-send{width:50px;height:50px;border-radius:50%;border:0;background:#2f6b4f;color:#fff;font-size:1.4rem;cursor:pointer;flex:none}
+.dash-update{margin:0 16px 16px}
+.dash-gate{text-align:center;padding:80px 20px;position:relative;z-index:1}
+.dash-gate h1{font-size:clamp(34px,6vw,54px)}
+.dash-members{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:30px 20px 60px}
+.dash-members h2{text-align:center;margin:0 0 6px}
+.dash-members .sub{text-align:center;opacity:.75;max-width:600px;margin:0 auto 24px}
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tier{background:#fff;border:1px solid #e7e2d5;border-radius:18px;padding:24px;box-shadow:0 18px 44px -28px rgba(13,31,28,.3)}
+.tier.hl{border:2px solid #2f6b4f}
+.tier h3{margin:0 0 4px}
+.tier .price{font-family:Georgia,serif;font-size:2rem;margin:8px 0 2px}
+.tier .per{font-size:.85rem;opacity:.65;margin:0 0 12px}
+.tier ul{margin:0 0 18px;padding-left:18px;font-size:.9rem;display:grid;gap:6px}
+@media(max-width:900px){.dash{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.dash-msg{animation:none!important}}
+.dash-msg{animation:rcmsgin .45s cubic-bezier(.2,.7,.3,1) both}
+@keyframes rcmsgin{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+    <nav class="site-nav">
+      <a href="/registry/">Registry</a>
+      <a href="/trust-audit/">Trust Audit</a>
+      <a href="/business-systems/">Business Systems</a>
+      <a href="/academy/">Academy</a>
+      <a href="/readiness/">AI Readiness</a>
+      <a href="/cohorts/">Cohorts</a>
+      <a href="/field-network/">Field Network</a>
+      <a class="cta" href="/trust-audit/">Apply</a>
+    </nav>
+  </div>
+</header>
+
+<div class="rc-ambient" aria-hidden="true"><i class="rc-blob b1"></i><i class="rc-blob b2"></i><i class="rc-blob b3"></i></div>
+
+<div id="dash-gate" class="dash-gate" hidden>
+  <p class="kicker">Read · your dashboard</p>
+  <h1>Your dashboard unlocks<br>with your first assessment.</h1>
+  <p class="lead" style="max-width:560px;margin:0 auto 24px">Talk through one workflow with Read. Your profile, chats, goals, and load map live here afterward.</p>
+  <p><a class="btn" href="/readiness/assessment/start/">Start the conversation — free</a></p>
+</div>
+
+<div id="dash-app" hidden>
+  <div class="dash">
+    <aside class="dash-side" aria-label="Dashboard panels">
+      <div class="dash-tabs" role="tablist">
+        <button class="dash-tab" role="tab" aria-selected="true" data-tab="chats">Chats</button>
+        <button class="dash-tab" role="tab" aria-selected="false" data-tab="goals">Goals</button>
+        <button class="dash-tab" role="tab" aria-selected="false" data-tab="load">Load</button>
+      </div>
+      <div class="dash-pane" id="pane-chats" role="tabpanel">
+        <h3>Past conversations</h3>
+        <p class="rc-note">Every assessment chat, kept on this device.</p>
+        <div id="dash-chatlist"></div>
+      </div>
+      <div class="dash-pane" id="pane-goals" role="tabpanel" hidden>
+        <h3>Goals</h3>
+        <p class="rc-note">Born from your conversations. Goals become workflows.</p>
+        <div id="dash-goallist"></div>
+        <div class="dash-addrow">
+          <input id="dash-goalinput" type="text" placeholder="Add a goal…" aria-label="Add a goal">
+          <button class="dash-btn-sm solid" id="dash-goaladd" type="button">Add</button>
+        </div>
+      </div>
+      <div class="dash-pane" id="pane-load" role="tabpanel" hidden>
+        <h3>Load</h3>
+        <p class="rc-note">Where the weight sits — pain points and bottlenecks Read finds across your conversations.</p>
+        <p><button class="dash-btn-sm solid" id="dash-loadbtn" type="button">Find my load</button></p>
+        <div id="dash-loadlist" style="margin-top:12px"></div>
+      </div>
+    </aside>
+    <main class="dash-main">
+      <div class="dash-profile" id="dash-profile"></div>
+      <div class="dash-chat">
+        <div class="dash-chat-head">
+          <h3>Talk to Read</h3>
+          <p>Your profile chat — tell Read how the operation is going and it updates what it knows about you.</p>
+        </div>
+        <div class="dash-log" id="dash-log" aria-live="polite"></div>
+        <div class="dash-foot">
+          <form id="dash-form" class="dash-inputrow" autocomplete="off">
+            <input id="dash-input" type="text" placeholder="Update Read on you…" aria-label="Message to Read">
+            <button class="dash-send" type="submit" aria-label="Send">&rarr;</button>
+          </form>
+        </div>
+        <p class="dash-update"><button class="dash-btn-sm" id="dash-saveprofile" type="button">Update my profile from this chat</button></p>
+      </div>
+    </main>
+  </div>
+
+  <section class="dash-members">
+    <p class="kicker" style="text-align:center">Membership</p>
+    <h2>Buy the pairing, not the generations.</h2>
+    <p class="sub">You&rsquo;re not buying compute. You&rsquo;re buying judgment on tap — the model carries the load, you hold the judgment, every month.</p>
+    <div class="tier-grid">
+      <div class="tier">
+        <h3>Single</h3>
+        <p class="price">$150</p>
+        <p class="per">per judgment</p>
+        <ul><li>One workflow, full assessment</li><li>Instant scored report</li><li>Dashboard access</li></ul>
+        <p><a class="dash-btn-sm solid" href="/readiness/assessment/start/">Start one</a></p>
+      </div>
+      <div class="tier hl">
+        <h3>Cadence</h3>
+        <p class="price">$450</p>
+        <p class="per">per month · 4 judgments</p>
+        <ul><li>Four assessments a month</li><li>Roll over one month</li><li>Load map keeps hunting</li></ul>
+        <p><a class="dash-btn-sm solid" href="https://buy.stripe.com/dRmcN4gL20VB48j41Y4sE0i">Join Cadence</a></p>
+      </div>
+      <div class="tier">
+        <h3>Unlimited</h3>
+        <p class="price">$1,500</p>
+        <p class="per">per month · unlimited judgments</p>
+        <ul><li>Unlimited assessments, one org</li><li>Run the whole company through Read</li><li>First in line for new pairings</li></ul>
+        <p><a class="dash-btn-sm solid" href="https://buy.stripe.com/dRm5kCdyQ8o35cn41Y4sE0j">Go Unlimited</a></p>
+      </div>
+    </div>
+    <p class="rc-note" style="text-align:center;margin-top:16px">Memberships activate with your account at launch — buy now and we&rsquo;ll link it the moment accounts open.</p>
+  </section>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+        <p class="note" style="margin-top:14px;color:#adbbb5">The workflow between what an organization senses and what it does.</p>
+      </div>
+      <div>
+        <h4>Paths</h4>
+        <a href="/registry/">Registry</a>
+        <a href="/trust-audit/">Trust Audit</a>
+        <a href="/business-systems/">Business Systems</a>
+        <a href="/field-network/">Field Network</a>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <a href="/academy/">Academy</a>
+        <a href="/readiness/">AI Readiness</a>
+        <a href="/readiness/assessment/">Readiness assessment</a>
+        <a href="/readiness/dashboard/">Your dashboard</a>
+        <a href="/cohorts/">Cohorts</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="mailto:TabronMerryhill@gmail.com">TabronMerryhill@gmail.com</a>
+        <a href="tel:+18164469393">(816) 446-9393</a>
+      </div>
+    </div>
+    <div class="fine">
+      <span>© 2026 Readable · Tabron Merryhill Systems Division, Columbia, MO</span>
+      <span>Superintelligence is a system that bears the load.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var KEY = "read_dash_v1";
+  function load() {
+    try { var d = JSON.parse(localStorage.getItem(KEY) || "null"); if (d && d.profile) return d; } catch (e) {}
+    return { profile: {}, chats: [], goals: [] };
+  }
+  function save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
+  var db = load();
+
+  function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function uid() { return "id" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36); }
+
+  /* Member return from Stripe */
+  var memberTier = /[?&]member=(cadence|unlimited)/.exec(location.search);
+  if (memberTier && db.profile && db.profile.email) {
+    db.profile.member_tier = memberTier[1];
+    db.profile.member_since = new Date().toISOString().slice(0, 10);
+    save(db);
+  }
+
+  /* Gate */
+  if (!db.profile || !db.profile.email) {
+    document.getElementById("dash-gate").hidden = false;
+    return;
+  }
+  document.getElementById("dash-app").hidden = false;
+  if (memberTier) {
+    var note = document.createElement("p");
+    note.className = "rc-note";
+    note.style.cssText = "text-align:center;position:relative;z-index:1;margin:18px 0 0";
+    note.textContent = "Welcome to " + memberTier[1] + " — your membership is recorded and will link to your account at launch.";
+    document.getElementById("dash-app").prepend(note);
+  }
+
+  /* Tabs */
+  var tabs = document.querySelectorAll(".dash-tab");
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      tabs.forEach(function (x) { x.setAttribute("aria-selected", x === t ? "true" : "false"); });
+      ["chats", "goals", "load"].forEach(function (n) {
+        document.getElementById("pane-" + n).hidden = (n !== t.getAttribute("data-tab"));
+      });
+    });
+  });
+
+  /* Profile card */
+  function renderProfile() {
+    var p = db.profile, el = document.getElementById("dash-profile");
+    var chips = (p.workflows || []).map(function (w) { return '<span class="dash-chip">' + esc(w) + "</span>"; }).join("");
+    el.innerHTML =
+      '<p class="kicker">Read · your profile</p>' +
+      "<h2>" + esc(p.name || "Your operation") + "</h2>" +
+      '<p class="who">' + esc([p.role, p.org].filter(Boolean).join(" · ")) + "</p>" +
+      (p.summary ? '<p class="sum">' + esc(p.summary) + "</p>" : '<p class="sum" style="opacity:.6">Talk to Read below — it learns how you operate and keeps this current.</p>') +
+      (chips ? '<div class="dash-chips">' + chips + "</div>" : "") +
+      (p.load_notes ? '<p class="rc-note" style="margin:6px 0 0">Where the weight sits: ' + esc(p.load_notes) + "</p>" : "");
+  }
+
+  /* Chats */
+  function renderChats() {
+    var box = document.getElementById("dash-chatlist");
+    if (!db.chats.length) { box.innerHTML = '<p class="rc-note">No conversations yet — they land here after each assessment.</p>'; return; }
+    box.innerHTML = db.chats.map(function (c) {
+      var t = (c.transcript || []).map(function (m) {
+        return (m.role === "user" ? "YOU" : "READ") + ": " + m.content;
+      }).join("\n\n");
+      return '<div class="dash-chat-item"><div class="t">' + esc(c.verdict || "Assessment") + '</div>' +
+        '<div class="m">' + esc(c.date || "") + (c.reportId ? " · " + esc(c.reportId) : "") + "</div>" +
+        '<details><summary>Read transcript</summary><div class="dash-transcript">' + esc(t) + "</div></details></div>";
+    }).join("");
+  }
+
+  /* Goals */
+  function renderGoals() {
+    var box = document.getElementById("dash-goallist");
+    if (!db.goals.length) { box.innerHTML = '<p class="rc-note">No goals yet. Run Load to find them, or add your own.</p>'; return; }
+    box.innerHTML = "";
+    db.goals.forEach(function (g) {
+      var d = document.createElement("div");
+      d.className = "dash-goal" + (g.done ? " done" : "");
+      var cb = document.createElement("input");
+      cb.type = "checkbox"; cb.checked = !!g.done; cb.setAttribute("aria-label", "Mark goal done");
+      cb.onchange = function () { g.done = cb.checked; save(db); renderGoals(); };
+      var mid = document.createElement("div");
+      mid.className = "gt"; mid.textContent = g.title;
+      if (g.source) { var s = document.createElement("span"); s.className = "gs"; s.textContent = "from: " + g.source; mid.appendChild(s); }
+      var del = document.createElement("button");
+      del.textContent = "×"; del.setAttribute("aria-label", "Delete goal");
+      del.onclick = function () { db.goals = db.goals.filter(function (x) { return x.id !== g.id; }); save(db); renderGoals(); };
+      d.appendChild(cb); d.appendChild(mid); d.appendChild(del);
+      box.appendChild(d);
+    });
+  }
+  document.getElementById("dash-goaladd").addEventListener("click", function () {
+    var inp = document.getElementById("dash-goalinput");
+    var v = inp.value.trim();
+    if (!v) return;
+    db.goals.unshift({ id: uid(), title: v, source: "", done: false, created: new Date().toISOString().slice(0, 10) });
+    inp.value = "";
+    save(db); renderGoals();
+  });
+
+  /* Load */
+  document.getElementById("dash-loadbtn").addEventListener("click", function () {
+    var btn = this, box = document.getElementById("dash-loadlist");
+    if (!db.chats.length) { box.innerHTML = '<p class="rc-note">No conversations to read yet — finish an assessment first.</p>'; return; }
+    btn.disabled = true; btn.textContent = "Reading your conversations…";
+    var payload = {
+      profile: { summary: db.profile.summary || "" },
+      chats: db.chats.slice(0, 10).map(function (c) {
+        return {
+          name: (c.date || "") + " — " + (c.verdict || "assessment"),
+          transcript: (c.transcript || []).map(function (m) {
+            return (m.role === "user" ? "BUYER: " : "READ: ") + m.content;
+          }).join("\n\n")
+        };
+      })
+    };
+    fetch("/.netlify/functions/read-load", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      btn.disabled = false; btn.textContent = "Find my load";
+      if (!d || !d.ok || !d.loads || !d.loads.length) {
+        box.innerHTML = '<p class="rc-note">Nothing heavy enough to flag — talk to Read about what\u2019s weighing on you.</p>';
+        return;
+      }
+      box.innerHTML = "";
+      d.loads.forEach(function (l) {
+        var card = document.createElement("div");
+        card.className = "dash-load";
+        var head = document.createElement("div");
+        head.className = "lt";
+        var title = document.createElement("span"); title.textContent = l.title || "Load item";
+        var sev = document.createElement("span"); sev.className = "dash-sev"; sev.textContent = "load " + (l.severity || "?") + "/5";
+        head.appendChild(title); head.appendChild(sev);
+        card.appendChild(head);
+        if (l.pain) { var p = document.createElement("p"); p.innerHTML = "<strong>Pain:</strong> " + esc(l.pain); card.appendChild(p); }
+        if (l.bottleneck) { var b = document.createElement("p"); b.innerHTML = "<strong>Bottleneck:</strong> " + esc(l.bottleneck); card.appendChild(b); }
+        if (l.evidence) { var e = document.createElement("p"); e.className = "ev"; e.textContent = "\u201c" + l.evidence + "\u201d"; card.appendChild(e); }
+        var row = document.createElement("div"); row.className = "row";
+        var assess = document.createElement("a");
+        assess.className = "dash-btn-sm solid"; assess.href = "/readiness/assessment/start/";
+        assess.textContent = "Assess this workflow — $150";
+        var goal = document.createElement("button");
+        goal.className = "dash-btn-sm"; goal.type = "button"; goal.textContent = "Make it a goal";
+        goal.onclick = function () {
+          db.goals.unshift({ id: uid(), title: l.suggested_workflow || l.title, source: "Load · " + (l.title || ""), done: false, created: new Date().toISOString().slice(0, 10) });
+          save(db); renderGoals(); goal.textContent = "Added ✓"; goal.disabled = true;
+        };
+        row.appendChild(assess); row.appendChild(goal);
+        card.appendChild(row);
+        box.appendChild(card);
+      });
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = "Find my load";
+      box.innerHTML = '<p class="rc-note">Couldn\u2019t read the load just now — try again in a moment.</p>';
+    });
+  });
+
+  /* Profile chat */
+  var log = document.getElementById("dash-log");
+  var form = document.getElementById("dash-form");
+  var input = document.getElementById("dash-input");
+  var pmessages = [];
+  var busy = false;
+  function bubble(role, text) {
+    var d = document.createElement("div");
+    d.className = "dash-msg rc-msg " + role;
+    d.style.maxWidth = "88%";
+    d.textContent = text;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+    return d;
+  }
+  function send() {
+    var text = input.value.trim();
+    if (!text || busy) return;
+    input.value = "";
+    pmessages.push({ role: "user", content: text });
+    bubble("user", text);
+    busy = true;
+    var t = bubble("read", "…");
+    fetch("/.netlify/functions/read-profile", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: "chat", messages: pmessages, profile: { summary: db.profile.summary || "" } })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      busy = false;
+      if (t.parentNode) t.parentNode.removeChild(t);
+      if (!d || !d.ok || !d.text) throw new Error("bad");
+      pmessages.push({ role: "assistant", content: d.text });
+      bubble("read", d.text);
+    }).catch(function () {
+      busy = false;
+      if (t.parentNode) t.parentNode.removeChild(t);
+      bubble("read", "Lost that one — say it again?");
+    });
+  }
+  form.addEventListener("submit", function (e) { e.preventDefault(); send(); });
+
+  document.getElementById("dash-saveprofile").addEventListener("click", function () {
+    var btn = this;
+    if (!pmessages.length) return;
+    btn.disabled = true; btn.textContent = "Updating…";
+    fetch("/.netlify/functions/read-profile", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: "extract", messages: pmessages })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      btn.disabled = false; btn.textContent = "Update my profile from this chat";
+      if (!d || !d.ok || !d.profile) return;
+      var p = d.profile, prof = db.profile;
+      ["name", "org", "role", "load_notes", "summary"].forEach(function (k) {
+        if (p[k]) prof[k] = p[k];
+      });
+      if (Array.isArray(p.workflows) && p.workflows.length) {
+        var seen = {};
+        (prof.workflows || []).concat(p.workflows).forEach(function (w) {
+          w = String(w).trim();
+          if (w && !seen[w.toLowerCase()]) { seen[w.toLowerCase()] = 1; }
+        });
+        prof.workflows = Object.keys(seen);
+      }
+      save(db); renderProfile();
+      bubble("read", "Profile updated — I\u2019ve got it.");
+      pmessages = [];
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = "Update my profile from this chat";
+    });
+  });
+
+  /* Greeting */
+  renderProfile(); renderChats(); renderGoals();
+  var first = (db.profile.name || "").split(" ")[0];
+  bubble("read", first ? "Hey " + first + " — what\u2019s the latest in the operation?" : "Hey — what\u2019s the latest in the operation?");
+})();
+</script>
+</body>
+</html>
