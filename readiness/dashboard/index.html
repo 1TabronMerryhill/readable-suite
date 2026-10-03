@@ -127,9 +127,13 @@
 
 <div id="dash-gate" class="dash-gate" hidden>
   <p class="kicker">Read · your dashboard</p>
-  <h1>Your dashboard unlocks<br>with your first assessment.</h1>
-  <p class="lead" style="max-width:560px;margin:0 auto 24px">Talk through one workflow with Read. Your profile, chats, goals, and load map live here afterward.</p>
-  <p><a class="btn" href="/readiness/assessment/start/">Start the conversation — free</a></p>
+  <h1>Sign in to your dashboard.</h1>
+  <p class="lead" style="max-width:560px;margin:0 auto 24px">Enter your email and we&rsquo;ll send you a sign-in link. Your profile, chats, goals, and load map follow you across devices.</p>
+  <form id="dash-signin-form" class="dash-addrow" style="max-width:440px;margin:0 auto" autocomplete="off">
+    <input id="dash-signin-email" type="email" required placeholder="you@company.com" aria-label="Email address">
+    <button class="dash-btn-sm solid" type="submit">Send link</button>
+  </form>
+  <p class="rc-note" id="dash-signin-note" style="margin-top:12px"></p>
 </div>
 
 <div id="dash-app" hidden>
@@ -263,40 +267,164 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
   var KEY = "read_dash_v1";
-  function load() {
+  function loadLocal() {
     try { var d = JSON.parse(localStorage.getItem(KEY) || "null"); if (d && d.profile) return d; } catch (e) {}
     return { profile: {}, chats: [], goals: [] };
   }
-  function save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
-  var db = load();
+  function clearLocal() { try { localStorage.setItem(KEY, JSON.stringify({ profile: {}, chats: [], goals: [] })); } catch (e) {} }
 
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   function uid() { return "id" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36); }
 
-  /* Member return from Stripe */
-  var memberTier = /[?&]member=(cadence|unlimited)/.exec(location.search);
-  if (memberTier && db.profile && db.profile.email) {
-    db.profile.member_tier = memberTier[1];
-    db.profile.member_since = new Date().toISOString().slice(0, 10);
-    save(db);
+  var supa = null, currentUser = null;
+  var db = { profile: {}, chats: [], goals: [] };
+
+  function mapProfile(r) {
+    return { email: r.email || "", name: r.name || "", org: r.org || "", role: r.role || "",
+      summary: r.summary || "", workflows: r.workflows || [], load_notes: r.load_notes || "",
+      member_tier: r.member_tier || "" };
+  }
+  function mapChat(r) {
+    return { id: r.id, date: r.date || "", reportId: r.report_id || "", verdict: r.verdict || "",
+      reportHTML: r.report_html || "", transcript: r.transcript || [] };
+  }
+  function mapGoal(r) {
+    return { id: r.id, title: r.title || "", source: r.source || "", done: !!r.done,
+      created: String(r.created_at || "").slice(0, 10) };
   }
 
-  /* Gate */
-  if (!db.profile || !db.profile.email) {
+  /* Move any device-local assessment data into the signed-in account, once each. */
+  async function drainLocal(user) {
+    var local = loadLocal();
+    try {
+      var hp = await supa.from("profiles").select("id").eq("id", user.id).maybeSingle();
+      if (!hp.data && local.profile && local.profile.email) {
+        await supa.from("profiles").insert({ id: user.id, email: user.email,
+          name: local.profile.name || null, org: local.profile.org || null, role: local.profile.role || null });
+      }
+      var ex = await supa.from("chats").select("report_id").eq("user_id", user.id);
+      var seen = {};
+      (ex.data || []).forEach(function (r) { if (r.report_id) seen[r.report_id] = 1; });
+      var cl = local.chats || [];
+      for (var i = 0; i < cl.length; i++) {
+        var c = cl[i];
+        if (c.reportId && seen[c.reportId]) continue;
+        await supa.from("chats").insert({ user_id: user.id, date: c.date || null,
+          report_id: c.reportId || null, verdict: c.verdict || null,
+          transcript: c.transcript || [], report_html: c.reportHTML || null });
+      }
+      var gl = local.goals || [];
+      for (var j = 0; j < gl.length; j++) {
+        await supa.from("goals").insert({ user_id: user.id, title: gl[j].title,
+          source: gl[j].source || null, done: !!gl[j].done });
+      }
+      clearLocal();
+    } catch (e) { /* keep local data; retry next visit */ }
+  }
+
+  async function loadDb(user) {
+    var out = { profile: {}, chats: [], goals: [] };
+    try {
+      var p = await supa.from("profiles").select("*").eq("id", user.id).maybeSingle();
+      if (p.data) out.profile = mapProfile(p.data);
+      var c = await supa.from("chats").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(25);
+      out.chats = (c.data || []).map(mapChat);
+      var g = await supa.from("goals").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(100);
+      out.goals = (g.data || []).map(mapGoal);
+    } catch (e) {}
+    return out;
+  }
+
+  async function upsertProfile() {
+    if (!supa || !currentUser) return;
+    var p = db.profile;
+    try {
+      await supa.from("profiles").upsert({ id: currentUser.id, email: currentUser.email,
+        name: p.name || null, org: p.org || null, role: p.role || null, summary: p.summary || null,
+        workflows: p.workflows || [], load_notes: p.load_notes || null,
+        member_tier: p.member_tier || null, updated_at: new Date().toISOString() });
+    } catch (e) {}
+  }
+  async function createGoal(title, source) {
+    var row = { id: uid(), title: title, source: source || "", done: false,
+      created: new Date().toISOString().slice(0, 10) };
+    db.goals.unshift(row); renderGoals();
+    if (supa && currentUser) {
+      try {
+        var r = await supa.from("goals").insert({ user_id: currentUser.id, title: title,
+          source: source || null, done: false }).select("id").single();
+        if (r.data) row.id = r.data.id;
+      } catch (e) {}
+    }
+  }
+  async function setGoalDone(id, done) {
+    var g = null;
+    db.goals.forEach(function (x) { if (x.id === id) g = x; });
+    if (g) g.done = done;
+    renderGoals();
+    if (supa && currentUser) { try { await supa.from("goals").update({ done: done }).eq("id", id); } catch (e) {} }
+  }
+  async function removeGoal(id) {
+    db.goals = db.goals.filter(function (x) { return x.id !== id; });
+    renderGoals();
+    if (supa && currentUser) { try { await supa.from("goals").delete().eq("id", id); } catch (e) {} }
+  }
+
+  function showSignin(msg) {
     document.getElementById("dash-gate").hidden = false;
-    return;
+    if (msg) document.getElementById("dash-signin-note").textContent = msg;
   }
-  document.getElementById("dash-app").hidden = false;
-  if (memberTier) {
-    var note = document.createElement("p");
-    note.className = "rc-note";
-    note.style.cssText = "text-align:center;position:relative;z-index:1;margin:18px 0 0";
-    note.textContent = "Welcome to " + memberTier[1] + " — your membership is recorded and will link to your account at launch.";
-    document.getElementById("dash-app").prepend(note);
+  function wireSignin() {
+    document.getElementById("dash-signin-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = document.getElementById("dash-signin-email").value.trim();
+      if (!email) return;
+      var note = document.getElementById("dash-signin-note");
+      note.textContent = "Sending…";
+      supa.auth.signInWithOtp({ email: email,
+        options: { emailRedirectTo: "https://readable.tabronmerryhill.com/readiness/dashboard/" } }).then(function (r) {
+        note.textContent = r.error ? "Couldn't send that — check the email and try again." : "Check your email for the sign-in link.";
+      });
+    });
   }
+
+  async function init() {
+    var cfg = {};
+    try { cfg = await (await fetch("/.netlify/functions/read-config")).json(); } catch (e) {}
+    if (!cfg.url || !cfg.anonKey || !window.supabase) {
+      showSignin("Dashboard sign-in isn't configured yet — check back soon.");
+      return;
+    }
+    supa = window.supabase.createClient(cfg.url, cfg.anonKey);
+    supa.auth.onAuthStateChange(function (ev) { if (ev === "SIGNED_IN") location.reload(); });
+    var s = await supa.auth.getSession();
+    var session = s.data && s.data.session;
+    if (!session) { wireSignin(); showSignin(); return; }
+    currentUser = session.user;
+    await drainLocal(currentUser);
+    db = await loadDb(currentUser);
+    var memberTier = /[?&]member=(cadence|unlimited)/.exec(location.search);
+    if (memberTier) {
+      db.profile.member_tier = memberTier[1];
+      db.profile.member_since = new Date().toISOString().slice(0, 10);
+      await upsertProfile();
+    }
+    startApp(memberTier);
+  }
+
+  function startApp(memberTier) {
+    document.getElementById("dash-app").hidden = false;
+    if (memberTier) {
+      var note = document.createElement("p");
+      note.className = "rc-note";
+      note.style.cssText = "text-align:center;position:relative;z-index:1;margin:18px 0 0";
+      note.textContent = "Welcome to " + memberTier[1] + " — your membership is now tied to your account.";
+      document.getElementById("dash-app").prepend(note);
+    }
 
   /* Tabs */
   var tabs = document.querySelectorAll(".dash-tab");
@@ -319,7 +447,8 @@
       '<p class="who">' + esc([p.role, p.org].filter(Boolean).join(" · ")) + "</p>" +
       (p.summary ? '<p class="sum">' + esc(p.summary) + "</p>" : '<p class="sum" style="opacity:.6">Talk to Read below — it learns how you operate and keeps this current.</p>') +
       (chips ? '<div class="dash-chips">' + chips + "</div>" : "") +
-      (p.load_notes ? '<p class="rc-note" style="margin:6px 0 0">Where the weight sits: ' + esc(p.load_notes) + "</p>" : "");
+      (p.load_notes ? '<p class="rc-note" style="margin:6px 0 0">Where the weight sits: ' + esc(p.load_notes) + "</p>" : "") +
+      '<p style="margin:12px 0 0"><button class="dash-btn-sm" id="dash-signout" type="button">Sign out</button></p>';
   }
 
   /* Chats */
@@ -346,13 +475,13 @@
       d.className = "dash-goal" + (g.done ? " done" : "");
       var cb = document.createElement("input");
       cb.type = "checkbox"; cb.checked = !!g.done; cb.setAttribute("aria-label", "Mark goal done");
-      cb.onchange = function () { g.done = cb.checked; save(db); renderGoals(); };
+      cb.onchange = function () { setGoalDone(g.id, cb.checked); };
       var mid = document.createElement("div");
       mid.className = "gt"; mid.textContent = g.title;
       if (g.source) { var s = document.createElement("span"); s.className = "gs"; s.textContent = "from: " + g.source; mid.appendChild(s); }
       var del = document.createElement("button");
       del.textContent = "×"; del.setAttribute("aria-label", "Delete goal");
-      del.onclick = function () { db.goals = db.goals.filter(function (x) { return x.id !== g.id; }); save(db); renderGoals(); };
+      del.onclick = function () { removeGoal(g.id); };
       d.appendChild(cb); d.appendChild(mid); d.appendChild(del);
       box.appendChild(d);
     });
@@ -361,9 +490,8 @@
     var inp = document.getElementById("dash-goalinput");
     var v = inp.value.trim();
     if (!v) return;
-    db.goals.unshift({ id: uid(), title: v, source: "", done: false, created: new Date().toISOString().slice(0, 10) });
     inp.value = "";
-    save(db); renderGoals();
+    createGoal(v, "");
   });
 
   /* Load */
@@ -411,8 +539,8 @@
         var goal = document.createElement("button");
         goal.className = "dash-btn-sm"; goal.type = "button"; goal.textContent = "Make it a goal";
         goal.onclick = function () {
-          db.goals.unshift({ id: uid(), title: l.suggested_workflow || l.title, source: "Load · " + (l.title || ""), done: false, created: new Date().toISOString().slice(0, 10) });
-          save(db); renderGoals(); goal.textContent = "Added ✓"; goal.disabled = true;
+          createGoal(l.suggested_workflow || l.title, "Load · " + (l.title || ""));
+          goal.textContent = "Added ✓"; goal.disabled = true;
         };
         row.appendChild(assess); row.appendChild(goal);
         card.appendChild(row);
@@ -486,7 +614,8 @@
         });
         prof.workflows = Object.keys(seen);
       }
-      save(db); renderProfile();
+      renderProfile();
+      upsertProfile();
       bubble("read", "Profile updated — I\u2019ve got it.");
       pmessages = [];
     }).catch(function () {
@@ -546,8 +675,16 @@
 
   /* Greeting */
   renderProfile(); renderChats(); renderGoals(); renderLibrary();
+  document.getElementById("dash-profile").addEventListener("click", function (e) {
+    if (e.target && e.target.id === "dash-signout" && supa) {
+      supa.auth.signOut().then(function () { location.reload(); });
+    }
+  });
   var first = (db.profile.name || "").split(" ")[0];
   bubble("read", first ? "Hey " + first + " — what\u2019s the latest in the operation?" : "Hey — what\u2019s the latest in the operation?");
+  } /* end startApp */
+
+  init();
 })();
 </script>
 </body>
