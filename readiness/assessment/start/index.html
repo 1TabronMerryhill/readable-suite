@@ -217,6 +217,11 @@ body.rc-still .rc-blob{animation:none}
       <div id="rc-done" class="noprint" hidden>
         <p><button class="btn" onclick="window.print()">Print / save this report</button></p>
         <p class="rc-note">Your report ID is above — keep it. If your verdict prescribes a Sprint or the Academy, mention it and we'll pick up where the rubric left off.</p>
+        <div id="rc-train" hidden>
+          <p class="rc-note"><label><input type="checkbox" id="rc-train-opt"> Help Read get sharper — let this conversation (kept private, never shared) train future assessments.</label></p>
+          <p><button class="btn" id="rc-train-btn" type="button">Share my conversation</button></p>
+          <p class="rc-note" id="rc-train-status" aria-live="polite"></p>
+        </div>
       </div>
     </div>
   </div>
@@ -295,6 +300,36 @@ body.rc-still .rc-blob{animation:none}
     document.getElementById("rc-done").hidden = false;
     window.scrollTo(0, 0);
     if (!out) return;
+    /* Training opt-in: buyer decides whether the conversation trains Read. Default is nothing kept. */
+    try {
+      var trainBox = document.getElementById("rc-train");
+      if (mode === "conversational" && window.ReadCopilot && window.ReadCopilot.lastTranscript && window.ReadCopilot.lastTranscript.length) {
+        trainBox.hidden = false;
+        var trainBtn = document.getElementById("rc-train-btn");
+        var trainStatus = document.getElementById("rc-train-status");
+        trainBtn.onclick = function () {
+          var opt = document.getElementById("rc-train-opt");
+          trainBtn.disabled = true;
+          if (!opt.checked) {
+            trainStatus.textContent = "No problem — nothing was kept.";
+            try { window.ReadCopilot.lastTranscript = null; } catch (e) {}
+            return;
+          }
+          trainStatus.textContent = "Sharing…";
+          fetch("/.netlify/functions/read-capture", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages: window.ReadCopilot.lastTranscript, reportId: out.reportId })
+          }).then(function (r) { return r.json(); }).then(function (d) {
+            trainStatus.textContent = (d && d.ok) ? "Thanks — Read learns from this." : "Couldn't share it just now — nothing was kept.";
+            try { window.ReadCopilot.lastTranscript = null; } catch (e) {}
+          }).catch(function () {
+            trainStatus.textContent = "Couldn't share it just now — nothing was kept.";
+            trainBtn.disabled = false;
+          });
+        };
+      }
+    } catch (e) {}
     var key = "read_posted:" + (answers.contact_email || "") + ":" + String(answers.q_problem || "").slice(0, 40);
     try { if (localStorage.getItem(key) === "1") return; } catch (e) {}
     var weakest = ["D1","D2","D3","D4","D5","D6","D7","D8"]
