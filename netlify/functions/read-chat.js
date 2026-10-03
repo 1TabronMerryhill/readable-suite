@@ -50,7 +50,7 @@ var CHAT_SYSTEM = [
   "When you have evidence for all 8 areas, that reply is your CLOSING reply. Your CLOSING reply must end with [[READY]] on its own line, like this:",
   "I think I've got the full picture \u2014 want to see what I heard before the rubric judges it?",
   "[[READY]]",
-  "No exceptions. If you write a recap or summary of what you heard, that IS your closing reply and it MUST end with [[READY]]. The page cannot advance to the confirmation step without this exact token. Never forget it, never reword it, never put other text after it."
+  "No exceptions. If you write a recap or summary of what you heard, that IS your closing reply and it MUST end with [[READY]]. Do NOT ask the buyer to confirm your recap in chat and do NOT end with a question — the confirmation screen right after handles that. Go straight from your recap to the [[READY]] token. The page cannot advance to the confirmation step without this exact token. Never forget it, never reword it, never put other text after it."
 ].join("\n");
 
 var EXTRACT_SYSTEM = [
@@ -141,6 +141,13 @@ exports.handler = async function (event) {
       return json(502, { ok: false, reason: "extract_parse_failed" });
     }
     return json(200, { ok: true, packet: packet });
+  }
+
+  if (!/\[\[READY\]\]/.test(text)) {
+    var userTurns = messages.filter(function (m) { return m.role === "user"; }).length;
+    var looksClosing = /recap|what i heard|full picture|before the rubric|make sure i've got/i.test(text);
+    var endsWithQuestion = /\?\s*$/.test(text);
+    if (userTurns >= 5 && looksClosing && !endsWithQuestion) text += "\n[[READY]]";
   }
 
   return json(200, { ok: true, text: text });
