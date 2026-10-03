@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Your assessment — Read/co-pilot | Readable</title>
-<meta name="description" content="Talk with Read, Readable's co-pilot, about one workflow. Confirm what it heard; the rubric does the judging.">
+<meta name="description" content="Talk with Read, Readable's co-pilot, about one workflow. Free to start — $150 only when your judgment is ready.">
 <link rel="stylesheet" href="/assets/site.css">
 <style>
 .rc-shell{max-width:720px;margin:0 auto}
@@ -42,7 +42,6 @@ textarea.rc-text{min-height:110px;resize:vertical}
 .rc-card{background:#fff;border:1px solid #e7e2d5;border-radius:10px;padding:20px;margin:0 0 28px}
 .rc-note{font-size:.9rem;opacity:.75}
 .rc-method{border-top:2px solid #e7e2d5;margin-top:32px;padding-top:20px;font-size:.9rem;opacity:.85}
-.rc-gate{text-align:center;padding:40px 0}
 .rc-chat{display:flex;flex-direction:column}
 .rc-log{display:flex;flex-direction:column;gap:10px;max-height:52vh;overflow-y:auto;padding:6px 2px;margin-bottom:14px}
 .rc-msg{max-width:88%;padding:12px 16px;border-radius:14px;line-height:1.5;font-size:1rem}
@@ -110,13 +109,39 @@ body.rc-chatting .rc-blob{opacity:.22}
 #rc-report .rc-report>*:nth-child(7){animation-delay:.42s}
 #rc-report .rc-report>*:nth-child(8){animation-delay:.49s}
 @media(max-width:520px){.rc-hero{padding:56px 0 72px}.rc-pill{padding-left:20px}}
+
+/* ---------- v1.3: dynamic front door ---------- */
+.rc-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin-top:20px}
+.rc-chips-label{font-size:.85rem;opacity:.65}
+.rc-chip{background:rgba(255,255,255,.75);border:1px solid rgba(13,31,28,.14);border-radius:999px;padding:10px 18px;font-size:.9rem;font-family:inherit;cursor:pointer;min-height:44px;transition:transform .2s,border-color .2s,background .2s}
+.rc-chip:hover{border-color:#2f6b4f;background:#fff;transform:translateY(-1px)}
+.rc-chip-pause{background:transparent;border:1px solid rgba(13,31,28,.14);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:.75rem;opacity:.7;font-family:inherit}
+.rc-motion{position:fixed;right:16px;bottom:16px;z-index:60;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.92);border:1px solid rgba(13,31,28,.14);cursor:pointer;font-size:1rem;box-shadow:0 8px 24px -8px rgba(13,31,28,.3);font-family:inherit}
+body.rc-still .rc-blob{animation:none}
+.rc-chat .rc-inputrow{position:sticky;bottom:12px;z-index:5;background:#fff;border:1px solid rgba(13,31,28,.09);border-radius:999px;padding:8px 8px 8px 20px;box-shadow:0 18px 44px -18px rgba(13,31,28,.35);margin-top:12px;align-items:center}
+.rc-chat .rc-chatinput{border:0;background:transparent;padding:12px 8px;font-size:1.02rem}
+.rc-chat .rc-chatinput:focus{outline:none}
+.rc-chat .rc-mic{border:0;background:transparent;min-width:48px}
+.rc-chat .rc-send{border-radius:50%;width:52px;min-width:52px;height:52px;min-height:52px;padding:0;font-size:1.4rem;display:flex;align-items:center;justify-content:center}
+.rc-paywall-card{background:#fff;border:1px solid #e7e2d5;border-radius:28px;padding:44px 36px;margin:40px auto;max-width:620px;text-align:center;box-shadow:0 24px 60px -30px rgba(13,31,28,.28)}
+.rc-paywall-card h2{font-size:clamp(34px,6vw,54px);margin:0 0 12px}
+.rc-paywall-card .lead{max-width:440px;margin:0 auto}
+.rc-price-row{display:flex;align-items:baseline;justify-content:center;gap:12px;margin:24px 0 6px}
+.rc-price{font-size:3.2rem;font-weight:800;letter-spacing:-.02em}
+.rc-price-note{opacity:.7}
+.rc-includes{list-style:none;padding:0;margin:8px auto 28px;max-width:430px;text-align:left}
+.rc-includes li{padding:12px 0 12px 36px;position:relative;border-top:1px solid #f0ece1;line-height:1.45}
+.rc-includes li:before{content:"\2713";position:absolute;left:10px;color:#2f6b4f;font-weight:700}
+.rc-pay-btn{display:inline-block;font-size:1.1rem;padding:16px 36px}
+@media(max-width:520px){.rc-paywall-card{padding:32px 22px;margin:24px auto}}
 @media(prefers-reduced-motion:reduce){
   .rc-blob{animation:none}
-  .rc-hero,.rc-pill,.rc-pill-send{transition:none}
+  .rc-hero,.rc-pill,.rc-pill-send,.rc-chip{transition:none}
   .rc-msg,.rc-rise,.rc-stage-enter,.rc-review,#rc-report .rc-report>*{animation:none!important}
+  .rc-motion{display:none}
 }
 @media print{
-  .site-header,.site-footer,.rc-nav,#rc-gate,.noprint{display:none!important}
+  .site-header,.site-footer,.rc-nav,.noprint,.rc-motion{display:none!important}
   .hero{padding:24px 0}
 }
 </style>
@@ -140,6 +165,7 @@ body.rc-chatting .rc-blob{opacity:.22}
 </header>
 
 <div class="rc-ambient" aria-hidden="true"><i class="rc-blob b1"></i><i class="rc-blob b2"></i><i class="rc-blob b3"></i></div>
+<button id="rc-motion" class="rc-motion" aria-label="Pause ambient motion">&#10074;&#10074;</button>
 
 <section class="hero rc-hero" id="rc-hero">
   <div class="wrap">
@@ -152,23 +178,41 @@ body.rc-chatting .rc-blob{opacity:.22}
         <button id="rc-pillmic" class="rc-pill-mic" type="button" aria-label="Dictate your answer">&#127908;</button>
         <button class="rc-pill-send" type="submit" aria-label="Send">&rarr;</button>
       </form>
-      <p class="rc-note rc-pill-note">No account. Your conversation isn&rsquo;t stored &mdash; only the answers you confirm and your report are kept.</p>
+      <div class="rc-chips" id="rc-chips">
+        <span class="rc-chips-label">Try:</span>
+        <button type="button" class="rc-chip" data-text="Our intake emails pile up every Monday…">Our intake emails pile up every Monday…</button>
+        <button type="button" class="rc-chip" data-text="We want AI to draft our client quotes…">We want AI to draft our client quotes…</button>
+        <button type="button" class="rc-chip" data-text="Nobody checks the AI's numbers before they go out…">Nobody checks the AI's numbers before they go out…</button>
+        <button type="button" id="rc-chip-pause" class="rc-chip-pause" aria-label="Pause example rotation">&#10074;&#10074;</button>
+      </div>
+      <p class="rc-note rc-pill-note">Free to start &mdash; $150 only when your judgment is ready. No account. Your conversation isn&rsquo;t stored.</p>
     </div>
     <p id="rc-classic-wrap" hidden><button id="rc-classic-begin" class="btn">Begin the interview &rarr;</button></p>
-    <p id="rc-hero-cta" hidden><a class="btn" href="/readiness/assessment/checkout/">Get assessed &mdash; $150</a></p>
   </div>
 </section>
 
 <section class="block">
   <div class="wrap">
     <div class="rc-shell">
-      <div id="rc-gate" class="rc-gate" hidden>
-        <h2>Start with checkout.</h2>
-        <p>The Readiness Assessment is $150. Complete checkout and you'll return here automatically.</p>
-        <p><a class="btn" href="/readiness/assessment/checkout/">Go to checkout — $150</a></p>
-        <p class="rc-note">Already paid and landed here by mistake? <a href="mailto:TabronMerryhill@gmail.com?subject=Readiness%20Assessment%20access">Email us</a> and we'll sort it out.</p>
-      </div>
       <div id="rc-app"></div>
+      <div id="rc-paywall" hidden>
+        <div class="rc-paywall-card rc-rise">
+          <p class="kicker">Read&thinsp;/&thinsp;co-pilot · your judgment</p>
+          <h2>Your judgment is ready.</h2>
+          <p class="lead">You talked it through. Read structured what it heard, and you confirmed the evidence. One step left.</p>
+          <div class="rc-price-row">
+            <span class="rc-price">$150</span>
+            <span class="rc-price-note">one workflow · instant report</span>
+          </div>
+          <ul class="rc-includes">
+            <li>Your verdict on the 16-point rubric — Ready, Ready with Safeguards, or Not Ready</li>
+            <li>Dimension-by-dimension breakdown, in your own words</li>
+            <li>Your recommended next step — Sprint or Academy</li>
+          </ul>
+          <p><a class="btn rc-pay-btn" href="/readiness/assessment/checkout/">Unlock my report — $150</a></p>
+          <p class="rc-note">Your conversation isn&rsquo;t stored. Only the answers you confirmed are kept. Your report generates instantly after checkout.</p>
+        </div>
+      </div>
       <div id="rc-report"></div>
       <div id="rc-done" class="noprint" hidden>
         <p><button class="btn" onclick="window.print()">Print / save this report</button></p>
@@ -218,25 +262,41 @@ body.rc-chatting .rc-blob{opacity:.22}
 <script src="/assets/read-copilot.js"></script>
 <script>
 (function () {
-  var paid = /[?&]paid=1/.test(location.search);
-  try { if (sessionStorage.getItem("read_paid") === "1") paid = true; } catch (e) {}
-  if (!paid) {
-    document.getElementById("rc-gate").hidden = false;
-    document.getElementById("rc-pillwrap").hidden = true;
-    document.getElementById("rc-hero-cta").hidden = false;
-    return;
-  }
-  try { sessionStorage.setItem("read_paid", "1"); } catch (e) {}
   var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var submitted = false;
-  function onDone(answers, answerText, extra) {
-    document.getElementById("rc-app").hidden = true;
-    var meta = { business_name: answers.business_name, mode: (extra && extra.mode) || "structured" };
+
+  /* Evidence + payment state. localStorage survives the checkout round-trip. */
+  function readEvidence() {
+    try { var raw = localStorage.getItem("read_evidence"); return raw ? JSON.parse(raw) : null; }
+    catch (e) { return null; }
+  }
+  function saveEvidence(answers, answerText) {
+    try { localStorage.setItem("read_evidence", JSON.stringify({ answers: answers, answerText: answerText || {} })); } catch (e) {}
+  }
+  function isPaid() {
+    if (/[?&]paid=1/.test(location.search)) return true;
+    try { return localStorage.getItem("read_paid") === "1"; } catch (e) { return false; }
+  }
+  function markPaid() {
+    try { localStorage.setItem("read_paid", "1"); } catch (e) {}
+  }
+  if (/[?&]paid=1/.test(location.search)) markPaid();
+
+  var hero = document.getElementById("rc-hero");
+  var app = document.getElementById("rc-app");
+  var paywall = document.getElementById("rc-paywall");
+
+  /* Report delivery: deterministic scoring + lead capture. Runs once per buyer. */
+  function deliverReport(answers, answerText, mode) {
+    hero.hidden = true;
+    app.hidden = true;
+    paywall.hidden = true;
+    var meta = { business_name: answers.business_name, mode: mode || "conversational" };
     var out = ReadCopilot.renderReport("rc-report", answers, answerText, meta);
     document.getElementById("rc-done").hidden = false;
     window.scrollTo(0, 0);
-    if (submitted || !out) return;
-    submitted = true;
+    if (!out) return;
+    var key = "read_posted:" + (answers.contact_email || "") + ":" + String(answers.q_problem || "").slice(0, 40);
+    try { if (localStorage.getItem(key) === "1") return; } catch (e) {}
     var weakest = ["D1","D2","D3","D4","D5","D6","D7","D8"]
       .sort(function (a, b) { return out.result.dims[a] - out.result.dims[b]; })
       .slice(0, 3).join(", ");
@@ -255,11 +315,25 @@ body.rc-chatting .rc-blob{opacity:.22}
         ? "Business Visibility Sprint ($2,500) — extract and design the workflow before AI touches it."
         : "Readable Academy (from $1,000) — train the team to evaluate AI outputs against evidence."
     };
-    ReadCopilot.postSubmission(fields).catch(function () { /* report already rendered; lead capture is best-effort */ });
+    ReadCopilot.postSubmission(fields).then(function () {
+      try { localStorage.setItem(key, "1"); } catch (e) {}
+    }).catch(function () { /* report already rendered; lead capture is best-effort */ });
   }
 
-  var hero = document.getElementById("rc-hero");
-  var app = document.getElementById("rc-app");
+  function showPaywall() {
+    hero.hidden = true;
+    app.hidden = true;
+    paywall.hidden = false;
+    window.scrollTo(0, 0);
+  }
+
+  function onEvidenceConfirmed(answers, answerText, extra) {
+    saveEvidence(answers, answerText);
+    if (isPaid()) deliverReport(answers, answerText, (extra && extra.mode) || "conversational");
+    else showPaywall();
+  }
+
+  /* ---------- dynamic hero ---------- */
   var pillForm = document.getElementById("rc-pillform");
   var pillInput = document.getElementById("rc-pillinput");
   var pillSend = pillForm.querySelector(".rc-pill-send");
@@ -268,16 +342,15 @@ body.rc-chatting .rc-blob{opacity:.22}
   var classicBtn = document.getElementById("rc-classic-begin");
   var probeState = null, pillUsed = false;
 
-  /* Rotating example prompts inside the pill */
   var hints = [
     "Try \u2018Our intake emails pile up every Monday\u2026\u2019",
     "Try \u2018We want AI to draft our client quotes\u2026\u2019",
     "Try \u2018Nobody checks the AI\u2019s numbers before they go out\u2026\u2019",
     "Try \u2018Our crew won\u2019t touch the new scheduling tool\u2026\u2019"
   ];
-  var hi = 0, hintTimer = null;
+  var hi = 0, hintTimer = null, hintPaused = false;
   function nextHint() {
-    if (document.activeElement === pillInput || pillInput.value) return;
+    if (hintPaused || document.activeElement === pillInput || pillInput.value) return;
     pillInput.classList.add("rc-ph-out");
     setTimeout(function () {
       hi = (hi + 1) % hints.length;
@@ -286,6 +359,35 @@ body.rc-chatting .rc-blob{opacity:.22}
     }, 200);
   }
   if (!REDUCED) hintTimer = setInterval(nextHint, 3600);
+
+  var chipPause = document.getElementById("rc-chip-pause");
+  chipPause.addEventListener("click", function () {
+    hintPaused = !hintPaused;
+    chipPause.innerHTML = hintPaused ? "&#9654;" : "&#10074;&#10074;";
+    chipPause.setAttribute("aria-label", hintPaused ? "Resume example rotation" : "Pause example rotation");
+  });
+
+  var motionBtn = document.getElementById("rc-motion");
+  function setMotion(still) {
+    document.body.classList.toggle("rc-still", still);
+    motionBtn.innerHTML = still ? "&#9654;" : "&#10074;&#10074;";
+    motionBtn.setAttribute("aria-label", still ? "Resume ambient motion" : "Pause ambient motion");
+  }
+  motionBtn.addEventListener("click", function () {
+    setMotion(!document.body.classList.contains("rc-still"));
+  });
+  if (REDUCED) { setMotion(true); motionBtn.hidden = true; }
+
+  var chips = document.querySelectorAll("#rc-chips .rc-chip");
+  for (var ci = 0; ci < chips.length; ci++) {
+    (function (chip) {
+      chip.addEventListener("click", function () {
+        pillInput.value = chip.getAttribute("data-text");
+        if (pillForm.requestSubmit) pillForm.requestSubmit();
+        else pillForm.dispatchEvent(new Event("submit", { cancelable: true }));
+      });
+    })(chips[ci]);
+  }
 
   function exitHero(cb) {
     pillUsed = true;
@@ -302,11 +404,14 @@ body.rc-chatting .rc-blob{opacity:.22}
   }
   function beginChat(text) {
     exitHero(function () {
-      ReadCopilot.startConversation("rc-app", onDone, { initialMessage: text, stream: true });
+      ReadCopilot.startConversation("rc-app", onEvidenceConfirmed,
+        { initialMessage: text, stream: true, onEvidenceConfirmed: onEvidenceConfirmed });
     });
   }
   function beginClassic() {
-    exitHero(function () { ReadCopilot.startInterview("rc-app", onDone); });
+    exitHero(function () {
+      ReadCopilot.startInterview("rc-app", function (a, t) { onEvidenceConfirmed(a, t, { mode: "structured" }); });
+    });
   }
   function showClassic() {
     pillWrap.hidden = true;
@@ -348,6 +453,14 @@ body.rc-chatting .rc-blob{opacity:.22}
       showClassic();
     }
   });
+
+  /* Paid returnees with saved evidence go straight to their report. */
+  var saved = readEvidence();
+  if (isPaid() && saved && saved.answers) {
+    if (hintTimer) clearInterval(hintTimer);
+    pillUsed = true;
+    deliverReport(saved.answers, saved.answerText || {}, "conversational");
+  }
 })();
 </script>
 
