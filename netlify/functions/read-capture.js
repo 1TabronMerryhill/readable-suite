@@ -105,9 +105,9 @@ async function storeTraining(token, record) {
     },
     body: JSON.stringify({ fields: record })
   });
-  if (!resp.ok) return null;
+  if (!resp.ok) return { status: resp.status };
   var data = await resp.json();
-  return data.id || true;
+  return { id: data.id || true };
 }
 
 function buildEvidence(grade) {
@@ -152,13 +152,14 @@ exports.handler = async function (event) {
       rec[F.score] = grade.grade;
       rec[F.campaign] = [TRAINING_CAMPAIGN];
       stored = await storeTraining(airtableToken, rec);
-    } catch (e) { stored = null; }
+    } catch (e) { stored = { status: -1 }; }
   }
 
   return json(200, {
     ok: true,
-    stored: !!stored,
-    recordId: typeof stored === "string" ? stored : undefined,
+    stored: !!(stored && stored.id),
+    recordId: (stored && stored.id) || undefined,
+    airtable_status: (stored && stored.status) || 0,
     graded: !!grade,
     grade: grade ? grade.grade : undefined
   });
