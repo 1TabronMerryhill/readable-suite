@@ -227,7 +227,8 @@ body.rc-still .rc-blob{animation:none}
       </div>
       <div id="rc-report"></div>
       <div id="rc-done" class="noprint" hidden>
-        <p><button class="btn" onclick="window.print()">Print / save this report</button></p>
+        <p><button class="btn" onclick="window.print()">Print / save this report</button>
+        <a class="btn" style="margin-left:8px" href="/readiness/dashboard/">Open your dashboard &rarr;</a></p>
         <p class="rc-note">Your report ID is above — keep it. If your verdict prescribes a Sprint or the Academy, mention it and we'll pick up where the rubric left off.</p>
         <div id="rc-train" hidden>
           <p class="rc-note"><label><input type="checkbox" id="rc-train-opt"> Help Read get sharper — let this conversation (kept private, never shared) train future assessments.</label></p>
@@ -312,6 +313,30 @@ body.rc-still .rc-blob{animation:none}
     document.getElementById("rc-done").hidden = false;
     window.scrollTo(0, 0);
     if (!out) return;
+    /* Dashboard persistence: this device's copy of their chats + profile seed. */
+    try {
+      var DKEY = "read_dash_v1", ddb = null;
+      try { ddb = JSON.parse(localStorage.getItem(DKEY) || "null"); } catch (e2) {}
+      if (!ddb || !ddb.profile) ddb = { profile: {}, chats: [], goals: [] };
+      if (answers.contact_email) {
+        ddb.profile.email = answers.contact_email;
+        if (answers.contact_name && !ddb.profile.name) ddb.profile.name = answers.contact_name;
+        if (answers.business_name && !ddb.profile.org) ddb.profile.org = answers.business_name;
+        if (answers.contact_role && !ddb.profile.role) ddb.profile.role = answers.contact_role;
+      }
+      var dtranscript = (window.ReadCopilot && window.ReadCopilot.lastTranscript) || [];
+      if (dtranscript.length) {
+        ddb.chats.unshift({
+          id: "chat" + Date.now().toString(36),
+          date: new Date().toISOString().slice(0, 10),
+          reportId: out.reportId,
+          verdict: out.verdict.title,
+          transcript: dtranscript.map(function (m) { return { role: m.role, content: m.content }; })
+        });
+        ddb.chats = ddb.chats.slice(0, 25);
+      }
+      localStorage.setItem(DKEY, JSON.stringify(ddb));
+    } catch (e) {}
     /* Training opt-in: buyer decides whether the conversation trains Read. Default is nothing kept. */
     try {
       var trainBox = document.getElementById("rc-train");
