@@ -72,6 +72,37 @@
 @media(prefers-reduced-motion:reduce){.dash-msg{animation:none!important}}
 .dash-msg{animation:rcmsgin .45s cubic-bezier(.2,.7,.3,1) both}
 @keyframes rcmsgin{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.dash-subtabs{display:flex;gap:8px;margin:0 0 4px}
+.dash-subtab{flex:1;border:2px solid #e7e2d5;background:#fff;border-radius:10px;padding:10px;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer;color:#6b7278}
+.dash-subtab[aria-selected="true"]{border-color:#2f6b4f;color:#0d1f1c;background:#eef5f0}
+.dash-report{display:block;width:100%;text-align:left;border:1px solid #e7e2d5;border-radius:12px;padding:12px;margin:0 0 10px;background:#fff;cursor:pointer;font:inherit;color:inherit}
+.dash-report:hover{border-color:#2f6b4f}
+.dash-report .t{font-weight:700;font-size:.95rem;display:block}
+.dash-report .m{font-size:.82rem;opacity:.7}
+.dash-path{display:block;border:1px solid #e7e2d5;border-radius:12px;padding:14px;margin:0 0 10px;background:#fff;text-decoration:none;color:inherit}
+.dash-path:hover{border-color:#2f6b4f}
+.dash-path .pt{font-weight:700;font-size:.95rem;display:block;color:#0d1f1c}
+.dash-path .pd{font-size:.85rem;opacity:.7}
+.dash-modal{position:fixed;inset:0;background:rgba(13,31,28,.55);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:4vh 16px;overflow-y:auto}
+.dash-modal-card{background:#faf9f5;border-radius:18px;max-width:860px;width:100%;padding:28px;box-shadow:0 30px 80px -20px rgba(0,0,0,.4)}
+.dash-modal-head{display:flex;gap:8px;justify-content:flex-end;margin-bottom:16px}
+.dash-report-body .rc-verdict{border-radius:14px;padding:28px;margin:0 0 28px;color:#fff}
+.dash-report-body .rc-verdict.ready{background:#2f6b4f}
+.dash-report-body .rc-verdict.safeguards{background:#8a6d1f}
+.dash-report-body .rc-verdict.not-ready{background:#8c2f2f}
+.dash-report-body .rc-verdict h2{margin:6px 0 10px;color:#fff}
+.dash-report-body .rc-verdict p{margin:0;color:#f2f0e8}
+.dash-report-body .rc-verdict .rc-kicker{color:#f2f0e8;opacity:.85}
+.dash-report-body .rc-dims{display:grid;gap:12px;margin:16px 0 28px}
+.dash-report-body .rc-dim{background:#fff;border:1px solid #e7e2d5;border-radius:10px;padding:16px}
+.dash-report-body .rc-dim-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
+.dash-report-body .rc-dim p{margin:6px 0}
+.dash-report-body .rc-evidence{font-style:italic;opacity:.8;font-size:.92rem}
+.dash-report-body .rc-pips i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e0ddd2;margin-right:4px}
+.dash-report-body .rc-pips i.on{background:#2f6b4f}
+.dash-report-body .rc-score{font-weight:700;white-space:nowrap}
+.dash-report-body .rc-card{background:#fff;border:1px solid #e7e2d5;border-radius:10px;padding:20px;margin:0 0 28px}
+.dash-report-body .rc-method{border-top:2px solid #e7e2d5;margin-top:32px;padding-top:20px;font-size:.9rem;opacity:.85}
 </style>
 </head>
 <body>
@@ -108,6 +139,7 @@
         <button class="dash-tab" role="tab" aria-selected="true" data-tab="chats">Chats</button>
         <button class="dash-tab" role="tab" aria-selected="false" data-tab="goals">Goals</button>
         <button class="dash-tab" role="tab" aria-selected="false" data-tab="load">Load</button>
+        <button class="dash-tab" role="tab" aria-selected="false" data-tab="library">Library</button>
       </div>
       <div class="dash-pane" id="pane-chats" role="tabpanel">
         <h3>Past conversations</h3>
@@ -128,6 +160,22 @@
         <p class="rc-note">Where the weight sits — pain points and bottlenecks Read finds across your conversations.</p>
         <p><button class="dash-btn-sm solid" id="dash-loadbtn" type="button">Find my load</button></p>
         <div id="dash-loadlist" style="margin-top:12px"></div>
+      </div>
+      <div class="dash-pane" id="pane-library" role="tabpanel" hidden>
+        <h3>Library</h3>
+        <p class="rc-note">Your artifacts and your pathways.</p>
+        <div class="dash-subtabs" role="tablist" aria-label="Library sections">
+          <button class="dash-subtab" aria-selected="true" data-lib="reports" type="button">Reports</button>
+          <button class="dash-subtab" aria-selected="false" data-lib="pathways" type="button">Pathways</button>
+        </div>
+        <div id="lib-reports" style="margin-top:12px"></div>
+        <div id="lib-pathways" style="margin-top:12px" hidden>
+          <a class="dash-path" href="/business-systems/"><span class="pt">Business Visibility Sprint</span><span class="pd">$2,500 · ten business days · your workflow, rebuilt</span></a>
+          <a class="dash-path" href="/academy/"><span class="pt">Readable Academy</span><span class="pd">Train your people inside the pairing</span></a>
+          <a class="dash-path" href="/field-network/"><span class="pt">Field Partnership Network</span><span class="pd">For institutions and communities</span></a>
+          <a class="dash-path" href="/readiness/assessment/start/"><span class="pt">New assessment</span><span class="pd">$150 · run another workflow through Read</span></a>
+          <a class="dash-path" href="/"><span class="pt">Readable home</span><span class="pd">The whole system, one page</span></a>
+        </div>
       </div>
     </aside>
     <main class="dash-main">
@@ -255,7 +303,7 @@
   tabs.forEach(function (t) {
     t.addEventListener("click", function () {
       tabs.forEach(function (x) { x.setAttribute("aria-selected", x === t ? "true" : "false"); });
-      ["chats", "goals", "load"].forEach(function (n) {
+      ["chats", "goals", "load", "library"].forEach(function (n) {
         document.getElementById("pane-" + n).hidden = (n !== t.getAttribute("data-tab"));
       });
     });
@@ -446,8 +494,58 @@
     });
   });
 
+  /* Library */
+  var libtabs = document.querySelectorAll(".dash-subtab");
+  libtabs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      libtabs.forEach(function (x) { x.setAttribute("aria-selected", x === t ? "true" : "false"); });
+      var lib = t.getAttribute("data-lib");
+      document.getElementById("lib-reports").hidden = (lib !== "reports");
+      document.getElementById("lib-pathways").hidden = (lib !== "pathways");
+    });
+  });
+  function renderLibrary() {
+    var box = document.getElementById("lib-reports");
+    var withRep = db.chats.filter(function (c) { return c.reportHTML; });
+    if (!withRep.length) { box.innerHTML = '<p class="rc-note">Your scored reports land here after each assessment.</p>'; return; }
+    box.innerHTML = "";
+    withRep.forEach(function (c) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "dash-report";
+      var t = document.createElement("span"); t.className = "t"; t.textContent = c.verdict || "Report";
+      var m = document.createElement("span"); m.className = "m";
+      m.textContent = (c.date || "") + (c.reportId ? " · " + c.reportId : "");
+      b.appendChild(t); b.appendChild(m);
+      b.addEventListener("click", function () { openReport(c); });
+      box.appendChild(b);
+    });
+  }
+  function openReport(c) {
+    var ov = document.createElement("div");
+    ov.className = "dash-modal";
+    var card = document.createElement("div");
+    card.className = "dash-modal-card";
+    var head = document.createElement("div");
+    head.className = "dash-modal-head";
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "dash-btn-sm"; closeBtn.type = "button"; closeBtn.textContent = "Close";
+    var printBtn = document.createElement("button");
+    printBtn.className = "dash-btn-sm solid"; printBtn.type = "button"; printBtn.textContent = "Print";
+    head.appendChild(closeBtn); head.appendChild(printBtn);
+    var body = document.createElement("div");
+    body.className = "dash-report-body";
+    body.innerHTML = c.reportHTML;
+    card.appendChild(head); card.appendChild(body);
+    ov.appendChild(card);
+    function close() { if (ov.parentNode) ov.parentNode.removeChild(ov); }
+    closeBtn.addEventListener("click", close);
+    printBtn.addEventListener("click", function () { window.print(); });
+    ov.addEventListener("click", function (e) { if (e.target === ov) close(); });
+    document.body.appendChild(ov);
+  }
+
   /* Greeting */
-  renderProfile(); renderChats(); renderGoals();
+  renderProfile(); renderChats(); renderGoals(); renderLibrary();
   var first = (db.profile.name || "").split(" ")[0];
   bubble("read", first ? "Hey " + first + " — what\u2019s the latest in the operation?" : "Hey — what\u2019s the latest in the operation?");
 })();
