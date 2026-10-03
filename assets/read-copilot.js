@@ -507,6 +507,7 @@
       }).then(function (r) { return r.json(); }).then(function (data) {
         busy = false;
         if (!data || !data.ok || !data.packet) throw new Error("bad extract");
+        try { window.ReadCopilot.lastTranscript = messages.slice(); } catch (e) {}
         renderConfirm(mount, data.packet, function (a, t, x) {
           if (opts.onEvidenceConfirmed) opts.onEvidenceConfirmed(a, t, x);
           else onDone(a, t, x);
