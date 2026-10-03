@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Your dashboard — Read | Readable</title>
 <meta name="description" content="Your Read dashboard: profile chat, past conversations, goals, and where the load sits.">
 <link rel="stylesheet" href="/assets/site.css">
@@ -69,6 +69,48 @@
 .tier .per{font-size:.85rem;opacity:.65;margin:0 0 12px}
 .tier ul{margin:0 0 18px;padding-left:18px;font-size:.9rem;display:grid;gap:6px}
 @media(max-width:900px){.dash{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr}}
+/* ---- Mobile app shell: top bar + slide-out drawer (Claude-style) ---- */
+.dash-topbar,.dash-drawer-head,.dash-drawer-foot{display:none}
+.dash-scrim{display:none}
+@media(max-width:900px){
+  .dash-topbar{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:105;
+    background:rgba(250,249,245,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    padding:calc(10px + env(safe-area-inset-top)) 12px 10px;border-bottom:1px solid #e7e2d5}
+  .dash-topbar-title{flex:1;text-align:center;font-weight:700;font-size:1.05rem;letter-spacing:.01em}
+  .dash-iconbtn{width:44px;height:44px;flex:none;display:inline-flex;align-items:center;justify-content:center;
+    border:1px solid #e7e2d5;background:#fff;border-radius:12px;font-size:1.35rem;line-height:1;color:#0d1f1c;
+    cursor:pointer;text-decoration:none;touch-action:manipulation}
+  .dash-iconbtn:active{background:#eef5f0}
+  .dash-scrim{display:block;position:fixed;inset:0;background:rgba(13,31,28,.45);z-index:110;
+    opacity:0;pointer-events:none;transition:opacity .28s ease}
+  .dash-scrim.show{opacity:1;pointer-events:auto}
+  .dash-side{position:fixed;top:0;bottom:0;left:0;width:min(84vw,340px);z-index:120;border-radius:0;
+    transform:translateX(-105%);transition:transform .28s ease;display:flex;flex-direction:column;max-height:none}
+  .dash-side.open{transform:none;box-shadow:30px 0 60px -20px rgba(13,31,28,.35)}
+  .dash-tabs{flex:none}
+  .dash-tab{padding:14px 4px;min-height:44px;touch-action:manipulation}
+  .dash-pane{flex:1;min-height:0;max-height:none;-webkit-overflow-scrolling:touch}
+  .dash-drawer-head{display:flex;gap:8px;align-items:center;padding:12px;border-bottom:1px solid #e7e2d5;flex:none}
+  .dash-drawer-cta{flex:1;text-align:center;padding:12px 14px;font-size:.92rem}
+  .dash-drawer-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:12px;border-top:1px solid #e7e2d5;flex:none;background:#faf9f5}
+  .dash-drawer-who{font-size:.85rem;min-width:0;flex:1}
+  .dash-drawer-who strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dash-drawer-who span{opacity:.65;font-size:.78rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.no-scroll{overflow:hidden}
+  .dash{padding:14px 12px 20px}
+  .dash-profile{padding:16px}
+  .dash-profile h2{font-size:1.2rem}
+  .dash-log{max-height:62dvh;min-height:240px}
+  .dash-foot{position:sticky;bottom:0;padding-bottom:calc(14px + env(safe-area-inset-bottom));
+    background:linear-gradient(transparent,#fff 35%)}
+  .dash-inputrow input{font-size:16px}
+  .dash-addrow input{font-size:16px;min-height:44px}
+  .dash-btn-sm{min-height:44px;touch-action:manipulation}
+  .dash-send.busy{opacity:.45}
+  .dash-chat-item,.dash-goal,.dash-load,.dash-path{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){.dash-side{transition:none}.dash-scrim{transition:none}}
 @media(prefers-reduced-motion:reduce){.dash-msg{animation:none!important}}
 .dash-msg{animation:rcmsgin .45s cubic-bezier(.2,.7,.3,1) both}
 @keyframes rcmsgin{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
@@ -137,8 +179,18 @@
 </div>
 
 <div id="dash-app" hidden>
+  <div class="dash-topbar">
+    <button class="dash-iconbtn" id="dash-menu" aria-label="Open menu" aria-expanded="false" aria-controls="dash-side" type="button">&#9776;</button>
+    <span class="dash-topbar-title">Read</span>
+    <a class="dash-iconbtn" href="/readiness/assessment/start/" aria-label="New assessment">+</a>
+  </div>
+  <div class="dash-scrim" id="dash-scrim"></div>
   <div class="dash">
-    <aside class="dash-side" aria-label="Dashboard panels">
+    <aside class="dash-side" id="dash-side" aria-label="Dashboard panels">
+      <div class="dash-drawer-head">
+        <a class="dash-btn-sm solid dash-drawer-cta" href="/readiness/assessment/start/">+ New assessment</a>
+        <button class="dash-iconbtn" id="dash-drawer-close" aria-label="Close menu" type="button">&times;</button>
+      </div>
       <div class="dash-tabs" role="tablist">
         <button class="dash-tab" role="tab" aria-selected="true" data-tab="chats">Chats</button>
         <button class="dash-tab" role="tab" aria-selected="false" data-tab="goals">Goals</button>
@@ -180,6 +232,10 @@
           <a class="dash-path" href="/readiness/assessment/start/"><span class="pt">New assessment</span><span class="pd">$150 · run another workflow through Read</span></a>
           <a class="dash-path" href="/"><span class="pt">Readable home</span><span class="pd">The whole system, one page</span></a>
         </div>
+      </div>
+      <div class="dash-drawer-foot">
+        <div class="dash-drawer-who" id="dash-drawer-who"></div>
+        <button class="dash-btn-sm" id="dash-drawer-signout" type="button">Sign out</button>
       </div>
     </aside>
     <main class="dash-main">
@@ -484,6 +540,60 @@
     });
   });
 
+  /* Mobile drawer (hamburger -> slide-out, Claude-style) */
+  var drawer = document.getElementById("dash-side");
+  var scrim = document.getElementById("dash-scrim");
+  var menuBtn = document.getElementById("dash-menu");
+  function isMobile() { return window.matchMedia("(max-width: 900px)").matches; }
+  function openDrawer() {
+    drawer.classList.add("open"); scrim.classList.add("show");
+    document.body.classList.add("no-scroll");
+    menuBtn.setAttribute("aria-expanded", "true");
+  }
+  function closeDrawer() {
+    drawer.classList.remove("open"); scrim.classList.remove("show");
+    document.body.classList.remove("no-scroll");
+    menuBtn.setAttribute("aria-expanded", "false");
+  }
+  menuBtn.addEventListener("click", function () {
+    drawer.classList.contains("open") ? closeDrawer() : openDrawer();
+  });
+  scrim.addEventListener("click", closeDrawer);
+  document.getElementById("dash-drawer-close").addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
+  });
+  document.getElementById("dash-drawer-signout").addEventListener("click", function () {
+    if (supa) supa.auth.signOut().then(function () { location.reload(); });
+  });
+  window.matchMedia("(max-width: 900px)").addEventListener("change", function () { closeDrawer(); });
+  (function () { /* edge swipe to open, swipe-left in drawer to close */
+    var sx = null, sy = null, edge = false, inDrawer = false;
+    document.addEventListener("touchstart", function (e) {
+      if (e.touches.length !== 1) return;
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+      edge = !drawer.classList.contains("open") && sx <= 24 && isMobile();
+      inDrawer = drawer.classList.contains("open") && drawer.contains(e.target);
+    }, { passive: true });
+    document.addEventListener("touchend", function (e) {
+      if (sx === null) return;
+      var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      sx = null;
+      if (Math.abs(dy) > Math.abs(dx) * 1.5) return;
+      if (edge && dx > 60) openDrawer();
+      else if (inDrawer && dx < -60) closeDrawer();
+    }, { passive: true });
+  })();
+
+  /* Drawer footer identity */
+  function renderDrawerWho() {
+    var who = document.getElementById("dash-drawer-who");
+    if (!who) return;
+    var p = db.profile || {};
+    who.innerHTML = "<strong>" + esc(p.name || "Your operation") + "</strong>" +
+      "<span>" + esc(p.email || "") + "</span>";
+  }
+
   /* Profile card */
   function renderProfile() {
     var p = db.profile, el = document.getElementById("dash-profile");
@@ -496,6 +606,7 @@
       (chips ? '<div class="dash-chips">' + chips + "</div>" : "") +
       (p.load_notes ? '<p class="rc-note" style="margin:6px 0 0">Where the weight sits: ' + esc(p.load_notes) + "</p>" : "") +
       '<p style="margin:12px 0 0"><button class="dash-btn-sm" id="dash-signout" type="button">Sign out</button></p>';
+    renderDrawerWho();
   }
 
   /* Chats */
@@ -603,8 +714,18 @@
   var log = document.getElementById("dash-log");
   var form = document.getElementById("dash-form");
   var input = document.getElementById("dash-input");
+  var sendBtn = form.querySelector(".dash-send");
   var pmessages = [];
   var busy = false;
+  var DRAFT_KEY = "read_dash_draft";
+  try { input.value = localStorage.getItem(DRAFT_KEY) || ""; } catch (e) {}
+  input.addEventListener("input", function () {
+    try { localStorage.setItem(DRAFT_KEY, input.value); } catch (e) {}
+  });
+  function setBusy(b) {
+    busy = b;
+    if (sendBtn) { sendBtn.classList.toggle("busy", b); sendBtn.disabled = b; }
+  }
   function bubble(role, text) {
     var d = document.createElement("div");
     d.className = "dash-msg rc-msg " + role;
@@ -618,21 +739,22 @@
     var text = input.value.trim();
     if (!text || busy) return;
     input.value = "";
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
     pmessages.push({ role: "user", content: text });
     bubble("user", text);
-    busy = true;
+    setBusy(true);
     var t = bubble("read", "…");
     fetch("/.netlify/functions/read-profile", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mode: "chat", messages: pmessages, profile: { summary: db.profile.summary || "" } })
     }).then(function (r) { return r.json(); }).then(function (d) {
-      busy = false;
+      setBusy(false);
       if (t.parentNode) t.parentNode.removeChild(t);
       if (!d || !d.ok || !d.text) throw new Error("bad");
       pmessages.push({ role: "assistant", content: d.text });
       bubble("read", d.text);
     }).catch(function () {
-      busy = false;
+      setBusy(false);
       if (t.parentNode) t.parentNode.removeChild(t);
       bubble("read", "Lost that one — say it again?");
     });
