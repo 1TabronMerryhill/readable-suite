@@ -10,7 +10,7 @@
 "use strict";
 
 var API_URL = "https://api.anthropic.com/v1/messages";
-var MODEL = process.env.READ_MODEL || "claude-haiku-4-5";
+var MODEL = process.env.READ_MODEL || "claude-haiku-4-5-20251001";
 var ANTHROPIC_VERSION = "2023-06-01";
 
 var DIM_CRITERIA = [
