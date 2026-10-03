@@ -283,6 +283,26 @@
   var supa = null, currentUser = null;
   var db = { profile: {}, chats: [], goals: [] };
 
+  /* Debug panel (?debug=1): renders auth internals into the DOM for diagnosis. */
+  var DEBUG = /[?&]debug=1/.test(location.search);
+  function dbg(m) {
+    if (!DEBUG) return;
+    var el = document.getElementById("dash-debug");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "dash-debug";
+      el.style.cssText = "position:fixed;bottom:0;left:0;right:0;max-height:45vh;overflow:auto;background:#111;color:#0f0;font:11px/1.5 monospace;padding:10px;z-index:9999;white-space:pre-wrap;word-break:break-all";
+      document.body.appendChild(el);
+      var btn = document.createElement("button");
+      btn.textContent = "Reload page";
+      btn.style.cssText = "position:fixed;top:8px;right:8px;z-index:10000;padding:8px 12px";
+      btn.onclick = function () { location.reload(); };
+      document.body.appendChild(btn);
+    }
+    el.textContent += new Date().toISOString().slice(11, 19) + " " + m + "\n";
+  }
+  window.addEventListener("error", function (e) { dbg("WINDOW ERROR: " + (e.message || e)); });
+
   function mapProfile(r) {
     return { email: r.email || "", name: r.name || "", org: r.org || "", role: r.role || "",
       summary: r.summary || "", workflows: r.workflows || [], load_notes: r.load_notes || "",
@@ -400,8 +420,25 @@
       return;
     }
     supa = window.supabase.createClient(cfg.url, cfg.anonKey);
-    supa.auth.onAuthStateChange(function (ev) { if (ev === "SIGNED_IN") location.reload(); });
+    dbg("client created; hashLen=" + location.hash.length + " has_access_token=" + /access_token/.test(location.hash));
+    try {
+      var _k = [];
+      for (var _i = 0; _i < localStorage.length; _i++) _k.push(localStorage.key(_i));
+      dbg("BEFORE init: localStorage keys=" + JSON.stringify(_k));
+    } catch (e) { dbg("BEFORE init: localStorage unreadable: " + e.message); }
+    try { localStorage.setItem("__wtest", "1"); localStorage.removeItem("__wtest"); dbg("localStorage writable: yes"); }
+    catch (e) { dbg("localStorage writable: NO: " + e.message); }
+    supa.auth.onAuthStateChange(function (ev, sess) {
+      dbg("EVENT: " + ev + " session=" + (sess ? "yes(" + (sess.user && sess.user.email) + ")" : "no"));
+      if (ev === "SIGNED_IN" && !DEBUG) location.reload();
+    });
     var s = await supa.auth.getSession();
+    dbg("getSession -> " + (s.data && s.data.session ? "SESSION user=" + s.data.session.user.email : "null") + (s.error ? " err=" + s.error.message : ""));
+    try {
+      var _k2 = [];
+      for (var _j = 0; _j < localStorage.length; _j++) _k2.push(localStorage.key(_j));
+      dbg("AFTER getSession: localStorage keys=" + JSON.stringify(_k2));
+    } catch (e) { dbg("AFTER getSession: localStorage unreadable: " + e.message); }
     var session = s.data && s.data.session;
     if (!session) { wireSignin(); showSignin(); return; }
     currentUser = session.user;
