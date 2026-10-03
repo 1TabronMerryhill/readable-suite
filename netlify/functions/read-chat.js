@@ -5,7 +5,9 @@
    transcript is never stored anywhere by us; only the buyer's confirmed
    answers and report are kept as the lead record.
 
-   Env: ANTHROPIC_API_KEY (required), READ_MODEL (optional override). */
+   Env: ANTHROPIC_API_KEY (required), READ_MODEL (optional override),
+   ANTHROPIC_WORKSPACE_ID (optional: required when the API key is not
+   scoped to a workspace — sent as the anthropic-workspace-id header). */
 
 "use strict";
 
@@ -93,14 +95,18 @@ exports.handler = async function (event) {
   var maxTokens = mode === "extract" ? 2000 : 500;
 
   var resp;
+  var apiHeaders = {
+    "Content-Type": "application/json",
+    "x-api-key": key,
+    "anthropic-version": ANTHROPIC_VERSION
+  };
+  if (process.env.ANTHROPIC_WORKSPACE_ID) {
+    apiHeaders["anthropic-workspace-id"] = process.env.ANTHROPIC_WORKSPACE_ID;
+  }
   try {
     resp = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": key,
-        "anthropic-version": ANTHROPIC_VERSION
-      },
+      headers: apiHeaders,
       body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system: system, messages: messages })
     });
   } catch (e) {
@@ -108,9 +114,7 @@ exports.handler = async function (event) {
   }
 
   if (!resp.ok) {
-    var diag = "";
-    try { diag = await resp.text(); } catch (e) { diag = ""; }
-    return json(502, { ok: false, reason: "upstream_error", status: resp.status, diag: String(diag).slice(0, 400) });
+    return json(502, { ok: false, reason: "upstream_error", status: resp.status });
   }
 
   var data = await resp.json();
