@@ -430,7 +430,10 @@
     catch (e) { dbg("localStorage writable: NO: " + e.message); }
     supa.auth.onAuthStateChange(function (ev, sess) {
       dbg("EVENT: " + ev + " session=" + (sess ? "yes(" + (sess.user && sess.user.email) + ")" : "no"));
-      if (ev === "SIGNED_IN" && !DEBUG) location.reload();
+      if (ev === "SIGNED_IN" && sess && sess.user && !currentUser) {
+        dbg("SIGNED_IN after init: booting app in place (no reload)");
+        bootApp(sess.user);
+      }
     });
     var s = await supa.auth.getSession();
     dbg("getSession -> " + (s.data && s.data.session ? "SESSION user=" + s.data.session.user.email : "null") + (s.error ? " err=" + s.error.message : ""));
@@ -441,7 +444,13 @@
     } catch (e) { dbg("AFTER getSession: localStorage unreadable: " + e.message); }
     var session = s.data && s.data.session;
     if (!session) { wireSignin(); showSignin(); return; }
-    currentUser = session.user;
+    bootApp(session.user);
+  }
+
+  async function bootApp(user) {
+    if (currentUser) { dbg("bootApp: already booted, skipping"); return; }
+    currentUser = user;
+    dbg("bootApp: user=" + user.email);
     await drainLocal(currentUser);
     db = await loadDb(currentUser);
     var memberTier = /[?&]member=(cadence|unlimited)/.exec(location.search);
@@ -451,6 +460,7 @@
       await upsertProfile();
     }
     startApp(memberTier);
+    dbg("bootApp: app started");
   }
 
   function startApp(memberTier) {
