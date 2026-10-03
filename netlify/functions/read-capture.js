@@ -11,8 +11,20 @@ var API_URL = "https://api.anthropic.com/v1/messages";
 var ANTHROPIC_VERSION = "2023-06-01";
 var MODEL = process.env.READ_MODEL || "claude-haiku-4-5-20251001";
 var AIRTABLE_API = "https://api.airtable.com/v0";
-var TRAINING_BASE = "appHDR9CU6WjHYZdy"; // SPIN Operating Control Center
-var TRAINING_TABLE = "Read Training";
+var TRAINING_BASE = "appio2HRVGqJEzZeP"; // Readable base
+var TRAINING_TABLE = "tblxyvGeRCPDu9xXE"; // Evaluation Runs
+var TRAINING_CAMPAIGN = "recc9RAeT3yaKMFqi"; // "Read Training — Grading Scorecard loop"
+/* Evaluation Runs fields */
+var F = {
+  name: "fldsJTIwYTzh4H7me",      // Evaluation Run
+  model: "fldyMOiH4ahip0vXY",     // Model / Configuration
+  prompt: "fldDb2UkzcSV7mePO",    // Prompt Version
+  response: "fld2m25zTE8uBQz7J",  // Model Response (richText) — the transcript
+  evidence: "fld343otu7i8o0BEG",  // Evidence Used (richText) — misses + suggested patch
+  score: "fldp1OX5s6TgyVDSW",      // Composite Score (number) — 1-7 grade
+  campaign: "fldTtR4zHbZMGPRfL"    // Evaluation Campaign (link)
+};
+var PROMPT_VERSION = "read-chat.js CHAT_SYSTEM + attunement layer (2026-10-03)";
 
 var GRADE_SYSTEM = [
   "You are grading Read, an AI co-pilot's, conversation replies against a communication codebook.",
@@ -85,7 +97,7 @@ async function gradeTranscript(key, transcript) {
 }
 
 async function storeTraining(token, record) {
-  var resp = await fetch(AIRTABLE_API + "/" + TRAINING_BASE + "/" + encodeURIComponent(TRAINING_TABLE), {
+  var resp = await fetch(AIRTABLE_API + "/" + TRAINING_BASE + "/" + TRAINING_TABLE, {
     method: "POST",
     headers: {
       "Authorization": "Bearer " + token,
@@ -96,6 +108,15 @@ async function storeTraining(token, record) {
   if (!resp.ok) return null;
   var data = await resp.json();
   return data.id || true;
+}
+
+function buildEvidence(grade) {
+  var lines = [];
+  (grade.misses || []).forEach(function (m) {
+    lines.push("- [" + (m.principle || "?") + "] \"" + (m.quote || "") + "\" — " + (m.why || ""));
+  });
+  var out = "Misses:\n" + (lines.length ? lines.join("\n") : "None — clean 6-7.") + "\n\nSuggested patch:\n" + (grade.suggested_patch || "None.");
+  return out.slice(0, 100000);
 }
 
 exports.handler = async function (event) {
@@ -122,13 +143,15 @@ exports.handler = async function (event) {
   var airtableToken = process.env.AIRTABLE_TOKEN;
   if (airtableToken && grade) {
     try {
-      stored = await storeTraining(airtableToken, {
-        "Transcript": transcript.slice(0, 100000),
-        "Grade": grade.grade,
-        "Misses": JSON.stringify(grade.misses || []).slice(0, 5000),
-        "Suggested patch": grade.suggested_patch || "",
-        "Report ID": String(body.reportId || "")
-      });
+      var rec = {};
+      rec[F.name] = "Read Training — " + String(body.reportId || "no-report");
+      rec[F.model] = MODEL;
+      rec[F.prompt] = PROMPT_VERSION;
+      rec[F.response] = transcript.slice(0, 100000);
+      rec[F.evidence] = buildEvidence(grade);
+      rec[F.score] = grade.grade;
+      rec[F.campaign] = [TRAINING_CAMPAIGN];
+      stored = await storeTraining(airtableToken, rec);
     } catch (e) { stored = null; }
   }
 
