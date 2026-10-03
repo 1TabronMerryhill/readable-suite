@@ -401,7 +401,7 @@
     input.placeholder = "Talk in your own words…";
     input.setAttribute("aria-label", "Your message to Read");
     input.setAttribute("autocomplete", "off");
-    var sendBtn = el("button", "rc-send", "Send");
+    var sendBtn = el("button", "rc-send", "&rarr;");
     sendBtn.type = "button";
     formRow.appendChild(micBtn);
     formRow.appendChild(input);
@@ -507,7 +507,10 @@
       }).then(function (r) { return r.json(); }).then(function (data) {
         busy = false;
         if (!data || !data.ok || !data.packet) throw new Error("bad extract");
-        renderConfirm(mount, data.packet, onDone);
+        renderConfirm(mount, data.packet, function (a, t, x) {
+          if (opts.onEvidenceConfirmed) opts.onEvidenceConfirmed(a, t, x);
+          else onDone(a, t, x);
+        });
       }).catch(function () {
         busy = false;
         reviewBtn.disabled = false;
@@ -608,7 +611,7 @@
     wrap.appendChild(err);
 
     var nav = el("div", "rc-nav");
-    var confirmBtn = el("button", "rc-next", "Confirm & see my report →");
+    var confirmBtn = el("button", "rc-next", "Confirm & continue →");
     confirmBtn.type = "button";
     confirmBtn.onclick = function () {
       var required = [fName, fOrg, fEmail];
