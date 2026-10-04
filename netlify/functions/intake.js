@@ -174,10 +174,10 @@ const FORMS = {
   /* DayMarket — routed by interest into the OSN base (appjzXZTIPxdGvnYj).
      Frontend posts form_id "daymarket" with fields.interest =
      "DayMarket — <interest>"; the handler expands it to "daymarket:<interest>".
-     Auth: READ_NETLIFY env var (Airtable token with OSN access). */
+     Auth: the shared AIRTABLE_TOKEN env var, which on Netlify holds the
+     READ_NETLIFY PAT (Airtable token with OSN access). */
   "daymarket:business profile": {
     base: "appjzXZTIPxdGvnYj", // OSN
-    tokenEnv: "READ_NETLIFY",
     table: "tbl3DoPAslPhvVmV8", // Business Applications
     map: {
       name: "fldNJJDVYO0msU6VM", // Contact Name
@@ -194,7 +194,6 @@ const FORMS = {
   },
   "daymarket:org membership": {
     base: "appjzXZTIPxdGvnYj", // OSN
-    tokenEnv: "READ_NETLIFY",
     table: "tblVIFum5hIn9R0fK", // Organizations
     map: {
       name: "fldK7acmBdyM1iBPh", // Primary Contact
@@ -214,7 +213,6 @@ const FORMS = {
   },
   "daymarket:org packages": {
     base: "appjzXZTIPxdGvnYj", // OSN
-    tokenEnv: "READ_NETLIFY",
     table: "tblddt246iEIzy1si", // Buyer Requests
     map: {
       name: "fldwYJeCzVgYEHhec", // Contact Name
@@ -235,7 +233,6 @@ const FORMS = {
   },
   "daymarket:holiday pass": {
     base: "appjzXZTIPxdGvnYj", // OSN
-    tokenEnv: "READ_NETLIFY",
     table: "tblVIFum5hIn9R0fK", // Organizations (individuals filed as Type Other)
     map: {
       name: "fldK7acmBdyM1iBPh", // Primary Contact
@@ -256,7 +253,6 @@ const FORMS = {
   },
   "daymarket:holiday alerts": {
     base: "appjzXZTIPxdGvnYj", // OSN
-    tokenEnv: "READ_NETLIFY",
     table: "tblVIFum5hIn9R0fK", // Organizations (individuals filed as Type Other)
     map: {
       name: "fldK7acmBdyM1iBPh", // Primary Contact
@@ -277,7 +273,6 @@ const FORMS = {
   },
   "daymarket:founding list": {
     base: "appjzXZTIPxdGvnYj", // OSN
-    tokenEnv: "READ_NETLIFY",
     table: "tblVIFum5hIn9R0fK", // Organizations (individuals filed as Type Other)
     map: {
       name: "fldK7acmBdyM1iBPh", // Primary Contact
