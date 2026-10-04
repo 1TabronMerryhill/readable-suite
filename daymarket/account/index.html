@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Account — DayMarket</title>
+<meta name="description" content="Your DayMarket account: passes, claimed deals, and business tools.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dm.css">
+<link rel="stylesheet" href="account.css">
+</head>
+<body>
+<header class="site-header"><div class="wrap"><a class="logo" href="../index.html"><span class="dot"></span><span class="word">Day<em>Market</em></span></a><nav class="site-nav"><a href="../holidays.html">Holidays</a><a href="../packages.html">Packages</a><a href="../membership.html">Membership</a><a href="../businesses.html">For Businesses</a><a href="index.html">Account</a><a class="nav-cta" href="../membership.html">Get the Pass</a></nav></div></header>
+
+<main>
+<section class="block tight"><div class="wrap">
+
+<div id="signing" hidden>
+<p class="kicker">My DayMarket</p>
+<h2>Signing you in…</h2>
+<div class="spinner" aria-hidden="true"></div>
+</div>
+
+<div class="notice err" id="fatal" hidden><p style="margin:0"></p></div>
+
+<div id="app" hidden>
+<div class="notice" id="notice" role="status"></div>
+
+<div class="dash-head">
+<div>
+<p class="kicker">My DayMarket</p>
+<h2 id="hello">Welcome</h2>
+<p class="who" id="who"></p>
+</div>
+<button class="btn ghost small" type="button" data-action="signout">Sign out</button>
+</div>
+
+<div class="tabs" id="tabs" hidden>
+<button class="tab" type="button" data-action="tab" data-view="member">Member</button>
+<button class="tab" type="button" data-action="tab" data-view="business">Business</button>
+</div>
+
+<section id="member-view"></section>
+<section id="business-view" hidden></section>
+</div>
+
+</div></section>
+</main>
+
+<footer class="site-footer"><div class="wrap"><div class="cols"><div><h4>DayMarket</h4><a href="../index.html">A daily holiday.</a><a href="../holidays.html">Holiday feed</a><a href="../packages.html">Workplace packages</a></div><div><h4>Membership</h4><a href="../membership.html">Holiday Pass — $12/mo*</a><a href="../membership.html">Org Membership — $49/mo*</a><a href="../businesses.html">Business Profile — $99/mo*</a></div><div><h4>Company</h4><a href="../businesses.html">List your business</a><a href="index.html">My account</a></div></div><p class="fine">* Founding pricing — adjustable. DayMarket is operated by Operator One (Tabron Merryhill Systems). Launch menu platform: Ellianna's Donut Shop, Columbia, MO — (573) 442-5608. © <span data-year></span> DayMarket.</p></div></footer>
+
+<script src="../assets/dm.js"></script>
+<script src="../supabase/dm-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase/dm-client.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var signingEl = document.getElementById("signing");
+  var fatalEl = document.getElementById("fatal");
+  var noticeEl = document.getElementById("notice");
+  var appEl = document.getElementById("app");
+  var tabsEl = document.getElementById("tabs");
+  var memberViewEl = document.getElementById("member-view");
+  var businessViewEl = document.getElementById("business-view");
+
+  var session = null, me = null;
+  var member = null;
+  var businesses = [];
+  var currentBiz = null;
+  var view = "member";
+  var memberHolidays = [];
+  var myClaims = [];
+  var bizHolidays = [];
+  var bizRedemptions = [];
+
+  var esc = DM.esc;
+
+  /* ---------- small helpers ---------- */
+
+  function note(kind, text) {
+    noticeEl.className = "notice" + (kind ? " " + kind : "");
+    noticeEl.textContent = text;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function clearNote() { noticeEl.className = "notice"; noticeEl.textContent = ""; }
+
+  function fmtDate(iso) {
+    if (!iso) return "";
+    try {
+      return new Date(iso).toLocaleString("en-US", {
+        timeZone: "America/Chicago",
+        weekday: "short", month: "short", day: "numeric",
+        hour: "numeric", minute: "2-digit"
+      });
+    } catch (e) { return iso; }
+  }
+
+  function datesLine(h) {
+    var a = fmtDate(h.starts_at), b = fmtDate(h.ends_at);
+    if (a && b) return a + " – " + b;
+    return a || b || "";
+  }
+
+  function badge(status) {
+    var labels = {
+      pending: "Under review", active: "Active", suspended: "Suspended",
+      draft: "Draft", published: "Published", ended: "Ended", archived: "Archived",
+      sold_out: "Sold out", claimed: "Claimed", redeemed: "Redeemed",
+      expired: "Expired", canceled: "Canceled", inactive: "Inactive", past_due: "Past due"
+    };
+    var label = labels[status] || status;
+    return '<span class="status ' + esc(status) + '">' + esc(label) + "</span>";
+  }
+
+  function passName(t) {
+    return t === "holiday" ? "Holiday Pass"
+      : t === "organization" ? "Organization Membership"
+      : "No pass yet";
+  }
+
+  function qtyLeft(offer) {
+    if (offer.quantity_total === null || offer.quantity_total === undefined) return Infinity;
+    return offer.quantity_total - (offer.quantity_claimed || 0);
+  }
+
+  function val(form, name) {
+    var el = form.elements[name];
+    return el ? String(el.value || "").trim() : "";
+  }
+  function toCents(dollars) {
+    if (!dollars) return null;
+    var n = Math.round(parseFloat(dollars) * 100);
+    return isNaN(n) ? null : n;
+  }
+  function toISO(v) { return v ? new Date(v).toISOString() : null; }
+
+  function copyText(t) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(t);
+    }
+    return Promise.reject(new Error("Clipboard unavailable"));
+  }
+
+  /* ---------- data loading ---------- */
+
+  async function loadMemberData() {
+    var m = await DM.supabase.from("dm_members").select("*").eq("id", me).maybeSingle();
+    if (m.error) throw m.error;
+    member = m.data;
+
+    var h = await DM.supabase.from("dm_holidays")
+      .select("id,title,description,starts_at,ends_at,business:dm_businesses(name),dm_offers(*)")
+      .eq("status", "published")
+      .eq("dm_offers.status", "active")
+      .order("starts_at", { ascending: true, nullsFirst: false });
+    if (h.error) throw h.error;
+    memberHolidays = h.data || [];
+
+    var c = await DM.supabase.from("dm_redemptions")
+      .select("id,offer_id,code,status,claimed_at,offer:dm_offers(title,holiday:dm_holidays(title,business:dm_businesses(name)))")
+      .eq("member_id", me)
+      .order("claimed_at", { ascending: false });
+    if (c.error) throw c.error;
+    myClaims = c.data || [];
+  }
+
+  async function loadBusinesses() {
+    var r = await DM.supabase.from("dm_businesses").select("*").eq("owner_id", me).order("created_at", { ascending: true });
+    if (r.error) throw r.error;
+    businesses = r.data || [];
+    if (businesses.length && !currentBiz) currentBiz = businesses[0];
+    if (currentBiz && !businesses.some(function (b) { return b.id === currentBiz.id; })) {
+      currentBiz = businesses[0] || null;
+    }
+  }
+
+  async function loadBusinessData() {
+    bizHolidays = [];
+    bizRedemptions = [];
+    if (!currentBiz) return;
+    var h = await DM.supabase.from("dm_holidays")
+      .select("*,dm_offers(*)")
+      .eq("business_id", currentBiz.id)
+      .order("created_at", { ascending: false });
+    if (h.error) throw h.error;
+    bizHolidays = h.data || [];
+
+    var offerIds = [];
+    bizHolidays.forEach(function (hh) {
+      (hh.dm_offers || []).forEach(function (o) { offerIds.push(o.id); });
+    });
+    if (offerIds.length) {
+      var r = await DM.supabase.from("dm_redemptions")
+        .select("id,code,status,claimed_at,redeemed_at,offer:dm_offers(title),member:dm_members(email)")
+        .in("offer_id", offerIds)
+        .order("claimed_at", { ascending: false });
+      if (r.error) throw r.error;
+      bizRedemptions = r.data || [];
+    }
+  }
+
+  /* ---------- member view ---------- */
+
+  function renderMember() {
+    var claimedIds = {};
+    myClaims.forEach(function (c) {
+      if (c.status !== "canceled") claimedIds[c.offer_id] = true;
+    });
+    var html = "";
+
+    html += '<div class="panel tint"><h3>My Pass</h3>';
+    var pt = member ? member.pass_type : "none";
+    var ps = member ? member.pass_status : "inactive";
+    html += "<p>" + badge(ps) + " &nbsp;<strong>" + esc(passName(pt)) + "</strong></p>";
+    html += '<p class="lede">Paid passes launch soon. Founding members lock founding pricing — no payments are collected yet.</p>';
+    html += '<p><a class="go" href="../membership.html">See membership →</a></p></div>';
+
+    html += '<p class="kicker">Today\'s holidays</p>';
+    if (!memberHolidays.length) {
+      html += '<div class="panel"><p class="lede">No live holidays right now. New deal events drop all the time — check back soon.</p></div>';
+    } else {
+      memberHolidays.forEach(function (h) {
+        var bizName = (h.business && h.business.name) || "DayMarket";
+        html += '<div class="panel"><p class="kicker">' + esc(bizName) + "</p>";
+        html += "<h3>" + esc(h.title) + "</h3>";
+        var dl = datesLine(h);
+        if (dl) html += '<p class="mini">' + esc(dl) + "</p>";
+        if (h.description) html += "<p>" + esc(h.description) + "</p>";
+        (h.dm_offers || []).forEach(function (o) {
+          html += renderOffer(o, claimedIds);
+        });
+        html += "</div>";
+      });
+    }
+
+    html += '<p class="kicker">My claims</p>';
+    if (!myClaims.length) {
+      html += '<div class="panel"><p class="lede">Nothing claimed yet. When you claim a deal, your code lands here — show it at the business to redeem.</p></div>';
+    } else {
+      myClaims.forEach(function (c) {
+        var offerTitle = (c.offer && c.offer.title) || "Deal";
+        var holTitle = (c.offer && c.offer.holiday && c.offer.holiday.title) || "";
+        var bName = (c.offer && c.offer.holiday && c.offer.holiday.business && c.offer.holiday.business.name) || "";
+        html += '<div class="panel"><div class="row" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">';
+        html += "<div><h3 style='margin:0 0 4px'>" + esc(offerTitle) + "</h3>";
+        html += '<p class="mini" style="margin:0">' + esc(bName) + (holTitle ? " · " + esc(holTitle) : "") + "<br>Claimed " + esc(fmtDate(c.claimed_at)) + "</p></div>";
+        html += "<div>" + badge(c.status) + "</div></div>";
+        html += '<div><span class="claim-code">' + esc(c.code) + '</span> ';
+        html += '<button class="copy-btn" type="button" data-action="copy" data-code="' + esc(c.code) + '">Copy</button></div>';
+        html += "</div>";
+      });
+    }
+
+    memberViewEl.innerHTML = html;
+  }
+
+  function renderOffer(o, claimedIds) {
+    var left = qtyLeft(o);
+    var claimed = !!claimedIds[o.id];
+    var soldOut = left !== Infinity && left <= 0;
+    var html = '<div class="offer"><div class="row"><div><h4>' + esc(o.title) + "</h4>";
+    if (o.details) html += "<p>" + esc(o.details) + "</p>";
+    html += '<div class="prices"><span class="member-price">' + esc(DM.money(o.member_price_cents)) + "</span>";
+    if (o.regular_price_cents !== null && o.regular_price_cents !== undefined) {
+      html += '<span class="regular-price">' + esc(DM.money(o.regular_price_cents)) + "</span>";
+    }
+    html += "</div>";
+    html += '<span class="left">' + (left === Infinity ? "Unlimited quantity" : left + " left") + "</span>";
+    html += "</div><div>";
+    if (claimed) {
+      html += '<button class="btn small ghost" type="button" disabled>Claimed</button>';
+    } else if (soldOut) {
+      html += '<button class="btn small ghost" type="button" disabled>Sold out</button>';
+    } else {
+      html += '<button class="btn small" type="button" data-action="claim" data-offer="' + esc(o.id) + '">Claim</button>';
+    }
+    html += "</div></div></div>";
+    return html;
+  }
+
+  /* ---------- business view ---------- */
+
+  function renderBusiness() {
+    var html = "";
+    if (!businesses.length) {
+      html += '<p class="kicker">For business owners</p>';
+      html += '<div class="panel"><h3>Register your business</h3>';
+      html += '<p class="lede">Claim your DayMarket profile. We review every business before it goes live — usually within a day.</p>';
+      html += '<form data-form="register">';
+      html += field("name", "Business name", "text", true, "Ellianna's Donut Shop");
+      html += field("tagline", "Tagline", "text", false, "Fresh daily in Columbia, MO");
+      html += '<div class="field"><label for="reg-description">Description</label><textarea class="input" id="reg-description" name="description" placeholder="What you do, what you\'re known for…"></textarea></div>';
+      html += '<div class="form-row"><div class="field"><label for="reg-website">Website</label><input class="input" type="url" id="reg-website" name="website" placeholder="https://…"></div>';
+      html += '<div class="field"><label for="reg-logo">Logo URL</label><input class="input" type="url" id="reg-logo" name="logo_url" placeholder="https://…"></div></div>';
+      html += '<button class="btn" type="submit">Submit for review</button>';
+      html += "</form></div>";
+      businessViewEl.innerHTML = html;
+      return;
+    }
+
+    if (businesses.length > 1) {
+      html += '<div class="biz-switch"><label for="biz-select"><strong>Business:</strong></label><select class="input" id="biz-select" data-action-change="biz-select">';
+      businesses.forEach(function (b) {
+        html += '<option value="' + esc(b.id) + '"' + (currentBiz && b.id === currentBiz.id ? " selected" : "") + ">" + esc(b.name) + "</option>";
+      });
+      html += "</select></div>";
+    }
+
+    var b = currentBiz;
+    html += '<div class="panel tint"><div class="row" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">';
+    html += "<div><h3 style='margin:0'>" + esc(b.name) + "</h3>";
+    if (b.tagline) html += '<p class="lede" style="margin:4px 0 0">' + esc(b.tagline) + "</p></div>";
+    else html += "</div>";
+    html += "<div>" + badge(b.status) + "</div></div>";
+    if (b.status === "pending") {
+      html += '<p class="mini">Your profile is under review. You can set everything up now — it goes live the moment we approve it.</p>';
+    }
+    html += "</div>";
+
+    // Profile form
+    html += '<div class="panel"><h3>Profile</h3><p class="lede">This is what members see on your business page.</p>';
+    html += '<form data-form="save-profile">';
+    html += field("name", "Business name", "text", true, "", b.name);
+    html += field("tagline", "Tagline", "text", false, "", b.tagline);
+    html += '<div class="field"><label for="p-description">Description</label><textarea class="input" id="p-description" name="description">' + esc(b.description) + "</textarea></div>";
+    html += '<div class="form-row"><div class="field"><label for="p-website">Website</label><input class="input" type="url" id="p-website" name="website" value="' + esc(b.website) + '"></div>';
+    html += '<div class="field"><label for="p-logo">Logo URL</label><input class="input" type="url" id="p-logo" name="logo_url" value="' + esc(b.logo_url) + '"></div></div>';
+    html += '<button class="btn small" type="submit">Save profile</button></form></div>';
+
+    // Holidays
+    html += '<p class="kicker">Holidays</p>';
+    html += '<details class="panel"><summary style="cursor:pointer;font-weight:700">+ New holiday</summary>';
+    html += '<form data-form="new-holiday" class="mt">';
+    html += field("title", "Title", "text", true, "Black Friday in July");
+    html += '<div class="field"><label for="nh-description">Description</label><textarea class="input" id="nh-description" name="description" placeholder="What\'s the event?"></textarea></div>';
+    html += '<div class="form-row"><div class="field"><label for="nh-starts">Starts</label><input class="input" type="datetime-local" id="nh-starts" name="starts_at"></div>';
+    html += '<div class="field"><label for="nh-ends">Ends</label><input class="input" type="datetime-local" id="nh-ends" name="ends_at"></div></div>';
+    html += '<button class="btn small" type="submit">Create draft</button></form></details>';
+
+    if (!bizHolidays.length) {
+      html += '<div class="panel"><p class="lede">No holidays yet. Create one above, add offers to it, then publish — members see it instantly.</p></div>';
+    }
+    bizHolidays.forEach(function (h) {
+      html += '<div class="panel"><div class="row" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">';
+      html += "<div><h3 style='margin:0 0 4px'>" + esc(h.title) + "</h3>";
+      var dl = datesLine(h);
+      if (dl) html += '<p class="mini" style="margin:0">' + esc(dl) + "</p>";
+      if (h.description) html += '<p class="mt-sm" style="margin-bottom:0">' + esc(h.description) + "</p></div>";
+      else html += "</div>";
+      html += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' + badge(h.status);
+      if (h.status === "draft") html += '<button class="btn small" type="button" data-action="publish-holiday" data-id="' + esc(h.id) + '">Publish</button>';
+      if (h.status === "published") html += '<button class="btn small ghost" type="button" data-action="unpublish-holiday" data-id="' + esc(h.id) + '">Unpublish</button>';
+      html += "</div></div>";
+
+      html += '<p class="mini mt"><strong>Offers</strong></p>';
+      var offers = h.dm_offers || [];
+      if (!offers.length) html += '<p class="mini">No offers yet.</p>';
+      offers.forEach(function (o) {
+        var left = qtyLeft(o);
+        html += '<div class="offer"><div class="row"><div><h4>' + esc(o.title) + "</h4>";
+        if (o.details) html += "<p>" + esc(o.details) + "</p>";
+        html += '<div class="prices"><span class="member-price">' + esc(DM.money(o.member_price_cents)) + "</span>";
+        if (o.regular_price_cents !== null && o.regular_price_cents !== undefined) {
+          html += '<span class="regular-price">' + esc(DM.money(o.regular_price_cents)) + "</span>";
+        }
+        html += "</div>";
+        html += '<span class="left">' + (left === Infinity ? "Unlimited" : left + " of " + o.quantity_total + " left") + " · " + (o.quantity_claimed || 0) + " claimed</span>";
+        html += "</div><div style='display:flex;gap:8px;align-items:center;flex-wrap:wrap'>" + badge(o.status);
+        if (o.status === "draft") html += '<button class="btn small" type="button" data-action="activate-offer" data-id="' + esc(o.id) + '">Activate</button>';
+        if (o.status === "active") html += '<button class="btn small ghost" type="button" data-action="deactivate-offer" data-id="' + esc(o.id) + '">Deactivate</button>';
+        html += "</div></div></div>";
+      });
+
+      html += '<details class="offer"><summary style="cursor:pointer;font-weight:700">+ Add an offer</summary>';
+      html += '<form data-form="new-offer" data-holiday="' + esc(h.id) + '" class="mt">';
+      html += field("title", "Offer title", "text", true, "Free coffee traveler with Morning Meeting");
+      html += '<div class="field"><label>Details</label><textarea class="input" name="details" placeholder="Fine print, limits, how it works…"></textarea></div>';
+      html += '<div class="form-row three">';
+      html += '<div class="field"><label>Regular price ($)</label><input class="input" type="number" name="regular_price" min="0" step="0.01" placeholder="18.00"></div>';
+      html += '<div class="field"><label>Member price ($)</label><input class="input" type="number" name="member_price" min="0" step="0.01" placeholder="12.00"></div>';
+      html += '<div class="field"><label>Quantity <span class="hint">(blank = unlimited)</span></label><input class="input" type="number" name="quantity" min="1" step="1" placeholder="50"></div>';
+      html += "</div>";
+      html += '<button class="btn small" type="submit">Add offer (draft)</button></form></details>';
+      html += "</div>";
+    });
+
+    // Redemptions
+    html += '<p class="kicker">Redemptions</p>';
+    html += '<div class="panel"><h3>Claims on your offers</h3>';
+    html += '<p class="lede">Members claim online and show their code in person. Mark each redeemed when they pick it up.</p>';
+    if (!bizRedemptions.length) {
+      html += '<p class="lede">No claims yet.</p>';
+    } else {
+      html += '<div class="table-scroll"><table class="data"><thead><tr><th>Code</th><th>Offer</th><th>Member</th><th>Claimed</th><th>Status</th><th></th></tr></thead><tbody>';
+      bizRedemptions.forEach(function (r) {
+        var oTitle = (r.offer && r.offer.title) || "—";
+        var mEmail = (r.member && r.member.email) || "—";
+        html += "<tr><td class='mono'>" + esc(r.code) + "</td><td>" + esc(oTitle) + "</td><td>" + esc(mEmail) + "</td>";
+        html += "<td>" + esc(fmtDate(r.claimed_at)) + "</td><td>" + badge(r.status) + "</td><td>";
+        if (r.status === "claimed") {
+          html += '<button class="btn small" type="button" data-action="mark-redeemed" data-id="' + esc(r.id) + '">Mark redeemed</button>';
+        }
+        html += "</td></tr>";
+      });
+      html += "</tbody></table></div>";
+    }
+    html += "</div>";
+
+    businessViewEl.innerHTML = html;
+  }
+
+  function field(name, label, type, required, placeholder, value) {
+    return '<div class="field"><label>' + esc(label) + '</label>' +
+      '<input class="input" type="' + esc(type) + '" name="' + esc(name) + '"' +
+      (required ? " required" : "") +
+      (placeholder ? ' placeholder="' + esc(placeholder) + '"' : "") +
+      (value !== undefined ? ' value="' + esc(value) + '"' : "") + "></div>";
+  }
+
+  function renderTabs() {
+    if (businesses.length) {
+      tabsEl.hidden = false;
+      var tabs = tabsEl.querySelectorAll(".tab");
+      tabs.forEach(function (t) {
+        t.classList.toggle("active", t.getAttribute("data-view") === view);
+      });
+      memberViewEl.hidden = view !== "member";
+      businessViewEl.hidden = view !== "business";
+    } else {
+      tabsEl.hidden = true;
+      memberViewEl.hidden = false;
+      businessViewEl.hidden = false; // shows the register card below member content
+    }
+  }
+
+  function render() {
+    renderTabs();
+    renderMember();
+    renderBusiness();
+  }
+
+  /* ---------- actions ---------- */
+
+  async function claimOffer(offerId, btn) {
+    btn.disabled = true;
+    var original = btn.textContent;
+    btn.textContent = "Claiming…";
+    try {
+      var dup = await DM.supabase.from("dm_redemptions")
+        .select("id").eq("offer_id", offerId).eq("member_id", me).maybeSingle();
+      if (dup.error) throw dup.error;
+      if (dup.data) {
+        note("ok", "You've already claimed this one — find your code under My Claims.");
+      } else {
+        var ins = await DM.supabase.from("dm_redemptions").insert({
+          offer_id: offerId, member_id: me, code: DM.genCode()
+        });
+        if (ins.error) throw ins.error;
+        note("ok", "Claimed! Show your code at the business to redeem.");
+      }
+      await loadMemberData();
+      renderMember();
+    } catch (err) {
+      if (err && err.code === "23505") {
+        note("err", "You've already claimed this one.");
+        await loadMemberData();
+        renderMember();
+      } else {
+        note("err", "Couldn't claim that: " + ((err && err.message) || err));
+        btn.disabled = false;
+        btn.textContent = original;
+      }
+    }
+  }
+
+  async function refreshBusiness(okMsg) {
+    await loadBusinesses();
+    await loadBusinessData();
+    renderTabs();
+    renderBusiness();
+    if (okMsg) note("ok", okMsg);
+  }
+
+  document.addEventListener("click", function (ev) {
+    var el = ev.target.closest("[data-action]");
+    if (!el) return;
+    var action = el.getAttribute("data-action");
+    var id = el.getAttribute("data-id");
+
+    if (action === "signout") {
+      DM.supabase.auth.signOut().finally(function () {
+        window.location.replace("../index.html");
+      });
+      return;
+    }
+    if (action === "tab") {
+      clearNote();
+      view = el.getAttribute("data-view");
+      renderTabs();
+      return;
+    }
+    if (action === "claim") { claimOffer(el.getAttribute("data-offer"), el); return; }
+    if (action === "copy") {
+      copyText(el.getAttribute("data-code")).then(
+        function () { note("ok", "Code copied."); },
+        function () { note("err", "Copy didn't work — long-press the code to copy it manually."); }
+      );
+      return;
+    }
+    if (action === "publish-holiday") {
+      updateRow("dm_holidays", id, { status: "published" })
+        .then(function () { return refreshBusiness("Holiday published — members can see it now."); })
+        .catch(bizErr);
+      return;
+    }
+    if (action === "unpublish-holiday") {
+      updateRow("dm_holidays", id, { status: "draft" })
+        .then(function () { return refreshBusiness("Holiday unpublished."); })
+        .catch(bizErr);
+      return;
+    }
+    if (action === "activate-offer") {
+      updateRow("dm_offers", id, { status: "active" })
+        .then(function () { return refreshBusiness("Offer is live."); })
+        .catch(bizErr);
+      return;
+    }
+    if (action === "deactivate-offer") {
+      updateRow("dm_offers", id, { status: "draft" })
+        .then(function () { return refreshBusiness("Offer deactivated."); })
+        .catch(bizErr);
+      return;
+    }
+    if (action === "mark-redeemed") {
+      el.disabled = true;
+      updateRow("dm_redemptions", id, { status: "redeemed", redeemed_at: new Date().toISOString() })
+        .then(function () { return refreshBusiness("Marked as redeemed."); })
+        .catch(function (err) { el.disabled = false; bizErr(err); });
+      return;
+    }
+  });
+
+  async function updateRow(table, id, patch) {
+    var r = await DM.supabase.from(table).update(patch).eq("id", id);
+    if (r.error) throw r.error;
+  }
+  function bizErr(err) {
+    note("err", "That didn't save: " + ((err && err.message) || err));
+  }
+
+  document.addEventListener("change", function (ev) {
+    var el = ev.target.closest("[data-action-change]");
+    if (!el) return;
+    if (el.getAttribute("data-action-change") === "biz-select") {
+      var found = businesses.filter(function (b) { return b.id === el.value; })[0];
+      if (found) {
+        currentBiz = found;
+        loadBusinessData().then(function () { renderTabs(); renderBusiness(); }).catch(bizErr);
+      }
+    }
+  });
+
+  document.addEventListener("submit", function (ev) {
+    var form = ev.target.closest("[data-form]");
+    if (!form) return;
+    ev.preventDefault();
+    clearNote();
+    var kind = form.getAttribute("data-form");
+
+    if (kind === "register") {
+      var name = val(form, "name");
+      if (!name) { note("err", "Give your business a name."); return; }
+      DM.supabase.from("dm_businesses").insert({
+        owner_id: me,
+        name: name,
+        tagline: val(form, "tagline") || null,
+        description: val(form, "description") || null,
+        website: val(form, "website") || null,
+        logo_url: val(form, "logo_url") || null,
+        status: "pending",
+        profile_tier: "none"
+      }).then(function (r) {
+        if (r.error) throw r.error;
+        return refreshBusiness("Thanks — your business is under review. Set up holidays below while you wait.");
+      }).catch(bizErr);
+      return;
+    }
+
+    if (kind === "save-profile") {
+      var bname = val(form, "name");
+      if (!bname) { note("err", "Your business needs a name."); return; }
+      updateRow("dm_businesses", currentBiz.id, {
+        name: bname,
+        tagline: val(form, "tagline") || null,
+        description: val(form, "description") || null,
+        website: val(form, "website") || null,
+        logo_url: val(form, "logo_url") || null
+      }).then(function () { return refreshBusiness("Profile saved."); }).catch(bizErr);
+      return;
+    }
+
+    if (kind === "new-holiday") {
+      var title = val(form, "title");
+      if (!title) { note("err", "Give the holiday a title."); return; }
+      DM.supabase.from("dm_holidays").insert({
+        business_id: currentBiz.id,
+        title: title,
+        description: val(form, "description") || null,
+        starts_at: toISO(val(form, "starts_at")),
+        ends_at: toISO(val(form, "ends_at")),
+        status: "draft"
+      }).then(function (r) {
+        if (r.error) throw r.error;
+        return refreshBusiness("Holiday created as a draft. Add offers, then publish it.");
+      }).catch(bizErr);
+      return;
+    }
+
+    if (kind === "new-offer") {
+      var otitle = val(form, "title");
+      if (!otitle) { note("err", "Give the offer a title."); return; }
+      var qtyRaw = val(form, "quantity");
+      DM.supabase.from("dm_offers").insert({
+        holiday_id: form.getAttribute("data-holiday"),
+        title: otitle,
+        details: val(form, "details") || null,
+        regular_price_cents: toCents(val(form, "regular_price")),
+        member_price_cents: toCents(val(form, "member_price")),
+        quantity_total: qtyRaw ? parseInt(qtyRaw, 10) : null,
+        status: "draft"
+      }).then(function (r) {
+        if (r.error) throw r.error;
+        return refreshBusiness("Offer added as a draft. Activate it when the holiday is ready.");
+      }).catch(bizErr);
+      return;
+    }
+  });
+
+  /* ---------- init ---------- */
+
+  async function init() {
+    var hash = window.location.hash || "";
+    if (/access_token|error_description|error=/.test(hash)) signingEl.hidden = false;
+    try {
+      session = await DM.requireAuth();
+      if (!session) return; // bounced to login
+      me = session.user.id;
+
+      await DM.upsertMember(session);
+      await loadMemberData();
+      await loadBusinesses();
+      if (currentBiz) await loadBusinessData();
+
+      document.getElementById("who").textContent = session.user.email || "";
+      render();
+      signingEl.hidden = true;
+      appEl.hidden = false;
+
+      if (hash) {
+        try { history.replaceState(null, "", window.location.pathname + window.location.search); } catch (e) {}
+      }
+    } catch (err) {
+      signingEl.hidden = true;
+      fatalEl.hidden = false;
+      fatalEl.querySelector("p").textContent =
+        "Couldn't load your account: " + ((err && err.message) || err);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
+</body>
+</html>
