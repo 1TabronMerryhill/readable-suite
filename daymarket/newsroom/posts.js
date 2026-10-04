@@ -3,6 +3,15 @@
    Fields: slug, title, date (display string), excerpt, body (HTML string). */
 window.DM_POSTS = [
   {
+    slug: "elliannas-profile-is-live",
+    title: "Ellianna's profile is live — the first digital twin",
+    date: "October 4, 2026",
+    excerpt: "Ellianna's Donut Shop now has a living profile on DayMarket: their story, their calendar, their holidays. This is what every business profile will be.",
+    body: "<p><strong>Ellianna's Donut Shop has a profile on DayMarket now</strong> — and it's not a listing, it's a twin. Their story, their hours, their signature items, and their holiday calendar, all in one place. They've never had a website. This is it.</p>" +
+      "<p>Here's what runs through the profile: <strong>morning drops</strong> announced in the WhatsApp group the night before. <strong>Waste-turn giveaways</strong> — when inventory would go to waste at closing, it becomes a limited giveaway instead, and you perform an action to earn it. <strong>Scavenger hunts</strong> in the group chat that end at their counter. And the <strong>deal platform</strong>: whenever they need to move inventory, a holiday goes up.</p>" +
+      "<p>Every business on DayMarket gets one of these. The roster is the trust layer — you trust the marketplace because real local businesses live on it. Ellianna's is first. <a href=\"../businesses/elliannas-donut-shop/\">See the profile</a>.</p>"
+  },
+  {
     slug: "daymarket-is-live",
     title: "DayMarket is live in Columbia",
     date: "October 4, 2026",
