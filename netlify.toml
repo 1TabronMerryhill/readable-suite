@@ -12,3 +12,13 @@
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "SAMEORIGIN"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# DayMarket retirement (Oct 4, 2026): the old /daymarket/ path on this site now
+# permanently redirects to the dedicated subdomain. force=true so it fires
+# even though the static files still exist in the repo. (No effect on the
+# daymarket-tm site, which serves those files at its own root.)
+[[redirects]]
+  from = "/daymarket/*"
+  to = "https://daymarket.tabronmerryhill.com/:splat"
+  status = 301
+  force = true
