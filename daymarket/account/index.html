@@ -80,6 +80,7 @@
   var myClaims = [];
   var bizHolidays = [];
   var bizRedemptions = [];
+  var bizOrders = [];
   var myOrders = [];
   var orgPackages = [];
   var orgBusinesses = [];
@@ -188,6 +189,7 @@
   async function loadBusinessData() {
     bizHolidays = [];
     bizRedemptions = [];
+    bizOrders = [];
     if (!currentBiz) return;
     var h = await DM.supabase.from("dm_holidays")
       .select("*,dm_offers(*)")
@@ -208,6 +210,14 @@
       if (r.error) throw r.error;
       bizRedemptions = r.data || [];
     }
+
+    try {
+      var oo = await DM.supabase.from("dm_orders")
+        .select("id,title,scheduled_for,headcount,recurrence,status,notes,delivery_address,total_cents,package:dm_packages(name)")
+        .eq("business_id", currentBiz.id)
+        .order("scheduled_for", { ascending: true });
+      if (!oo.error) bizOrders = oo.data || [];
+    } catch (e) { bizOrders = []; }
   }
 
   function isOrg() {
@@ -219,7 +229,7 @@
     if (!isOrg()) return;
     try {
       var o = await DM.supabase.from("dm_orders")
-        .select("id,title,scheduled_for,headcount,recurrence,status,notes,total_cents,package:dm_packages(name),business:dm_businesses(name)")
+        .select("id,title,scheduled_for,headcount,recurrence,status,notes,delivery_address,total_cents,package:dm_packages(name),business:dm_businesses(name)")
         .eq("org_id", me)
         .order("scheduled_for", { ascending: true });
       if (o.error) throw o.error;
@@ -323,6 +333,26 @@
 
   /* ---------- business view ---------- */
 
+  function renderBizOrder(o) {
+    var pkg = (o.package && o.package.name) || "Package";
+    var html = '<div class="panel"><div class="row" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">';
+    html += "<div><h3 style='margin:0 0 4px'>" + esc(o.title) + "</h3>";
+    html += '<p class="mini" style="margin:0">' + esc(fmtDate(o.scheduled_for)) + " · " + esc(pkg) +
+      (o.headcount ? " · " + esc(String(o.headcount)) + " people" : "") +
+      (o.recurrence && o.recurrence !== "once" ? " · repeats " + esc(o.recurrence) : "") +
+      (o.total_cents ? " · " + esc(DM.money(o.total_cents)) : "") + "</p>";
+    if (o.delivery_address) html += '<p class="mini" style="margin:4px 0 0">Deliver to: ' + esc(o.delivery_address) + "</p>";
+    if (o.notes) html += '<p class="mini" style="margin:4px 0 0">Notes: ' + esc(o.notes) + "</p>";
+    html += "</div><div>" + orderStatusBadge(o.status);
+    if (o.status === "scheduled") {
+      html += ' <button class="btn small" type="button" data-action="confirm-order" data-id="' + esc(o.id) + '">Confirm</button>';
+    } else if (o.status === "confirmed") {
+      html += ' <button class="btn small" type="button" data-action="deliver-order" data-id="' + esc(o.id) + '">Mark delivered</button>';
+    }
+    html += "</div></div></div>";
+    return html;
+  }
+
   function renderBusiness() {
     var html = "";
     if (!businesses.length) {
@@ -369,6 +399,25 @@
     html += '<div class="form-row"><div class="field"><label for="p-website">Website</label><input class="input" type="url" id="p-website" name="website" value="' + esc(b.website) + '"></div>';
     html += '<div class="field"><label for="p-logo">Logo URL</label><input class="input" type="url" id="p-logo" name="logo_url" value="' + esc(b.logo_url) + '"></div></div>';
     html += '<button class="btn small" type="submit">Save profile</button></form></div>';
+
+    // Incoming org orders (fulfillment)
+    html += '<p class="kicker">Incoming orders</p>';
+    var nowISO = new Date().toISOString();
+    var openOrders = bizOrders.filter(function (o) {
+      return (o.status === "scheduled" || o.status === "confirmed") && o.scheduled_for >= nowISO;
+    });
+    var doneOrders = bizOrders.filter(function (o) { return openOrders.indexOf(o) === -1; });
+    if (!bizOrders.length) {
+      html += '<div class="panel"><p class="lede">No orders routed to you yet. When organizations schedule packages with your kitchen, they land here — confirm them and mark them delivered.</p></div>';
+    } else {
+      if (!openOrders.length) html += '<div class="panel"><p class="lede">Nothing on the fulfillment calendar right now.</p></div>';
+      openOrders.forEach(function (o) { html += renderBizOrder(o); });
+      if (doneOrders.length) {
+        html += '<details class="panel"><summary style="cursor:pointer;font-weight:700">Past orders (' + doneOrders.length + ")</summary>";
+        doneOrders.slice().reverse().forEach(function (o) { html += renderBizOrder(o); });
+        html += "</details>";
+      }
+    }
 
     // Holidays
     html += '<p class="kicker">Holidays</p>';
@@ -468,6 +517,7 @@
       (o.headcount ? " · " + esc(String(o.headcount)) + " people" : "") + "<br>Fulfilled by " + esc(who) +
       (o.recurrence && o.recurrence !== "once" ? " · repeats " + esc(o.recurrence) : "") +
       (o.total_cents ? " · " + esc(DM.money(o.total_cents)) : "") + "</p>";
+    if (o.delivery_address) html += '<p class="mini" style="margin:4px 0 0">Deliver to: ' + esc(o.delivery_address) + "</p>";
     if (o.notes) html += '<p class="mini" style="margin:4px 0 0">Notes: ' + esc(o.notes) + "</p>";
     html += "</div><div>" + orderStatusBadge(o.status);
     if (showCancel && o.status === "scheduled") {
@@ -532,6 +582,7 @@
     html += field("headcount", "Headcount", "number", false, "12");
     html += "</div>";
     html += '<div class="field"><label>Repeats</label><select class="input" name="recurrence"><option value="once">Just once</option><option value="weekly">Weekly</option><option value="biweekly">Every two weeks</option><option value="monthly">Monthly</option></select></div>';
+    html += field("delivery_address", "Delivery address", "text", false, "1100 Main St, Suite 200, Columbia, MO");
     html += '<div class="field"><label for="oo-notes">Dietary needs / notes</label><textarea class="input" id="oo-notes" name="notes" placeholder="Vegetarian options, nut allergy in the group, drop at the front desk…"></textarea></div>';
     html += '<button class="btn" type="submit">Schedule order</button>';
     html += "</form></div>";
@@ -652,6 +703,17 @@
           return loadOrgData().then(function () { renderOrg(); note("ok", "Order canceled."); });
         })
         .catch(function (err) { note("err", "Couldn't cancel: " + ((err && err.message) || err)); });
+      return;
+    }
+    if (action === "confirm-order" || action === "deliver-order") {
+      var next = action === "confirm-order" ? "confirmed" : "delivered";
+      var done = action === "confirm-order" ? "Order confirmed — the org has been notified." : "Marked delivered. Nice work.";
+      DM.supabase.from("dm_orders").update({ status: next }).eq("id", id)
+        .then(function (r) {
+          if (r.error) throw r.error;
+          return loadBusinessData().then(function () { renderBusiness(); note("ok", done); });
+        })
+        .catch(function (err) { note("err", "Couldn't update that order: " + ((err && err.message) || err)); });
       return;
     }
     if (action === "claim") { claimOffer(el.getAttribute("data-offer"), el); return; }
@@ -807,6 +869,7 @@
         headcount: isNaN(hc) ? null : hc,
         recurrence: val(form, "recurrence") || "once",
         notes: val(form, "notes") || null,
+        delivery_address: val(form, "delivery_address") || null,
         status: "scheduled"
       }).then(function (r) {
         if (r.error) throw r.error;
