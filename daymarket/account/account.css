@@ -1,0 +1,122 @@
+/* DayMarket account area — form/table/tab styles that extend the site design system. */
+
+.dash-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.dash-head h2 { margin: 6px 0 0; }
+.dash-head .who { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
+
+.tabs { display: flex; gap: 8px; margin: 4px 0 22px; flex-wrap: wrap; }
+.tab {
+  font: inherit; font-weight: 700; font-size: 14.5px;
+  padding: 10px 20px; border-radius: 999px; cursor: pointer;
+  background: #fff; border: 1.5px solid var(--line); color: var(--soft);
+}
+.tab.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+.tab .count {
+  display: inline-block; min-width: 22px; text-align: center;
+  background: var(--cream); border-radius: 999px; font-size: 12.5px; padding: 1px 6px; margin-left: 6px;
+}
+.tab.active .count { background: rgba(255,255,255,0.18); }
+
+/* ---------- forms ---------- */
+.field { margin-bottom: 14px; }
+.field > label { display: block; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; color: var(--ink); }
+.field .hint { font-weight: 400; color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+.input, textarea.input, select.input {
+  width: 100%; padding: 12px 14px; font: inherit; font-size: 15px; color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: 10px; background: #fff;
+}
+.input:focus { outline: 2px solid var(--orange); border-color: var(--orange); }
+textarea.input { min-height: 88px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.form-inline { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+.form-inline .field { flex: 1 1 160px; margin-bottom: 0; }
+
+.panel {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 22px; box-shadow: var(--shadow-sm); margin-bottom: 22px;
+}
+.panel h3 { margin: 0 0 6px; }
+.panel .lede { color: var(--muted); font-size: 14.5px; margin: 0 0 16px; }
+.panel.tint { background: var(--cream); }
+
+/* ---------- status badges ---------- */
+.status {
+  display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: 0.8px;
+  text-transform: uppercase; padding: 4px 11px; border-radius: 999px;
+}
+.status.active, .status.live, .status.redeemed { background: #e5f6e5; color: #1e7a2e; }
+.status.pending, .status.draft, .status.claimed, .status.past_due { background: #fff3d6; color: #8a5a00; }
+.status.suspended, .status.canceled, .status.ended, .status.sold_out, .status.archived { background: #f0f0f2; color: var(--muted); }
+.status.published { background: #ffe9df; color: var(--orange-dark); }
+
+/* ---------- offers / claims ---------- */
+.offer {
+  border: 1px solid var(--line); border-radius: 10px; padding: 16px;
+  margin-top: 12px; background: #fff;
+}
+.offer .prices { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; margin: 6px 0; }
+.offer .member-price { font-family: "Manrope", sans-serif; font-weight: 800; font-size: 22px; color: var(--orange); }
+.offer .regular-price { color: var(--muted); text-decoration: line-through; }
+.offer .left { font-size: 13px; color: var(--muted); }
+.offer h4 { margin: 0 0 2px; }
+.offer p { margin: 4px 0; font-size: 14px; color: var(--soft); }
+.offer .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+.claim-code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 24px; font-weight: 700; letter-spacing: 3px; color: var(--navy);
+  background: var(--cream); border: 1.5px dashed var(--orange);
+  border-radius: 10px; padding: 10px 18px; display: inline-block; margin: 8px 0;
+}
+.copy-btn { font: inherit; font-size: 13px; font-weight: 700; color: var(--orange);
+  background: none; border: none; cursor: pointer; padding: 4px 6px; }
+.copy-btn:hover { text-decoration: underline; }
+
+/* ---------- tables ---------- */
+.table-scroll { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+table.data th {
+  text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--muted); padding: 10px 12px; border-bottom: 2px solid var(--line); white-space: nowrap;
+}
+table.data td { padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.data tr:last-child td { border-bottom: none; }
+table.data .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+
+/* ---------- notices ---------- */
+.notice {
+  border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; font-size: 14.5px;
+  background: #fff8e6; border: 1px solid #f3dfa8; color: #5c4a12;
+}
+.notice.err { background: #fdeeee; border-color: #f3c2c2; color: #8c1f1f; }
+.notice.ok { background: #e9f7ea; border-color: #bfe3c4; color: #1e6b2c; }
+.notice:empty { display: none; }
+
+.signin-card { max-width: 480px; margin: 0 auto; }
+.center { text-align: center; }
+.spinner {
+  width: 34px; height: 34px; border-radius: 50%; margin: 26px auto;
+  border: 4px solid var(--line); border-top-color: var(--orange);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.biz-switch { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+.biz-switch select.input { width: auto; min-width: 240px; }
+
+.list-plain { list-style: none; margin: 0; padding: 0; }
+.list-plain > li { margin-bottom: 18px; }
+.mini { font-size: 13px; color: var(--muted); }
+.mt { margin-top: 18px; }
+.mt-sm { margin-top: 10px; }
+
+@media (max-width: 640px) {
+  .form-row, .form-row.three { grid-template-columns: 1fr; }
+  .dash-head { margin-bottom: 14px; }
+  .panel { padding: 16px; }
+  .claim-code { font-size: 20px; letter-spacing: 2px; }
+}
