@@ -40,10 +40,12 @@
 <div class="tabs" id="tabs" hidden>
 <button class="tab" type="button" data-action="tab" data-view="member">Member</button>
 <button class="tab" type="button" data-action="tab" data-view="business">Business</button>
+<button class="tab" type="button" data-action="tab" data-view="org" data-tab="org" hidden>Organization</button>
 </div>
 
 <section id="member-view"></section>
 <section id="business-view" hidden></section>
+<section id="org-view" hidden></section>
 </div>
 
 </div></section>
@@ -66,6 +68,8 @@
   var tabsEl = document.getElementById("tabs");
   var memberViewEl = document.getElementById("member-view");
   var businessViewEl = document.getElementById("business-view");
+  var orgViewEl = document.getElementById("org-view");
+  var orgTabEl = tabsEl.querySelector('[data-tab="org"]');
 
   var session = null, me = null;
   var member = null;
@@ -76,6 +80,9 @@
   var myClaims = [];
   var bizHolidays = [];
   var bizRedemptions = [];
+  var myOrders = [];
+  var orgPackages = [];
+  var orgBusinesses = [];
 
   var esc = DM.esc;
 
@@ -201,6 +208,33 @@
       if (r.error) throw r.error;
       bizRedemptions = r.data || [];
     }
+  }
+
+  function isOrg() {
+    return !!(member && member.pass_type === "organization" && member.pass_status === "active");
+  }
+
+  async function loadOrgData() {
+    myOrders = []; orgPackages = []; orgBusinesses = [];
+    if (!isOrg()) return;
+    var o = await DM.supabase.from("dm_orders")
+      .select("id,title,scheduled_for,headcount,recurrence,status,notes,total_cents,package:dm_packages(name),business:dm_businesses(name)")
+      .eq("org_id", me)
+      .order("scheduled_for", { ascending: true });
+    if (o.error) throw o.error;
+    myOrders = o.data || [];
+
+    var p = await DM.supabase.from("dm_packages")
+      .select("id,name,description,serves_min,serves_max,base_price_cents")
+      .eq("active", true)
+      .order("base_price_cents", { ascending: true, nullsFirst: false });
+    if (!p.error) orgPackages = p.data || [];
+
+    var b = await DM.supabase.from("dm_businesses")
+      .select("id,name")
+      .eq("status", "active")
+      .order("name", { ascending: true });
+    if (!b.error) orgBusinesses = b.data || [];
   }
 
   /* ---------- member view ---------- */
@@ -413,6 +447,98 @@
     businessViewEl.innerHTML = html;
   }
 
+  /* ---------- org view ---------- */
+
+  function orderStatusBadge(s) {
+    var labels = { scheduled: "Scheduled", confirmed: "Confirmed", delivered: "Delivered", canceled: "Canceled" };
+    return '<span class="status ' + esc(s) + '">' + esc(labels[s] || s) + "</span>";
+  }
+
+  function renderOrderCard(o, showCancel) {
+    var pkg = (o.package && o.package.name) || "Package";
+    var who = (o.business && o.business.name) || "DayMarket kitchen";
+    var html = '<div class="panel"><div class="row" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">';
+    html += "<div><h3 style='margin:0 0 4px'>" + esc(o.title) + "</h3>";
+    html += '<p class="mini" style="margin:0">' + esc(fmtDate(o.scheduled_for)) + " · " + esc(pkg) +
+      (o.headcount ? " · " + esc(String(o.headcount)) + " people" : "") + "<br>Fulfilled by " + esc(who) +
+      (o.recurrence && o.recurrence !== "once" ? " · repeats " + esc(o.recurrence) : "") +
+      (o.total_cents ? " · " + esc(DM.money(o.total_cents)) : "") + "</p>";
+    if (o.notes) html += '<p class="mini" style="margin:4px 0 0">Notes: ' + esc(o.notes) + "</p>";
+    html += "</div><div>" + orderStatusBadge(o.status);
+    if (showCancel && o.status === "scheduled") {
+      html += ' <button class="btn small ghost" type="button" data-action="cancel-order" data-id="' + esc(o.id) + '">Cancel</button>';
+    }
+    html += "</div></div></div>";
+    return html;
+  }
+
+  function renderOrg() {
+    var html = "";
+    if (!isOrg()) {
+      html += '<p class="kicker">For organizations</p>';
+      html += '<div class="panel"><h3>Feed the whole office</h3>';
+      html += '<p class="lede">Organization membership ($49/mo) unlocks the workplace workspace: your calendar with packages attached, standing orders, and one invoice. Meeting boxes, morning meetings, appreciation moments — handled.</p>';
+      html += '<p><a class="go" href="../membership.html">See organization membership →</a></p></div>';
+      orgViewEl.innerHTML = html;
+      return;
+    }
+
+    var now = new Date().toISOString();
+    var upcoming = myOrders.filter(function (o) {
+      return o.scheduled_for >= now && (o.status === "scheduled" || o.status === "confirmed");
+    });
+    var standing = myOrders.filter(function (o) {
+      return o.recurrence !== "once" && o.status !== "canceled";
+    });
+    var past = myOrders.filter(function (o) {
+      return o.scheduled_for < now || o.status === "delivered" || o.status === "canceled";
+    });
+
+    html += '<p class="kicker">Your calendar</p>';
+    if (!upcoming.length) {
+      html += '<div class="panel"><p class="lede">Nothing scheduled. Put your meetings on the calendar below and stop thinking about food.</p></div>';
+    } else {
+      upcoming.forEach(function (o) { html += renderOrderCard(o, true); });
+    }
+
+    if (standing.length) {
+      html += '<p class="kicker">Standing orders</p>';
+      standing.forEach(function (o) { html += renderOrderCard(o, true); });
+    }
+
+    html += '<p class="kicker">Schedule an order</p>';
+    html += '<div class="panel"><form data-form="new-order">';
+    html += field("title", "What is this for?", "text", true, "Weekly team meeting");
+    html += '<div class="form-row">';
+    html += '<div class="field"><label>Package</label><select class="input" name="package_id">';
+    if (!orgPackages.length) html += '<option value="">DayMarket packages loading…</option>';
+    orgPackages.forEach(function (p) {
+      var label = p.name + (p.base_price_cents ? " — from " + DM.money(p.base_price_cents) : " — custom quoted");
+      html += '<option value="' + esc(p.id) + '">' + esc(label) + "</option>";
+    });
+    html += "</select></div>";
+    html += '<div class="field"><label>Fulfilled by</label><select class="input" name="business_id"><option value="">DayMarket kitchen</option>';
+    orgBusinesses.forEach(function (b) {
+      html += '<option value="' + esc(b.id) + '">' + esc(b.name) + "</option>";
+    });
+    html += "</select></div></div>";
+    html += '<div class="form-row">';
+    html += field("scheduled_for", "Date & time", "datetime-local", true);
+    html += field("headcount", "Headcount", "number", false, "12");
+    html += "</div>";
+    html += '<div class="field"><label>Repeats</label><select class="input" name="recurrence"><option value="once">Just once</option><option value="weekly">Weekly</option><option value="biweekly">Every two weeks</option><option value="monthly">Monthly</option></select></div>';
+    html += '<div class="field"><label for="oo-notes">Dietary needs / notes</label><textarea class="input" id="oo-notes" name="notes" placeholder="Vegetarian options, nut allergy in the group, drop at the front desk…"></textarea></div>';
+    html += '<button class="btn" type="submit">Schedule order</button>';
+    html += "</form></div>";
+
+    if (past.length) {
+      html += '<p class="kicker">History</p>';
+      past.slice().reverse().forEach(function (o) { html += renderOrderCard(o, false); });
+    }
+
+    orgViewEl.innerHTML = html;
+  }
+
   function field(name, label, type, required, placeholder, value) {
     return '<div class="field"><label>' + esc(label) + '</label>' +
       '<input class="input" type="' + esc(type) + '" name="' + esc(name) + '"' +
@@ -422,7 +548,14 @@
   }
 
   function renderTabs() {
-    if (businesses.length) {
+    var showBiz = businesses.length > 0;
+    var showOrg = isOrg();
+    var bizTab = tabsEl.querySelector('[data-view="business"]');
+    if (bizTab) bizTab.hidden = !showBiz;
+    if (orgTabEl) orgTabEl.hidden = !showOrg;
+    if (view === "business" && !showBiz) view = "member";
+    if (view === "org" && !showOrg) view = "member";
+    if (showBiz || showOrg) {
       tabsEl.hidden = false;
       var tabs = tabsEl.querySelectorAll(".tab");
       tabs.forEach(function (t) {
@@ -430,10 +563,12 @@
       });
       memberViewEl.hidden = view !== "member";
       businessViewEl.hidden = view !== "business";
+      orgViewEl.hidden = view !== "org";
     } else {
       tabsEl.hidden = true;
       memberViewEl.hidden = false;
       businessViewEl.hidden = false; // shows the register card below member content
+      orgViewEl.hidden = true;
     }
   }
 
@@ -441,6 +576,7 @@
     renderTabs();
     renderMember();
     renderBusiness();
+    renderOrg();
   }
 
   /* ---------- actions ---------- */
@@ -501,6 +637,16 @@
       clearNote();
       view = el.getAttribute("data-view");
       renderTabs();
+      return;
+    }
+    if (action === "cancel-order") {
+      if (!window.confirm("Cancel this order?")) return;
+      DM.supabase.from("dm_orders").update({ status: "canceled" }).eq("id", id).eq("org_id", me)
+        .then(function (r) {
+          if (r.error) throw r.error;
+          return loadOrgData().then(function () { renderOrg(); note("ok", "Order canceled."); });
+        })
+        .catch(function (err) { note("err", "Couldn't cancel: " + ((err && err.message) || err)); });
       return;
     }
     if (action === "claim") { claimOffer(el.getAttribute("data-offer"), el); return; }
@@ -638,6 +784,31 @@
       }).catch(bizErr);
       return;
     }
+
+    if (kind === "new-order") {
+      var oTitle = val(form, "title");
+      var when = val(form, "scheduled_for");
+      if (!oTitle) { note("err", "Say what this order is for."); return; }
+      if (!when) { note("err", "Pick a date and time."); return; }
+      var pkgId = val(form, "package_id") || null;
+      var bizId = val(form, "business_id") || null;
+      var hc = parseInt(val(form, "headcount"), 10);
+      DM.supabase.from("dm_orders").insert({
+        org_id: me,
+        business_id: bizId,
+        package_id: pkgId,
+        title: oTitle,
+        scheduled_for: toISO(when),
+        headcount: isNaN(hc) ? null : hc,
+        recurrence: val(form, "recurrence") || "once",
+        notes: val(form, "notes") || null,
+        status: "scheduled"
+      }).then(function (r) {
+        if (r.error) throw r.error;
+        return loadOrgData().then(function () { renderOrg(); note("ok", "Order scheduled. We'll confirm it with the kitchen."); });
+      }).catch(function (err) { note("err", "Couldn't schedule that: " + ((err && err.message) || err)); });
+      return;
+    }
   });
 
   /* ---------- init ---------- */
@@ -654,6 +825,7 @@
       await loadMemberData();
       await loadBusinesses();
       if (currentBiz) await loadBusinessData();
+      await loadOrgData();
 
       document.getElementById("who").textContent = session.user.email || "";
       render();
