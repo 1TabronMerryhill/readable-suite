@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — DayMarket</title>
+<meta name="description" content="Sign in to your DayMarket account with a magic link.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dm.css">
+<link rel="stylesheet" href="account.css">
+</head>
+<body>
+<header class="site-header"><div class="wrap"><a class="logo" href="../index.html"><span class="dot"></span><span class="word">Day<em>Market</em></span></a><nav class="site-nav"><a href="../holidays.html">Holidays</a><a href="../packages.html">Packages</a><a href="../membership.html">Membership</a><a href="../businesses.html">For Businesses</a><a href="index.html">Account</a><a class="nav-cta" href="../membership.html">Get the Pass</a></nav></div></header>
+
+<main>
+<section class="block"><div class="wrap">
+<div class="signin-card">
+<p class="kicker center" style="display:block">My DayMarket</p>
+<h2 class="center">Sign in</h2>
+<p class="sub center">No password. We email you a magic link that signs you in instantly.</p>
+
+<div class="notice" id="notice" role="status"></div>
+
+<div class="panel mt" id="form-panel">
+<form id="login-form" novalidate>
+<div class="field">
+<label for="email">Email address</label>
+<input class="input" type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+</div>
+<button class="btn" type="submit" id="send-btn" style="width:100%">Send magic link</button>
+<p class="fine center mt-sm">Members and business owners use the same sign-in.</p>
+</form>
+</div>
+
+<div class="panel mt center" id="sent-panel" hidden>
+<h3>Check your email</h3>
+<p id="sent-msg">We sent a sign-in link. It expires in about an hour.</p>
+<p class="mini">Didn't get it? Check spam, then <a href="#" id="resend">send it again</a>.</p>
+</div>
+
+<p class="center mt"><a class="go" href="../index.html">← Back to DayMarket</a></p>
+</div>
+</div></section>
+</main>
+
+<footer class="site-footer"><div class="wrap"><div class="cols"><div><h4>DayMarket</h4><a href="../index.html">A daily holiday.</a><a href="../holidays.html">Holiday feed</a><a href="../packages.html">Workplace packages</a></div><div><h4>Membership</h4><a href="../membership.html">Holiday Pass — $12/mo*</a><a href="../membership.html">Org Membership — $49/mo*</a><a href="../businesses.html">Business Profile — $99/mo*</a></div><div><h4>Company</h4><a href="../businesses.html">List your business</a><a href="index.html">My account</a></div></div><p class="fine">* Founding pricing — adjustable. DayMarket is operated by Operator One (Tabron Merryhill Systems). Launch menu platform: Ellianna's Donut Shop, Columbia, MO — (573) 442-5608. © <span data-year></span> DayMarket.</p></div></footer>
+
+<script src="../assets/dm.js"></script>
+<script src="../supabase/dm-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase/dm-client.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var form = document.getElementById("login-form");
+  var emailInput = document.getElementById("email");
+  var sendBtn = document.getElementById("send-btn");
+  var notice = document.getElementById("notice");
+  var formPanel = document.getElementById("form-panel");
+  var sentPanel = document.getElementById("sent-panel");
+  var sentMsg = document.getElementById("sent-msg");
+  var lastEmail = "";
+
+  function showNotice(kind, text) {
+    notice.className = "notice" + (kind ? " " + kind : "");
+    notice.textContent = text;
+  }
+  function clearNotice() { notice.className = "notice"; notice.textContent = ""; }
+
+  // Already signed in? Skip straight to the dashboard.
+  DM.getSession().then(function (session) {
+    if (session) window.location.replace("index.html");
+  }).catch(function () { /* stay on login */ });
+
+  async function sendLink(email) {
+    sendBtn.disabled = true;
+    var original = sendBtn.textContent;
+    sendBtn.textContent = "Sending…";
+    try {
+      var res = await DM.supabase.auth.signInWithOtp({
+        email: email,
+        options: { emailRedirectTo: window.DM_ACCOUNT_URL || window.location.origin + "/daymarket/account/" }
+      });
+      if (res.error) throw res.error;
+      lastEmail = email;
+      sentMsg.textContent = "We sent a sign-in link to " + email + ". It expires in about an hour.";
+      formPanel.hidden = true;
+      sentPanel.hidden = false;
+      clearNotice();
+    } catch (err) {
+      showNotice("err", err.message || "Something went wrong sending the link. Please try again.");
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.textContent = original;
+    }
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    clearNotice();
+    var email = (emailInput.value || "").trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      showNotice("err", "Please enter a valid email address.");
+      emailInput.focus();
+      return;
+    }
+    sendLink(email);
+  });
+
+  document.getElementById("resend").addEventListener("click", function (ev) {
+    ev.preventDefault();
+    if (lastEmail) sendLink(lastEmail);
+  });
+})();
+</script>
+</body>
+</html>
