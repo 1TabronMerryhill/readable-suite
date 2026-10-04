@@ -240,7 +240,7 @@ const FORMS = {
     },
     statics: {
       fldK0Aj6yeGwiTne6: "Lead", // Status
-      fldD6dCncFv0ro: "Other", // Organization Type
+      fldD6dC1VCncFv0ro: "Other", // Organization Type
       fldjOCzslrKeukYpa: "DayMarket holiday pass — founding list ($12/mo tier, individual)", // Internal Notes
     },
     required: ["email"],
@@ -260,7 +260,7 @@ const FORMS = {
     },
     statics: {
       fldK0Aj6yeGwiTne6: "Lead", // Status
-      fldD6dCncFv0ro: "Other", // Organization Type
+      fldD6dC1VCncFv0ro: "Other", // Organization Type
       fldjOCzslrKeukYpa: "DayMarket holiday alerts — founding list (individual)", // Internal Notes
     },
     required: ["email"],
@@ -280,7 +280,7 @@ const FORMS = {
     },
     statics: {
       fldK0Aj6yeGwiTne6: "Lead", // Status
-      fldD6dCncFv0ro: "Other", // Organization Type
+      fldD6dC1VCncFv0ro: "Other", // Organization Type
       fldjOCzslrKeukYpa: "DayMarket founding list (individual)", // Internal Notes
     },
     required: ["email"],
