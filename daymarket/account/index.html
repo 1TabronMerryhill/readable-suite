@@ -217,12 +217,17 @@
   async function loadOrgData() {
     myOrders = []; orgPackages = []; orgBusinesses = [];
     if (!isOrg()) return;
-    var o = await DM.supabase.from("dm_orders")
-      .select("id,title,scheduled_for,headcount,recurrence,status,notes,total_cents,package:dm_packages(name),business:dm_businesses(name)")
-      .eq("org_id", me)
-      .order("scheduled_for", { ascending: true });
-    if (o.error) throw o.error;
-    myOrders = o.data || [];
+    try {
+      var o = await DM.supabase.from("dm_orders")
+        .select("id,title,scheduled_for,headcount,recurrence,status,notes,total_cents,package:dm_packages(name),business:dm_businesses(name)")
+        .eq("org_id", me)
+        .order("scheduled_for", { ascending: true });
+      if (o.error) throw o.error;
+      myOrders = o.data || [];
+    } catch (e) {
+      // dm_orders table not migrated yet — org view renders empty states
+      myOrders = [];
+    }
 
     var p = await DM.supabase.from("dm_packages")
       .select("id,name,description,serves_min,serves_max,base_price_cents")
