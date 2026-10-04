@@ -171,23 +171,130 @@ const FORMS = {
     timestamps: ["fldVP7k4OWKzxeUYx"], // Consent Date
     required: ["email"],
   },
-  "daymarket": {
-    base: "appHDR9CU6WjHYZdy", // SPIN base — List Subscribers
-    table: "tblQGrrB2GN1rjxi2",
+  /* DayMarket — routed by interest into the OSN base (appjzXZTIPxdGvnYj).
+     Frontend posts form_id "daymarket" with fields.interest =
+     "DayMarket — <interest>"; the handler expands it to "daymarket:<interest>".
+     Auth: AIRTABLE_OSN_TOKEN env var (the OSN-scoped PAT). */
+  "daymarket:business profile": {
+    base: "appjzXZTIPxdGvnYj", // OSN
+    tokenEnv: "AIRTABLE_OSN_TOKEN",
+    table: "tbl3DoPAslPhvVmV8", // Business Applications
     map: {
-      name: "fldRp6gAAxtaXE0IK", // Name
-      email: "fldWWhc7Io5txRY0N", // Email
-      interest: "fldYeGmLeFIEL7QZp", // Notes — frontend sends "DayMarket — <interest>"
+      name: "fldNJJDVYO0msU6VM", // Contact Name
+      email: "fldrFr8p9os112RkE", // Email
+    },
+    statics: { fldsVSTbH88Znf0bT: "New" }, // Status
+    timestamps: ["flddHKWmh5tanb39i"], // Submitted At
+    required: ["email"],
+    compose: {
+      titleField: "fldCscKodOkWcQRbF", // Application Name
+      titleFrom: "email",
+      titlePrefix: "DayMarket business profile",
+    },
+  },
+  "daymarket:org membership": {
+    base: "appjzXZTIPxdGvnYj", // OSN
+    tokenEnv: "AIRTABLE_OSN_TOKEN",
+    table: "tblVIFum5hIn9R0fK", // Organizations
+    map: {
+      name: "fldK7acmBdyM1iBPh", // Primary Contact
+      email: "fldKnOlYkw4INfxgc", // Email
     },
     statics: {
-      // Source has no "DayMarket" option and the token cannot create select
-      // options; attribution lives in Notes. If "DayMarket" is added as a
-      // Source option in the Airtable UI, switch this static to "DayMarket".
-      fldGHMLNQJVSeRJIy: "Website", // Source
-      fldoP4G0fD1a9M6CF: "Active", // Status
+      fldK0Aj6yeGwiTne6: "Lead", // Status
+      fldjOCzslrKeukYpa: "DayMarket org membership — founding list ($49/mo tier)", // Internal Notes
     },
-    timestamps: ["fldVP7k4OWKzxeUYx"], // Consent Date
     required: ["email"],
+    compose: {
+      titleField: "fldAjsPMef8lwwHco", // Organization Name
+      titleFrom: "name",
+      titleFallback: "email",
+      titlePrefix: "DayMarket org member",
+    },
+  },
+  "daymarket:org packages": {
+    base: "appjzXZTIPxdGvnYj", // OSN
+    tokenEnv: "AIRTABLE_OSN_TOKEN",
+    table: "tblddt246iEIzy1si", // Buyer Requests
+    map: {
+      name: "fldwYJeCzVgYEHhec", // Contact Name
+      email: "fld5VTpuMjQyym1VN", // Email
+    },
+    statics: {
+      fldUIJDyRJ2SQgHOd: "New", // Status
+      fldPE8MGBsmFkkTOn: "Website", // Source
+      fldvc2mI6Om2Yp0VK: "DayMarket org packages — founding list", // Requirements
+    },
+    timestamps: ["fldd4GNAvfLrvHStY"], // Submitted At
+    required: ["email"],
+    compose: {
+      titleField: "fld7SDz1ez4AaRWU2", // Request Name
+      titleFrom: "email",
+      titlePrefix: "DayMarket org packages",
+    },
+  },
+  "daymarket:holiday pass": {
+    base: "appjzXZTIPxdGvnYj", // OSN
+    tokenEnv: "AIRTABLE_OSN_TOKEN",
+    table: "tblVIFum5hIn9R0fK", // Organizations (individuals filed as Type Other)
+    map: {
+      name: "fldK7acmBdyM1iBPh", // Primary Contact
+      email: "fldKnOlYkw4INfxgc", // Email
+    },
+    statics: {
+      fldK0Aj6yeGwiTne6: "Lead", // Status
+      fldD6dCncFv0ro: "Other", // Organization Type
+      fldjOCzslrKeukYpa: "DayMarket holiday pass — founding list ($12/mo tier, individual)", // Internal Notes
+    },
+    required: ["email"],
+    compose: {
+      titleField: "fldAjsPMef8lwwHco", // Organization Name
+      titleFrom: "name",
+      titleFallback: "email",
+      titlePrefix: "DayMarket holiday pass",
+    },
+  },
+  "daymarket:holiday alerts": {
+    base: "appjzXZTIPxdGvnYj", // OSN
+    tokenEnv: "AIRTABLE_OSN_TOKEN",
+    table: "tblVIFum5hIn9R0fK", // Organizations (individuals filed as Type Other)
+    map: {
+      name: "fldK7acmBdyM1iBPh", // Primary Contact
+      email: "fldKnOlYkw4INfxgc", // Email
+    },
+    statics: {
+      fldK0Aj6yeGwiTne6: "Lead", // Status
+      fldD6dCncFv0ro: "Other", // Organization Type
+      fldjOCzslrKeukYpa: "DayMarket holiday alerts — founding list (individual)", // Internal Notes
+    },
+    required: ["email"],
+    compose: {
+      titleField: "fldAjsPMef8lwwHco", // Organization Name
+      titleFrom: "name",
+      titleFallback: "email",
+      titlePrefix: "DayMarket holiday alerts",
+    },
+  },
+  "daymarket:founding list": {
+    base: "appjzXZTIPxdGvnYj", // OSN
+    tokenEnv: "AIRTABLE_OSN_TOKEN",
+    table: "tblVIFum5hIn9R0fK", // Organizations (individuals filed as Type Other)
+    map: {
+      name: "fldK7acmBdyM1iBPh", // Primary Contact
+      email: "fldKnOlYkw4INfxgc", // Email
+    },
+    statics: {
+      fldK0Aj6yeGwiTne6: "Lead", // Status
+      fldD6dCncFv0ro: "Other", // Organization Type
+      fldjOCzslrKeukYpa: "DayMarket founding list (individual)", // Internal Notes
+    },
+    required: ["email"],
+    compose: {
+      titleField: "fldAjsPMef8lwwHco", // Organization Name
+      titleFrom: "name",
+      titleFallback: "email",
+      titlePrefix: "DayMarket founding member",
+    },
   },
 };
 
@@ -222,7 +329,10 @@ function buildFields(def, fields) {
   const now = new Date().toISOString();
   for (const fieldId of def.timestamps || []) out[fieldId] = now;
   if (def.compose) {
-    const name = (fields[def.compose.titleFrom] || "Website inquiry").toString().trim();
+    const rawName = fields[def.compose.titleFrom]
+      || (def.compose.titleFallback && fields[def.compose.titleFallback])
+      || "Website inquiry";
+    const name = rawName.toString().trim();
     const prefix = def.compose.titlePrefix ? def.compose.titlePrefix + " — " : "";
     out[def.compose.titleField] = `${prefix}${name} — ${now.slice(0, 10)}`;
     if (def.compose.contactField) {
@@ -261,7 +371,16 @@ exports.handler = async (event) => {
   }
 
   const { form_id, fields } = body || {};
-  const def = FORMS[form_id];
+  // DayMarket posts a single form_id with an interest string; expand it to
+  // the per-interest definition (e.g. "daymarket:holiday pass").
+  let key = form_id;
+  if (form_id === "daymarket") {
+    const raw = String((fields && fields.interest) || "");
+    const interest = raw.replace(/^DayMarket\s*[—–-]\s*/i, "").trim().toLowerCase() || "founding list";
+    key = "daymarket:" + interest;
+  }
+  let def = FORMS[key];
+  if (!def && form_id === "daymarket") def = FORMS["daymarket:founding list"]; // safe fallback
   if (!def) return bad(400, "Unknown form"); // allowlist enforced
   if (!fields || typeof fields !== "object") return bad(400, "Missing fields");
 
@@ -281,7 +400,7 @@ exports.handler = async (event) => {
     return bad(400, "Invalid email address");
   }
 
-  const token = process.env.AIRTABLE_TOKEN;
+  const token = process.env[def.tokenEnv || "AIRTABLE_TOKEN"];
   if (!token) return bad(500, "Intake is not configured yet");
 
   const airtableFields = buildFields(def, fields);
