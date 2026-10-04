@@ -17,6 +17,7 @@ create table if not exists public.dm_orders (
     check (status in ('scheduled','confirmed','delivered','canceled')),
   notes text,
   total_cents integer,
+  delivery_address text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -40,5 +41,14 @@ create policy dm_orders_org on public.dm_orders
 drop policy if exists dm_orders_business on public.dm_orders;
 create policy dm_orders_business on public.dm_orders
   for select using (
+    business_id is not null and public.dm_is_owner(business_id)
+  );
+
+-- fulfilling businesses: confirm and mark delivered on their own orders
+drop policy if exists dm_orders_business_update on public.dm_orders;
+create policy dm_orders_business_update on public.dm_orders
+  for update using (
+    business_id is not null and public.dm_is_owner(business_id)
+  ) with check (
     business_id is not null and public.dm_is_owner(business_id)
   );
