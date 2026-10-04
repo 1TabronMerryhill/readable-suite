@@ -4,7 +4,7 @@
 (function () {
   "use strict";
 
-  var INTAKE_URL = "/.netlify/functions/intake";
+  var INTAKE_URL = "https://readable.tabronmerryhill.com/.netlify/functions/intake";
 
   // Footer year
   document.querySelectorAll("[data-year]").forEach(function (el) {
