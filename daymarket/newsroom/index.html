@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The DayMarket Newsroom — A daily holiday.</title>
+<meta name="description" content="Live holidays, stories, and deal alerts from DayMarket — Columbia, MO's daily holiday.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dm.css">
+<style>
+.post-card .post-body { display: none; margin-top: 10px; }
+.post-card.open .post-body { display: block; }
+.post-card .post-body p { margin: 0 0 10px; }
+.post-date { color: #8a7a5f; font-size: 0.9em; margin: 6px 0 8px; }
+.wa-card { text-align: center; padding: 34px 24px; }
+.wa-card .btn { margin-top: 12px; }
+.live-note { color: #8a7a5f; }
+.offer-line { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px dashed #e5d9c3; font-size: 0.95em; }
+.offer-line .price { white-space: nowrap; font-weight: 700; }
+.offer-line .price s { color: #a89a7d; font-weight: 400; margin-right: 6px; }
+</style>
+</head>
+<body>
+<header class="site-header"><div class="wrap"><a class="logo" href="../index.html"><span class="dot"></span><span class="word">Day<em>Market</em></span></a><nav class="site-nav"><a href="../holidays.html">Holidays</a><a href="index.html">Newsroom</a><a href="../packages.html">Packages</a><a href="../membership.html">Membership</a><a href="../businesses.html">For Businesses</a><a href="../account/index.html">Account</a><a class="nav-cta" href="../membership.html">Get the Pass</a></nav></div></header>
+
+<main>
+<section class="hero"><div class="wrap">
+<p class="kicker">The DayMarket Newsroom</p>
+<h1>What's <span class="accent">live now.</span></h1>
+<p class="lead">Every holiday, every story, every deal alert — from Columbia's daily holiday, in one place.</p>
+</div></section>
+
+<section class="block tight"><div class="wrap">
+<p class="kicker">Live now</p>
+<h2>Holidays <span class="accent">happening today.</span></h2>
+<div id="live-holidays" class="grid cols-3 mt"><div class="card"><p class="live-note">Loading live holidays…</p></div></div>
+</div></section>
+
+<section class="block tight cream"><div class="wrap">
+<p class="kicker">Stories</p>
+<h2>From the <span class="accent">newsroom.</span></h2>
+<div id="posts" class="grid cols-3 mt"></div>
+</div></section>
+
+<section class="block tight"><div class="wrap">
+<div class="card wa-card" id="wa-card">
+<p class="kicker">Group chat</p>
+<h2>The fastest deals go to <span class="accent">WhatsApp first.</span></h2>
+<p id="wa-copy">Loading…</p>
+<p id="wa-btn-wrap"></p>
+</div>
+</div></section>
+
+<section class="block tight"><div class="wrap">
+<div class="capture">
+<h3>Get holiday alerts by email</h3>
+<p>One email when a new holiday drops in Columbia, MO. No spam, unsubscribe anytime.</p>
+<form class="capture-form" data-interest="holiday alerts">
+<input type="text" name="name" placeholder="Your name" autocomplete="name">
+<input type="email" name="email" placeholder="Email address" required autocomplete="email">
+<button class="btn small" type="submit">Alert me</button>
+</form>
+<p class="msg"></p>
+<p class="fine">No payments yet — founding members lock founding pricing.</p>
+</div>
+</div></section>
+</main>
+
+<footer class="site-footer"><div class="wrap"><div class="cols"><div><h4>DayMarket</h4><a href="../index.html">A daily holiday.</a><a href="../holidays.html">Holiday feed</a><a href="index.html">Newsroom</a><a href="../packages.html">Workplace packages</a></div><div><h4>Membership</h4><a href="../membership.html">Holiday Pass — $12/mo*</a><a href="../membership.html">Org Membership — $49/mo*</a><a href="../businesses.html">Business Profile — $99/mo*</a></div><div><h4>Company</h4><a href="../businesses.html">List your business</a><a href="../index.html">About</a></div></div><p class="fine">* Founding pricing — adjustable. No payments are collected yet; joining the founding list reserves your spot and founding rate. DayMarket is operated by Operator One (Tabron Merryhill Systems). Launch menu platform: Ellianna's Donut Shop, Columbia, MO — (573) 442-5608. © <span data-year></span> DayMarket.</p></div></footer>
+<script src="../supabase/dm-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase/dm-client.js"></script>
+<script src="posts.js"></script>
+<script src="../assets/dm.js"></script>
+<script>
+(function () {
+  "use strict";
+  var esc = window.DM.esc, money = window.DM.money;
+
+  function fmtDate(iso) {
+    if (!iso) return "";
+    try {
+      return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    } catch (e) { return ""; }
+  }
+
+  /* ---------- live holidays ---------- */
+  async function loadLive() {
+    var box = document.getElementById("live-holidays");
+    try {
+      var r = await window.DM.supabase.from("dm_holidays")
+        .select("id,title,description,starts_at,ends_at,business:dm_businesses(name),dm_offers(*)")
+        .eq("status", "published")
+        .eq("dm_offers.status", "active")
+        .order("starts_at", { ascending: true, nullsFirst: false });
+      if (r.error) throw r.error;
+      var holidays = r.data || [];
+      if (!holidays.length) {
+        box.innerHTML = '<div class="card"><h3>No live holidays yet</h3><p class="live-note">Check back soon — the first deal events are being scheduled now. Join the WhatsApp group or the email list below and you\'ll hear the moment one drops.</p></div>';
+        return;
+      }
+      box.innerHTML = holidays.map(function (h) {
+        var offers = (h.dm_offers || []).map(function (o) {
+          var price = o.member_price_cents != null
+            ? '<s>' + money(o.regular_price_cents) + '</s>' + money(o.member_price_cents)
+            : money(o.regular_price_cents);
+          return '<div class="offer-line"><span>' + esc(o.title) + '</span><span class="price">' + price + '</span></div>';
+        }).join("");
+        var dates = fmtDate(h.starts_at) + (h.ends_at ? " – " + fmtDate(h.ends_at) : "");
+        return '<div class="holiday-card"><div class="bd">' +
+          '<p class="biz">' + esc(h.business && h.business.name) + (dates ? " · " + esc(dates) : "") + '</p>' +
+          '<h3>' + esc(h.title) + '</h3>' +
+          (h.description ? "<p>" + esc(h.description) + "</p>" : "") +
+          offers +
+          '<p style="margin-top:12px"><a class="go" href="../account/">Claim in your account →</a></p>' +
+          "</div></div>";
+      }).join("");
+    } catch (e) {
+      box.innerHTML = '<div class="card"><h3>No live holidays yet</h3><p class="live-note">Check back soon.</p></div>';
+    }
+  }
+
+  /* ---------- posts ---------- */
+  function loadPosts() {
+    var box = document.getElementById("posts");
+    var posts = window.DM_POSTS || [];
+    box.innerHTML = posts.map(function (p, i) {
+      return '<div class="card post-card" data-i="' + i + '">' +
+        '<p class="kicker">Story</p><h3>' + esc(p.title) + '</h3>' +
+        '<p class="post-date">' + esc(p.date) + '</p>' +
+        '<p>' + esc(p.excerpt) + '</p>' +
+        '<div class="post-body">' + p.body + '</div>' +
+        '<p style="margin-top:12px"><a class="go post-toggle" href="#" data-i="' + i + '">Read the story →</a></p>' +
+        "</div>";
+    }).join("");
+    box.addEventListener("click", function (ev) {
+      var a = ev.target.closest(".post-toggle");
+      if (!a) return;
+      ev.preventDefault();
+      var card = a.closest(".post-card");
+      card.classList.toggle("open");
+      a.textContent = card.classList.contains("open") ? "← Show less" : "Read the story →";
+    });
+  }
+
+  /* ---------- WhatsApp ---------- */
+  function loadWhatsApp() {
+    var url = window.DM_WHATSAPP_URL || "";
+    var copy = document.getElementById("wa-copy");
+    var wrap = document.getElementById("wa-btn-wrap");
+    if (url) {
+      copy.textContent = "Deal alerts, holiday drops, and the Columbia crew — it all happens in the WhatsApp group.";
+      wrap.innerHTML = '<a class="btn amber" href="' + esc(url) + '" target="_blank" rel="noopener">Join the WhatsApp group</a>';
+    } else {
+      copy.textContent = "The WhatsApp group opens soon. Sign up for holiday alerts below and you'll be first in.";
+      wrap.innerHTML = "";
+    }
+  }
+
+  loadLive();
+  loadPosts();
+  loadWhatsApp();
+})();
+</script>
+</body>
+</html>
