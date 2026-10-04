@@ -293,6 +293,25 @@ const FORMS = {
   },
 };
 
+/* CORS: the DayMarket subdomain posts here cross-origin.
+   Only origins we serve are allowed; everything else falls back to the
+   main site origin (same-origin requests don't need CORS anyway). */
+const CORS_ORIGINS = new Set([
+  "https://daymarket.tabronmerryhill.com",
+  "https://readable.tabronmerryhill.com",
+]);
+function corsHeaders(event) {
+  const h = (event && event.headers) || {};
+  const origin = h.origin || h.Origin || "";
+  const allow = CORS_ORIGINS.has(origin) ? origin : "https://readable.tabronmerryhill.com";
+  return {
+    "Access-Control-Allow-Origin": allow,
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+}
+
 function bad(status, message) {
   return { statusCode: status, body: JSON.stringify({ ok: false, error: message }) };
 }
@@ -355,7 +374,7 @@ function buildFields(def, fields) {
   return out;
 }
 
-exports.handler = async (event) => {
+async function handleEvent(event) {
   if (event.httpMethod !== "POST") return bad(405, "Method not allowed");
 
   let body;
@@ -419,4 +438,14 @@ exports.handler = async (event) => {
     return bad(502, "Intake backend rejected the submission");
   }
   return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+};
+
+// CORS wrapper: handles preflight and stamps CORS headers on every response.
+exports.handler = async (event) => {
+  const cors = corsHeaders(event);
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 204, headers: cors, body: "" };
+  }
+  const res = await handleEvent(event);
+  return { ...res, headers: { ...(res.headers || {}), ...cors } };
 };
