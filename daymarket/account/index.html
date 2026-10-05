@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Account — DayMarket</title>
+<title>My Account - DayMarket</title>
 <meta name="description" content="Your DayMarket account: passes, claimed deals, and business tools.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,7 +51,7 @@
 </div></section>
 </main>
 
-<footer class="site-footer"><div class="wrap"><div class="cols"><div><h4>DayMarket</h4><a href="../index.html">A daily holiday.</a><a href="../holidays.html">Holiday feed</a><a href="../packages.html">Workplace packages</a></div><div><h4>Membership</h4><a href="../membership.html">Holiday Pass — $12/mo*</a><a href="../membership.html">Org Membership — $49/mo*</a><a href="../businesses.html">Business Profile — $99/mo*</a></div><div><h4>Company</h4><a href="../businesses.html">List your business</a><a href="index.html">My account</a></div></div><p class="fine">* Founding pricing — adjustable. DayMarket is operated by Operator One (Tabron Merryhill Systems). Launch menu platform: Ellianna's Donut Shop, Columbia, MO — (573) 442-5608. © <span data-year></span> DayMarket.</p></div></footer>
+<footer class="site-footer"><div class="wrap"><div class="cols"><div><h4>DayMarket</h4><a href="../index.html">A daily holiday.</a><a href="../holidays.html">Holiday feed</a><a href="../packages.html">Workplace packages</a></div><div><h4>Membership</h4><a href="../membership.html">Holiday Pass ($12/mo)*</a><a href="../membership.html">Org Membership ($49/mo)*</a><a href="../businesses.html">Business Profile ($99/mo)*</a></div><div><h4>Company</h4><a href="../businesses.html">List your business</a><a href="index.html">My account</a></div></div><p class="fine">* Founding pricing, adjustable. DayMarket is operated by Operator One (Tabron Merryhill Systems). Launch menu platform: Ellianna's Donut Shop, Columbia, MO, (573) 442-5608. © <span data-year></span> DayMarket.</p></div></footer>
 
 <script src="../assets/dm.js"></script>
 <script src="../supabase/dm-config.js"></script>
@@ -235,7 +235,7 @@
       if (o.error) throw o.error;
       myOrders = o.data || [];
     } catch (e) {
-      // dm_orders table not migrated yet — org view renders empty states
+      // dm_orders table not migrated yet; org view renders empty states
       myOrders = [];
     }
 
@@ -265,12 +265,12 @@
     var pt = member ? member.pass_type : "none";
     var ps = member ? member.pass_status : "inactive";
     html += "<p>" + badge(ps) + " &nbsp;<strong>" + esc(passName(pt)) + "</strong></p>";
-    html += '<p class="lede">Paid passes launch soon. Founding members lock founding pricing — no payments are collected yet.</p>';
+    html += '<p class="lede">Paid passes launch soon. Founding members lock founding pricing. No payments are collected yet.</p>';
     html += '<p><a class="go" href="../membership.html">See membership →</a></p></div>';
 
     html += '<p class="kicker">Today\'s holidays</p>';
     if (!memberHolidays.length) {
-      html += '<div class="panel"><p class="lede">No live holidays right now. New deal events drop all the time — check back soon.</p></div>';
+      html += '<div class="panel"><p class="lede">No live holidays right now. New deal events drop all the time. Check back soon.</p></div>';
     } else {
       memberHolidays.forEach(function (h) {
         var bizName = (h.business && h.business.name) || "DayMarket";
@@ -288,7 +288,7 @@
 
     html += '<p class="kicker">My claims</p>';
     if (!myClaims.length) {
-      html += '<div class="panel"><p class="lede">Nothing claimed yet. When you claim a deal, your code lands here — show it at the business to redeem.</p></div>';
+      html += '<div class="panel"><p class="lede">Nothing claimed yet. When you claim a deal, your code lands here. Show it at the business to redeem.</p></div>';
     } else {
       myClaims.forEach(function (c) {
         var offerTitle = (c.offer && c.offer.title) || "Deal";
@@ -358,7 +358,7 @@
     if (!businesses.length) {
       html += '<p class="kicker">For business owners</p>';
       html += '<div class="panel"><h3>Register your business</h3>';
-      html += '<p class="lede">Claim your DayMarket profile. We review every business before it goes live — usually within a day.</p>';
+      html += '<p class="lede">Claim your DayMarket profile. We review every business before it goes live, usually within a day.</p>';
       html += '<form data-form="register">';
       html += field("name", "Business name", "text", true, "Ellianna's Donut Shop");
       html += field("tagline", "Tagline", "text", false, "Fresh daily in Columbia, MO");
@@ -386,7 +386,7 @@
     else html += "</div>";
     html += "<div>" + badge(b.status) + "</div></div>";
     if (b.status === "pending") {
-      html += '<p class="mini">Your profile is under review. You can set everything up now — it goes live the moment we approve it.</p>';
+      html += '<p class="mini">Your profile is under review. You can set everything up now. It goes live the moment we approve it.</p>';
     }
     html += "</div>";
 
@@ -408,7 +408,7 @@
     });
     var doneOrders = bizOrders.filter(function (o) { return openOrders.indexOf(o) === -1; });
     if (!bizOrders.length) {
-      html += '<div class="panel"><p class="lede">No orders routed to you yet. When organizations schedule packages with your kitchen, they land here — confirm them and mark them delivered.</p></div>';
+      html += '<div class="panel"><p class="lede">No orders routed to you yet. When organizations schedule packages with your kitchen, they land here. Confirm them and mark them delivered.</p></div>';
     } else {
       if (!openOrders.length) html += '<div class="panel"><p class="lede">Nothing on the fulfillment calendar right now.</p></div>';
       openOrders.forEach(function (o) { html += renderBizOrder(o); });
@@ -430,7 +430,7 @@
     html += '<button class="btn small" type="submit">Create draft</button></form></details>';
 
     if (!bizHolidays.length) {
-      html += '<div class="panel"><p class="lede">No holidays yet. Create one above, add offers to it, then publish — members see it instantly.</p></div>';
+      html += '<div class="panel"><p class="lede">No holidays yet. Create one above, add offers to it, then publish. Members see it instantly.</p></div>';
     }
     bizHolidays.forEach(function (h) {
       html += '<div class="panel"><div class="row" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">';
@@ -532,7 +532,7 @@
     if (!isOrg()) {
       html += '<p class="kicker">For organizations</p>';
       html += '<div class="panel"><h3>Feed the whole office</h3>';
-      html += '<p class="lede">Organization membership ($49/mo) unlocks the workplace workspace: your calendar with packages attached, standing orders, and one invoice. Meeting boxes, morning meetings, appreciation moments — handled.</p>';
+      html += '<p class="lede">Organization membership ($49/mo) unlocks the workplace workspace: your calendar with packages attached, standing orders, and one invoice. Meeting boxes, morning meetings, appreciation moments: handled.</p>';
       html += '<p><a class="go" href="../membership.html">See organization membership →</a></p></div>';
       orgViewEl.innerHTML = html;
       return;
@@ -568,7 +568,7 @@
     html += '<div class="field"><label>Package</label><select class="input" name="package_id">';
     if (!orgPackages.length) html += '<option value="">DayMarket packages loading…</option>';
     orgPackages.forEach(function (p) {
-      var label = p.name + (p.base_price_cents ? " — from " + DM.money(p.base_price_cents) : " — custom quoted");
+      var label = p.name + (p.base_price_cents ? " (from " + DM.money(p.base_price_cents) + ")" : " (custom quoted)");
       html += '<option value="' + esc(p.id) + '">' + esc(label) + "</option>";
     });
     html += "</select></div>";
@@ -646,7 +646,7 @@
         .select("id").eq("offer_id", offerId).eq("member_id", me).maybeSingle();
       if (dup.error) throw dup.error;
       if (dup.data) {
-        note("ok", "You've already claimed this one — find your code under My Claims.");
+        note("ok", "You've already claimed this one. Find your code under My Claims.");
       } else {
         var ins = await DM.supabase.from("dm_redemptions").insert({
           offer_id: offerId, member_id: me, code: DM.genCode()
@@ -707,7 +707,7 @@
     }
     if (action === "confirm-order" || action === "deliver-order") {
       var next = action === "confirm-order" ? "confirmed" : "delivered";
-      var done = action === "confirm-order" ? "Order confirmed — the org has been notified." : "Marked delivered. Nice work.";
+      var done = action === "confirm-order" ? "Order confirmed. The org has been notified." : "Marked delivered. Nice work.";
       DM.supabase.from("dm_orders").update({ status: next }).eq("id", id)
         .then(function (r) {
           if (r.error) throw r.error;
@@ -720,13 +720,13 @@
     if (action === "copy") {
       copyText(el.getAttribute("data-code")).then(
         function () { note("ok", "Code copied."); },
-        function () { note("err", "Copy didn't work — long-press the code to copy it manually."); }
+        function () { note("err", "Copy didn't work. Long-press the code to copy it manually."); }
       );
       return;
     }
     if (action === "publish-holiday") {
       updateRow("dm_holidays", id, { status: "published" })
-        .then(function () { return refreshBusiness("Holiday published — members can see it now."); })
+        .then(function () { return refreshBusiness("Holiday published. Members can see it now."); })
         .catch(bizErr);
       return;
     }
@@ -798,7 +798,7 @@
         profile_tier: "none"
       }).then(function (r) {
         if (r.error) throw r.error;
-        return refreshBusiness("Thanks — your business is under review. Set up holidays below while you wait.");
+        return refreshBusiness("Thanks. Your business is under review. Set up holidays below while you wait.");
       }).catch(bizErr);
       return;
     }

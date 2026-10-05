@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The DayMarket Newsroom — A daily holiday.</title>
-<meta name="description" content="Live holidays, stories, and deal alerts from DayMarket — Columbia, MO's daily holiday.">
+<title>The DayMarket Newsroom: A daily holiday.</title>
+<meta name="description" content="Live holidays, stories, and deal alerts from DayMarket: Columbia, MO's daily holiday.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
 <section class="hero"><div class="wrap">
 <p class="kicker">The DayMarket Newsroom</p>
 <h1>What's <span class="accent">live now.</span></h1>
-<p class="lead">Every holiday, every story, every deal alert — from Columbia's daily holiday, in one place.</p>
+<p class="lead">Every holiday, every story, every deal alert, from Columbia's daily holiday, in one place.</p>
 </div></section>
 
 <section class="block tight"><div class="wrap">
@@ -63,12 +63,12 @@
 <button class="btn small" type="submit">Alert me</button>
 </form>
 <p class="msg"></p>
-<p class="fine">No payments yet — founding members lock founding pricing.</p>
+<p class="fine">No payments yet. Founding members lock founding pricing.</p>
 </div>
 </div></section>
 </main>
 
-<footer class="site-footer"><div class="wrap"><div class="cols"><div><h4>DayMarket</h4><a href="../index.html">A daily holiday.</a><a href="../holidays.html">Holiday feed</a><a href="index.html">Newsroom</a><a href="../packages.html">Workplace packages</a></div><div><h4>Membership</h4><a href="../membership.html">Holiday Pass — $12/mo*</a><a href="../membership.html">Org Membership — $49/mo*</a><a href="../businesses.html">Business Profile — $99/mo*</a></div><div><h4>Company</h4><a href="../businesses.html">List your business</a><a href="../index.html">About</a></div></div><p class="fine">* Founding pricing — adjustable. No payments are collected yet; joining the founding list reserves your spot and founding rate. DayMarket is operated by Operator One (Tabron Merryhill Systems). Launch menu platform: Ellianna's Donut Shop, Columbia, MO — (573) 442-5608. © <span data-year></span> DayMarket.</p></div></footer>
+<footer class="site-footer"><div class="wrap"><div class="cols"><div><h4>DayMarket</h4><a href="../index.html">A daily holiday.</a><a href="../holidays.html">Holiday feed</a><a href="index.html">Newsroom</a><a href="../packages.html">Workplace packages</a></div><div><h4>Membership</h4><a href="../membership.html">Holiday Pass ($12/mo)*</a><a href="../membership.html">Org Membership ($49/mo)*</a><a href="../businesses.html">Business Profile ($99/mo)*</a></div><div><h4>Company</h4><a href="../businesses.html">List your business</a><a href="../index.html">About</a></div></div><p class="fine">* Founding pricing, adjustable. No payments are collected yet; joining the founding list reserves your spot and founding rate. DayMarket is operated by Operator One (Tabron Merryhill Systems). Launch menu platform: Ellianna's Donut Shop, Columbia, MO, (573) 442-5608. © <span data-year></span> DayMarket.</p></div></footer>
 <script src="../supabase/dm-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase/dm-client.js"></script>
@@ -98,7 +98,7 @@
       if (r.error) throw r.error;
       var holidays = r.data || [];
       if (!holidays.length) {
-        box.innerHTML = '<div class="card"><h3>No live holidays yet</h3><p class="live-note">Check back soon — the first deal events are being scheduled now. Join the WhatsApp group or the email list below and you\'ll hear the moment one drops.</p></div>';
+        box.innerHTML = '<div class="card"><h3>No live holidays yet</h3><p class="live-note">Check back soon. The first deal events are being scheduled now. Join the WhatsApp group or the email list below and you\'ll hear the moment one drops.</p></div>';
         return;
       }
       box.innerHTML = holidays.map(function (h) {
@@ -151,7 +151,7 @@
     var copy = document.getElementById("wa-copy");
     var wrap = document.getElementById("wa-btn-wrap");
     if (url) {
-      copy.textContent = "Deal alerts, holiday drops, and the Columbia crew — it all happens in the WhatsApp group.";
+      copy.textContent = "Deal alerts, holiday drops, and the Columbia crew. It all happens in the WhatsApp group.";
       wrap.innerHTML = '<a class="btn amber" href="' + esc(url) + '" target="_blank" rel="noopener">Join the WhatsApp group</a>';
     } else {
       copy.textContent = "The WhatsApp group opens soon. Sign up for holiday alerts below and you'll be first in.";

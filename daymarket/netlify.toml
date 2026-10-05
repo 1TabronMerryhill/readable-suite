@@ -1,0 +1,14 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Capture form posts to /.netlify/functions/daymarket -> Airtable List Subscribers.
+# Required env var (set in the Netlify dashboard, never committed):
+#   AIRTABLE_TOKEN — Airtable personal access token scoped to the SPIN base.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
