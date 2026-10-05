@@ -213,7 +213,7 @@
 
     try {
       var oo = await DM.supabase.from("dm_orders")
-        .select("id,title,scheduled_for,headcount,recurrence,status,notes,delivery_address,total_cents,package:dm_packages(name)")
+        .select("id,title,scheduled_for,headcount,recurrence,status,notes,delivery_address,total_cents,fee_bps,fee_cents,net_cents,payout_status,paid_out_at,payment_status,package:dm_packages(name,base_price_cents)")
         .eq("business_id", currentBiz.id)
         .order("scheduled_for", { ascending: true });
       if (!oo.error) bizOrders = oo.data || [];
@@ -229,7 +229,7 @@
     if (!isOrg()) return;
     try {
       var o = await DM.supabase.from("dm_orders")
-        .select("id,title,scheduled_for,headcount,recurrence,status,notes,delivery_address,total_cents,package:dm_packages(name),business:dm_businesses(name)")
+        .select("id,title,scheduled_for,headcount,recurrence,status,notes,delivery_address,total_cents,payment_status,package:dm_packages(name),business:dm_businesses(name)")
         .eq("org_id", me)
         .order("scheduled_for", { ascending: true });
       if (o.error) throw o.error;
@@ -333,6 +333,11 @@
 
   /* ---------- business view ---------- */
 
+  function payoutLabel(s) {
+    var labels = { pending: "pending delivery", payable: "payable", paid: "paid", void: "void" };
+    return labels[s] || s;
+  }
+
   function renderBizOrder(o) {
     var pkg = (o.package && o.package.name) || "Package";
     var html = '<div class="panel"><div class="row" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">';
@@ -343,6 +348,7 @@
       (o.total_cents ? " · " + esc(DM.money(o.total_cents)) : "") + "</p>";
     if (o.delivery_address) html += '<p class="mini" style="margin:4px 0 0">Deliver to: ' + esc(o.delivery_address) + "</p>";
     if (o.notes) html += '<p class="mini" style="margin:4px 0 0">Notes: ' + esc(o.notes) + "</p>";
+    if (o.net_cents != null) html += '<p class="mini" style="margin:4px 0 0">Your payout: <strong>' + esc(DM.money(o.net_cents)) + "</strong> (" + esc(payoutLabel(o.payout_status)) + ")</p>";
     html += "</div><div>" + orderStatusBadge(o.status);
     if (o.status === "scheduled") {
       html += ' <button class="btn small" type="button" data-action="confirm-order" data-id="' + esc(o.id) + '">Confirm</button>';
@@ -365,6 +371,7 @@
       html += '<div class="field"><label for="reg-description">Description</label><textarea class="input" id="reg-description" name="description" placeholder="What you do, what you\'re known for…"></textarea></div>';
       html += '<div class="form-row"><div class="field"><label for="reg-website">Website</label><input class="input" type="url" id="reg-website" name="website" placeholder="https://…"></div>';
       html += '<div class="field"><label for="reg-logo">Logo URL</label><input class="input" type="url" id="reg-logo" name="logo_url" placeholder="https://…"></div></div>';
+      html += '<div class="field"><label style="display:flex;gap:10px;align-items:flex-start;font-weight:400;cursor:pointer"><input type="checkbox" name="fee_terms" required style="margin-top:5px;min-width:18px;min-height:18px"> <span>Orders routed to my business through DayMarket carry a <strong>15% fulfillment fee</strong>, deducted automatically before payout. I am paid the net. Payouts release when I mark an order delivered and go out weekly.</span></label></div>';
       html += '<button class="btn" type="submit">Submit for review</button>';
       html += "</form></div>";
       businessViewEl.innerHTML = html;
@@ -418,6 +425,17 @@
         html += "</details>";
       }
     }
+
+    // Payouts (the routing economics: 15% fulfillment fee, automatic)
+    html += '<p class="kicker">Payouts</p>';
+    var payableOrders = bizOrders.filter(function (o) { return o.payout_status === "payable"; });
+    var payableCents = payableOrders.reduce(function (s, o) { return s + (o.net_cents || 0); }, 0);
+    var paidOrders = bizOrders.filter(function (o) { return o.payout_status === "paid"; });
+    var paidCents = paidOrders.reduce(function (s, o) { return s + (o.net_cents || 0); }, 0);
+    html += '<div class="panel"><p class="lede">Orders routed through DayMarket carry a 15% fulfillment fee, deducted automatically. You are paid the net.</p>';
+    html += '<p class="mt"><strong>Payable now: ' + esc(DM.money(payableCents)) + "</strong>" +
+      ' <span class="mini">(' + payableOrders.length + " delivered, awaiting payout)</span></p>";
+    html += '<p class="mini">Paid to date: ' + esc(DM.money(paidCents)) + ". Payouts go out weekly after delivery.</p></div>";
 
     // Holidays
     html += '<p class="kicker">Holidays</p>';
@@ -516,7 +534,8 @@
     html += '<p class="mini" style="margin:0">' + esc(fmtDate(o.scheduled_for)) + " · " + esc(pkg) +
       (o.headcount ? " · " + esc(String(o.headcount)) + " people" : "") + "<br>Fulfilled by " + esc(who) +
       (o.recurrence && o.recurrence !== "once" ? " · repeats " + esc(o.recurrence) : "") +
-      (o.total_cents ? " · " + esc(DM.money(o.total_cents)) : "") + "</p>";
+      (o.total_cents ? " · " + esc(DM.money(o.total_cents)) : "") +
+      (o.payment_status === "paid" ? "" : " · unpaid") + "</p>";
     if (o.delivery_address) html += '<p class="mini" style="margin:4px 0 0">Deliver to: ' + esc(o.delivery_address) + "</p>";
     if (o.notes) html += '<p class="mini" style="margin:4px 0 0">Notes: ' + esc(o.notes) + "</p>";
     html += "</div><div>" + orderStatusBadge(o.status);
@@ -584,6 +603,7 @@
     html += '<div class="field"><label>Repeats</label><select class="input" name="recurrence"><option value="once">Just once</option><option value="weekly">Weekly</option><option value="biweekly">Every two weeks</option><option value="monthly">Monthly</option></select></div>';
     html += field("delivery_address", "Delivery address", "text", false, "1100 Main St, Suite 200, Columbia, MO");
     html += '<div class="field"><label for="oo-notes">Dietary needs / notes</label><textarea class="input" id="oo-notes" name="notes" placeholder="Vegetarian options, nut allergy in the group, drop at the front desk…"></textarea></div>';
+    html += '<p class="mini">You will be invoiced for this order. Online payment is coming soon.</p>';
     html += '<button class="btn" type="submit">Schedule order</button>';
     html += "</form></div>";
 
@@ -705,13 +725,27 @@
         .catch(function (err) { note("err", "Couldn't cancel: " + ((err && err.message) || err)); });
       return;
     }
-    if (action === "confirm-order" || action === "deliver-order") {
-      var next = action === "confirm-order" ? "confirmed" : "delivered";
-      var done = action === "confirm-order" ? "Order confirmed. The org has been notified." : "Marked delivered. Nice work.";
-      DM.supabase.from("dm_orders").update({ status: next }).eq("id", id)
+    if (action === "confirm-order") {
+      var ord = null;
+      for (var oi = 0; oi < bizOrders.length; oi++) if (bizOrders[oi].id === id) ord = bizOrders[oi];
+      var sug = ord && ord.package && ord.package.base_price_cents ? (ord.package.base_price_cents / 100).toFixed(2) : "";
+      var totalStr = prompt("Confirm this order. Enter the order total in dollars" + (sug ? " (package base: $" + sug + ")" : "") + ":", sug);
+      if (totalStr === null) return;
+      var totalCents = Math.round(parseFloat(totalStr) * 100);
+      if (!(totalCents > 0)) { note("err", "Enter a valid total to confirm the order."); return; }
+      DM.supabase.from("dm_orders").update({ status: "confirmed", total_cents: totalCents }).eq("id", id)
         .then(function (r) {
           if (r.error) throw r.error;
-          return loadBusinessData().then(function () { renderBusiness(); note("ok", done); });
+          return loadBusinessData().then(function () { renderBusiness(); note("ok", "Order confirmed. The org has been notified."); });
+        })
+        .catch(function (err) { note("err", "Couldn't confirm that order: " + ((err && err.message) || err)); });
+      return;
+    }
+    if (action === "deliver-order") {
+      DM.supabase.from("dm_orders").update({ status: "delivered" }).eq("id", id)
+        .then(function (r) {
+          if (r.error) throw r.error;
+          return loadBusinessData().then(function () { renderBusiness(); note("ok", "Marked delivered. Nice work."); });
         })
         .catch(function (err) { note("err", "Couldn't update that order: " + ((err && err.message) || err)); });
       return;
