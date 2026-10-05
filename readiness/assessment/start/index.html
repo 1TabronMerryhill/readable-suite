@@ -299,13 +299,26 @@ body.rc-still .rc-blob{animation:none}
     try { localStorage.setItem("read_evidence", JSON.stringify({ answers: answers, answerText: answerText || {} })); } catch (e) {}
   }
   function isPaid() {
-    if (/[?&]paid=1/.test(location.search)) return true;
     try { return localStorage.getItem("read_paid") === "1"; } catch (e) { return false; }
   }
   function markPaid() {
     try { localStorage.setItem("read_paid", "1"); } catch (e) {}
   }
-  if (/[?&]paid=1/.test(location.search)) markPaid();
+  /* Server-verified payment check. ?paid=1 is only a hint now — the webhook
+     records real Stripe payments and this confirms against that record. */
+  function confirmPaid() {
+    var saved = readEvidence();
+    var email = saved && saved.answers && (saved.answers.contact_email || "");
+    if (!email) return Promise.resolve(false);
+    return fetch("/.netlify/functions/verify-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.paid) { markPaid(); return true; }
+      return false;
+    }).catch(function () { return false; });
+  }
 
   var hero = document.getElementById("rc-hero");
   var app = document.getElementById("rc-app");
@@ -536,12 +549,24 @@ body.rc-still .rc-blob{animation:none}
     }
   });
 
-  /* Paid returnees with saved evidence go straight to their report. */
+  /* Paid returnees with saved evidence: ?paid=1 only starts server verification. */
   var saved = readEvidence();
-  if (isPaid() && saved && saved.answers) {
-    if (hintTimer) clearInterval(hintTimer);
-    pillUsed = true;
-    deliverReport(saved.answers, saved.answerText || {}, "conversational");
+  if (saved && saved.answers) {
+    if (/[?&]paid=1/.test(location.search)) {
+      if (hintTimer) clearInterval(hintTimer);
+      pillUsed = true;
+      hero.hidden = true;
+      app.innerHTML = '<p class="rc-note" style="text-align:center;padding:40px 0">Confirming your payment…</p>';
+      app.hidden = false;
+      confirmPaid().then(function (ok) {
+        if (ok) deliverReport(saved.answers, saved.answerText || {}, "conversational");
+        else showPaywall();
+      });
+    } else if (isPaid()) {
+      if (hintTimer) clearInterval(hintTimer);
+      pillUsed = true;
+      deliverReport(saved.answers, saved.answerText || {}, "conversational");
+    }
   }
 })();
 </script>
