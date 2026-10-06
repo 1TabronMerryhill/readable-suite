@@ -93,8 +93,8 @@ function stripFences(text) {
 function tryParsePacket(text) {
   var t = stripFences(text);
   try {
-    var direct = JSON.parse(t);
-    if (direct && Array.isArray(direct.dimensions)) return direct;
+    var direct = normalizePacket(JSON.parse(t));
+    if (direct) return direct;
   } catch (e) { /* fall through to the scan */ }
   var i, j, s, depth, inStr, esc, ch, cand;
   for (s = 0; s < t.length; s++) {
@@ -114,8 +114,8 @@ function tryParsePacket(text) {
         depth--;
         if (depth === 0) {
           try {
-            cand = JSON.parse(t.slice(s, j + 1));
-            if (cand && Array.isArray(cand.dimensions)) return cand;
+            cand = normalizePacket(JSON.parse(t.slice(s, j + 1)));
+            if (cand) return cand;
           } catch (e2) { /* not valid JSON, keep scanning */ }
           break;
         }
@@ -123,6 +123,26 @@ function tryParsePacket(text) {
     }
   }
   return null;
+}
+
+/* Accept near-miss shapes: dimensions as an object keyed by id, missing
+   contact/context blocks. The rubric only needs dimensions with id+score. */
+function normalizePacket(p) {
+  if (!p || typeof p !== "object") return null;
+  var dims = p.dimensions;
+  if (dims && !Array.isArray(dims) && typeof dims === "object") {
+    dims = Object.keys(dims).map(function (k) {
+      var d = dims[k];
+      if (!d || typeof d !== "object") d = {};
+      if (d.id == null) d.id = k;
+      return d;
+    });
+  }
+  if (!Array.isArray(dims)) return null;
+  p.dimensions = dims;
+  if (!p.contact || typeof p.contact !== "object") p.contact = {};
+  if (!p.context || typeof p.context !== "object") p.context = {};
+  return p;
 }
 
 async function callAnthropic(systemPrompt, msgs, maxTokens, temperature) {
@@ -205,7 +225,8 @@ exports.handler = async function (event) {
       else break;
     }
     if (!packet) {
-      return json(502, { ok: false, reason: "extract_parse_failed" });
+      return json(502, { ok: false, reason: "extract_parse_failed",
+        sample: String((r1.text || "").slice(0, 400)) });
     }
     return json(200, { ok: true, packet: packet });
   }
