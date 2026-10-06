@@ -697,7 +697,7 @@
     var v = VERDICTS[result.verdict];
     var interventionKey = prescribe(result);
     var intervention = INTERVENTIONS[interventionKey];
-    var rid = reportId();
+    var rid = (meta && meta.reportId) || reportId();
     var date = new Date().toISOString().slice(0, 10);
 
     var dimRows = DIMENSIONS.map(function (d) {
