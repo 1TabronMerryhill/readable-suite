@@ -536,7 +536,7 @@
            asking the buyer to try again. */
         if (extractRetries < 2) {
           extractRetries++;
-          reviewBtn.textContent = "Retrying… (" + extractRetries + " of 2)";
+          reviewBtn.textContent = "Still pulling it together…";
           setTimeout(doExtract, 1200);
           return;
         }
