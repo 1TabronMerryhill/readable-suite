@@ -67,6 +67,7 @@ var EXTRACT_SYSTEM = [
   "You are the evidence extractor for Readable's Readiness Assessment.",
   "Given the conversation transcript, output STRICT JSON only — no markdown fences, no commentary — with exactly this shape:",
   '{"contact":{"name":"","org":"","role":""},"context":{"problem":"","steps":"","measure":""},"dimensions":[{"id":"D1","score":0,"quote":""}, ... all of D1..D8]}',
+  "Your entire response must be exactly that one JSON object and nothing else.",
   "Score each dimension against these criteria:",
   DIM_CRITERIA,
   "Rules:",
@@ -80,6 +81,76 @@ var EXTRACT_SYSTEM = [
 
 function json(statusCode, obj) {
   return { statusCode: statusCode, headers: { "Content-Type": "application/json" }, body: JSON.stringify(obj) };
+}
+
+/* The model sometimes strays from strict JSON (fences, preamble, trailing
+   prose). Parse defensively: strip fences, then scan for balanced {...}
+   candidates and accept the first one shaped like an extract packet. */
+function stripFences(text) {
+  return String(text).replace(/```(?:json)?/gi, "").trim();
+}
+
+function tryParsePacket(text) {
+  var t = stripFences(text);
+  try {
+    var direct = JSON.parse(t);
+    if (direct && Array.isArray(direct.dimensions)) return direct;
+  } catch (e) { /* fall through to the scan */ }
+  var i, j, s, depth, inStr, esc, ch, cand;
+  for (s = 0; s < t.length; s++) {
+    if (t[s] !== "{") continue;
+    depth = 0; inStr = false; esc = false;
+    for (j = s; j < t.length; j++) {
+      ch = t[j];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (ch === "\\") esc = true;
+        else if (ch === '"') inStr = false;
+      } else if (ch === '"') {
+        inStr = true;
+      } else if (ch === "{") {
+        depth++;
+      } else if (ch === "}") {
+        depth--;
+        if (depth === 0) {
+          try {
+            cand = JSON.parse(t.slice(s, j + 1));
+            if (cand && Array.isArray(cand.dimensions)) return cand;
+          } catch (e2) { /* not valid JSON, keep scanning */ }
+          break;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+async function callAnthropic(systemPrompt, msgs, maxTokens) {
+  var apiHeaders = {
+    "Content-Type": "application/json",
+    "x-api-key": process.env.ANTHROPIC_API_KEY,
+    "anthropic-version": ANTHROPIC_VERSION
+  };
+  if (process.env.ANTHROPIC_WORKSPACE_ID) {
+    apiHeaders["anthropic-workspace-id"] = process.env.ANTHROPIC_WORKSPACE_ID;
+  }
+  var resp;
+  try {
+    resp = await fetch(API_URL, {
+      method: "POST",
+      headers: apiHeaders,
+      body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system: systemPrompt, messages: msgs })
+    });
+  } catch (e) {
+    return { error: "unreachable" };
+  }
+  if (!resp.ok) return { error: "upstream", status: resp.status };
+  var data = await resp.json();
+  var text = (data.content || [])
+    .filter(function (b) { return b && b.type === "text"; })
+    .map(function (b) { return b.text; })
+    .join("");
+  return { text: text };
 }
 
 function cleanMessages(raw) {
@@ -112,48 +183,30 @@ exports.handler = async function (event) {
   var system = mode === "extract" ? EXTRACT_SYSTEM : CHAT_SYSTEM;
   var maxTokens = mode === "extract" ? 2000 : 500;
 
-  var resp;
-  var apiHeaders = {
-    "Content-Type": "application/json",
-    "x-api-key": key,
-    "anthropic-version": ANTHROPIC_VERSION
-  };
-  if (process.env.ANTHROPIC_WORKSPACE_ID) {
-    apiHeaders["anthropic-workspace-id"] = process.env.ANTHROPIC_WORKSPACE_ID;
-  }
-  try {
-    resp = await fetch(API_URL, {
-      method: "POST",
-      headers: apiHeaders,
-      body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system: system, messages: messages })
-    });
-  } catch (e) {
-    return json(502, { ok: false, reason: "upstream_unreachable" });
-  }
-
-  if (!resp.ok) {
-    return json(502, { ok: false, reason: "upstream_error", status: resp.status });
-  }
-
-  var data = await resp.json();
-  var text = (data.content || [])
-    .filter(function (b) { return b && b.type === "text"; })
-    .map(function (b) { return b.text; })
-    .join("");
-
   if (mode === "extract") {
-    var packet;
-    try {
-      packet = JSON.parse(text);
-    } catch (e) {
-      var m = text.match(/\{[\s\S]*\}/);
-      if (m) { try { packet = JSON.parse(m[0]); } catch (e2) { packet = null; } }
+    var r1 = await callAnthropic(system, messages, maxTokens);
+    if (r1.error) {
+      return json(502, { ok: false, reason: r1.error === "unreachable" ? "upstream_unreachable" : "upstream_error", status: r1.status });
     }
-    if (!packet || !Array.isArray(packet.dimensions)) {
+    var packet = tryParsePacket(r1.text);
+    if (!packet) {
+      /* Repair pass: one retry with an explicit nudge before giving up. */
+      var r2 = await callAnthropic(
+        system + "\nYour previous response was not valid JSON. Return ONLY the JSON object now.",
+        messages, maxTokens);
+      if (!r2.error) packet = tryParsePacket(r2.text);
+    }
+    if (!packet) {
       return json(502, { ok: false, reason: "extract_parse_failed" });
     }
     return json(200, { ok: true, packet: packet });
   }
+
+  var r = await callAnthropic(system, messages, maxTokens);
+  if (r.error) {
+    return json(502, { ok: false, reason: r.error === "unreachable" ? "upstream_unreachable" : "upstream_error", status: r.status });
+  }
+  var text = r.text;
 
   if (!/\[\[READY\]\]/.test(text)) {
     var userTurns = messages.filter(function (m) { return m.role === "user"; }).length;
