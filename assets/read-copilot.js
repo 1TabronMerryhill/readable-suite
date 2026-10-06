@@ -703,7 +703,16 @@
     var dimRows = DIMENSIONS.map(function (d) {
       var s = result.dims[d.id];
       var qids = DIM_QUESTIONS[d.id] || [];
-      var cited = qids.map(function (qid) { return answerText[qid]; }).filter(Boolean).join(" · ");
+      /* Dedupe: in conversational mode every question in a dimension cites
+         the same quote, which would otherwise render twice joined by "·". */
+      var seen = {};
+      var cited = qids.map(function (qid) { return answerText[qid]; })
+        .filter(function (t) {
+          if (!t || seen[t]) return false;
+          seen[t] = 1;
+          return true;
+        })
+        .join(" · ");
       var bars = [0, 1, 2].map(function (i) {
         return '<i class="' + (i < s ? "on" : "") + '"></i>';
       }).join("");
