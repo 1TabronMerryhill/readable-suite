@@ -81,6 +81,7 @@
   var bizHolidays = [];
   var bizRedemptions = [];
   var bizOrders = [];
+  var bizPayouts = [];
   var myOrders = [];
   var orgPackages = [];
   var orgBusinesses = [];
@@ -218,6 +219,14 @@
         .order("scheduled_for", { ascending: true });
       if (!oo.error) bizOrders = oo.data || [];
     } catch (e) { bizOrders = []; }
+
+    try {
+      var po = await DM.supabase.from("dm_payouts")
+        .select("id,amount_cents,status,created_at,paid_at")
+        .eq("business_id", currentBiz.id)
+        .order("created_at", { ascending: false });
+      if (!po.error) bizPayouts = po.data || [];
+    } catch (e) { bizPayouts = []; }
   }
 
   function isOrg() {
@@ -334,7 +343,7 @@
   /* ---------- business view ---------- */
 
   function payoutLabel(s) {
-    var labels = { pending: "pending delivery", payable: "payable", paid: "paid", void: "void" };
+    var labels = { pending: "pending delivery", payable: "in balance", requested: "cash-out requested", paid: "paid", void: "void" };
     return labels[s] || s;
   }
 
@@ -371,7 +380,7 @@
       html += '<div class="field"><label for="reg-description">Description</label><textarea class="input" id="reg-description" name="description" placeholder="What you do, what you\'re known for…"></textarea></div>';
       html += '<div class="form-row"><div class="field"><label for="reg-website">Website</label><input class="input" type="url" id="reg-website" name="website" placeholder="https://…"></div>';
       html += '<div class="field"><label for="reg-logo">Logo URL</label><input class="input" type="url" id="reg-logo" name="logo_url" placeholder="https://…"></div></div>';
-      html += '<div class="field"><label style="display:flex;gap:10px;align-items:flex-start;font-weight:400;cursor:pointer"><input type="checkbox" name="fee_terms" required style="margin-top:5px;min-width:18px;min-height:18px"> <span>Orders routed to my business through DayMarket carry a <strong>15% fulfillment fee</strong>, deducted automatically before payout. I am paid the net. Payouts release when I mark an order delivered and go out weekly.</span></label></div>';
+      html += '<div class="field"><label style="display:flex;gap:10px;align-items:flex-start;font-weight:400;cursor:pointer"><input type="checkbox" name="fee_terms" required style="margin-top:5px;min-width:18px;min-height:18px"> <span>Orders routed to my business through DayMarket carry a <strong>15% fulfillment fee</strong>, deducted automatically before payout. My net lands in my DayMarket balance when I mark an order delivered, and I can cash out anytime.</span></label></div>';
       html += '<button class="btn" type="submit">Submit for review</button>';
       html += "</form></div>";
       businessViewEl.innerHTML = html;
@@ -426,16 +435,24 @@
       }
     }
 
-    // Payouts (the routing economics: 15% fulfillment fee, automatic)
+    // Payouts: balance model. Delivery credits the net; the business cashes out on demand.
     html += '<p class="kicker">Payouts</p>';
     var payableOrders = bizOrders.filter(function (o) { return o.payout_status === "payable"; });
-    var payableCents = payableOrders.reduce(function (s, o) { return s + (o.net_cents || 0); }, 0);
-    var paidOrders = bizOrders.filter(function (o) { return o.payout_status === "paid"; });
-    var paidCents = paidOrders.reduce(function (s, o) { return s + (o.net_cents || 0); }, 0);
-    html += '<div class="panel"><p class="lede">Orders routed through DayMarket carry a 15% fulfillment fee, deducted automatically. You are paid the net.</p>';
-    html += '<p class="mt"><strong>Payable now: ' + esc(DM.money(payableCents)) + "</strong>" +
-      ' <span class="mini">(' + payableOrders.length + " delivered, awaiting payout)</span></p>";
-    html += '<p class="mini">Paid to date: ' + esc(DM.money(paidCents)) + ". Payouts go out weekly after delivery.</p></div>";
+    var balanceCents = payableOrders.reduce(function (s, o) { return s + (o.net_cents || 0); }, 0);
+    var paidOutCents = bizPayouts.filter(function (p) { return p.status === "paid"; })
+      .reduce(function (s, p) { return s + (p.amount_cents || 0); }, 0);
+    html += '<div class="panel"><p class="lede">Orders routed through DayMarket carry a 15% fulfillment fee, deducted automatically. Your net lands in your DayMarket balance when you mark an order delivered.</p>';
+    html += '<p class="mt"><strong>Your balance: ' + esc(DM.money(balanceCents)) + "</strong></p>";
+    if (balanceCents > 0) html += '<p><button class="btn small" type="button" data-action="cash-out">Cash out ' + esc(DM.money(balanceCents)) + "</button></p>";
+    html += '<p class="mini">Paid out to date: ' + esc(DM.money(paidOutCents)) + ".</p>";
+    if (bizPayouts.length) {
+      html += '<p class="mini mt"><strong>History</strong></p>';
+      bizPayouts.forEach(function (p) {
+        var when = p.status === "paid" && p.paid_at ? p.paid_at : p.created_at;
+        html += '<p class="mini" style="margin:2px 0">' + esc(DM.money(p.amount_cents)) + " · " + esc(p.status) + " · " + esc(fmtDate(when)) + "</p>";
+      });
+    }
+    html += "</div>";
 
     // Holidays
     html += '<p class="kicker">Holidays</p>';
@@ -748,6 +765,24 @@
           return loadBusinessData().then(function () { renderBusiness(); note("ok", "Marked delivered. Nice work."); });
         })
         .catch(function (err) { note("err", "Couldn't update that order: " + ((err && err.message) || err)); });
+      return;
+    }
+    if (action === "cash-out") {
+      var payable = bizOrders.filter(function (o) { return o.payout_status === "payable"; });
+      var amt = payable.reduce(function (s, o) { return s + (o.net_cents || 0); }, 0);
+      if (!payable.length || !(amt > 0)) { note("err", "Nothing to cash out yet."); return; }
+      if (!confirm("Cash out " + DM.money(amt) + "? It will be sent to your payout account.")) return;
+      var ids = payable.map(function (o) { return o.id; });
+      DM.supabase.from("dm_orders").update({ payout_status: "requested" }).in("id", ids)
+        .then(function (r) {
+          if (r.error) throw r.error;
+          return DM.supabase.from("dm_payouts").insert({ business_id: currentBiz.id, amount_cents: amt, status: "requested" });
+        })
+        .then(function (r2) {
+          if (r2.error) throw r2.error;
+          return loadBusinessData().then(function () { renderBusiness(); note("ok", "Cash-out requested. " + DM.money(amt) + " is on its way."); });
+        })
+        .catch(function (err) { note("err", "Couldn't request that: " + ((err && err.message) || err)); });
       return;
     }
     if (action === "claim") { claimOffer(el.getAttribute("data-offer"), el); return; }
