@@ -214,13 +214,15 @@ exports.handler = async function (event) {
       return json(502, { ok: false, reason: r1.error === "unreachable" ? "upstream_unreachable" : "upstream_error", status: r1.status });
     }
     var packet = tryParsePacket(r1.text);
-    var attempts = 1;
-    while (!packet && attempts < 3) {
-      /* Repair pass: re-ask with an explicit nudge before giving up. */
-      attempts++;
+    /* If temperature 0 lands in a deterministic bad output, retrying at the
+       same temperature just reproduces it. Escalate randomness to escape. */
+    var repairTemps = [0.7, 1.0];
+    var ri = 0;
+    while (!packet && ri < repairTemps.length) {
       var rr = await callAnthropic(
         system + "\nYour previous response was not valid JSON. Return ONLY the JSON object now.",
-        messages, maxTokens, temperature);
+        messages, maxTokens, repairTemps[ri]);
+      ri++;
       if (!rr.error) packet = tryParsePacket(rr.text);
       else break;
     }
