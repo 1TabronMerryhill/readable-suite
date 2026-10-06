@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Your assessment — Read/co-pilot | Readable</title>
-<meta name="description" content="Talk with Read, Readable's co-pilot, about one workflow. Free to start — $150 only when your judgment is ready.">
+<title>Your assessment · Read/co-pilot | Readable</title>
+<meta name="description" content="Talk with Read, Readable's co-pilot, about one workflow. Free to start. $150 only when your judgment is ready.">
 <link rel="stylesheet" href="/assets/site.css">
 <style>
 .rc-shell{max-width:720px;margin:0 auto}
@@ -192,10 +192,10 @@ body.rc-still .rc-blob{animation:none}
         <button type="button" class="rc-chip" data-text="Nobody checks the AI's numbers before they go out…">Nobody checks the AI's numbers before they go out…</button>
         <button type="button" id="rc-chip-pause" class="rc-chip-pause" aria-label="Pause example rotation">&#10074;&#10074;</button>
       </div>
-      <p class="rc-note rc-pill-note">Free to start &mdash; $150 only when your judgment is ready. No account. Your conversation isn&rsquo;t stored.</p>
+      <p class="rc-note rc-pill-note">Free to start. $150 only when your judgment is ready. No account. Your conversation isn&rsquo;t stored.</p>
     </div>
     <div class="rc-steps">
-      <div class="rc-step"><strong>1. Talk.</strong> Describe one workflow in your own words — type or dictate.</div>
+      <div class="rc-step"><strong>1. Talk.</strong> Describe one workflow in your own words. Type or dictate.</div>
       <div class="rc-step"><strong>2. Confirm.</strong> Read shows you what it heard. You correct it before anything is judged.</div>
       <div class="rc-step"><strong>3. Get the verdict.</strong> $150. Scored on a published 16-point rubric. Instant report.</div>
     </div>
@@ -224,11 +224,11 @@ body.rc-still .rc-blob{animation:none}
             <span class="rc-price-note">one workflow · instant report</span>
           </div>
           <ul class="rc-includes">
-            <li>Your verdict on the 16-point rubric — Ready, Ready with Safeguards, or Not Ready</li>
+            <li>Your verdict on the 16-point rubric: Ready, Ready with Safeguards, or Not Ready</li>
             <li>Dimension-by-dimension breakdown, in your own words</li>
-            <li>Your recommended next step — Sprint or Academy</li>
+            <li>Your recommended next step: Sprint or Academy</li>
           </ul>
-          <p><a class="btn rc-pay-btn" href="/readiness/assessment/checkout/">Unlock my report — $150</a></p>
+          <p><a class="btn rc-pay-btn" href="/readiness/assessment/checkout/?interview=done">Unlock my report for $150</a></p>
           <p class="rc-note">Your conversation isn&rsquo;t stored. Only the answers you confirmed are kept. Your report generates instantly after checkout.</p>
           <p class="rc-doctrine-mini">The model carries the load. You hold the judgment. That&rsquo;s the pairing.</p>
         </div>
@@ -237,9 +237,9 @@ body.rc-still .rc-blob{animation:none}
       <div id="rc-done" class="noprint" hidden>
         <p><button class="btn" onclick="window.print()">Print / save this report</button>
         <a class="btn" style="margin-left:8px" href="/readiness/dashboard/">Open your dashboard &rarr;</a></p>
-        <p class="rc-note">Your report ID is above — keep it. If your verdict prescribes a Sprint or the Academy, mention it and we'll pick up where the rubric left off.</p>
+        <p class="rc-note">Your report ID is above. Keep it. If your verdict prescribes a Sprint or the Academy, mention it and we'll pick up where the rubric left off.</p>
         <div id="rc-train" hidden>
-          <p class="rc-note"><label><input type="checkbox" id="rc-train-opt"> Help Read get sharper — let this conversation (kept private, never shared) train future assessments.</label></p>
+          <p class="rc-note"><label><input type="checkbox" id="rc-train-opt"> Help Read get sharper. Let this conversation (kept private, never shared) train future assessments.</label></p>
           <p><button class="btn" id="rc-train-btn" type="button">Share my conversation</button></p>
           <p class="rc-note" id="rc-train-status" aria-live="polite"></p>
         </div>
@@ -371,7 +371,7 @@ body.rc-still .rc-blob{animation:none}
           var opt = document.getElementById("rc-train-opt");
           trainBtn.disabled = true;
           if (!opt.checked) {
-            trainStatus.textContent = "No problem — nothing was kept.";
+            trainStatus.textContent = "No problem. Nothing was kept.";
             try { window.ReadCopilot.lastTranscript = null; } catch (e) {}
             return;
           }
@@ -381,10 +381,10 @@ body.rc-still .rc-blob{animation:none}
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ messages: window.ReadCopilot.lastTranscript, reportId: out.reportId })
           }).then(function (r) { return r.json(); }).then(function (d) {
-            trainStatus.textContent = (d && d.ok) ? "Thanks — Read learns from this." : "Couldn't share it just now — nothing was kept.";
+            trainStatus.textContent = (d && d.ok) ? "Thanks. Read learns from this." : "Couldn't share it just now. Nothing was kept.";
             try { window.ReadCopilot.lastTranscript = null; } catch (e) {}
           }).catch(function () {
-            trainStatus.textContent = "Couldn't share it just now — nothing was kept.";
+            trainStatus.textContent = "Couldn't share it just now. Nothing was kept.";
             trainBtn.disabled = false;
           });
         };
