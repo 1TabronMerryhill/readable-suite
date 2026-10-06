@@ -22,7 +22,7 @@
     { id: "D2", name: "Measurable outcome", objective: "Objective 1",
       solid: "The intended outcome is stated with a number or a date.",
       findings: {
-        2: "Success is measurable — the 90-day check will mean something.",
+        2: "Success is measurable. The 90-day check will mean something.",
         1: "The outcome is described but not measurable. Attach a number or date.",
         0: "No defined outcome. Decide what 'worked' means before starting."
       } },
@@ -45,7 +45,7 @@
       findings: {
         2: "Inputs are bounded and sensitive data is handled.",
         1: "Inputs are loosely defined. List exactly what may enter the AI.",
-        0: "Sensitive or undefined inputs. Fix this before anything else — it is a liability."
+        0: "Sensitive or undefined inputs. Fix this before anything else. It is a liability."
       } },
     { id: "D6", name: "Human authority", objective: "Objective 2",
       solid: "A named human holds final decision authority.",
@@ -62,7 +62,7 @@
         0: "Outputs go unverified. This is where confident errors ship."
       } },
     { id: "D8", name: "Failure handling & output discipline", objective: "Objectives 2 & 3",
-      solid: "A documented exception path exists; outputs are accepted, revised, rejected, or escalated — never auto-accepted.",
+      solid: "A documented exception path exists; outputs are accepted, revised, rejected, or escalated. Never auto-accepted.",
       findings: {
         2: "Failure has a path and outputs face a real decision.",
         1: "Failure handling is informal. Document the exception path and the escalation.",
@@ -82,7 +82,7 @@
 
     { id: "q_problem", section: 1, kind: "textarea", required: true, context: true,
       label: "In one or two sentences, what problem are you trying to solve?",
-      hint: "Be specific — vague problems get vague verdicts." },
+      hint: "Be specific. Vague problems get vague verdicts." },
     { id: "q_bounded", section: 1, kind: "choice", dimension: "D1", required: true,
       label: "How bounded is the problem?",
       options: [
@@ -93,7 +93,7 @@
     { id: "q_outcome", section: 1, kind: "choice", dimension: "D2", required: true,
       label: "Is the intended outcome measurable?",
       options: [
-        { t: "Yes — there's a number, a date, or both", s: 2 },
+        { t: "Yes: there's a number, a date, or both", s: 2 },
         { t: "Described, but not measurable", s: 1 },
         { t: "Not defined yet", s: 0 }
       ] },
@@ -106,12 +106,12 @@
       options: [
         { t: "AI drafts or proposes; a human reviews and decides", s: 2 },
         { t: "AI acts within bounded rules; a human spot-checks", s: 1 },
-        { t: "AI decides or sends output directly — or we're not sure", s: 0 }
+        { t: "AI decides or sends output directly, or we're not sure", s: 0 }
       ] },
     { id: "q_alternative", section: 2, kind: "choice", dimension: "D4", required: true,
       label: "Have you weighed a non-AI alternative?",
       options: [
-        { t: "Yes — and we know why AI still wins", s: 2 },
+        { t: "Yes, and we know why AI still wins", s: 2 },
         { t: "Briefly considered", s: 1 },
         { t: "No", s: 0 }
       ] },
@@ -119,7 +119,7 @@
     { id: "q_inputs", section: 3, kind: "choice", dimension: "D5", required: true,
       label: "What data goes into the AI?",
       options: [
-        { t: "A defined list — no customer PII or confidential data ungoverned", s: 2 },
+        { t: "A defined list. No customer PII or confidential data ungoverned", s: 2 },
         { t: "Mixed, loosely defined", s: 1 },
         { t: "Includes customer PII / confidential data, or undefined", s: 0 }
       ] },
@@ -127,14 +127,14 @@
       label: "Who is accountable for this workflow's outputs?",
       options: [
         { t: "A named human with final decision authority", s: 2 },
-        { t: "A team — no single owner", s: 1 },
+        { t: "A team, no single owner", s: 1 },
         { t: "No one, or the AI itself", s: 0 }
       ] },
     { id: "q_criteria", section: 3, kind: "choice", dimension: "D7", required: true,
       label: "Are there written acceptance criteria?",
       options: [
-        { t: "Yes — checkable", s: 2 },
-        { t: "Informal — “looks right”", s: 1 },
+        { t: "Yes, checkable", s: 2 },
+        { t: "Informal: “looks right”", s: 1 },
         { t: "None", s: 0 }
       ] },
     { id: "q_verify", section: 3, kind: "choice", dimension: "D7", required: true,
@@ -148,14 +148,14 @@
     { id: "q_failure", section: 4, kind: "choice", dimension: "D8", required: true,
       label: "When the AI is wrong, what happens?",
       options: [
-        { t: "Documented exception path — escalation to a human", s: 2 },
+        { t: "Documented exception path. Escalation to a human", s: 2 },
         { t: "Someone notices eventually", s: 1 },
-        { t: "Nothing — or we don't know", s: 0 }
+        { t: "Nothing, or we don't know", s: 0 }
       ] },
     { id: "q_output_decision", section: 4, kind: "choice", dimension: "D8", required: true,
       label: "What does the human do with an AI output?",
       options: [
-        { t: "Accept, revise, reject, or escalate — per criteria", s: 2 },
+        { t: "Accept, revise, reject, or escalate, per criteria", s: 2 },
         { t: "Usually accept, sometimes edit", s: 1 },
         { t: "Accept as-is", s: 0 }
       ] },
@@ -193,7 +193,7 @@
     "ready": {
       title: "READY",
       headline: "Go build.",
-      body: "This workflow is sound. AI fits the task, a human holds authority, and outputs are checked against evidence. The structured spec below is yours — hand it to whoever builds it."
+      body: "This workflow is sound. AI fits the task, a human holds authority, and outputs are checked against evidence. The structured spec below is yours. Hand it to whoever builds it."
     },
     "safeguards": {
       title: "READY WITH SAFEGUARDS",
@@ -378,6 +378,8 @@
     var messages = [];
     var busy = false;
     var reviewShown = false;
+    var extractRetries = 0;
+    var pendingExtract = false;
     var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     mount.innerHTML = "";
@@ -432,7 +434,7 @@
       }, 26);
     }
 
-    bubble("read", "Hey — I'm Read. Forget the form: just tell me about the workflow in your own words. What's the problem you're trying to solve?");
+    bubble("read", "Hey, I'm Read. Forget the form and just tell me about the workflow in your own words. What's the problem you're trying to solve?");
 
     function showReview() {
       if (reviewShown) return;
@@ -462,8 +464,9 @@
         busy = false;
         if (t.parentNode) t.parentNode.removeChild(t);
         if (data && data.ok === false && data.reason === "not_configured") {
+          pendingExtract = false;
           mount.innerHTML = "";
-          mount.appendChild(el("p", "rc-note", "Read's conversation mode isn't wired up yet — the structured interview below gets you the same report."));
+          mount.appendChild(el("p", "rc-note", "Read's conversation mode isn't wired up yet. The structured interview below gets you the same report."));
           var sub = el("div", "");
           sub.id = "rc-fallback";
           mount.appendChild(sub);
@@ -480,10 +483,12 @@
         if (REDUCED || !opts.stream) { rb.innerHTML = safe; scrollDown(); }
         else streamInto(rb, safe);
         if (ready) showReview();
+        if (pendingExtract) { pendingExtract = false; requestExtract(); }
       }).catch(function () {
         busy = false;
         if (t.parentNode) t.parentNode.removeChild(t);
-        bubble("read", "I lost the thread there — say that again?", true);
+        bubble("read", "I lost the thread there. Say that again?", true);
+        if (pendingExtract) { pendingExtract = false; requestExtract(); }
       });
     }
 
@@ -495,8 +500,20 @@
       setTimeout(send, 400);
     }
 
+    /* The review button must never silently swallow a click. If a reply is
+       still in flight, queue the extract and run it when the reply lands. */
     function requestExtract() {
-      if (busy) return;
+      if (busy) {
+        pendingExtract = true;
+        reviewBtn.disabled = true;
+        reviewBtn.textContent = "Waiting for Read to finish…";
+        return;
+      }
+      pendingExtract = false;
+      doExtract();
+    }
+
+    function doExtract() {
       busy = true;
       reviewBtn.disabled = true;
       reviewBtn.textContent = "Pulling together what I heard…";
@@ -507,6 +524,7 @@
       }).then(function (r) { return r.json(); }).then(function (data) {
         busy = false;
         if (!data || !data.ok || !data.packet) throw new Error("bad extract");
+        extractRetries = 0;
         try { window.ReadCopilot.lastTranscript = messages.slice(); } catch (e) {}
         renderConfirm(mount, data.packet, function (a, t, x) {
           if (opts.onEvidenceConfirmed) opts.onEvidenceConfirmed(a, t, x);
@@ -514,9 +532,18 @@
         });
       }).catch(function () {
         busy = false;
+        /* Transient upstream failures happen; retry quietly twice before
+           asking the buyer to try again. */
+        if (extractRetries < 2) {
+          extractRetries++;
+          reviewBtn.textContent = "Retrying… (" + extractRetries + " of 2)";
+          setTimeout(doExtract, 1200);
+          return;
+        }
+        extractRetries = 0;
         reviewBtn.disabled = false;
-        reviewBtn.innerHTML = "Review what I heard &rarr;";
-        bubble("read", "I couldn't pull that together — give the button another try in a moment?", true);
+        reviewBtn.innerHTML = "Try again &rarr;";
+        bubble("read", "I couldn't pull that together. Hit \"Try again\" when you're ready.", true);
       });
     }
   }
@@ -683,7 +710,9 @@
       return '<div class="rc-dim">' +
         '<div class="rc-dim-head"><strong>' + esc(d.id + " · " + d.name) + '</strong>' +
         '<span class="rc-score"><span class="rc-pips">' + bars + '</span>' + s + "/2</span></div>" +
-        '<p class="rc-evidence">You said: “' + esc(cited) + '”</p>' +
+        (cited
+          ? '<p class="rc-evidence">You said: “' + esc(cited) + '”</p>'
+          : '<p class="rc-evidence">No direct quote captured. Scored from the conversation overall.</p>') +
         '<p>' + esc(d.findings[s]) + '</p></div>';
     }).join("");
 
@@ -692,7 +721,7 @@
     }).join("");
 
     var ctaUrl = interventionKey === "sprint" ? "/business-systems/" : "/academy/";
-    var ctaLabel = interventionKey === "sprint" ? "Book the Sprint — $2,500" : "See the Academy";
+    var ctaLabel = interventionKey === "sprint" ? "Book the Sprint: $2,500" : "See the Academy";
 
     mount.innerHTML =
       '<div class="rc-report">' +
@@ -701,7 +730,7 @@
       '<h2>' + esc(v.headline) + '</h2><p>' + esc(v.body) + '</p></div>' +
 
       '<h3>How each dimension scored</h3>' +
-      '<p class="rc-note">Every score cites your own answer as evidence. Same answers, same score — the rubric is deterministic.</p>' +
+      '<p class="rc-note">Every score cites your own answer as evidence. Same answers, same score. The rubric is deterministic.</p>' +
       '<div class="rc-dims">' + dimRows + '</div>' +
 
       '<h3>Recommended intervention</h3>' +
