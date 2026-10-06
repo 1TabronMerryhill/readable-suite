@@ -486,6 +486,10 @@ body.rc-still .rc-blob{animation:none}
 
   function exitHero(cb) {
     pillUsed = true;
+    /* A new assessment is a new purchase: the paid flag from a previous
+       report must not carry over and skip this run's paywall. The paid
+       return flow (?paid=1) never passes through here. */
+    try { localStorage.removeItem("read_paid"); } catch (e) {}
     if (hintTimer) clearInterval(hintTimer);
     document.body.classList.add("rc-chatting");
     hero.classList.add("rc-hero-exit");
