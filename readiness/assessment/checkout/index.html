@@ -132,7 +132,9 @@ var STRIPE_PAYMENT_LINK = "https://buy.stripe.com/9B6eVccuM8o30W76a64sE0h";
     document.getElementById("pay-soon").hidden = true;
     var btn = document.getElementById("pay-btn");
     btn.href = STRIPE_PAYMENT_LINK;
-    btn.onclick = function () { try { localStorage.setItem("read_paid", "1"); } catch (e) {} };
+    /* No client-side paid flag here: only the server-verified return
+       (?paid=1 + verify-payment) may mark this browser as paid. Setting it
+       on click would let anyone skip the paywall without paying. */
   }
 })();
 </script>
