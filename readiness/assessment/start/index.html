@@ -237,6 +237,7 @@ body.rc-still .rc-blob{animation:none}
       <div id="rc-done" class="noprint" hidden>
         <p><button class="btn" onclick="window.print()">Print / save this report</button>
         <a class="btn" style="margin-left:8px" href="/readiness/dashboard/">Open your dashboard &rarr;</a></p>
+        <p><button class="btn" id="rc-new" type="button">Start a new assessment</button></p>
         <p class="rc-note">Your report ID is above. Keep it. If your verdict prescribes a Sprint or the Academy, mention it and we'll pick up where the rubric left off.</p>
         <div id="rc-train" hidden>
           <p class="rc-note"><label><input type="checkbox" id="rc-train-opt"> Help Read get sharper. Let this conversation (kept private, never shared) train future assessments.</label></p>
@@ -330,7 +331,14 @@ body.rc-still .rc-blob{animation:none}
     app.hidden = true;
     paywall.hidden = true;
     var meta = { business_name: answers.business_name, mode: mode || "conversational" };
+    /* Stable report ID: a returning buyer sees the same ID, not a new
+       random one on every load. */
+    try {
+      var storedRid = localStorage.getItem("read_report_id");
+      if (storedRid) meta.reportId = storedRid;
+    } catch (e) {}
     var out = ReadCopilot.renderReport("rc-report", answers, answerText, meta);
+    try { localStorage.setItem("read_report_id", out.reportId); } catch (e2) {}
     document.getElementById("rc-done").hidden = false;
     window.scrollTo(0, 0);
     if (!out) return;
@@ -555,6 +563,18 @@ body.rc-still .rc-blob{animation:none}
 
   /* Paid returnees with saved evidence: ?paid=1 only starts server verification. */
   var saved = readEvidence();
+  /* Escape hatch: a returning buyer can always start fresh. */
+  var newBtn = document.getElementById("rc-new");
+  if (newBtn) {
+    newBtn.onclick = function () {
+      try {
+        localStorage.removeItem("read_evidence");
+        localStorage.removeItem("read_paid");
+        localStorage.removeItem("read_report_id");
+      } catch (e) {}
+      location.href = "/readiness/assessment/start/";
+    };
+  }
   if (saved && saved.answers) {
     if (/[?&]paid=1/.test(location.search)) {
       if (hintTimer) clearInterval(hintTimer);
