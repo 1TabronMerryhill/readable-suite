@@ -209,7 +209,13 @@ exports.handler = async function (event) {
   var temperature = mode === "extract" ? 0 : undefined;
 
   if (mode === "extract") {
-    var r1 = await callAnthropic(system, messages, maxTokens, temperature);
+    /* End with an explicit user instruction: a trailing assistant message
+       acts as a continuation cue and can make the model keep chatting
+       instead of extracting. */
+    var extractMessages = messages.concat([
+      { role: "user", content: "Extract the evidence from this conversation as the JSON packet now." }
+    ]);
+    var r1 = await callAnthropic(system, extractMessages, maxTokens, temperature);
     if (r1.error) {
       return json(502, { ok: false, reason: r1.error === "unreachable" ? "upstream_unreachable" : "upstream_error", status: r1.status });
     }
@@ -221,7 +227,7 @@ exports.handler = async function (event) {
     while (!packet && ri < repairTemps.length) {
       var rr = await callAnthropic(
         system + "\nYour previous response was not valid JSON. Return ONLY the JSON object now.",
-        messages, maxTokens, repairTemps[ri]);
+        extractMessages, maxTokens, repairTemps[ri]);
       ri++;
       if (!rr.error) packet = tryParsePacket(rr.text);
       else break;
