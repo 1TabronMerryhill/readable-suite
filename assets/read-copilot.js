@@ -523,14 +523,18 @@
         body: JSON.stringify({ mode: "extract", messages: messages })
       }).then(function (r) { return r.json(); }).then(function (data) {
         busy = false;
-        if (!data || !data.ok || !data.packet) throw new Error("bad extract");
+        if (!data || !data.ok || !data.packet) {
+          var err = new Error("bad extract");
+          err.detail = data && data.reason ? String(data.reason) + (data.sample ? " :: " + String(data.sample).slice(0, 200) : "") : "bad response";
+          throw err;
+        }
         extractRetries = 0;
         try { window.ReadCopilot.lastTranscript = messages.slice(); } catch (e) {}
         renderConfirm(mount, data.packet, function (a, t, x) {
           if (opts.onEvidenceConfirmed) opts.onEvidenceConfirmed(a, t, x);
           else onDone(a, t, x);
         });
-      }).catch(function () {
+      }).catch(function (e) {
         busy = false;
         /* Transient upstream failures happen; retry quietly twice before
            asking the buyer to try again. */
@@ -543,7 +547,9 @@
         extractRetries = 0;
         reviewBtn.disabled = false;
         reviewBtn.innerHTML = "Try again &rarr;";
-        bubble("read", "I couldn't pull that together. Hit \"Try again\" when you're ready.", true);
+        /* TEMPORARY DIAGNOSTIC: surface the server failure reason in-chat. */
+        var diag = (e && e.detail) ? " [" + e.detail + "]" : "";
+        bubble("read", "I couldn't pull that together. Hit \"Try again\" when you're ready." + diag, true);
       });
     }
   }
