@@ -125,7 +125,7 @@ function tryParsePacket(text) {
   return null;
 }
 
-async function callAnthropic(systemPrompt, msgs, maxTokens) {
+async function callAnthropic(systemPrompt, msgs, maxTokens, temperature) {
   var apiHeaders = {
     "Content-Type": "application/json",
     "x-api-key": process.env.ANTHROPIC_API_KEY,
@@ -134,12 +134,14 @@ async function callAnthropic(systemPrompt, msgs, maxTokens) {
   if (process.env.ANTHROPIC_WORKSPACE_ID) {
     apiHeaders["anthropic-workspace-id"] = process.env.ANTHROPIC_WORKSPACE_ID;
   }
+  var payload = { model: MODEL, max_tokens: maxTokens, system: systemPrompt, messages: msgs };
+  if (typeof temperature === "number") payload.temperature = temperature;
   var resp;
   try {
     resp = await fetch(API_URL, {
       method: "POST",
       headers: apiHeaders,
-      body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system: systemPrompt, messages: msgs })
+      body: JSON.stringify(payload)
     });
   } catch (e) {
     return { error: "unreachable" };
@@ -181,20 +183,26 @@ exports.handler = async function (event) {
   if (!messages.length) return json(400, { ok: false, reason: "empty_messages" });
 
   var system = mode === "extract" ? EXTRACT_SYSTEM : CHAT_SYSTEM;
-  var maxTokens = mode === "extract" ? 2000 : 500;
+  /* Extraction is a deterministic task: temperature 0 for stable JSON, and
+     headroom so a long transcript never truncates the packet. */
+  var maxTokens = mode === "extract" ? 4000 : 500;
+  var temperature = mode === "extract" ? 0 : undefined;
 
   if (mode === "extract") {
-    var r1 = await callAnthropic(system, messages, maxTokens);
+    var r1 = await callAnthropic(system, messages, maxTokens, temperature);
     if (r1.error) {
       return json(502, { ok: false, reason: r1.error === "unreachable" ? "upstream_unreachable" : "upstream_error", status: r1.status });
     }
     var packet = tryParsePacket(r1.text);
-    if (!packet) {
-      /* Repair pass: one retry with an explicit nudge before giving up. */
-      var r2 = await callAnthropic(
+    var attempts = 1;
+    while (!packet && attempts < 3) {
+      /* Repair pass: re-ask with an explicit nudge before giving up. */
+      attempts++;
+      var rr = await callAnthropic(
         system + "\nYour previous response was not valid JSON. Return ONLY the JSON object now.",
-        messages, maxTokens);
-      if (!r2.error) packet = tryParsePacket(r2.text);
+        messages, maxTokens, temperature);
+      if (!rr.error) packet = tryParsePacket(rr.text);
+      else break;
     }
     if (!packet) {
       return json(502, { ok: false, reason: "extract_parse_failed" });
@@ -202,7 +210,7 @@ exports.handler = async function (event) {
     return json(200, { ok: true, packet: packet });
   }
 
-  var r = await callAnthropic(system, messages, maxTokens);
+  var r = await callAnthropic(system, messages, maxTokens, temperature);
   if (r.error) {
     return json(502, { ok: false, reason: r.error === "unreachable" ? "upstream_unreachable" : "upstream_error", status: r.status });
   }
