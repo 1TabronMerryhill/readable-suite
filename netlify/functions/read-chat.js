@@ -70,7 +70,9 @@ var EXTRACT_SYSTEM = [
   "Score each dimension against these criteria:",
   DIM_CRITERIA,
   "Rules:",
-  "- quote must be the buyer's own words from the transcript, short and verbatim. Empty string when there is no supporting statement.",
+  "- Quote selection: quote must be the buyer's OWN words from the transcript, short and verbatim. Never quote your own messages, recaps, or summaries.",
+  "- Choose the quote that most directly supports the score. For D2 prefer their stated outcome, number, date, or 90-day measure. For D4 prefer any mention of alternatives they considered, however briefly.",
+  "- Leave quote empty ONLY when the topic genuinely never came up in the transcript — not when the buyer was merely vague.",
   "- Base scores ONLY on what the buyer actually said. Be conservative: vague claims score 1 at most.",
   "- contact fields: fill from the transcript when mentioned, otherwise empty strings.",
   "- context.problem: the problem in their words. context.steps: the workflow steps in their words. context.measure: how they'll know in 90 days it worked."
