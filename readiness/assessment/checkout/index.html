@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Checkout — Readiness Assessment | Readable</title>
+<title>Checkout · Readiness Assessment | Readable</title>
 <meta name="description" content="Checkout for the $150 Readiness Assessment. Secure payment, then your Read/co-pilot interview begins immediately.">
 <link rel="stylesheet" href="/assets/site.css">
 </head>
@@ -28,8 +28,8 @@
 <section class="hero">
   <div class="wrap">
     <p class="kicker">Checkout · Readiness Assessment</p>
-    <h1>$150. Seven minutes. Your verdict tonight.</h1>
-    <p class="lead">Payment is processed securely. The moment it clears, your Read&thinsp;/&thinsp;co-pilot interview begins — and your measured report is instant.</p>
+    <h1 id="co-h1">$150. Seven minutes. Your verdict tonight.</h1>
+    <p class="lead" id="co-lead">Payment is processed securely. The moment it clears, your Read&thinsp;/&thinsp;co-pilot interview begins, and your measured report is instant.</p>
   </div>
 </section>
 
@@ -38,16 +38,16 @@
     <div class="grid cols-2 mt">
       <div class="card">
         <h3>What happens next</h3>
-        <ol class="num-list">
+        <ol class="num-list" id="co-steps">
           <li><strong>Pay $150</strong> securely.</li>
-          <li><strong>Answer</strong> the guided interview — about seven minutes, one workflow.</li>
+          <li><strong>Answer</strong> the guided interview, about seven minutes, one workflow.</li>
           <li><strong>Receive</strong> your measured report instantly: verdict, scored dimensions, recommended intervention, 90-day measure.</li>
         </ol>
         <p class="note">No sales call. No waiting on a human. The rubric does the judging.</p>
       </div>
       <div class="card" id="pay-card">
         <p class="kicker">Secure checkout</p>
-        <h3>Readiness Assessment — $150</h3>
+        <h3>Readiness Assessment · $150</h3>
         <p>One workflow · instant measured report · rubric v1.0</p>
         <div id="pay-live" hidden>
           <p><a class="btn" id="pay-btn" href="#">Pay $150 securely</a></p>
@@ -111,12 +111,28 @@
    https://readable.tabronmerryhill.com/readiness/assessment/start/?paid=1 */
 var STRIPE_PAYMENT_LINK = "https://buy.stripe.com/9B6eVccuM8o30W76a64sE0h";
 (function () {
+  /* Buyers arriving from the paywall already finished the interview. Show
+     copy that matches instead of describing the interview as a future step. */
+  var fromPaywall = /[?&]interview=done/.test(location.search);
+  var hasEvidence = false;
+  try { hasEvidence = !!localStorage.getItem("read_evidence"); } catch (e) {}
+  if (fromPaywall || hasEvidence) {
+    var h1 = document.getElementById("co-h1");
+    var lead = document.getElementById("co-lead");
+    var steps = document.getElementById("co-steps");
+    if (h1) h1.textContent = "Your interview is done. Unlock your verdict.";
+    if (lead) lead.textContent = "Your interview is done. Payment is processed securely, and the moment it clears your measured report unlocks instantly.";
+    if (steps) steps.innerHTML =
+      "<li><strong>Pay $150</strong> securely.</li>" +
+      "<li><strong>Return</strong> here automatically after payment.</li>" +
+      "<li><strong>Receive</strong> your measured report instantly: verdict, scored dimensions, recommended intervention, 90-day measure.</li>";
+  }
   if (STRIPE_PAYMENT_LINK) {
     document.getElementById("pay-live").hidden = false;
     document.getElementById("pay-soon").hidden = true;
     var btn = document.getElementById("pay-btn");
     btn.href = STRIPE_PAYMENT_LINK;
-    btn.onclick = function () { try { sessionStorage.setItem("read_paid", "1"); } catch (e) {} };
+    btn.onclick = function () { try { localStorage.setItem("read_paid", "1"); } catch (e) {} };
   }
 })();
 </script>
