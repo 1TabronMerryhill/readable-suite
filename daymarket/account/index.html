@@ -46,6 +46,7 @@
 <section id="member-view"></section>
 <section id="business-view" hidden></section>
 <section id="org-view" hidden></section>
+<section id="operator-view" hidden></section>
 </div>
 
 </div></section>
@@ -68,6 +69,7 @@
   var tabsEl = document.getElementById("tabs");
   var memberViewEl = document.getElementById("member-view");
   var businessViewEl = document.getElementById("business-view");
+  var operatorViewEl = document.getElementById("operator-view");
   var orgViewEl = document.getElementById("org-view");
   var orgTabEl = tabsEl.querySelector('[data-tab="org"]');
 
@@ -118,6 +120,7 @@
     var labels = {
       pending: "Under review", active: "Active", suspended: "Suspended",
       draft: "Draft", published: "Published", ended: "Ended", archived: "Archived",
+      in_review: "In review",
       sold_out: "Sold out", claimed: "Claimed", redeemed: "Redeemed",
       expired: "Expired", canceled: "Canceled", inactive: "Inactive", past_due: "Past due"
     };
@@ -475,7 +478,8 @@
       if (h.description) html += '<p class="mt-sm" style="margin-bottom:0">' + esc(h.description) + "</p></div>";
       else html += "</div>";
       html += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' + badge(h.status);
-      if (h.status === "draft") html += '<button class="btn small" type="button" data-action="publish-holiday" data-id="' + esc(h.id) + '">Publish</button>';
+      if (h.status === "draft") html += '<button class="btn small" type="button" data-action="submit-holiday" data-id="' + esc(h.id) + '">Submit for review</button>';
+      if (h.status === "in_review") html += '<span class="mini">In review. We publish it once approved.</span> <button class="btn small ghost" type="button" data-action="withdraw-holiday" data-id="' + esc(h.id) + '">Withdraw</button>';
       if (h.status === "published") html += '<button class="btn small ghost" type="button" data-action="unpublish-holiday" data-id="' + esc(h.id) + '">Unpublish</button>';
       html += "</div></div>";
 
@@ -491,7 +495,13 @@
           html += '<span class="regular-price">' + esc(DM.money(o.regular_price_cents)) + "</span>";
         }
         html += "</div>";
-        html += '<span class="left">' + (left === Infinity ? "Unlimited" : left + " of " + o.quantity_total + " left") + " · " + (o.quantity_claimed || 0) + " claimed</span>";
+        html += '<span class="left">' + (left === Infinity ? "Unlimited" : left + " of " + o.quantity_total + " left") + " · " + (o.quantity_claimed || 0) + " claimed";
+        if (o.member_price_cents !== null && o.member_price_cents !== undefined) {
+          var bps = (currentBiz && currentBiz.fee_bps != null) ? currentBiz.fee_bps : 1500;
+          var netC = o.member_price_cents - Math.round(o.member_price_cents * bps / 10000);
+          html += " · you net " + esc(DM.money(netC)) + " after the " + (bps / 100) + "% fee";
+        }
+        html += "</span>";
         html += "</div><div style='display:flex;gap:8px;align-items:center;flex-wrap:wrap'>" + badge(o.status);
         if (o.status === "draft") html += '<button class="btn small" type="button" data-action="activate-offer" data-id="' + esc(o.id) + '">Activate</button>';
         if (o.status === "active") html += '<button class="btn small ghost" type="button" data-action="deactivate-offer" data-id="' + esc(o.id) + '">Deactivate</button>';
@@ -507,6 +517,8 @@
       html += '<div class="field"><label>Member price ($)</label><input class="input" type="number" name="member_price" min="0" step="0.01" placeholder="12.00"></div>';
       html += '<div class="field"><label>Quantity <span class="hint">(blank = unlimited)</span></label><input class="input" type="number" name="quantity" min="1" step="1" placeholder="50"></div>';
       html += "</div>";
+      var feePct = (currentBiz && currentBiz.fee_bps != null) ? (currentBiz.fee_bps / 100) : 15;
+      html += '<p class="mini">DayMarket fee: ' + feePct + '%. You net <strong data-net-preview>&mdash;</strong> per claim at the member price.</p>';
       html += '<button class="btn small" type="submit">Add offer (draft)</button></form></details>';
       html += "</div>";
     });
@@ -670,6 +682,7 @@
     renderMember();
     renderBusiness();
     renderOrg();
+    renderOperator();
   }
 
   /* ---------- actions ---------- */
@@ -714,8 +727,61 @@
     if (okMsg) note("ok", okMsg);
   }
 
+  /* ---------- operator review queue ---------- */
+
+  var reviewHolidays = [];
+  function isOperator() {
+    return !!(session && session.user && session.user.email &&
+      session.user.email.toLowerCase() === "tabronmerryhill@gmail.com");
+  }
+  async function loadOperatorData() {
+    reviewHolidays = [];
+    if (!isOperator()) return;
+    try {
+      var rh = await DM.supabase.from("dm_holidays")
+        .select("id,title,status,starts_at,business:dm_businesses(name)")
+        .eq("status", "in_review").order("created_at", { ascending: true });
+      if (!rh.error) reviewHolidays = rh.data || [];
+    } catch (e) { reviewHolidays = []; }
+  }
+  async function refreshOperator(okMsg) {
+    await loadOperatorData();
+    renderOperator();
+    if (okMsg) note("ok", okMsg);
+  }
+  function renderOperator() {
+    if (!operatorViewEl) return;
+    if (!isOperator()) { operatorViewEl.innerHTML = ""; operatorViewEl.hidden = true; return; }
+    operatorViewEl.hidden = false;
+    var html = '<p class="kicker">Operator review</p>';
+    if (!reviewHolidays.length) {
+      html += '<div class="panel"><p class="lede">Nothing waiting for review. When a business submits a holiday, it lands here for your sign-off.</p></div>';
+    }
+    reviewHolidays.forEach(function (h) {
+      var bname = (h.business && h.business.name) || "Business";
+      html += '<div class="panel"><div class="row" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">';
+      html += "<div><h3 style='margin:0 0 4px'>" + esc(h.title) + "</h3>";
+      html += '<p class="mini" style="margin:0">' + esc(bname) + "</p></div>";
+      html += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">';
+      html += '<button class="btn small" type="button" data-action="publish-holiday" data-id="' + esc(h.id) + '">Approve &amp; publish</button>';
+      html += '<button class="btn small ghost" type="button" data-action="reject-holiday" data-id="' + esc(h.id) + '">Send back</button>';
+      html += "</div></div></div>";
+    });
+    operatorViewEl.innerHTML = html;
+  }
+
   document.addEventListener("click", function (ev) {
-    var el = ev.target.closest("[data-action]");
+  document.addEventListener("input", function (ev) {
+    var t = ev.target;
+    if (!t || t.name !== "member_price") return;
+    var form = t.closest("form");
+    var prev = form && form.querySelector("[data-net-preview]");
+    if (!prev) return;
+    var bps = (typeof currentBiz !== "undefined" && currentBiz && currentBiz.fee_bps != null) ? currentBiz.fee_bps : 1500;
+    var cents = Math.round(parseFloat(t.value) * 100);
+    if (isNaN(cents) || cents <= 0) { prev.textContent = "\u2014"; return; }
+    prev.textContent = DM.money(cents - Math.round(cents * bps / 10000));
+  });    var el = ev.target.closest("[data-action]");
     if (!el) return;
     var action = el.getAttribute("data-action");
     var id = el.getAttribute("data-id");
@@ -795,7 +861,27 @@
     }
     if (action === "publish-holiday") {
       updateRow("dm_holidays", id, { status: "published" })
-        .then(function () { return refreshBusiness("Holiday published. Members can see it now."); })
+        .then(function () { return refreshBusiness(); })
+        .then(function () { return refreshOperator("Holiday published. Members can see it now."); })
+        .catch(bizErr);
+      return;
+    }
+    if (action === "submit-holiday") {
+      updateRow("dm_holidays", id, { status: "in_review" })
+        .then(function () { return refreshBusiness("Submitted for review. We publish it once approved."); })
+        .catch(bizErr);
+      return;
+    }
+    if (action === "withdraw-holiday") {
+      updateRow("dm_holidays", id, { status: "draft" })
+        .then(function () { return refreshBusiness("Withdrawn back to draft."); })
+        .catch(bizErr);
+      return;
+    }
+    if (action === "reject-holiday") {
+      updateRow("dm_holidays", id, { status: "draft" })
+        .then(function () { return refreshBusiness(); })
+        .then(function () { return refreshOperator("Sent back to the business as a draft."); })
         .catch(bizErr);
       return;
     }
@@ -963,6 +1049,7 @@
       await loadBusinesses();
       if (currentBiz) await loadBusinessData();
       await loadOrgData();
+      await loadOperatorData();
 
       document.getElementById("who").textContent = session.user.email || "";
       render();
