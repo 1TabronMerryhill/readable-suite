@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New request - V.I.S.I.O.N. Studio Portal</title>
+<meta name="description" content="Submit a new video request to your V.I.S.I.O.N. Studio production queue.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+</head>
+<body class="studio-portal">
+
+<header class="portal-header"><div class="wrap">
+<a class="portal-logo" href="index.html">V.I.S.I.O.N. Studio</a>
+<nav class="portal-nav">
+<a href="index.html">Dashboard</a>
+<a href="board.html">Board</a>
+<a href="new-request.html" class="active">New request</a>
+<a href="profile.html">Profile</a>
+<a href="#" class="signout" id="signout">Sign out</a>
+</nav>
+</div></header>
+
+<main>
+<section class="block"><div class="wrap">
+<div style="max-width:680px">
+
+<p class="kicker">Production queue</p>
+<h2>New request</h2>
+<p class="lede" id="limit-line">Tell us what you need. One clear brief gets a finished video faster than five vague ones.</p>
+
+<div class="notice" id="notice" role="status"></div>
+
+<div id="app" hidden>
+<div class="panel">
+<form id="req-form" novalidate>
+<div class="field">
+<label for="title">What is the video about?</label>
+<input class="input" type="text" id="title" name="title" required maxlength="120"
+  placeholder="Holiday sale spot for the downtown store">
+</div>
+<div class="field">
+<label for="description">The brief <span class="hint">(what happens, who is in it, what it should feel like)</span></label>
+<textarea class="input" id="description" name="description"
+  placeholder="30 seconds. Opens on the storefront at sunrise. One person walks in, picks a donut, smiles at the camera. Warm, friendly, real. End on the logo."></textarea>
+</div>
+<div class="field">
+<label for="refs">Reference links <span class="hint">(one per line: your site, photos, a video you like)</span></label>
+<textarea class="input" id="refs" name="refs" style="min-height:80px"
+  placeholder="https://yourbusiness.com&#10;https://…/logo.png"></textarea>
+</div>
+<div class="field">
+<label for="priority">Priority</label>
+<select class="input" id="priority" name="priority">
+<option value="normal">Normal</option>
+<option value="rush">Rush (uses a rush slot if your plan has one)</option>
+</select>
+</div>
+<button class="btn" type="submit" id="submit-btn" style="width:100%">Submit to the queue</button>
+</form>
+</div>
+</div>
+
+<div id="limit-block" hidden>
+<div class="panel tint">
+<h3>Queue is full</h3>
+<p class="lede" id="limit-msg"></p>
+<p><a class="btn small" href="board.html">See your board</a></p>
+</div>
+</div>
+
+<div id="loading"><p class="lede" style="margin-top:2rem">Loading…</p></div>
+
+</div>
+</div></section>
+</main>
+
+<footer class="portal-footer"><div class="wrap">
+<p>V.I.S.I.O.N. Studio is an Operator One venture. Tabron Merryhill Systems, Columbia, MO.</p>
+</div></footer>
+
+<script src="studio-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="studio-client.js"></script>
+<script>
+(function () {
+  "use strict";
+  var esc = ST.esc;
+  var notice = document.getElementById("notice");
+  var appEl = document.getElementById("app");
+  var limitEl = document.getElementById("limit-block");
+  var loadingEl = document.getElementById("loading");
+  var form = document.getElementById("req-form");
+  var submitBtn = document.getElementById("submit-btn");
+
+  var me = null;
+
+  function showNotice(kind, text) {
+    notice.className = "notice" + (kind ? " " + kind : "");
+    notice.textContent = text;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function clearNotice() { notice.className = "notice"; notice.textContent = ""; }
+
+  document.getElementById("signout").addEventListener("click", function (ev) {
+    ev.preventDefault();
+    ST.supabase.auth.signOut().finally(function () {
+      window.location.replace("../packages.html");
+    });
+  });
+
+  async function init() {
+    var session = await ST.requireAuth();
+    if (!session) return;
+    me = await ST.ensureClient(session);
+
+    var info = ST.planInfo(me.plan);
+    if (me.plan !== "payg") {
+      var spotsLeft = Math.max(0, info.spots - (me.spots_used_this_cycle || 0));
+      var rq = await ST.supabase.from("studio_requests")
+        .select("id").eq("client_id", me.id)
+        .in("status", ["queued", "in_production", "in_review"]);
+      if (rq.error) throw rq.error;
+      var activeCount = (rq.data || []).length;
+
+      var limitLine = document.getElementById("limit-line");
+      limitLine.textContent = "Your " + info.name + " plan: " + spotsLeft +
+        " of " + info.spots + " spots left this cycle. " + activeCount +
+        " of " + info.active + " active slots in use.";
+
+      if (spotsLeft <= 0) {
+        document.getElementById("limit-msg").textContent =
+          "You have used all " + info.spots + " spots in this cycle. New requests open up next cycle, or reach out to upgrade.";
+        loadingEl.hidden = true;
+        limitEl.hidden = false;
+        return;
+      }
+      if (activeCount >= info.active) {
+        document.getElementById("limit-msg").textContent =
+          "All " + info.active + " of your active slots are in use. New requests open up when a current one is delivered.";
+        loadingEl.hidden = true;
+        limitEl.hidden = false;
+        return;
+      }
+    }
+
+    loadingEl.hidden = true;
+    appEl.hidden = false;
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    clearNotice();
+    var title = (document.getElementById("title").value || "").trim();
+    if (!title) { showNotice("err", "Give the request a title."); return; }
+
+    var rawRefs = (document.getElementById("refs").value || "").split("\n")
+      .map(function (s) { return s.trim(); })
+      .filter(function (s) { return s.length > 0; });
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting…";
+
+    ST.supabase.from("studio_requests").insert({
+      client_id: me.id,
+      title: title,
+      description: (document.getElementById("description").value || "").trim() || null,
+      reference_urls: rawRefs,
+      priority: document.getElementById("priority").value || "normal",
+      status: "queued"
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      window.location.replace("board.html?new=1");
+    }).catch(function (err) {
+      showNotice("err", "Could not submit: " + (err.message || err));
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit to the queue";
+    });
+  });
+
+  init().catch(function (err) {
+    loadingEl.hidden = true;
+    showNotice("err", "Could not load: " + (err.message || err));
+  });
+})();
+</script>
+</body>
+</html>
