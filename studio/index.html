@@ -4,44 +4,115 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V.I.S.I.O.N. Studio — Finished videos, manufactured | An Operator One venture</title>
-<meta name="description" content="V.I.S.I.O.N. Studio manufactures finished videos: 30-second spots $297, micro-drama seasons $20,000 for 20 episodes, features and shows from $50,000. Every video moves through a governed pipeline. You approve before anything locks. An Operator One venture.">
-<link rel="canonical" href="https://readable.tabronmerryhill.com/studio/">
+<meta name="description" content="V.I.S.I.O.N. Studio manufactures finished videos: 30-second spots from $297, monthly studio subscriptions from $2,500, micro-drama seasons $20,000, features from $50,000. Watch the proof. Every video moves through nine gates and you approve before anything locks.">
+<link rel="canonical" href="https://studio.tabronmerryhill.com/studio/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="V.I.S.I.O.N. Studio">
 <meta property="og:title" content="V.I.S.I.O.N. Studio — Finished videos, manufactured">
-<meta property="og:description" content="30-second spots $297. Micro-drama seasons $20,000 for 20 episodes. Features from $50,000. Every video manufactured through a governed pipeline. You approve before anything locks.">
-<meta property="og:url" content="https://readable.tabronmerryhill.com/studio/">
-<meta property="og:video" content="https://readable.tabronmerryhill.com/studio/victorylap-spot.mp4">
+<meta property="og:description" content="30-second spots from $297. Monthly studio subscriptions from $2,500. Watch the proof: VictoryLap, Readable, and SitePulse films made in the Studio.">
+<meta property="og:url" content="https://studio.tabronmerryhill.com/studio/">
+<meta property="og:video" content="https://studio.tabronmerryhill.com/studio/victorylap-spot.mp4">
 <meta property="og:video:type" content="video/mp4">
 <meta name="twitter:card" content="summary_large_card">
 <meta name="twitter:title" content="V.I.S.I.O.N. Studio — Finished videos, manufactured">
-<meta name="twitter:description" content="30-second spots $297. Micro-drama seasons $20,000. Features from $50,000. An Operator One venture.">
+<meta name="twitter:description" content="Spots from $297. Subscriptions from $2,500/mo. Watch the proof. An Operator One venture.">
 <link rel="stylesheet" href="/assets/site.css">
 <style>
-  body.studio { background:#0b0e0d; color:#f2f0ea; }
-  body.studio .site-header { background:#0b0e0d; border-bottom:1px solid #232825; }
-  body.studio .site-header .word { color:#f2f0ea; }
-  body.studio .site-nav a { color:#c9cdc9; }
-  body.studio .hero { background:#0b0e0d; }
-  body.studio .hero h1 { color:#fff; }
-  body.studio .hero .lead { color:#b9beb9; }
-  body.studio .kicker { color:#8fd49a; }
+  :root { --bg:#0b0e0d; --panel:#141816; --line:#2a302c; --ink:#f2f0ea; --mut:#c9cdc9; --dim:#8a8f8a; --acc:#8fd49a; }
+  body.studio { background:var(--bg); color:var(--ink); }
+  body.studio .site-header { background:rgba(11,14,13,.92); border-bottom:1px solid #232825; backdrop-filter:blur(8px); position:sticky; top:0; z-index:50; }
+  body.studio .site-header .word { color:var(--ink); }
+  body.studio .site-nav a { color:var(--mut); }
+  body.studio .site-nav a.cta { color:#0b0e0d; background:var(--acc); border-radius:999px; padding:.45rem 1rem; font-weight:700; }
   body.studio .block h2 { color:#fff; }
-  body.studio .block p, body.studio .block li, body.studio .block dd, body.studio .block dt { color:#c9cdc9; }
+  body.studio .block p, body.studio .block li, body.studio .block dd, body.studio .block dt { color:var(--mut); }
   body.studio .block dt { color:#fff; }
-  body.studio .price { background:#141816; border:1px solid #2a302c; }
-  body.studio .price h3 { color:#fff; }
-  body.studio .price .amount { color:#fff; }
-  body.studio .price ul li { color:#c9cdc9; }
   body.studio .site-footer { border-top:1px solid #232825; }
-  body.studio .site-footer p, body.studio .site-footer a { color:#8a8f8a; }
-  .proof-video { max-width:860px; margin:2rem auto 0; }
-  .proof-video video { width:100%; border-radius:8px; display:block; background:#000; }
-  .proof-cap { text-align:center; color:#8a8f8a; font-size:.9rem; margin-top:.75rem; }
-  .pipeline { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.5rem; }
-  .pipeline span { border:1px solid #2a302c; border-radius:999px; padding:.35rem .9rem; font-size:.85rem; color:#c9cdc9; }
-  .pipeline span.arrow { border:none; color:#8fd49a; padding:.35rem .2rem; }
+  body.studio .site-footer p, body.studio .site-footer a { color:var(--dim); }
+
+  /* ---------- hero: premiere night ---------- */
+  .hero { position:relative; overflow:hidden; background:var(--bg); padding:5.5rem 0 4rem; }
+  .hero::before { content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse 65% 55% at 50% -5%, rgba(143,212,154,.14), transparent 70%);
+    animation:breathe 9s ease-in-out infinite; }
+  .hero::after { content:""; position:absolute; inset:0; pointer-events:none; opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E"); }
+  @keyframes breathe { 0%,100% { opacity:.55; } 50% { opacity:1; } }
+  .hero .wrap { position:relative; z-index:1; }
+  .hero h1 { color:#fff; font-size:clamp(2.6rem, 6vw, 4.6rem); line-height:1.02; letter-spacing:-.02em; margin:.6rem 0 1rem; }
+  .hero h1 .glow { color:var(--acc); }
+  .hero .lead { color:#b9beb9; font-size:1.15rem; max-width:44rem; }
+  .kicker { color:var(--acc); text-transform:uppercase; letter-spacing:.14em; font-size:.78rem; font-weight:700; }
+  .btn-row { display:flex; gap:.9rem; flex-wrap:wrap; margin-top:1.8rem; }
+
+  /* ---------- marquee strip ---------- */
+  .marquee { overflow:hidden; white-space:nowrap; border-top:1px solid #232825; border-bottom:1px solid #232825; background:#0e1210; }
+  .marquee-track { display:inline-block; padding:.7rem 0; animation:scrollx 32s linear infinite; color:var(--dim); font-size:.85rem; letter-spacing:.22em; text-transform:uppercase; }
+  .marquee-track b { color:var(--acc); font-weight:700; }
+  @keyframes scrollx { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal { opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce) { .reveal { opacity:1; transform:none; transition:none; } .marquee-track { animation:none; } .hero::before { animation:none; } }
+
+  /* ---------- proof gallery ---------- */
+  .films { display:grid; grid-template-columns:repeat(3, 1fr); gap:1.4rem; margin-top:2.2rem; }
+  @media (max-width:900px) { .films { grid-template-columns:1fr; } }
+  .film { background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+  .film:hover { transform:translateY(-6px); box-shadow:0 18px 44px rgba(0,0,0,.5); border-color:#3a443c; }
+  .film .screen { aspect-ratio:16/9; background:#000; }
+  .film .screen video, .film .screen iframe { width:100%; height:100%; display:block; border:0; }
+  .film .meta { padding:1.1rem 1.2rem 1.3rem; }
+  .film .meta .row { display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.45rem; }
+  .film h3 { color:#fff; font-size:1.05rem; margin:0; }
+  .runtime { font-size:.72rem; letter-spacing:.1em; color:#0b0e0d; background:var(--acc); border-radius:999px; padding:.22rem .7rem; font-weight:700; white-space:nowrap; }
+  .film p { margin:.2rem 0 0; font-size:.92rem; color:var(--mut); }
+
+  /* ---------- subscriptions ---------- */
+  .subs { display:grid; grid-template-columns:repeat(3, 1fr); gap:1.4rem; margin-top:2.2rem; }
+  @media (max-width:900px) { .subs { grid-template-columns:1fr; } }
+  .sub { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:1.6rem 1.5rem; transition:transform .25s ease, box-shadow .25s ease; position:relative; }
+  .sub:hover { transform:translateY(-6px); box-shadow:0 18px 44px rgba(0,0,0,.5); }
+  .sub.flag { border-color:var(--acc); }
+  .sub .tag { position:absolute; top:-.8rem; left:1.2rem; background:var(--acc); color:#0b0e0d; font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; border-radius:999px; padding:.28rem .8rem; }
+  .sub h3 { color:#fff; margin:.2rem 0 .2rem; }
+  .sub .amount { color:#fff; font-size:2.1rem; font-weight:800; margin:.4rem 0 0; }
+  .sub .per { color:var(--dim); font-size:.85rem; }
+  .sub ul { list-style:none; padding:0; margin:1rem 0 1.4rem; }
+  .sub ul li { color:var(--mut); font-size:.92rem; padding:.32rem 0 .32rem 1.3rem; position:relative; }
+  .sub ul li::before { content:"▸"; color:var(--acc); position:absolute; left:0; }
+  .sub .btn { width:100%; text-align:center; }
+
+  /* ---------- pricing (one-time) ---------- */
+  .price-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:1.4rem; margin-top:2.2rem; }
+  @media (max-width:900px) { .price-grid { grid-template-columns:1fr; } }
+  .price { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:1.6rem 1.5rem; transition:transform .25s ease, box-shadow .25s ease; }
+  .price:hover { transform:translateY(-6px); box-shadow:0 18px 44px rgba(0,0,0,.5); }
+  .price.featured { border-color:var(--acc); }
+  .price h3 { color:#fff; margin:.2rem 0; }
+  .price .amount { color:#fff; font-size:2.1rem; font-weight:800; margin:.4rem 0 0; }
+  .price .note { color:var(--dim); font-size:.85rem; }
+  .price ul { list-style:none; padding:0; margin:1rem 0 1.4rem; }
+  .price ul li { color:var(--mut); font-size:.92rem; padding:.32rem 0 .32rem 1.3rem; position:relative; }
+  .price ul li::before { content:"▸"; color:var(--acc); position:absolute; left:0; }
+
+  /* ---------- nine-gate journey ---------- */
+  .gates { display:grid; grid-template-columns:repeat(3, 1fr); gap:1rem; margin-top:2.2rem; counter-reset:gate; }
+  @media (max-width:900px) { .gates { grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px) { .gates { grid-template-columns:1fr; } }
+  .gate { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:1.1rem 1.2rem; position:relative; transition:transform .25s ease, border-color .25s ease; }
+  .gate:hover { transform:translateY(-4px); border-color:var(--acc); }
+  .gate::before { counter-increment:gate; content:counter(gate, decimal-leading-zero); display:block; color:var(--acc); font-weight:800; font-size:.8rem; letter-spacing:.14em; margin-bottom:.4rem; }
+  .gate h4 { color:#fff; margin:0 0 .3rem; font-size:1rem; }
+  .gate p { margin:0; font-size:.88rem; color:var(--mut); }
+  .gate.you { border-color:var(--acc); }
+  .gate.you::after { content:"YOUR CALL"; position:absolute; top:.8rem; right:.9rem; font-size:.62rem; letter-spacing:.14em; color:#0b0e0d; background:var(--acc); border-radius:999px; padding:.18rem .6rem; font-weight:800; }
+
+  .faq dt { margin-top:1.1rem; }
+  .center { text-align:center; }
+  .section-lead { max-width:46rem; }
 </style>
 <script type="application/ld+json">
 {
@@ -49,10 +120,10 @@
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://readable.tabronmerryhill.com/studio/#org",
+      "@id": "https://studio.tabronmerryhill.com/studio/#org",
       "name": "V.I.S.I.O.N. Studio",
-      "description": "Finished videos, manufactured. 30-second spots, micro-drama seasons, features and shows. Every video moves through a governed pipeline and the client approves before anything locks.",
-      "url": "https://readable.tabronmerryhill.com/studio/",
+      "description": "Finished videos, manufactured. 30-second spots, monthly studio subscriptions, micro-drama seasons, features and shows. Every video moves through a nine-gate pipeline and the client approves before anything locks.",
+      "url": "https://studio.tabronmerryhill.com/studio/",
       "parentOrganization": {
         "@type": "Organization",
         "name": "Operator One",
@@ -74,6 +145,48 @@
     },
     {
       "@type": "Product",
+      "name": "V.I.S.I.O.N. Studio — Presence",
+      "description": "Your studio on retainer. 4 finished AI commercial spots per month, 1 active request at a time, monthly planning included.",
+      "brand": { "@type": "Brand", "name": "V.I.S.I.O.N. Studio" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://buy.stripe.com/eVq6oGeCUawb7kv8ie4sE0s",
+        "priceCurrency": "USD",
+        "price": "2500",
+        "description": "Billed monthly. 4 spots per month.",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Product",
+      "name": "V.I.S.I.O.N. Studio — Momentum",
+      "description": "Your studio on retainer. 8 finished AI commercial spots per month, 2 active requests at a time, monthly planning and priority scheduling.",
+      "brand": { "@type": "Brand", "name": "V.I.S.I.O.N. Studio" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://buy.stripe.com/fZu3cuamE8o3gV57ea4sE0t",
+        "priceCurrency": "USD",
+        "price": "5000",
+        "description": "Billed monthly. 8 spots per month.",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Product",
+      "name": "V.I.S.I.O.N. Studio — Embedded Studio",
+      "description": "Your studio on retainer. 16 finished AI commercial spots per month, 3 active requests at a time, quarterly roadmap, fastest priority, named studio lead.",
+      "brand": { "@type": "Brand", "name": "V.I.S.I.O.N. Studio" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://buy.stripe.com/9B614m8ew9s7eMXcyu4sE0u",
+        "priceCurrency": "USD",
+        "price": "10000",
+        "description": "Billed monthly. 16 spots per month.",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Product",
       "name": "V.I.S.I.O.N. Studio — Micro-Drama Season (20 episodes)",
       "description": "A full 20-episode micro-drama season, manufactured episode by episode through the V.I.S.I.O.N. pipeline. You approve every episode before it locks.",
       "brand": { "@type": "Brand", "name": "V.I.S.I.O.N. Studio" },
@@ -89,7 +202,7 @@
       "@type": "Service",
       "name": "V.I.S.I.O.N. Studio — Features and Shows",
       "description": "Features and shows, manufactured through the V.I.S.I.O.N. pipeline. Custom scope, from 50000 USD.",
-      "provider": { "@id": "https://readable.tabronmerryhill.com/studio/#org" },
+      "provider": { "@id": "https://studio.tabronmerryhill.com/studio/#org" },
       "offers": {
         "@type": "Offer",
         "url": "https://readable.tabronmerryhill.com/partner-intake/",
@@ -101,10 +214,28 @@
     {
       "@type": "VideoObject",
       "name": "VictoryLap — The Starting Line (Studio proof)",
-      "description": "A 30-second launch spot manufactured by V.I.S.I.O.N. Studio: dawn runner scene plus VictoryLap logo end card.",
-      "thumbnailUrl": "https://readable.tabronmerryhill.com/studio/",
-      "contentUrl": "https://readable.tabronmerryhill.com/studio/victorylap-spot.mp4",
-      "uploadDate": "2026-10-06"
+      "description": "A launch spot manufactured by V.I.S.I.O.N. Studio: dawn runner scene plus VictoryLap logo end card.",
+      "thumbnailUrl": "https://studio.tabronmerryhill.com/studio/",
+      "contentUrl": "https://studio.tabronmerryhill.com/studio/victorylap-spot.mp4",
+      "uploadDate": "2026-10-06",
+      "duration": "PT8S"
+    },
+    {
+      "@type": "VideoObject",
+      "name": "Readable — The 39-Second Story (Studio proof)",
+      "description": "The whole Readable idea in under a minute, manufactured by V.I.S.I.O.N. Studio.",
+      "thumbnailUrl": "https://studio.tabronmerryhill.com/studio/",
+      "contentUrl": "https://studio.tabronmerryhill.com/studio/readable-spot.mp4",
+      "uploadDate": "2026-10-09",
+      "duration": "PT39S"
+    },
+    {
+      "@type": "VideoObject",
+      "name": "SitePulse — Campaign Film (Studio proof)",
+      "description": "The SitePulse campaign film, produced for the Readable registry.",
+      "thumbnailUrl": "https://img.youtube.com/vi/Q7OiPPqEDE0/hqdefault.jpg",
+      "embedUrl": "https://www.youtube.com/embed/Q7OiPPqEDE0",
+      "uploadDate": "2026-10-09"
     }
   ]
 }
@@ -117,65 +248,148 @@
     <a class="logo" href="/studio/"><span class="word">V.I.S.I.O.N. Studio</span></a>
     <nav class="site-nav">
       <a href="#proof">Proof</a>
+      <a href="#subscriptions">Subscriptions</a>
       <a href="#how">How it is made</a>
       <a href="#pricing">Pricing</a>
-      <a class="cta" href="#pricing">Buy a video</a>
+      <a class="cta" href="https://buy.stripe.com/bJe6oGbqI5bR0W76a64sE0p">Start with a $297 spot</a>
     </nav>
   </div>
 </header>
 
 <section class="hero">
   <div class="wrap">
-    <p class="kicker">An Operator One venture</p>
-    <h1>Finished videos, manufactured.</h1>
-    <p class="lead">Not generated and hoped. Manufactured: versioned, estimated, approved by you, produced, inspected, and selected. You see every step. Nothing locks without your approval.</p>
+    <p class="kicker">An Operator One venture · Now showing</p>
+    <h1>Finished videos, <span class="glow">manufactured.</span></h1>
+    <p class="lead">This is a studio, not a slot machine. Every video moves through nine gates. You watch the proof, you approve the work, and nothing locks without your say.</p>
     <div class="btn-row">
-      <a class="btn btn-light" href="#pricing">Buy a video</a>
+      <a class="btn btn-light" href="https://buy.stripe.com/bJe6oGbqI5bR0W76a64sE0p">Start with a $297 spot</a>
       <a class="btn" style="background:transparent;border-color:#3a403c;color:#fff;box-shadow:4px 4px 0 #232825" href="#proof">Watch the proof</a>
     </div>
   </div>
 </section>
 
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <b>Now showing</b> · Finished videos · Manufactured, not generated and hoped · Nine gates · You approve before anything locks · <b>Now showing</b> · Finished videos · Manufactured, not generated and hoped · Nine gates · You approve before anything locks ·&nbsp;
+  </div>
+</div>
+
 <section class="block" id="proof">
   <div class="wrap">
-    <p class="kicker">Proof, not promises</p>
-    <h2>Watch what the Studio made.</h2>
-    <p>This 30-second launch spot for VictoryLap came out of the Studio pipeline: assignment, estimate, approval, production, inspection, selected take. Eight seconds of it are below. The full spot follows the same pipeline.</p>
-    <div class="proof-video">
-      <video controls preload="metadata" playsinline>
-        <source src="/studio/victorylap-spot.mp4" type="video/mp4">
-      </video>
-      <p class="proof-cap">VictoryLap — The Starting Line. Manufactured by V.I.S.I.O.N. Studio.</p>
+    <p class="kicker reveal">Proof, not promises</p>
+    <h2 class="reveal">Fresh out of the Studio.</h2>
+    <p class="section-lead reveal">Three films, three different jobs, one pipeline. Press play. If you like what you see, yours is next.</p>
+    <div class="films">
+      <article class="film reveal">
+        <div class="screen">
+          <video controls preload="metadata" playsinline>
+            <source src="/studio/victorylap-spot.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="meta">
+          <div class="row"><h3>VictoryLap: The Starting Line</h3><span class="runtime">0:08</span></div>
+          <p>A launch spot. Dawn, a runner, a decision. Made in the Studio pipeline from brief to locked take.</p>
+        </div>
+      </article>
+      <article class="film reveal">
+        <div class="screen">
+          <video controls preload="metadata" playsinline>
+            <source src="/studio/readable-spot.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="meta">
+          <div class="row"><h3>Readable: The 39-Second Story</h3><span class="runtime">0:39</span></div>
+          <p>The whole Readable idea in under a minute. Cut from the real thing, finished in the Studio.</p>
+        </div>
+      </article>
+      <article class="film reveal">
+        <div class="screen">
+          <iframe src="https://www.youtube.com/embed/Q7OiPPqEDE0" title="SitePulse campaign film" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="meta">
+          <div class="row"><h3>SitePulse: The Campaign Film</h3><span class="runtime">Feature</span></div>
+          <p>Daily site reports for builders, on the big screen. The founding proof partner film.</p>
+        </div>
+      </article>
     </div>
+  </div>
+</section>
+
+<section class="block" id="subscriptions">
+  <div class="wrap">
+    <p class="kicker reveal">After the proof spot</p>
+    <h2 class="reveal">Your studio, on retainer.</h2>
+    <p class="section-lead reveal">One $297 spot proves the Studio can make your video. A subscription keeps it making them. Pick a monthly rhythm, submit requests to your board, watch them ship. Pause or cancel anytime.</p>
+    <div class="subs">
+      <div class="sub reveal">
+        <h3>Presence</h3>
+        <p class="amount">$2,500</p>
+        <p class="per">per month · 4 spots</p>
+        <ul>
+          <li>Four finished spots a month</li>
+          <li>One active request at a time</li>
+          <li>Monthly planning included</li>
+          <li>Your own request board</li>
+        </ul>
+        <a class="btn btn-light" href="https://buy.stripe.com/eVq6oGeCUawb7kv8ie4sE0s">Start with Presence</a>
+      </div>
+      <div class="sub flag reveal">
+        <span class="tag">Flagship</span>
+        <h3>Momentum</h3>
+        <p class="amount">$5,000</p>
+        <p class="per">per month · 8 spots</p>
+        <ul>
+          <li>Eight finished spots a month</li>
+          <li>Two active requests at a time</li>
+          <li>Priority scheduling</li>
+          <li>Monthly planning session</li>
+        </ul>
+        <a class="btn btn-light" href="https://buy.stripe.com/fZu3cuamE8o3gV57ea4sE0t">Start with Momentum</a>
+      </div>
+      <div class="sub reveal">
+        <h3>Embedded Studio</h3>
+        <p class="amount">$10,000</p>
+        <p class="per">per month · 16 spots</p>
+        <ul>
+          <li>Sixteen finished spots a month</li>
+          <li>Three active requests at a time</li>
+          <li>Quarterly content roadmap</li>
+          <li>Named studio lead, fastest priority</li>
+        </ul>
+        <a class="btn btn-light" href="https://buy.stripe.com/9B614m8ew9s7eMXcyu4sE0u">Start with Embedded</a>
+      </div>
+    </div>
+    <p class="center reveal" style="margin-top:1.8rem"><a class="btn" style="background:transparent;border-color:#3a403c;color:#fff;box-shadow:4px 4px 0 #232825" href="/studio/packages.html">Full details and signup</a></p>
   </div>
 </section>
 
 <section class="block" id="how">
   <div class="wrap">
-    <p class="kicker">How it is made</p>
-    <h2>An assembly line for video.</h2>
-    <p>Every video moves through the same nine gates. You approve at the gates that matter. The paper trail is the product as much as the video.</p>
-    <div class="pipeline">
-      <span>Prepare</span><span class="arrow">→</span>
-      <span>Validate</span><span class="arrow">→</span>
-      <span>Route</span><span class="arrow">→</span>
-      <span>Quote</span><span class="arrow">→</span>
-      <span>Authorize</span><span class="arrow">→</span>
-      <span>Produce</span><span class="arrow">→</span>
-      <span>Inspect</span><span class="arrow">→</span>
-      <span>Select</span><span class="arrow">→</span>
-      <span>Lock</span>
+    <p class="kicker reveal">How it is made</p>
+    <h2 class="reveal">Nine gates. No shortcuts.</h2>
+    <p class="section-lead reveal">Every video walks the same line, from first brief to final lock. The gates marked in green are yours. The paper trail is part of the product.</p>
+    <div class="gates">
+      <div class="gate reveal"><h4>Prepare</h4><p>The brief gets written down. Nothing starts fuzzy.</p></div>
+      <div class="gate reveal"><h4>Validate</h4><p>The idea gets checked against reality before a frame is made.</p></div>
+      <div class="gate reveal"><h4>Route</h4><p>The right pipeline gets picked for the job.</p></div>
+      <div class="gate you reveal"><h4>Quote</h4><p>You see the exact cost. No surprises later.</p></div>
+      <div class="gate you reveal"><h4>Authorize</h4><p>You say go. Production starts on your word.</p></div>
+      <div class="gate reveal"><h4>Produce</h4><p>The Studio builds the take, versioned and tracked.</p></div>
+      <div class="gate reveal"><h4>Inspect</h4><p>Every frame gets checked against the brief.</p></div>
+      <div class="gate you reveal"><h4>Select</h4><p>You pick the winner. The rest stay in the archive.</p></div>
+      <div class="gate reveal"><h4>Lock</h4><p>It ships. Full rights. Yours forever.</p></div>
     </div>
   </div>
 </section>
 
 <section class="block" id="pricing">
   <div class="wrap">
-    <p class="kicker">Three ways to buy</p>
-    <h2>Pick the production.</h2>
+    <p class="kicker reveal">One-time productions</p>
+    <h2 class="reveal">Start with a single video.</h2>
+    <p class="section-lead reveal">Not ready for a monthly rhythm? Buy one production. Same nine gates, same approvals, same finished video.</p>
     <div class="price-grid">
-      <div class="price featured">
-        <p class="kicker on-dark">Founding rate</p>
+      <div class="price featured reveal">
+        <p class="kicker">Founding rate</p>
         <h3>30-Second Spot</h3>
         <p class="amount">$297</p>
         <p class="note">one-time · yours to keep</p>
@@ -185,10 +399,10 @@
           <li>You approve before production</li>
           <li>Inspected take, selected by you</li>
         </ul>
-        <a class="btn btn-light" href="https://buy.stripe.com/bJe6oGbqI5bR0W76a64sE0p">Buy the spot</a>
+        <a class="btn btn-light" href="https://buy.stripe.com/bJe6oGbqI5bR0W76a64sE0p">Start with a $297 spot</a>
         <p class="note" style="margin-top:.75rem"><a href="/studio/intake/">Already paid? Send your production brief.</a></p>
       </div>
-      <div class="price">
+      <div class="price reveal">
         <p class="kicker">Serial</p>
         <h3>Micro-Drama Season</h3>
         <p class="amount">$20,000</p>
@@ -201,7 +415,7 @@
         </ul>
         <a class="btn btn-light" href="https://buy.stripe.com/3cI7sKgL27jZ48j1TQ4sE0q">Buy the season</a>
       </div>
-      <div class="price">
+      <div class="price reveal">
         <p class="kicker">Custom</p>
         <h3>Features and Shows</h3>
         <p class="amount">$50,000+</p>
@@ -220,17 +434,19 @@
 
 <section class="block" id="faq">
   <div class="wrap">
-    <p class="kicker">Questions</p>
-    <h2>Asked and answered.</h2>
+    <p class="kicker reveal">Questions</p>
+    <h2 class="reveal">Asked and answered.</h2>
     <dl class="faq">
-      <dt>Who owns the finished video?</dt>
-      <dd>You do. Full commercial rights, forever.</dd>
-      <dt>What do you need from me?</dt>
-      <dd>The idea and the approvals. Treatment, shot direction, and your go at the gates. The Studio carries the rest.</dd>
-      <dt>How long does a spot take?</dt>
-      <dd>Days, not months. The pipeline is built for speed without skipping gates.</dd>
-      <dt>What if I do not like the take?</dt>
-      <dd>You do not approve it, and it does not lock. Inspection is a gate, not a formality.</dd>
+      <dt class="reveal">Who owns the finished video?</dt>
+      <dd class="reveal">You do. Full commercial rights, forever.</dd>
+      <dt class="reveal">How do the monthly plans work?</dt>
+      <dd class="reveal">Pick a tier. You get a set number of spots each month and your own board to request and track them. Pause or cancel anytime.</dd>
+      <dt class="reveal">What do you need from me?</dt>
+      <dd class="reveal">The idea and the approvals. Treatment, shot direction, and your go at the gates. The Studio carries the rest.</dd>
+      <dt class="reveal">How long does a spot take?</dt>
+      <dd class="reveal">Days, not months. The pipeline is built for speed without skipping gates.</dd>
+      <dt class="reveal">What if I do not like the take?</dt>
+      <dd class="reveal">You do not approve it, and it does not lock. Inspection is a gate, not a formality.</dd>
     </dl>
   </div>
 </section>
@@ -240,6 +456,17 @@
     <p>V.I.S.I.O.N. Studio · an <a href="/operator-one/">Operator One</a> venture · a Tabron Merryhill Systems company. Payments processed by Stripe. Tabron Merryhill Holdings, LLC.</p>
   </div>
 </footer>
+
+<script>
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('visible'); }); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if (en.isIntersecting) { en.target.classList.add('visible'); io.unobserve(en.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(function(e){ io.observe(e); });
+})();
+</script>
 
 </body>
 </html>
