@@ -16,6 +16,7 @@
 <meta name="twitter:title" content="The Workflow — a weekly note for owner-led businesses">
 <meta name="twitter:description" content="One idea about trapped workflows, one observed example, one next step. Free, weekly, short.">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/forms.js" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -42,7 +43,6 @@
   .sample { background:#f4f7f5; border:1px solid #dfe7e2; border-radius:10px; padding:28px; margin-top:8px; }
   .sample h3 { margin-top:0; }
   .sample p { color:#3c4744; }
-  .form-shell iframe { width:100%; height:560px; border:1px solid #dfe7e2; border-radius:10px; background:#fff; }
 </style>
 </head>
 <body>
@@ -94,10 +94,20 @@
     <p class="kicker">Sign up</p>
     <h2>Get The Workflow every week.</h2>
     <p>One email a week. Unsubscribe anytime. We never sell your address.</p>
-    <div class="form-shell">
-      <iframe src="https://airtable.com/embed/appHDR9CU6WjHYZdy/shrR3ZNLMuymmh12N" title="Sign up for The Workflow" loading="lazy"></iframe>
+    <div class="form-card mt">
+      <form data-form-id="subscribe" data-success="You're on the list. The next issue of The Workflow lands weekly." novalidate>
+        <div class="field">
+          <label for="nl-name">Name <span class="req">*</span></label>
+          <input type="text" id="nl-name" name="name" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="nl-email">Email <span class="req">*</span></label>
+          <input type="email" id="nl-email" name="email" required autocomplete="email">
+        </div>
+        <button class="btn btn-light" type="submit">Get the note</button>
+        <p class="form-status" role="status"></p>
+      </form>
     </div>
-    <p class="note" style="margin-top:12px">Form not loading? <a href="https://airtable.com/appHDR9CU6WjHYZdy/shrR3ZNLMuymmh12N">Open the signup form directly</a>.</p>
   </div>
 </section>
 
