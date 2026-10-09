@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Production board - V.I.S.I.O.N. Studio Portal</title>
+<meta name="description" content="Your V.I.S.I.O.N. Studio production board: queued, in production, in review, delivered.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+</head>
+<body class="studio-portal">
+
+<header class="portal-header"><div class="wrap">
+<a class="portal-logo" href="index.html">V.I.S.I.O.N. Studio</a>
+<nav class="portal-nav">
+<a href="index.html">Dashboard</a>
+<a href="board.html" class="active">Board</a>
+<a href="new-request.html">New request</a>
+<a href="profile.html">Profile</a>
+<a href="#" class="signout" id="signout">Sign out</a>
+</nav>
+</div></header>
+
+<main>
+<section class="block"><div class="wrap">
+
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+<div>
+<p class="kicker">Production queue</p>
+<h2>Your board</h2>
+<p class="lede">Drag a card between columns, or use the buttons on each card. Every move is saved.</p>
+</div>
+<a class="btn" href="new-request.html">+ New request</a>
+</div>
+
+<div class="notice" id="notice" role="status"></div>
+
+<div id="board" class="board" hidden></div>
+<div id="loading"><p class="lede" style="margin-top:2rem">Loading your board…</p></div>
+
+</div></section>
+</main>
+
+<footer class="portal-footer"><div class="wrap">
+<p>V.I.S.I.O.N. Studio is an Operator One venture. Tabron Merryhill Systems, Columbia, MO.</p>
+</div></footer>
+
+<script src="studio-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="studio-client.js"></script>
+<script>
+(function () {
+  "use strict";
+  var esc = ST.esc;
+  var notice = document.getElementById("notice");
+  var boardEl = document.getElementById("board");
+  var loadingEl = document.getElementById("loading");
+
+  var COLUMNS = [
+    { id: "queued", label: "Queued" },
+    { id: "in_production", label: "In production" },
+    { id: "in_review", label: "In review" },
+    { id: "delivered", label: "Delivered" }
+  ];
+  // Clients can move their own cards through the working columns.
+  // "Delivered" is set by the Studio when the finished video is handed over.
+  var CLIENT_MOVES = {
+    queued: ["in_production"],
+    in_production: ["queued", "in_review"],
+    in_review: ["in_production", "queued"],
+    delivered: []
+  };
+
+  var me = null;
+  var requests = [];
+
+  function showNotice(kind, text) {
+    notice.className = "notice" + (kind ? " " + kind : "");
+    notice.textContent = text;
+  }
+  function clearNotice() { notice.className = "notice"; notice.textContent = ""; }
+
+  async function moveRequest(id, toStatus) {
+    clearNotice();
+    var r = await ST.supabase.from("studio_requests").update({ status: toStatus }).eq("id", id);
+    if (r.error) { showNotice("err", "Could not move that card: " + r.error.message); return; }
+    var card = requests.filter(function (x) { return x.id === id; })[0];
+    if (card) card.status = toStatus;
+    render();
+  }
+
+  function cardActions(r) {
+    var moves = CLIENT_MOVES[r.status] || [];
+    if (!moves.length) return "";
+    var out = '<div class="card-actions">';
+    moves.forEach(function (m) {
+      var label = { queued: "Back to queue", in_production: "To production", in_review: "To review" }[m] || m;
+      out += '<button type="button" data-move="' + esc(r.id) + '" data-to="' + esc(m) + '">' + esc(label) + "</button>";
+    });
+    return out + "</div>";
+  }
+
+  function render() {
+    var out = "";
+    COLUMNS.forEach(function (col) {
+      var cards = requests.filter(function (r) { return r.status === col.id; });
+      out += '<div class="column" data-col="' + col.id + '">';
+      out += "<h3>" + esc(col.label) + ' <span class="count">' + cards.length + "</span></h3>";
+      cards.forEach(function (r) {
+        out += '<div class="card" draggable="true" data-id="' + esc(r.id) + '">';
+        out += "<h4>" + esc(r.title) +
+          (r.priority === "rush" ? '<span class="rush-tag">RUSH</span>' : "") + "</h4>";
+        if (r.description) {
+          var d = r.description.length > 120 ? r.description.slice(0, 120) + "…" : r.description;
+          out += "<p>" + esc(d) + "</p>";
+        }
+        out += '<div class="meta">Submitted ' + esc(ST.fmtDate(r.created_at)) + "</div>";
+        if (r.delivered_url && r.status === "delivered") {
+          out += '<div class="card-actions"><a class="btn small" href="' + esc(r.delivered_url) + '">Watch</a></div>';
+        }
+        out += cardActions(r);
+        out += "</div>";
+      });
+      out += "</div>";
+    });
+    boardEl.innerHTML = out;
+    wireDrag();
+  }
+
+  function wireDrag() {
+    var cards = boardEl.querySelectorAll(".card");
+    cards.forEach(function (card) {
+      card.addEventListener("dragstart", function () {
+        card.classList.add("dragging");
+        card.parentNode.querySelectorAll(".card").forEach(function () {});
+      });
+      card.addEventListener("dragend", function () {
+        card.classList.remove("dragging");
+        boardEl.querySelectorAll(".column").forEach(function (c) { c.classList.remove("drag-over"); });
+      });
+    });
+    var cols = boardEl.querySelectorAll(".column");
+    cols.forEach(function (col) {
+      col.addEventListener("dragover", function (ev) {
+        ev.preventDefault();
+        col.classList.add("drag-over");
+      });
+      col.addEventListener("dragleave", function () { col.classList.remove("drag-over"); });
+      col.addEventListener("drop", function (ev) {
+        ev.preventDefault();
+        col.classList.remove("drag-over");
+        var dragging = boardEl.querySelector(".dragging");
+        if (!dragging) return;
+        var toStatus = col.getAttribute("data-col");
+        var id = dragging.getAttribute("data-id");
+        var card = requests.filter(function (x) { return x.id === id; })[0];
+        if (!card || card.status === toStatus) return;
+        var allowed = (CLIENT_MOVES[card.status] || []).indexOf(toStatus) !== -1;
+        if (!allowed) {
+          showNotice("err", "That move is handled by the Studio. Use the buttons on the card.");
+          return;
+        }
+        moveRequest(id, toStatus);
+      });
+    });
+  }
+
+  boardEl.addEventListener("click", function (ev) {
+    var btn = ev.target.closest("[data-move]");
+    if (!btn) return;
+    moveRequest(btn.getAttribute("data-move"), btn.getAttribute("data-to"));
+  });
+
+  document.getElementById("signout").addEventListener("click", function (ev) {
+    ev.preventDefault();
+    ST.supabase.auth.signOut().finally(function () {
+      window.location.replace("../packages.html");
+    });
+  });
+
+  async function init() {
+    var session = await ST.requireAuth();
+    if (!session) return;
+    me = await ST.ensureClient(session);
+    var rq = await ST.supabase.from("studio_requests")
+      .select("*").eq("client_id", me.id).order("created_at", { ascending: true });
+    if (rq.error) throw rq.error;
+    requests = rq.data || [];
+    loadingEl.hidden = true;
+    boardEl.hidden = false;
+    render();
+  }
+
+  init().catch(function (err) {
+    loadingEl.hidden = true;
+    showNotice("err", "Could not load your board: " + (err.message || err));
+  });
+})();
+</script>
+</body>
+</html>
