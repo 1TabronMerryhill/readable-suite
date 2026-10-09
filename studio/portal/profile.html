@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile - V.I.S.I.O.N. Studio Portal</title>
+<meta name="description" content="Your V.I.S.I.O.N. Studio profile: brand assets, contact info, plan and billing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+</head>
+<body class="studio-portal">
+
+<header class="portal-header"><div class="wrap">
+<a class="portal-logo" href="index.html">V.I.S.I.O.N. Studio</a>
+<nav class="portal-nav">
+<a href="index.html">Dashboard</a>
+<a href="board.html">Board</a>
+<a href="new-request.html">New request</a>
+<a href="profile.html" class="active">Profile</a>
+<a href="#" class="signout" id="signout">Sign out</a>
+</nav>
+</div></header>
+
+<main>
+<section class="block"><div class="wrap">
+<div style="max-width:680px">
+
+<p class="kicker">Your account</p>
+<h2>Profile</h2>
+<p class="lede">Brand assets here get used in every video we make for you. Keep them current.</p>
+
+<div class="notice" id="notice" role="status"></div>
+
+<div id="app" hidden>
+
+<div class="panel">
+<h3>Business</h3>
+<form id="biz-form" novalidate>
+<div class="field">
+<label for="business_name">Business name</label>
+<input class="input" type="text" id="business_name" name="business_name" required maxlength="120">
+</div>
+<div class="field">
+<label for="contact_name">Contact name</label>
+<input class="input" type="text" id="contact_name" name="contact_name" maxlength="120">
+</div>
+<button class="btn small" type="submit" id="biz-btn">Save</button>
+</form>
+</div>
+
+<div class="panel">
+<h3>Brand assets</h3>
+<p class="lede">Links the Studio pulls into every production. Logo, brand colors, fonts, product photos.</p>
+<form id="assets-form" novalidate>
+<div class="field">
+<label for="logo_url">Logo URL</label>
+<input class="input" type="url" id="logo_url" name="logo_url" placeholder="https://…/logo.png">
+</div>
+<div class="field">
+<label for="brand_colors">Brand colors <span class="hint">(comma separated, e.g. #E84393, #111111)</span></label>
+<input class="input" type="text" id="brand_colors" name="brand_colors" placeholder="#E84393, #111111">
+</div>
+<div class="field">
+<label for="font_notes">Font notes</label>
+<input class="input" type="text" id="font_notes" name="font_notes" maxlength="200" placeholder="Headings: bold sans. Body: clean sans.">
+</div>
+<div class="field">
+<label for="asset_links">Other asset links <span class="hint">(one per line: product shots, storefront photos, style references)</span></label>
+<textarea class="input" id="asset_links" name="asset_links" style="min-height:80px" placeholder="https://…/storefront.jpg"></textarea>
+</div>
+<button class="btn small" type="submit" id="assets-btn">Save assets</button>
+</form>
+</div>
+
+<div class="panel">
+<h3>Plan and billing</h3>
+<div id="plan-info"></div>
+<p class="mt"><a href="../packages.html">Change plan</a></p>
+<p class="mini">To update payment details or cancel, reply to any Studio email and we handle it same day.</p>
+</div>
+
+</div>
+
+<div id="loading"><p class="lede" style="margin-top:2rem">Loading…</p></div>
+
+</div>
+</div></section>
+</main>
+
+<footer class="portal-footer"><div class="wrap">
+<p>V.I.S.I.O.N. Studio is an Operator One venture. Tabron Merryhill Systems, Columbia, MO.</p>
+</div></footer>
+
+<script src="studio-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="studio-client.js"></script>
+<script>
+(function () {
+  "use strict";
+  var esc = ST.esc;
+  var notice = document.getElementById("notice");
+  var appEl = document.getElementById("app");
+  var loadingEl = document.getElementById("loading");
+
+  var me = null;
+
+  function showNotice(kind, text) {
+    notice.className = "notice" + (kind ? " " + kind : "");
+    notice.textContent = text;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function clearNotice() { notice.className = "notice"; notice.textContent = ""; }
+
+  document.getElementById("signout").addEventListener("click", function (ev) {
+    ev.preventDefault();
+    ST.supabase.auth.signOut().finally(function () {
+      window.location.replace("../packages.html");
+    });
+  });
+
+  function subLabel(s) {
+    return { active: "Active", past_due: "Past due", canceled: "Canceled", none: "No subscription", trialing: "Trial" }[s] || s;
+  }
+
+  async function init() {
+    var session = await ST.requireAuth();
+    if (!session) return;
+    me = await ST.ensureClient(session);
+
+    document.getElementById("business_name").value = me.business_name || "";
+    document.getElementById("contact_name").value = me.contact_name || "";
+
+    var assets = me.brand_assets || {};
+    document.getElementById("logo_url").value = assets.logo_url || "";
+    document.getElementById("brand_colors").value = assets.brand_colors || "";
+    document.getElementById("font_notes").value = assets.font_notes || "";
+    document.getElementById("asset_links").value = (assets.asset_links || []).join("\n");
+
+    var info = ST.planInfo(me.plan);
+    var pi = document.getElementById("plan-info");
+    var html = "<p><strong>" + esc(info.name) + "</strong>";
+    if (me.plan === "payg") {
+      html += " · $297 per finished spot. No monthly commitment.</p>";
+    } else {
+      html += " · $" + info.price.toLocaleString() + "/mo · " + info.spots + " spots per cycle · " +
+        info.active + " active request" + (info.active > 1 ? "s" : "") + " at a time.</p>";
+    }
+    if (me.subscription_status && me.subscription_status !== "none") {
+      html += '<p><span class="status ' + esc(me.subscription_status) + '">' + esc(subLabel(me.subscription_status)) + "</span></p>";
+    }
+    html += '<p class="mini">Signed in as ' + esc(me.email || session.user.email) + ".</p>";
+    pi.innerHTML = html;
+
+    loadingEl.hidden = true;
+    appEl.hidden = false;
+  }
+
+  document.getElementById("biz-form").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    clearNotice();
+    var btn = document.getElementById("biz-btn");
+    btn.disabled = true;
+    var patch = {
+      business_name: (document.getElementById("business_name").value || "").trim(),
+      contact_name: (document.getElementById("contact_name").value || "").trim() || null
+    };
+    ST.supabase.from("studio_clients").update(patch).eq("id", me.id).then(function (r) {
+      if (r.error) throw r.error;
+      me.business_name = patch.business_name;
+      me.contact_name = patch.contact_name;
+      showNotice("ok", "Business info saved.");
+    }).catch(function (err) {
+      showNotice("err", "Could not save: " + (err.message || err));
+    }).finally(function () { btn.disabled = false; });
+  });
+
+  document.getElementById("assets-form").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    clearNotice();
+    var btn = document.getElementById("assets-btn");
+    btn.disabled = true;
+    var assets = {
+      logo_url: (document.getElementById("logo_url").value || "").trim() || null,
+      brand_colors: (document.getElementById("brand_colors").value || "").trim() || null,
+      font_notes: (document.getElementById("font_notes").value || "").trim() || null,
+      asset_links: (document.getElementById("asset_links").value || "").split("\n")
+        .map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 0; })
+    };
+    ST.supabase.from("studio_clients").update({ brand_assets: assets }).eq("id", me.id).then(function (r) {
+      if (r.error) throw r.error;
+      me.brand_assets = assets;
+      showNotice("ok", "Brand assets saved. The Studio uses these in every video.");
+    }).catch(function (err) {
+      showNotice("err", "Could not save: " + (err.message || err));
+    }).finally(function () { btn.disabled = false; });
+  });
+
+  init().catch(function (err) {
+    loadingEl.hidden = true;
+    showNotice("err", "Could not load: " + (err.message || err));
+  });
+})();
+</script>
+</body>
+</html>
