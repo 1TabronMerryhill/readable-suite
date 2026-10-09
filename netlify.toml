@@ -13,6 +13,15 @@
     X-Frame-Options = "SAMEORIGIN"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# Studio subdomain (Oct 9, 2026): studio.tabronmerryhill.com serves this same
+# site. Its root should land on the V.I.S.I.O.N. Studio page, not the Readable
+# homepage. Sub-paths (/studio/packages.html, /studio/portal/*) pass through.
+[[redirects]]
+  from = "https://studio.tabronmerryhill.com/"
+  to = "/studio/"
+  status = 302
+  force = true
+
 # DayMarket retirement (Oct 4, 2026): the old /daymarket/ path on this site now
 # permanently redirects to the dedicated subdomain. force=true so it fires
 # even though the static files still exist in the repo. (No effect on the
