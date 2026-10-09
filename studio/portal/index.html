@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard - V.I.S.I.O.N. Studio Portal</title>
+<meta name="description" content="Your V.I.S.I.O.N. Studio dashboard: plan status, spots remaining, and your production queue.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+</head>
+<body class="studio-portal">
+
+<header class="portal-header"><div class="wrap">
+<a class="portal-logo" href="index.html">V.I.S.I.O.N. Studio</a>
+<nav class="portal-nav">
+<a href="index.html" class="active">Dashboard</a>
+<a href="board.html">Board</a>
+<a href="new-request.html">New request</a>
+<a href="profile.html">Profile</a>
+<a href="#" class="signout" id="signout">Sign out</a>
+</nav>
+</div></header>
+
+<main>
+<section class="block"><div class="wrap">
+
+<div class="notice" id="notice" role="status"></div>
+
+<div id="app" hidden>
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+<div>
+<p class="kicker">Client portal</p>
+<h2 id="hello">Welcome</h2>
+<p class="lede" id="plan-line"></p>
+</div>
+<a class="btn" href="new-request.html">+ New request</a>
+</div>
+
+<div class="stats">
+<div class="stat"><p class="num" id="stat-spots">…</p><p class="lbl">Spots remaining this cycle</p></div>
+<div class="stat"><p class="num" id="stat-active">…</p><p class="lbl">Active requests</p></div>
+<div class="stat"><p class="num" id="stat-delivered">…</p><p class="lbl">Delivered this cycle</p></div>
+</div>
+
+<div class="panel mt" id="plan-panel"></div>
+
+<p class="kicker" style="margin-top:2rem">Latest requests</p>
+<div id="recent"></div>
+<p class="mt"><a href="board.html">Open the full board →</a></p>
+</div>
+
+<div id="loading"><p class="kicker">Client portal</p><h2>Loading…</h2></div>
+
+</div></section>
+</main>
+
+<footer class="portal-footer"><div class="wrap">
+<p>V.I.S.I.O.N. Studio is an Operator One venture. Tabron Merryhill Systems, Columbia, MO.</p>
+</div></footer>
+
+<script src="studio-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="studio-client.js"></script>
+<script>
+(function () {
+  "use strict";
+  var esc = ST.esc;
+  var notice = document.getElementById("notice");
+  var appEl = document.getElementById("app");
+  var loadingEl = document.getElementById("loading");
+
+  function showNotice(kind, text) {
+    notice.className = "notice" + (kind ? " " + kind : "");
+    notice.textContent = text;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function statusLabel(s) {
+    return { queued: "Queued", in_production: "In production", in_review: "In review", delivered: "Delivered" }[s] || s;
+  }
+
+  function subLabel(s) {
+    return { active: "Active", past_due: "Past due", canceled: "Canceled", none: "No subscription", trialing: "Trial" }[s] || s;
+  }
+
+  async function init() {
+    var session = await ST.requireAuth();
+    if (!session) return;
+    var me = await ST.ensureClient(session);
+
+    document.getElementById("hello").textContent =
+      "Welcome" + (me.business_name ? ", " + me.business_name : "");
+
+    var info = ST.planInfo(me.plan);
+    document.getElementById("plan-line").innerHTML =
+      "<strong>" + esc(info.name) + "</strong>" +
+      (me.plan === "payg" ? " · $297 per spot" : " · $" + info.price.toLocaleString() + "/mo") +
+      (me.subscription_status && me.subscription_status !== "none"
+        ? ' · <span class="status ' + esc(me.subscription_status) + '">' + esc(subLabel(me.subscription_status)) + "</span>"
+        : "");
+
+    var rq = await ST.supabase.from("studio_requests")
+      .select("id,title,status,created_at,delivered_url")
+      .eq("client_id", me.id)
+      .order("created_at", { ascending: false });
+    if (rq.error) throw rq.error;
+    var requests = rq.data || [];
+
+    var activeStatuses = ["queued", "in_production", "in_review"];
+    var activeCount = requests.filter(function (r) { return activeStatuses.indexOf(r.status) !== -1; }).length;
+    var deliveredCount = requests.filter(function (r) { return r.status === "delivered"; }).length;
+
+    var spotsText, canRequest = true;
+    if (me.plan === "payg") {
+      spotsText = "∞";
+    } else {
+      var remaining = Math.max(0, info.spots - (me.spots_used_this_cycle || 0));
+      spotsText = String(remaining);
+      if (activeCount >= info.active) canRequest = false;
+    }
+
+    document.getElementById("stat-spots").textContent = spotsText;
+    document.getElementById("stat-active").textContent = activeCount;
+    document.getElementById("stat-delivered").textContent = deliveredCount;
+
+    var pp = document.getElementById("plan-panel");
+    var html = "<h3>Your plan</h3>";
+    if (me.plan === "payg") {
+      html += '<p class="lede">Pay as you go. $297 per finished 30-second spot. No monthly commitment. <a href="../packages.html">Switch to a monthly plan</a> for a set number of spots each month.</p>';
+    } else {
+      html += '<p class="lede">' + esc(info.name) + ": " + info.spots + " spots per month, " +
+        info.active + " active request" + (info.active > 1 ? "s" : "") + " at a time.</p>";
+      if (me.cycle_start) {
+        html += '<p class="mini">Current cycle started ' + esc(ST.fmtDate(me.cycle_start)) + ".</p>";
+      }
+    }
+    if (!canRequest) {
+      html += '<p class="lede">You are at your active-request limit (' + info.active + "). New requests open up when a current one is delivered.</p>";
+    }
+    pp.innerHTML = html;
+
+    var recentEl = document.getElementById("recent");
+    if (!requests.length) {
+      recentEl.innerHTML = '<div class="panel"><p class="lede">Nothing in the queue yet. Submit your first request and we start manufacturing.</p><p><a class="btn small" href="new-request.html">+ New request</a></p></div>';
+    } else {
+      var out = "";
+      requests.slice(0, 5).forEach(function (r) {
+        out += '<div class="panel"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">';
+        out += "<div><h3 style='margin:0 0 4px'>" + esc(r.title) + "</h3>";
+        out += '<p class="mini" style="margin:0">Submitted ' + esc(ST.fmtDate(r.created_at)) + "</p></div>";
+        out += '<div style="display:flex;gap:8px;align-items:center"><span class="status ' + esc(r.status) + '">' + esc(statusLabel(r.status)) + "</span>";
+        if (r.delivered_url) out += '<a class="btn small" href="' + esc(r.delivered_url) + '">Watch</a>';
+        out += "</div></div></div>";
+      });
+      recentEl.innerHTML = out;
+    }
+
+    loadingEl.hidden = true;
+    appEl.hidden = false;
+  }
+
+  document.getElementById("signout").addEventListener("click", function (ev) {
+    ev.preventDefault();
+    ST.supabase.auth.signOut().finally(function () {
+      window.location.replace("../packages.html");
+    });
+  });
+
+  init().catch(function (err) {
+    loadingEl.hidden = true;
+    showNotice("err", "Could not load your dashboard: " + (err.message || err));
+  });
+})();
+</script>
+</body>
+</html>
