@@ -341,7 +341,8 @@ function buildFields(def, fields) {
   }
   for (const [fieldId, value] of Object.entries(def.statics || {})) out[fieldId] = value;
   const now = new Date().toISOString();
-  for (const fieldId of def.timestamps || []) out[fieldId] = now;
+  const today = now.slice(0, 10); // date-only: Airtable date fields reject full ISO datetimes
+  for (const fieldId of def.timestamps || []) out[fieldId] = today;
   if (def.compose) {
     const rawName = fields[def.compose.titleFrom]
       || (def.compose.titleFallback && fields[def.compose.titleFallback])
