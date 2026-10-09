@@ -28,8 +28,15 @@
   body.studio .block h2 { color:#fff; }
   body.studio .block p, body.studio .block li, body.studio .block dd, body.studio .block dt { color:var(--mut); }
   body.studio .block dt { color:#fff; }
-  body.studio .site-footer { border-top:1px solid #232825; }
+  body.studio .site-footer { background:var(--bg); border-top:1px solid #232825; }
   body.studio .site-footer p, body.studio .site-footer a { color:var(--dim); }
+
+  /* ---------- color fixes: dark text on mint buttons, dark featured card ---------- */
+  body.studio .btn-light { background:var(--acc); border-color:var(--acc); color:#0b0e0d; box-shadow:4px 4px 0 #232825; font-weight:700; }
+  body.studio .btn-light:hover { box-shadow:6px 6px 0 #232825; }
+  body.studio .price.featured { background:var(--panel); color:var(--ink); border-color:var(--acc); }
+  body.studio .price.featured p, body.studio .price.featured li { color:var(--mut); }
+  body.studio .price.featured h3, body.studio .price.featured .amount { color:#fff; }
 
   /* ---------- hero: premiere night ---------- */
   .hero { position:relative; overflow:hidden; background:var(--bg); padding:5.5rem 0 4rem; }
