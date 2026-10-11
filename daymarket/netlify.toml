@@ -12,3 +12,12 @@
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "SAMEORIGIN"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Readable Station prototype: agent gate. POST only (enforced in the function).
+# Required env vars (set in the Netlify dashboard, never committed):
+#   AGENT_API_KEY        — shared secret checked against the x-agent-key header
+#   SUPABASE_SERVICE_KEY — service-role key for Supabase REST writes
+[[redirects]]
+  from = "/api/agent/order"
+  to = "/.netlify/functions/agent-order"
+  status = 200
