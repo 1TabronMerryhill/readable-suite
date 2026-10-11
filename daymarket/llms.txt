@@ -1,0 +1,47 @@
+# DayMarket
+
+> A daily holiday. DayMarket connects organizations that need to feed people with local business kitchens that can do it. Organizations schedule catering packages; profiled businesses fulfill them. DayMarket is the merchant of record: the buyer is invoiced, the business is paid its net automatically (15% fulfillment fee), and the business cashes out on demand.
+
+This site is also the **Readable Station** prototype: the boarding station for the agent economy. AI agents discover capabilities here, invoke them with a single POST, and receive machine-readable confirmations. We build for agents; the agents build for the customer.
+
+## For AI agents
+
+- Station manifest (capabilities, JSON schemas, auth, fees): https://daymarket.tabronmerryhill.com/.well-known/agent.json
+- First gate — place a catering order: POST https://daymarket.tabronmerryhill.com/api/agent/order
+  - Auth: `x-agent-key` header. Request a key from the operator.
+  - Input: business (slug or UUID), package (name or UUID), scheduled_for (ISO datetime, future), buyer_email (must match an existing DayMarket member), contact {name, email, phone}, plus optional headcount, delivery_address, notes, idempotency_key.
+  - Output: order id, status, scheduled_for, verification record id + inputs hash.
+  - Flow: scheduled -> business confirms and sets the total -> delivered. Buyer is invoiced. 15% fulfillment fee deducted automatically.
+  - Idempotency: pass idempotency_key to make retries safe; a repeat with identical inputs returns the original order.
+- Verification: every agent order writes a verification record (timestamp, inputs hash, order id, status). This is the audit trail.
+
+## Businesses on DayMarket
+
+- Ellianna's Donut Shop (launch partner, Columbia MO): https://daymarket.tabronmerryhill.com/businesses/elliannas-donut-shop/
+  - Fresh donuts made daily. 1105 Grindstone Pkwy, Columbia, MO 65201. (573) 442-5608.
+  - Hours: Mon-Fri 5:00 AM - 2:00 PM, Sat-Sun 6:00 AM - 1:00 PM. Drive-thru.
+- Full directory: https://daymarket.tabronmerryhill.com/businesses.html
+
+## Package menu (priced by attendance, not by the dozen)
+
+- Huddle Box: 5-10 people, $89.00
+- Meeting Box: 10-15 people, $99.00
+- Morning Meeting: 10-15 people, donuts plus coffee, $129.00
+- Birthday Box: 5-15 people, $59.00
+- Executive Boardroom: 12-20 people, $199.00
+- Employee Appreciation: 25-40 people, $389.00
+- Monthly Workplace Plan: 10-200 people, custom-quoted recurring delivery
+- Full menu: https://daymarket.tabronmerryhill.com/packages.html
+
+Notes: DayMarket sells packages, not food. Business holiday prices are the business's own promotional prices (their margin call); the 15% fulfillment fee applies on top for routed orders. In-store prices are the true prices; delivery markups are never a price source.
+
+## Key pages
+
+- https://daymarket.tabronmerryhill.com/ — home
+- https://daymarket.tabronmerryhill.com/holidays.html — live holidays
+- https://daymarket.tabronmerryhill.com/packages.html — package menu
+- https://daymarket.tabronmerryhill.com/membership.html — Holiday Pass and org membership
+- https://daymarket.tabronmerryhill.com/businesses.html — for businesses
+- https://daymarket.tabronmerryhill.com/account/ — member and business dashboards
+- https://daymarket.tabronmerryhill.com/newsroom/ — newsroom
+- https://daymarket.tabronmerryhill.com/sitemap.xml — sitemap
