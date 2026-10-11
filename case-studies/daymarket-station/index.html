@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DayMarket: The Boarding Station Prototype — A Readable Case Study</title>
+<meta name="description" content="How DayMarket became the prototype for Readable Station: the boarding station where AI agents discover a business, invoke its workflows, pay, and get confirmation. Legibility, the gate, verification.">
+<link rel="canonical" href="https://readable.tabronmerryhill.com/case-studies/daymarket-station/">
+<meta property="og:site_name" content="Readable">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DayMarket: The Boarding Station Prototype">
+<meta property="og:description" content="Readable Station case study: we don't build for customers. We build for agents, and the agents build for the customer.">
+<meta property="og:url" content="https://readable.tabronmerryhill.com/case-studies/daymarket-station/">
+<meta property="og:image" content="https://readable.tabronmerryhill.com/assets/og-readable.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DayMarket: The Boarding Station Prototype">
+<meta name="twitter:description" content="Readable Station case study: the boarding station for the agent economy, prototyped on DayMarket.">
+<meta name="twitter:image" content="https://readable.tabronmerryhill.com/assets/og-readable.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "DayMarket: The Boarding Station Prototype",
+  "description": "How DayMarket became the prototype for Readable Station, the boarding station where AI agents do business with local shops.",
+  "author": {
+    "@type": "Organization",
+    "name": "Readable",
+    "url": "https://readable.tabronmerryhill.com/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Readable",
+    "url": "https://readable.tabronmerryhill.com/"
+  },
+  "datePublished": "2026-10-11",
+  "mainEntityOfPage": "https://readable.tabronmerryhill.com/case-studies/daymarket-station/"
+}
+</script>
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/forms.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+    <nav class="site-nav">
+      <a href="/registry/">Registry</a>
+      <a href="/trust-audit/">Trust Audit</a>
+      <a href="/business-systems/">Business Systems</a>
+      <a href="/academy/">Academy</a>
+      <a href="/readiness/">AI Readiness</a>
+      <a href="/cohorts/">Cohorts</a>
+      <a href="/field-network/">Field Network</a>
+      <a class="cta" href="/trust-audit/">Apply</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="kicker">Case study · Readable Station</p>
+    <h1>DayMarket: the boarding station prototype.</h1>
+    <p class="lede">Software IP is over. Agents are headless. Dashboards are dying as the value layer. So we stopped building for customers. We build for agents, and the agents build for the customer.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p>AI agents are about to start placing orders, booking appointments, and requesting quotes. They are prompts that go retrieve the software they need and perform tasks. But a business like a donut shop or a plumbing company is invisible to them: no structured menu, no ordering API, no machine-readable anything. The agent cannot see them, so the agent cannot buy from them.</p>
+    <p>Dashboards do not solve this. The agent never looks at a dashboard.</p>
+
+    <h2>What we built</h2>
+    <p>Readable Station: the boarding station for the agent economy. Not a directory. A directory lists; listings rot and nobody transacts on them. A station is where an agent arrives and actually does business: discovers the capability, invokes it, pays, gets confirmation.</p>
+    <p>Three layers:</p>
+    <ol>
+      <li><strong>Legibility.</strong> The business is machine-readable: services, prices, hours, policies. Structured data an agent can consume.</li>
+      <li><strong>The gate.</strong> An agent-invokable endpoint for the business's key workflow. The agent invokes it, payment moves, confirmation comes back. The owner never touches anything. They get the order.</li>
+      <li><strong>Verification.</strong> Every transaction through the station writes a verification record. When agents act invisibly, audit is the moat. This is the seed volume for Readable Evals.</li>
+    </ol>
+
+    <h2>The prototype: DayMarket</h2>
+    <p>DayMarket proved the loop before we named it. A buyer places a catering order. The business confirms and delivers. The 15% fulfillment fee moves automatically. The business sees a balance and cashes out on demand. Nobody on the business side touches a dashboard.</p>
+    <p>The Station build made it agent-invokable:</p>
+    <ul>
+      <li><code>/.well-known/agent.json</code>: the station manifest. Every capability listed with JSON schemas. The departure board.</li>
+      <li><code>POST /api/agent/order</code>: the first gate. JSON in, order confirmation out, routed through the existing order flow. Idempotent, authenticated, validated.</li>
+      <li><code>llms.txt</code> and JSON-LD on business profiles: the legibility layer.</li>
+      <li>Verification records on every agent order: the audit trail and the Evals seed.</li>
+    </ul>
+    <p>Local validation: 11 of 11 checks passed, covering the happy path, authentication, input validation, unknown-entity handling, and idempotency.</p>
+
+    <h2>The wedge</h2>
+    <p>This is the same funnel Readable already runs:</p>
+    <ol>
+      <li>The $150 assessment finds the costliest workflow.</li>
+      <li>The Sprint maps it and prices the leak.</li>
+      <li>The Station turns that workflow into a gate any agent can invoke.</li>
+    </ol>
+    <p>One workflow was always the promise. Now the workflow becomes infrastructure, not just a fix.</p>
+
+    <h2>What is next</h2>
+    <p>First vertical: catering and ordering, proven. Next: booking (chairs, tables, bays), then quotes (trades). Every gate adds verification volume, and every verification record makes the Evals enterprise case stronger.</p>
+
+    <p><a class="cta" href="/readiness/assessment/">Start with the $150 assessment</a></p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="logo" href="/"><span class="mark"><i></i><i></i><i></i></span><span class="word">Readable<b>.</b></span></a>
+        <p class="note" style="margin-top:14px;color:#adbbb5">The workflow between what an organization senses and what it does.</p>
+      </div>
+      <div>
+        <h4>Paths</h4>
+        <a href="/registry/">Registry</a>
+        <a href="/trust-audit/">Trust Audit</a>
+        <a href="/business-systems/">Business Systems</a>
+        <a href="/field-network/">Field Network</a>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <a href="/academy/">Academy</a>
+        <a href="/academy/apply/">Academy enrollment</a>
+        <a href="/readiness/">AI Readiness</a>
+        <a href="/readiness/assessment/">Readiness assessment</a>
+        <a href="/cohorts/">Cohorts</a>
+        <a href="/partner-intake/">Partner intake</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="mailto:tabron@tabronmerryhill.com">tabron@tabronmerryhill.com</a>
+        <a href="tel:+18164469393">(816) 446-9393</a>
+        <a href="https://tabronmerryhill.com">Tabron Merryhill Systems</a>
+      </div>
+    </div>
+    <div class="fine">
+      <span>© 2026 Readable · Tabron Merryhill Systems Division, Columbia, MO</span>
+      <span>AI access alone does not create capacity.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
