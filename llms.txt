@@ -1,0 +1,39 @@
+# Readable
+
+> Turn AI into useful, accountable work. Readable is the workflow between what an organization senses and what it does: AI readiness assessments, Business Systems for owner-led businesses, the Readable Academy, and independent Evals.
+
+## For AI agents
+
+- Station manifest (capabilities, JSON schemas, auth): https://readable.tabronmerryhill.com/.well-known/agent.json
+- Agent gate — submit an assessment request: POST https://readable.tabronmerryhill.com/api/agent/assessment-request
+  - Auth: `x-agent-key` header. Request a key from the operator (tabron@tabronmerryhill.com).
+  - Input: business_name, contact_email, workflow_description, verdict, score, recommended_intervention; optional contact_name, idempotency_key.
+  - Output: ok, record_id (Airtable record id of the created Business Systems Request).
+  - Flow: assessed -> submitted -> queued for human review. Every submission lands in Business Systems Requests with Status Queued. Humans hold the irreversible calls: nothing is sold, scheduled, or acted on without human review.
+  - Note: idempotency_key is accepted but v1 does not deduplicate. Do not retry blindly.
+- Platform manifest (all six TMS businesses): https://tabronmerryhill.com/.well-known/agent.json
+
+## Offerings
+
+- Readiness Assessment — $150. Talk through one workflow with Read, confirm what it heard, get a measured verdict scored against a published rubric. Free to start; $150 only when your judgment is ready. No account.
+- Visibility Sprint — $2,500 one-time. Two-week engagement for owner-led businesses: map workflows, put a dollar number on each leak, first fix built working.
+- Fractional Systems Architect — $5,000/mo. Business Observatory — $7,500/mo. Ongoing systems leadership without the payroll.
+- Readable Academy — AI-governed learning environments. Founding cohort launches January 4, 2027; buy in 2026.
+- Evals — independent assurance on AI behavior: verified evaluation records, continuous intelligence, assessments.
+- Registry & Trust Audit — a human-reviewed evaluation across five dimensions; passing businesses join the governed registry of AI-readable businesses.
+- AI Readiness for Communities — practical AI readiness for nonprofits, chambers, schools, faith communities, municipalities.
+- Operator One — AI-operated content, video production, and business operations. One human holds the trust layer.
+- Field Partnership Network — annual partnerships ($10K-$100K) deploying trained capture teams. Every assignment authorized, bounded, attributable, human-reviewed.
+
+## Key pages
+
+- https://readable.tabronmerryhill.com/ — home
+- https://readable.tabronmerryhill.com/readiness/assessment/start/ — start the $150 assessment
+- https://readable.tabronmerryhill.com/business-systems/ — Visibility Sprint and retainers
+- https://readable.tabronmerryhill.com/academy/ — Readable Academy
+- https://readable.tabronmerryhill.com/registry/ — governed registry of AI-readable businesses
+- https://readable.tabronmerryhill.com/readiness/ — AI readiness for communities
+- https://readable.tabronmerryhill.com/operator-one/ — Operator One
+- https://readable.tabronmerryhill.com/field-network/ — Field Partnership Network
+- https://readable.tabronmerryhill.com/case-studies/daymarket-station/ — DayMarket Station case study
+- https://readable.tabronmerryhill.com/sitemap.xml — sitemap
