@@ -21,3 +21,14 @@
   from = "/api/agent/order"
   to = "/.netlify/functions/agent-order"
   status = 200
+
+# Readable Station Gate 2 (Phone Gate).
+[[redirects]]
+  from = "/api/station/sms"
+  to = "/.netlify/functions/sms-inbound"
+  status = 200
+
+[[redirects]]
+  from = "/api/station/voice"
+  to = "/.netlify/functions/voice-webhook"
+  status = 200
