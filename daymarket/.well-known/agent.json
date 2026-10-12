@@ -279,5 +279,9 @@
   "station_version": "0.1.0",
   "verification": "Every agent order writes a verification record (timestamp, inputs hash, order id, status). These records are the audit trail for the station and the seed volume for Readable Evals.",
   "station_status": "live",
-  "provisioned_at": "2026-10-11"
+  "provisioned_at": "2026-10-11",
+  "gates": {
+    "gate1_order_catering": "live",
+    "gate2_phone_sms": "live"
+  }
 }
