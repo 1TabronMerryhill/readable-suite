@@ -438,7 +438,14 @@ async function handleEvent(event) {
   if (!resp.ok) {
     return bad(502, "Intake backend rejected the submission");
   }
-  return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+  let recordId = null;
+  try {
+    const data = await resp.json();
+    if (data && data.id) recordId = data.id;
+  } catch {
+    /* record id is a nicety, not a requirement */
+  }
+  return { statusCode: 200, body: JSON.stringify({ ok: true, record_id: recordId }) };
 };
 
 // CORS wrapper: handles preflight and stamps CORS headers on every response.
@@ -450,3 +457,10 @@ exports.handler = async (event) => {
   const res = await handleEvent(event);
   return { ...res, headers: { ...(res.headers || {}), ...cors } };
 };
+
+// Reused by netlify/functions/agent-assessment.js (the agent gate): it
+// synthesizes a readiness-assessment submission and passes it through
+// handleEvent so agent records land exactly like human-submitted ones.
+exports._handleEvent = handleEvent;
+exports._corsHeaders = corsHeaders;
+exports._bad = bad;
