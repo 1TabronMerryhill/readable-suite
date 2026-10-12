@@ -31,3 +31,12 @@
   to = "https://daymarket.tabronmerryhill.com/:splat"
   status = 301
   force = true
+
+# Agent gate (Oct 12, 2026): the Readable Station endpoint. Agents POST an
+# assessment request to /api/agent/assessment-request; the 200 rewrite serves
+# the agent-assessment Netlify function without exposing the functions path.
+# Auth is x-agent-key, checked against the AGENT_API_KEY env var (dashboard).
+[[redirects]]
+  from = "/api/agent/assessment-request"
+  to = "/.netlify/functions/agent-assessment"
+  status = 200
