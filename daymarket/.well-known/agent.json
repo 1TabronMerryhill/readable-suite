@@ -199,6 +199,71 @@
       },
       "status": "live",
       "version": "1"
+    },
+    {
+      "name": "answer_call",
+      "description": "Answer an incoming voice call when the business cannot pick up. v1 plays a greeting and hands the caller to SMS completion; a realtime voice platform can replace the stub (Phase 3). Every answered call is logged as a verification event.",
+      "endpoint": {
+        "method": "POST",
+        "path": "/api/station/voice"
+      },
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "description": "Twilio voice webhook payload (form-encoded). Signature verified with TWILIO_AUTH_TOKEN."
+      },
+      "errors": [
+        {
+          "code": 401,
+          "meaning": "Twilio signature verification failed."
+        },
+        {
+          "code": 503,
+          "meaning": "Station not yet provisioned: TWILIO_AUTH_TOKEN missing."
+        }
+      ],
+      "flow": [
+        "call_answered",
+        "sms_handoff",
+        "caller_replies_by_text"
+      ],
+      "note": "v1 is a stub: greeting + SMS handoff. Set VOICE_AGENT_URL to route live calls to a realtime voice platform."
+    },
+    {
+      "name": "complete_text_order",
+      "description": "Complete an order over SMS. The agent classifies intent, answers routine questions from the business structured data only (grounding rule), captures orders as structured data, validates deterministically, and either auto-approves, queues for human review, or asks a clarifying question. Truthful confirmations only.",
+      "endpoint": {
+        "method": "POST",
+        "path": "/api/station/sms"
+      },
+      "input_schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "description": "Twilio SMS webhook payload (form-encoded): From, To, Body, MessageSid. Signature verified with TWILIO_AUTH_TOKEN. Replies via TwiML."
+      },
+      "errors": [
+        {
+          "code": 400,
+          "meaning": "Invalid input."
+        },
+        {
+          "code": 401,
+          "meaning": "Twilio signature verification failed."
+        },
+        {
+          "code": 503,
+          "meaning": "Station not yet provisioned."
+        }
+      ],
+      "decisions": [
+        "auto_approve",
+        "human_review",
+        "clarify",
+        "answered",
+        "escalate"
+      ],
+      "idempotency": "Twilio MessageSid is used as the idempotency key; redelivered webhooks return the original run.",
+      "grounding": "The agent answers only from the business structured data (menu, hours, prices). Anything else becomes: I will have someone text you."
     }
   ],
   "description": "Readable Station prototype on DayMarket. AI agents discover catering capabilities here, invoke them with a single POST, and receive a machine-readable confirmation backed by the existing DayMarket order flow (scheduled, business confirms, delivered, automatic fulfillment fee, business cash-out). Built for agents; the agents build for the customer.",
