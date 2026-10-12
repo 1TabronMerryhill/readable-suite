@@ -72,7 +72,7 @@ function extractOrder(text, businessData) {
   const menu = (businessData && businessData.menu_items) || [];
   /* qty token: must start after whitespace/comma/start, must not run into
      word chars or colons, and must not be a time expression ("9am"). */
-  const pat = /(?:^|(?<=[\s,]))(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|a|an|half)(?![\w:])(?!\s*(?::\d{2})?\s*[ap]m\b)\s*(dozen|dozens)?\s*(?:of\s+)?([a-z][a-z\s'-]*?)(?=\s*(?:,|&|\+|$|\band\b|\bfor\b|\bat\b))/gi;
+  const pat = /(?:^|(?<=[\s,]))(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|a|an|half)(?![\w:])(?!\s*(?::\d{2})?\s*[ap]m\b)\s*(dozen|dozens)?\s*(?:of\s+)?([a-z][a-z\s'-]*?)(?=\s*(?:,|&|\+|$|\band\b|\bfor\b|\bat\b|[.!?]))/gi;
   let m;
   const seen = new Set();
   while ((m = pat.exec(t)) !== null) {
@@ -89,6 +89,7 @@ function extractOrder(text, businessData) {
       unit,
       menu_item: matched ? matched.name : null,
       price_cents: matched && matched.price_cents != null ? matched.price_cents : null,
+      generic: !matched && GENERIC_CATEGORY_WORDS.has(phrase),
     });
   }
   /* pickup time: "for 9am", "at 9:30", "tomorrow", "today", "in the morning" */
@@ -108,6 +109,10 @@ function extractOrder(text, businessData) {
   if (nm) name_hint = nm[1];
   return { items, pickup_text, pickup, name_hint, raw: t };
 }
+
+/* Words that name the category but not a specific menu item. These should
+   prompt "what kind?" rather than failing as not-on-menu. */
+const GENERIC_CATEGORY_WORDS = new Set(["donut", "donuts", "doughnut", "doughnuts"]);
 
 function matchMenuItem(phrase, menu) {
   if (!menu || !menu.length) return null;
@@ -169,7 +174,9 @@ function validateOrder(structured, businessData, nowMs) {
     if (!Number.isFinite(it.qty) || it.qty <= 0 || it.qty > 200) {
       issues.push({ code: "bad_qty", message: `Quantity not sane: ${it.phrase}.` });
     }
-    if (menu.length && !it.menu_item) {
+    if (it.generic) {
+      issues.push({ code: "generic_category", message: `'${it.phrase}' needs a specific kind.` });
+    } else if (menu.length && !it.menu_item) {
       issues.push({ code: "item_not_on_menu", message: `'${it.phrase}' is not on the menu.` });
       if (menu.length) suggestions.push(menu[0].name);
     }
@@ -236,6 +243,17 @@ function buildReply(decision, ctx) {
       return `I've got your order: ${it}. The shop will confirm by text shortly.`;
     }
     case "clarify": {
+      const issues = (ctx.validation && ctx.validation.issues) || [];
+      const codes = issues.map((i) => i.code);
+      const onlyNoItems = codes.includes("no_items") && !codes.includes("item_not_on_menu") && !codes.includes("generic_category") && !codes.includes("bad_qty");
+      if (onlyNoItems) {
+        return `What can I get for you?`;
+      }
+      if (codes.includes("generic_category")) {
+        const menuNames = ((ctx.businessData && ctx.businessData.menu_items) || []).slice(0, 5).map((i) => i.name);
+        const alt = menuNames.length ? ` We have ${menuNames.join(", ")}.` : "";
+        return `What kind?${alt}`;
+      }
       const sug = (ctx.validation.suggestions || []).slice(0, 3);
       const alt = sug.length ? ` We have ${sug.join(", ")}.` : "";
       return `I couldn't match that to the menu.${alt} What would you like?`;
