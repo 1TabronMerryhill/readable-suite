@@ -32,3 +32,9 @@
   from = "/api/station/voice"
   to = "/.netlify/functions/voice-webhook"
   status = 200
+
+# Readable Station Gate 2 — Retell custom function (Phase 3 voice).
+[[redirects]]
+  from = "/api/station/retell"
+  to = "/.netlify/functions/retell-function"
+  status = 200
