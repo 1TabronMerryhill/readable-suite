@@ -385,7 +385,7 @@
       html += '<div class="field"><label for="reg-description">Description</label><textarea class="input" id="reg-description" name="description" placeholder="What you do, what you\'re known for…"></textarea></div>';
       html += '<div class="form-row"><div class="field"><label for="reg-website">Website</label><input class="input" type="url" id="reg-website" name="website" placeholder="https://…"></div>';
       html += '<div class="field"><label for="reg-logo">Logo URL</label><input class="input" type="url" id="reg-logo" name="logo_url" placeholder="https://…"></div></div>';
-      html += '<div class="field"><label style="display:flex;gap:10px;align-items:flex-start;font-weight:400;cursor:pointer"><input type="checkbox" name="fee_terms" required style="margin-top:5px;min-width:18px;min-height:18px"> <span>Orders routed to my business through DayMarket carry a <strong>15% fulfillment fee</strong>, deducted automatically before payout. My net lands in my DayMarket balance when I mark an order delivered, and I can cash out anytime.</span></label></div>';
+      html += '<div class="field"><label style="display:flex;gap:10px;align-items:flex-start;font-weight:400;cursor:pointer"><input type="checkbox" name="fee_terms" required style="margin-top:5px;min-width:18px;min-height:18px"> <span>Orders routed to my business through DayMarket carry a <strong>15% service fee</strong>, added to the customer total automatically. I always net my full price. My net lands in my DayMarket balance when I mark an order delivered, and I can cash out anytime.</span></label></div>';
       html += '<button class="btn" type="submit">Submit for review</button>';
       html += "</form></div>";
       businessViewEl.innerHTML = html;
@@ -446,7 +446,7 @@
     var balanceCents = payableOrders.reduce(function (s, o) { return s + (o.net_cents || 0); }, 0);
     var paidOutCents = bizPayouts.filter(function (p) { return p.status === "paid"; })
       .reduce(function (s, p) { return s + (p.amount_cents || 0); }, 0);
-    html += '<div class="panel"><p class="lede">Orders routed through DayMarket carry a 15% fulfillment fee, deducted automatically. Your net lands in your DayMarket balance when you mark an order delivered.</p>';
+    html += '<div class="panel"><p class="lede">Orders routed through DayMarket carry a 15% service fee, added to the customer total. You always net your full price. Your net lands in your DayMarket balance when you mark an order delivered.</p>';
     html += '<p class="mt"><strong>Your balance: ' + esc(DM.money(balanceCents)) + "</strong></p>";
     if (balanceCents > 0) html += '<p><button class="btn small" type="button" data-action="cash-out">Cash out ' + esc(DM.money(balanceCents)) + "</button></p>";
     html += '<p class="mini">Paid out to date: ' + esc(DM.money(paidOutCents)) + ".</p>";
@@ -457,6 +457,17 @@
         html += '<p class="mini" style="margin:2px 0">' + esc(DM.money(p.amount_cents)) + " · " + esc(p.status) + " · " + esc(fmtDate(when)) + "</p>";
       });
     }
+    html += "</div>";
+
+    // Sales Agent
+    html += '<p class="kicker">Sales agent</p>';
+    html += '<div class="panel"><p class="lede">Your AI sales assistant. It knows your full menu and all DayMarket packages. Chat to build custom packages, quote delivery, or answer customer questions.</p>';
+    html += '<div id="sales-chat" style="height:300px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:12px;margin:12px 0;background:#fafafa"></div>';
+    html += '<div style="display:flex;gap:8px"><input class="input" id="sales-input" type="text" placeholder="Ask about packages, build a custom order, quote delivery…" style="flex:1">';
+    html += '<button class="btn small" type="button" data-action="sales-send">Send</button>';
+    html += '<button class="btn small ghost" type="button" data-action="sales-menu">Menu</button></div>';
+    html += '<div id="sales-menu-popup" style="display:none;margin-top:12px;max-height:200px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:8px"></div>';
+    html += '<div id="sales-package-builder" style="display:none;margin-top:12px;padding:12px;background:#f0f7f0;border-radius:8px"><strong>Building package:</strong><div id="sales-items" style="margin:8px 0"></div><button class="btn small" type="button" data-action="sales-build">Build package</button> <button class="btn small ghost" type="button" data-action="sales-clear">Clear</button></div>';
     html += "</div>";
 
     // Holidays
@@ -922,6 +933,14 @@
         .catch(function (err) { el.disabled = false; bizErr(err); });
       return;
     }
+    if (action === "sales-send") { salesSend(); return; }
+    if (action === "sales-menu") { salesShowMenu(); return; }
+    if (action === "sales-build") { salesBuildPackage(); return; }
+    if (action === "sales-clear") { salesClearBuilder(); return; }
+    if (action === "sales-add-item") {
+      salesAddItem(el.getAttribute("data-name"), el.getAttribute("data-price"));
+      return;
+    }
   });
 
   async function updateRow(table, id, patch) {
@@ -1047,6 +1066,122 @@
       return;
     }
   });
+
+  /* ---------- sales agent ---------- */
+  var salesHistory = [];
+  var salesBuilderItems = [];
+  var salesMenuCache = null;
+
+  function salesChatEl() { return document.getElementById("sales-chat"); }
+  function salesAddMsg(role, text) {
+    var el = salesChatEl();
+    if (!el) return;
+    var div = document.createElement("div");
+    div.style.margin = "8px 0";
+    div.style.textAlign = role === "user" ? "right" : "left";
+    div.innerHTML = '<span style="display:inline-block;padding:8px 12px;border-radius:12px;max-width:80%;' +
+      (role === "user" ? "background:#007bff;color:#fff" : "background:#e9ecef;color:#333") + '">' +
+      esc(text) + "</span>";
+    el.appendChild(div);
+    el.scrollTop = el.scrollHeight;
+  }
+
+  function salesSend() {
+    var input = document.getElementById("sales-input");
+    var text = input ? input.value.trim() : "";
+    if (!text || !currentBiz) return;
+    salesAddMsg("user", text);
+    input.value = "";
+    salesHistory.push({ role: "user", content: text });
+    salesAddMsg("assistant", "Thinking…");
+    var chatEl = salesChatEl();
+    fetch("https://evmynxxvyafvnreaudpr.supabase.co/functions/v1/sales-agent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": window.DM_SUPABASE_ANON_KEY },
+      body: JSON.stringify({ business_id: currentBiz.id, messages: salesHistory })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      chatEl.removeChild(chatEl.lastChild);
+      var reply = d.reply || d.error || "Sorry, try again.";
+      salesAddMsg("assistant", reply);
+      salesHistory.push({ role: "assistant", content: reply });
+    }).catch(function () {
+      chatEl.removeChild(chatEl.lastChild);
+      salesAddMsg("assistant", "Connection issue. Try again.");
+    });
+  }
+
+  function salesShowMenu() {
+    var popup = document.getElementById("sales-menu-popup");
+    if (!popup || !currentBiz) return;
+    if (popup.style.display !== "none") { popup.style.display = "none"; return; }
+    popup.style.display = "";
+    popup.innerHTML = "<p class='mini'>Loading menu…</p>";
+    var render = function (items) {
+      var html = "";
+      items.forEach(function (it) {
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px solid #eee">';
+        html += "<span>" + esc(it.name) + " <span class='mini'>" + esc(DM.money(it.price_cents)) + "</span></span>";
+        html += '<button class="btn small ghost" type="button" data-action="sales-add-item" data-name="' + esc(it.name) + '" data-price="' + it.price_cents + '">Add</button></div>';
+      });
+      popup.innerHTML = html || "<p class='mini'>No menu items found.</p>";
+    };
+    if (salesMenuCache) { render(salesMenuCache); return; }
+    DM.supabase.from("dm_businesses").select("station_data").eq("id", currentBiz.id).single().then(function (r) {
+      var menu = (r.data && r.data.station_data && r.data.station_data.menu) || [];
+      salesMenuCache = menu.map(function (m) { return { name: m.name || m.item, price_cents: Math.round((m.price || 0) * 100) }; });
+      render(salesMenuCache);
+    });
+  }
+
+  function salesAddItem(name, priceCents) {
+    salesBuilderItems.push({ name: name, qty: 1, unit_price: (parseInt(priceCents, 10) / 100).toFixed(2) });
+    salesRenderBuilder();
+  }
+
+  function salesRenderBuilder() {
+    var wrap = document.getElementById("sales-package-builder");
+    var list = document.getElementById("sales-items");
+    if (!wrap || !list) return;
+    wrap.style.display = salesBuilderItems.length ? "" : "none";
+    var html = "";
+    var total = 0;
+    salesBuilderItems.forEach(function (it, i) {
+      var line = Math.round(parseFloat(it.unit_price) * 100) * it.qty;
+      total += line;
+      html += '<div style="display:flex;gap:8px;align-items:center;margin:4px 0"><span>' + esc(it.name) + '</span>';
+      html += '<input type="number" min="1" value="' + it.qty + '" data-builder-qty="' + i + '" style="width:60px" class="input">';
+      html += "<span class='mini'>" + esc(DM.money(line)) + "</span></div>";
+    });
+    var premium = Math.round(total * 0.10);
+    html += "<p class='mini' style='margin-top:8px'>Subtotal: " + esc(DM.money(total)) + " + 10% custom (" + esc(DM.money(premium)) + ") = <strong>" + esc(DM.money(total + premium)) + "</strong></p>";
+    list.innerHTML = html;
+  }
+
+  function salesBuildPackage() {
+    if (!salesBuilderItems.length || !currentBiz) return;
+    salesAddMsg("user", "Build package from " + salesBuilderItems.length + " items");
+    salesAddMsg("assistant", "Building…");
+    var chatEl = salesChatEl();
+    fetch("https://evmynxxvyafvnreaudpr.supabase.co/functions/v1/sales-agent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": window.DM_SUPABASE_ANON_KEY },
+      body: JSON.stringify({ business_id: currentBiz.id, action: "build_package", action_data: { items: salesBuilderItems } })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      chatEl.removeChild(chatEl.lastChild);
+      if (d.package) {
+        salesAddMsg("assistant", "Built: " + d.package.name + " at " + DM.money(d.package.base_price_cents) + ". " + (d.package.description || ""));
+        salesClearBuilder();
+        loadBusinessData().then(renderBusiness);
+      } else {
+        salesAddMsg("assistant", "Could not build: " + (d.error || "unknown"));
+      }
+    });
+  }
+
+  function salesClearBuilder() {
+    salesBuilderItems = [];
+    salesRenderBuilder();
+  }
 
   /* ---------- delivery toggle ---------- */
   document.addEventListener("change", function (ev) {
