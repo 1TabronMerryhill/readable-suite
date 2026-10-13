@@ -5,35 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DayMarket - Workplace packages</title>
 <meta name="description" content="DayMarket workplace packages: occasion-sized catering priced by attendance, not by the dozen. Ordered a day ahead, delivered on set days.">
-<link rel="canonical" href="https://daymarket.tabronmerryhill.com/packages.html">
-<meta property="og:site_name" content="DayMarket">
-<meta property="og:type" content="website">
-<meta property="og:title" content="DayMarket - Workplace packages">
-<meta property="og:description" content="DayMarket workplace packages: occasion-sized catering priced by attendance, not by the dozen. Ordered a day ahead, delivered on set days.">
-<meta property="og:url" content="https://daymarket.tabronmerryhill.com/packages.html">
-<meta property="og:image" content="https://daymarket.tabronmerryhill.com/assets/img/glazed-donut.jpg">
-<meta property="og:locale" content="en_US">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="DayMarket - Workplace packages">
-<meta name="twitter:description" content="DayMarket workplace packages: occasion-sized catering priced by attendance, not by the dozen. Ordered a day ahead, delivered on set days.">
-<meta name="twitter:image" content="https://daymarket.tabronmerryhill.com/assets/img/glazed-donut.jpg">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Service",
-  "name": "DayMarket workplace packages",
-  "provider": {
-    "@type": "Organization",
-    "name": "DayMarket",
-    "url": "https://daymarket.tabronmerryhill.com/"
-  },
-  "description": "Occasion-sized catering for meetings and events, priced by attendance.",
-  "areaServed": {
-    "@type": "City",
-    "name": "Columbia, Missouri"
-  }
-}
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
@@ -124,15 +95,61 @@
 <section class="block tight">
   <div class="wrap">
     <div class="capture" style="max-width:560px;margin:0 auto">
-      <h3>Get packages for your workplace</h3>
-      <p>Join the founding list. We'll reach out to set up your first order.</p>
-      <form class="capture-form" data-interest="org packages">
-        <input type="text" name="name" placeholder="Your name" autocomplete="name">
+      <h3>Sign up your organization</h3>
+      <p>Clubs, teams, workplaces: create your org account now. We'll email you a sign-in link and your ordering workspace is ready.</p>
+      <form class="org-form" id="org-signup-form">
+        <input type="text" name="org_name" placeholder="Organization name" required autocomplete="organization">
+        <input type="text" name="contact_name" placeholder="Your name" required autocomplete="name">
         <input type="email" name="email" placeholder="Email address" required autocomplete="email">
-        <button class="btn small" type="submit">Notify me</button>
+        <button class="btn small" type="submit">Create org account</button>
       </form>
-      <p class="msg"></p>
-      <p class="fine">No payments yet. Founding members lock founding pricing.</p>
+      <p class="msg" id="org-signup-msg"></p>
+      <p class="fine">No payments yet. Founding organizations lock founding pricing.</p>
+      <script src="supabase/dm-config.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+      <script src="supabase/dm-client.js"></script>
+      <script>
+      (function () {
+        var form = document.getElementById("org-signup-form");
+        var msg = document.getElementById("org-signup-msg");
+        if (!form) return;
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          function show(cls, text) {
+            msg.className = "msg " + cls;
+            msg.textContent = text;
+          }
+          show("ok", "Creating your account…");
+          var fd = new FormData(form);
+          var payload = {
+            org_name: (fd.get("org_name") || "").toString(),
+            contact_name: (fd.get("contact_name") || "").toString(),
+            email: (fd.get("email") || "").toString(),
+          };
+          try {
+            var r = await fetch("/.netlify/functions/org-signup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            var j = await r.json();
+            if (!j.ok) throw new Error(j.error || "signup failed");
+            // Send the magic link via Supabase Auth.
+            var sb = window.DM && window.DM.supabase;
+            if (sb) {
+              await sb.auth.signInWithOtp({
+                email: payload.email,
+                options: { emailRedirectTo: "https://daymarket.tabronmerryhill.com/account/" },
+              });
+            }
+            form.reset();
+            show("ok", "Done. Check your email for the sign-in link — your org workspace is ready.");
+          } catch (err) {
+            show("err", "Something went wrong. Please try again.");
+          }
+        });
+      })();
+      </script>
     </div>
   </div>
 </section>
