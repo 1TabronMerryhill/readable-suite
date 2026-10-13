@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Sales Desk — DayMarket</title>
+<meta name="description" content="DayMarket Sales Desk: the conversational tool for selling group donut packages. Chat, build packages, quote delivery, and close the sale.">
+<link rel="canonical" href="https://daymarket.tabronmerryhill.com/sales/">
+<meta property="og:title" content="Sales Desk — DayMarket">
+<meta property="og:description" content="The conversational sales tool for DayMarket group packages.">
+<meta property="og:url" content="https://daymarket.tabronmerryhill.com/sales/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"DayMarket Sales Desk","url":"https://daymarket.tabronmerryhill.com/sales/","applicationCategory":"BusinessApplication","description":"Conversational sales tool for DayMarket group packages."}
+</script>
+<script src="../supabase/dm-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase/dm-client.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f7f5f0; --card: #ffffff; --ink: #1a1a1a; --muted: #6b6b6b;
+    --lime: #c8f04a; --lime-dark: #a8d030; --line: #e8e4da;
+    --user-bubble: #1a1a1a; --ai-bubble: #ffffff;
+  }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--ink);
+    display: flex; flex-direction: column; height: 100dvh; overflow: hidden;
+  }
+  /* ---------- header ---------- */
+  header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  header .logo { font-weight: 800; font-size: 17px; }
+  header .logo span { color: var(--lime-dark); }
+  #biz-picker {
+    flex: 1; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px;
+    font-size: 15px; background: var(--bg); max-width: 280px;
+  }
+  #order-toggle {
+    margin-left: auto; background: var(--ink); color: #fff; border: none;
+    border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 700;
+    cursor: pointer; white-space: nowrap;
+  }
+  #order-toggle .count {
+    display: inline-block; background: var(--lime); color: var(--ink);
+    border-radius: 999px; min-width: 22px; text-align: center;
+    font-size: 13px; padding: 1px 5px; margin-left: 6px;
+  }
+  /* ---------- chat ---------- */
+  #chat {
+    flex: 1; overflow-y: auto; padding: 16px 14px 8px;
+    display: flex; flex-direction: column; gap: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .msg { max-width: 88%; padding: 11px 14px; border-radius: 16px; font-size: 15px; line-height: 1.45; }
+  .msg.user { align-self: flex-end; background: var(--user-bubble); color: #fff; border-bottom-right-radius: 4px; }
+  .msg.ai { align-self: flex-start; background: var(--ai-bubble); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .msg.ai.thinking { color: var(--muted); font-style: italic; }
+  /* menu cards inside chat */
+  .menu-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .menu-card {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
+    padding: 10px 12px;
+  }
+  .menu-card .name { font-weight: 600; font-size: 15px; }
+  .menu-card .price { color: var(--muted); font-size: 14px; margin-left: 8px; }
+  .menu-card button {
+    background: var(--lime); border: none; border-radius: 999px;
+    padding: 7px 14px; font-weight: 700; font-size: 14px; cursor: pointer; flex-shrink: 0;
+  }
+  .menu-card button:active { background: var(--lime-dark); }
+  .pkg-card {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
+    padding: 10px 12px; margin-top: 8px;
+  }
+  .pkg-card .pname { font-weight: 700; font-size: 15px; }
+  .pkg-card .pdesc { color: var(--muted); font-size: 13px; margin: 4px 0; }
+  .pkg-card button {
+    background: var(--ink); color: #fff; border: none; border-radius: 999px;
+    padding: 7px 14px; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 6px;
+  }
+  /* quick actions */
+  #quick-actions { display: flex; gap: 8px; padding: 8px 14px; flex-shrink: 0; overflow-x: auto; background: var(--bg); }
+  #quick-actions button {
+    border: 1px solid var(--line); background: var(--card); border-radius: 999px;
+    padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  /* ---------- composer ---------- */
+  #composer {
+    display: flex; gap: 8px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: var(--card); border-top: 1px solid var(--line); flex-shrink: 0;
+  }
+  #composer input {
+    flex: 1; border: 1px solid var(--line); border-radius: 999px;
+    padding: 12px 16px; font-size: 16px; outline: none; background: var(--bg);
+  }
+  #composer input:focus { border-color: var(--lime-dark); }
+  #composer button {
+    background: var(--ink); color: #fff; border: none; border-radius: 999px;
+    padding: 0 20px; font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  /* ---------- order sheet ---------- */
+  #sheet-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.35);
+    display: none; z-index: 40;
+  }
+  #sheet-backdrop.open { display: block; }
+  #order-sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    background: var(--card); border-radius: 20px 20px 0 0;
+    max-height: 82dvh; display: flex; flex-direction: column;
+    transform: translateY(105%); transition: transform .28s ease;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  #order-sheet.open { transform: translateY(0); }
+  #sheet-handle { width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 10px auto 4px; }
+  #sheet-body { overflow-y: auto; padding: 6px 18px 18px; }
+  #sheet-body h2 { font-size: 18px; margin: 6px 0 10px; }
+  .order-line { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .order-line .nm { flex: 1; font-weight: 600; font-size: 15px; }
+  .qty-ctl { display: flex; align-items: center; gap: 8px; }
+  .qty-ctl button {
+    width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--bg); font-size: 17px; font-weight: 700; cursor: pointer; line-height: 1;
+  }
+  .order-line .ln-total { font-weight: 700; min-width: 64px; text-align: right; }
+  .fulfill-row { display: flex; gap: 10px; margin: 14px 0 6px; }
+  .fulfill-row label {
+    flex: 1; border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+    text-align: center; font-weight: 700; cursor: pointer; font-size: 15px;
+  }
+  .fulfill-row input { display: none; }
+  .fulfill-row input:checked + span { font-weight: 800; }
+  .fulfill-row label:has(input:checked) { border-color: var(--ink); background: var(--bg); }
+  #delivery-addr { display: none; margin-top: 8px; }
+  #delivery-addr textarea {
+    width: 100%; border: 1px solid var(--line); border-radius: 12px;
+    padding: 10px 12px; font-size: 15px; font-family: inherit; resize: vertical; min-height: 64px;
+  }
+  .totals { margin: 12px 0; font-size: 15px; }
+  .totals .row { display: flex; justify-content: space-between; padding: 3px 0; }
+  .totals .grand { font-weight: 800; font-size: 18px; border-top: 1px solid var(--line); margin-top: 6px; padding-top: 8px; }
+  .sheet-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .sheet-actions button {
+    border: none; border-radius: 14px; padding: 14px; font-size: 16px; font-weight: 800; cursor: pointer;
+  }
+  #btn-place-order { background: var(--lime); color: var(--ink); }
+  #btn-save-package { background: var(--ink); color: #fff; }
+  #btn-close-sheet { background: transparent; color: var(--muted); font-weight: 600; }
+  .empty-note { color: var(--muted); text-align: center; padding: 24px 0; font-size: 15px; }
+  #login-wall { display: none; flex: 1; align-items: center; justify-content: center; flex-direction: column; gap: 14px; padding: 24px; text-align: center; }
+  @media (min-width: 760px) {
+    #chat { max-width: 720px; margin: 0 auto; width: 100%; }
+    #quick-actions { max-width: 720px; margin: 0 auto; width: 100%; }
+    #composer { max-width: 720px; margin: 0 auto; width: 100%; }
+    #order-sheet { max-width: 520px; margin: 0 auto; border-radius: 20px; bottom: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DayMarket <span>Sales</span></div>
+  <select id="biz-picker" aria-label="Selling for"></select>
+  <button id="order-toggle" type="button">Order<span class="count" id="order-count">0</span></button>
+</header>
+
+<div id="login-wall">
+  <h2>Sign in to sell</h2>
+  <p style="color:var(--muted)">The Sales Desk needs your business account.</p>
+  <a href="../account/login.html" style="background:var(--ink);color:#fff;padding:12px 28px;border-radius:999px;text-decoration:none;font-weight:700">Sign in</a>
+</div>
+
+<div id="chat" aria-live="polite"></div>
+
+<div id="quick-actions">
+  <button type="button" data-qa="menu">Menu</button>
+  <button type="button" data-qa="packages">Packages</button>
+  <button type="button" data-qa="delivery">Delivery info</button>
+  <button type="button" data-qa="new">New sale</button>
+</div>
+
+<form id="composer">
+  <input id="chat-input" type="text" placeholder="Talk to the customer…" autocomplete="off" aria-label="Message">
+  <button type="submit">Send</button>
+</form>
+
+<div id="sheet-backdrop"></div>
+<section id="order-sheet" aria-label="Current order">
+  <div id="sheet-handle"></div>
+  <div id="sheet-body">
+    <h2>Current order</h2>
+    <div id="order-lines"></div>
+    <div class="fulfill-row">
+      <label><input type="radio" name="fulfill" value="pickup" checked><span>Pickup</span></label>
+      <label><input type="radio" name="fulfill" value="delivery"><span>Delivery</span></label>
+    </div>
+    <div id="delivery-addr">
+      <textarea id="delivery-address" placeholder="Delivery address"></textarea>
+      <p class="empty-note" style="padding:8px 0;text-align:left" id="delivery-fee-note">Delivery is $35 minimum.</p>
+    </div>
+    <div class="totals" id="order-totals"></div>
+    <div style="margin:10px 0">
+      <input id="order-headcount" type="number" min="1" placeholder="Headcount (optional)" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;margin-bottom:8px">
+      <input id="order-when" type="datetime-local" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px">
+    </div>
+    <div class="sheet-actions">
+      <button type="button" id="btn-place-order">Place order</button>
+      <button type="button" id="btn-save-package">Save as package</button>
+      <button type="button" id="btn-close-sheet">Keep selling</button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  "use strict";
+  var chatEl = document.getElementById("chat");
+  var inputEl = document.getElementById("chat-input");
+  var bizPicker = document.getElementById("biz-picker");
+  var businesses = [];
+  var currentBiz = null;
+  var history = [];
+  var menuCache = null;
+  var pkgCache = null;
+  var order = []; // {name, qty, unit_cents}
+  var MARKUP_BPS = 1500; // 15% DayMarket markup
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function money(cents) { return DM.money(cents); }
+
+  /* ---------- messages ---------- */
+  function addMsg(role, html, isHtml) {
+    var div = document.createElement("div");
+    div.className = "msg " + role;
+    if (isHtml) div.innerHTML = html; else div.textContent = html;
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return div;
+  }
+  function thinking() {
+    var d = addMsg("ai", "Thinking…");
+    d.classList.add("thinking");
+    return d;
+  }
+
+  /* ---------- AI ---------- */
+  function sendToAI(text) {
+    if (!currentBiz) return;
+    addMsg("user", text);
+    history.push({ role: "user", content: text });
+    var t = thinking();
+    fetch(window.DM_SUPABASE_URL + "/functions/v1/sales-agent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": window.DM_SUPABASE_ANON_KEY },
+      body: JSON.stringify({ business_id: currentBiz.id, messages: history })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      t.remove();
+      var reply = d.reply || d.error || "Sorry, try again.";
+      addMsg("ai", reply);
+      history.push({ role: "assistant", content: reply });
+      maybeOfferMenu(reply);
+    }).catch(function () {
+      t.remove();
+      addMsg("ai", "Connection issue. Try again.");
+    });
+  }
+
+  // If the AI lists items or the user asks, drop tappable menu cards into chat.
+  function maybeOfferMenu(reply) {
+    if (!menuCache) return;
+    var lower = reply.toLowerCase();
+    var hits = menuCache.filter(function (m) { return lower.indexOf(m.name.toLowerCase()) !== -1; });
+    if (hits.length >= 2) renderMenuCards(hits.slice(0, 6), "Tap to add to the order:");
+  }
+
+  function renderMenuCards(items, caption) {
+    var html = caption ? "<p style='margin-bottom:4px'>" + esc(caption) + "</p>" : "";
+    html += '<div class="menu-cards">';
+    items.forEach(function (it, i) {
+      html += '<div class="menu-card"><span><span class="name">' + esc(it.name) +
+        '</span><span class="price">' + esc(money(it.price_cents)) + '</span></span>' +
+        '<button type="button" data-menu-add="' + i + '">Add</button></div>';
+    });
+    html += "</div>";
+    var div = addMsg("ai", html, true);
+    div._menuItems = items;
+  }
+
+  function renderPackages(pkgs) {
+    var html = "<p style='margin-bottom:4px'>Packages for " + esc(currentBiz.name) + ":</p>";
+    pkgs.forEach(function (p, i) {
+      html += '<div class="pkg-card"><div class="pname">' + esc(p.name) + " — " + esc(money(p.base_price_cents)) + "</div>";
+      if (p.description) html += '<div class="pdesc">' + esc(p.description) + "</div>";
+      html += '<button type="button" data-pkg-add="' + i + '">Add package</button></div>';
+    });
+    var div = addMsg("ai", html, true);
+    div._pkgs = pkgs;
+  }
+
+  /* ---------- data ---------- */
+  function loadMenu() {
+    if (!currentBiz) return Promise.resolve([]);
+    if (menuCache) return Promise.resolve(menuCache);
+    return DM.supabase.from("dm_businesses").select("station_data").eq("id", currentBiz.id).single()
+      .then(function (r) {
+        var items = (r.data && r.data.station_data && r.data.station_data.menu_items) || [];
+        menuCache = items.map(function (m) { return { name: m.name, price_cents: m.price_cents || 0 }; });
+        return menuCache;
+      });
+  }
+  function loadPackages() {
+    if (!currentBiz) return Promise.resolve([]);
+    if (pkgCache) return Promise.resolve(pkgCache);
+    return DM.supabase.from("dm_packages").select("id,name,description,base_price_cents")
+      .eq("business_id", currentBiz.id).eq("is_active", true).order("base_price_cents")
+      .then(function (r) { pkgCache = r.data || []; return pkgCache; });
+  }
+
+  /* ---------- order ---------- */
+  function addToOrder(name, unitCents, qty) {
+    qty = qty || 1;
+    var found = null;
+    order.forEach(function (l) { if (l.name === name) found = l; });
+    if (found) found.qty += qty; else order.push({ name: name, qty: qty, unit_cents: unitCents });
+    renderOrder();
+    addMsg("ai", "Added " + qty + " × " + name + " to the order.");
+  }
+  function dozenCount() {
+    // Rough dozen estimate: assume 12 items per dozen for fee math; packages count as labeled.
+    var dozens = 0;
+    order.forEach(function (l) {
+      var m = /(\d+)\s*dozen/i.exec(l.name);
+      if (m) dozens += parseInt(m[1], 10) * l.qty;
+      else if (/half\s*dozen/i.test(l.name)) dozens += 0.5 * l.qty;
+      else dozens += (l.qty / 12);
+    });
+    return dozens;
+  }
+  function deliveryFee() {
+    var dz = dozenCount();
+    if (dz <= 3) return 3500;
+    return 3500 + Math.ceil(dz - 3) * 400;
+  }
+  function isDelivery() {
+    var el = document.querySelector('input[name="fulfill"]:checked');
+    return el && el.value === "delivery";
+  }
+  function totals() {
+    var sub = 0;
+    order.forEach(function (l) { sub += l.unit_cents * l.qty; });
+    var markup = Math.round(sub * MARKUP_BPS / 10000);
+    var fee = isDelivery() ? deliveryFee() : 0;
+    return { sub: sub, markup: markup, fee: fee, total: sub + markup + fee };
+  }
+  function renderOrder() {
+    var lines = document.getElementById("order-lines");
+    var count = document.getElementById("order-count");
+    var n = 0;
+    order.forEach(function (l) { n += l.qty; });
+    count.textContent = n;
+    if (!order.length) {
+      lines.innerHTML = '<p class="empty-note">No items yet. Tap Menu or just chat.</p>';
+    } else {
+      var html = "";
+      order.forEach(function (l, i) {
+        html += '<div class="order-line"><span class="nm">' + esc(l.name) + '</span>' +
+          '<span class="qty-ctl"><button type="button" data-qty="-1" data-i="' + i + '">−</button>' +
+          "<span>" + l.qty + "</span>" +
+          '<button type="button" data-qty="1" data-i="' + i + '">+</button></span>' +
+          '<span class="ln-total">' + esc(money(l.unit_cents * l.qty)) + "</span></div>";
+      });
+      lines.innerHTML = html;
+    }
+    var t = totals();
+    var th = '<div class="row"><span>Subtotal</span><span>' + esc(money(t.sub)) + "</span></div>" +
+      '<div class="row"><span>DayMarket (15%)</span><span>' + esc(money(t.markup)) + "</span></div>";
+    if (t.fee) th += '<div class="row"><span>Delivery</span><span>' + esc(money(t.fee)) + "</span></div>";
+    th += '<div class="row grand"><span>Total</span><span>' + esc(money(t.total)) + "</span></div>";
+    document.getElementById("order-totals").innerHTML = th;
+    document.getElementById("delivery-fee-note").textContent =
+      "Delivery is $35 minimum (up to 3 dozen), then $4 per dozen. Current quote: " + money(t.fee || 3500) + ".";
+  }
+
+  /* ---------- sheet ---------- */
+  var sheet = document.getElementById("order-sheet");
+  var backdrop = document.getElementById("sheet-backdrop");
+  function openSheet() { renderOrder(); sheet.classList.add("open"); backdrop.classList.add("open"); }
+  function closeSheet() { sheet.classList.remove("open"); backdrop.classList.remove("open"); }
+
+  /* ---------- actions ---------- */
+  function placeOrder() {
+    if (!order.length || !currentBiz) return;
+    var session;
+    DM.getSession().then(function (s) {
+      session = s;
+      if (!session) { window.location.replace("../account/login.html"); return null; }
+      var t = totals();
+      var when = document.getElementById("order-when").value;
+      var hc = parseInt(document.getElementById("order-headcount").value, 10);
+      var addr = document.getElementById("delivery-address").value.trim();
+      var items = order.map(function (l) { return l.qty + "x " + l.name; }).join(", ");
+      return DM.supabase.from("dm_orders").insert({
+        org_id: session.user.id,
+        business_id: currentBiz.id,
+        title: "Sales Desk: " + items,
+        scheduled_for: when ? new Date(when).toISOString() : null,
+        headcount: isNaN(hc) ? null : hc,
+        recurrence: "once",
+        notes: (isDelivery() ? "[DELIVERY REQUESTED] " : "[PICKUP] ") + items,
+        delivery_address: isDelivery() ? (addr || null) : null,
+        net_cents: t.sub,
+        status: "scheduled"
+      });
+    }).then(function (r) {
+      if (!r) return;
+      if (r.error) throw r.error;
+      order = [];
+      renderOrder();
+      closeSheet();
+      history = [];
+      addMsg("ai", "Order placed. The kitchen has it and will confirm. Want to start another sale?");
+    }).catch(function (err) {
+      addMsg("ai", "Could not place the order: " + (err && err.message || err));
+    });
+  }
+
+  function savePackage() {
+    if (!order.length || !currentBiz) return;
+    var t = totals();
+    var name = prompt("Name this package:");
+    if (!name) return;
+    var items = order.map(function (l) { return { name: l.name, qty: l.qty, unit_cents: l.unit_cents }; });
+    DM.supabase.from("dm_packages").insert({
+      business_id: currentBiz.id,
+      name: name,
+      description: "Built in the Sales Desk: " + order.map(function (l) { return l.qty + "x " + l.name; }).join(", "),
+      base_price_cents: t.sub,
+      is_active: true,
+      is_custom: true,
+      custom_source: { org_id: null, built_in: "sales-desk", items: items }
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      pkgCache = null;
+      addMsg("ai", "Saved \"" + name + "\" as a package. You can offer it again anytime.");
+    }).catch(function (err) {
+      addMsg("ai", "Could not save the package: " + (err && err.message || err));
+    });
+  }
+
+  /* ---------- events ---------- */
+  document.getElementById("composer").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = inputEl.value.trim();
+    if (!v) return;
+    inputEl.value = "";
+    sendToAI(v);
+  });
+  document.getElementById("quick-actions").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-qa]");
+    if (!b) return;
+    var qa = b.getAttribute("data-qa");
+    if (qa === "new") {
+      order = []; history = []; renderOrder();
+      addMsg("ai", "Fresh sale started. Who are we selling to today?");
+    } else if (qa === "menu") {
+      loadMenu().then(function (items) {
+        if (!items.length) addMsg("ai", "No menu items found for this business.");
+        else renderMenuCards(items, "Tap to add to the order:");
+      });
+    } else if (qa === "packages") {
+      loadPackages().then(function (pkgs) {
+        if (!pkgs.length) addMsg("ai", "No packages yet for this business.");
+        else renderPackages(pkgs);
+      });
+    } else if (qa === "delivery") {
+      sendToAI("What are the delivery options and fees?");
+    }
+  });
+  chatEl.addEventListener("click", function (e) {
+    var add = e.target.closest("[data-menu-add]");
+    if (add) {
+      var div = add.closest(".msg");
+      var items = div && div._menuItems;
+      var it = items && items[parseInt(add.getAttribute("data-menu-add"), 10)];
+      if (it) addToOrder(it.name, it.price_cents, 1);
+      return;
+    }
+    var pkg = e.target.closest("[data-pkg-add]");
+    if (pkg) {
+      var div2 = pkg.closest(".msg");
+      var pkgs = div2 && div2._pkgs;
+      var p = pkgs && pkgs[parseInt(pkg.getAttribute("data-pkg-add"), 10)];
+      if (p) addToOrder(p.name + " (package)", p.base_price_cents, 1);
+    }
+  });
+  document.getElementById("order-toggle").addEventListener("click", openSheet);
+  backdrop.addEventListener("click", closeSheet);
+  document.getElementById("btn-close-sheet").addEventListener("click", closeSheet);
+  document.getElementById("btn-place-order").addEventListener("click", placeOrder);
+  document.getElementById("btn-save-package").addEventListener("click", savePackage);
+  document.getElementById("order-lines").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-qty]");
+    if (!b) return;
+    var i = parseInt(b.getAttribute("data-i"), 10);
+    var d = parseInt(b.getAttribute("data-qty"), 10);
+    if (order[i]) {
+      order[i].qty += d;
+      if (order[i].qty <= 0) order.splice(i, 1);
+      renderOrder();
+    }
+  });
+  document.querySelectorAll('input[name="fulfill"]').forEach(function (r) {
+    r.addEventListener("change", function () {
+      document.getElementById("delivery-addr").style.display = isDelivery() ? "block" : "none";
+      renderOrder();
+    });
+  });
+  bizPicker.addEventListener("change", function () {
+    var id = bizPicker.value;
+    businesses.forEach(function (b) { if (b.id === id) currentBiz = b; });
+    menuCache = null; pkgCache = null; order = []; history = [];
+    renderOrder();
+    chatEl.innerHTML = "";
+    addMsg("ai", "Selling for " + currentBiz.name + ". What does the customer need?");
+    loadMenu();
+  });
+
+  /* ---------- init ---------- */
+  DM.getSession().then(function (session) {
+    if (!session) {
+      document.getElementById("login-wall").style.display = "flex";
+      document.getElementById("chat").style.display = "none";
+      document.getElementById("quick-actions").style.display = "none";
+      document.getElementById("composer").style.display = "none";
+      return null;
+    }
+    return DM.supabase.from("dm_businesses").select("id,name").eq("owner_id", session.user.id).order("name");
+  }).then(function (r) {
+    if (!r) return;
+    if (r.error) throw r.error;
+    businesses = r.data || [];
+    if (!businesses.length) {
+      addMsg("ai", "No businesses found on your account. Add one in the Business dashboard first.");
+      return;
+    }
+    businesses.forEach(function (b) {
+      var o = document.createElement("option");
+      o.value = b.id; o.textContent = b.name;
+      bizPicker.appendChild(o);
+    });
+    currentBiz = businesses[0];
+    renderOrder();
+    addMsg("ai", "Selling for " + currentBiz.name + ". What does the customer need?");
+    loadMenu();
+  }).catch(function (err) {
+    addMsg("ai", "Could not load: " + (err && err.message || err));
+  });
+})();
+</script>
+</body>
+</html>
