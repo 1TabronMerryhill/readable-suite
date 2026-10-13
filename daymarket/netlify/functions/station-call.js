@@ -119,7 +119,17 @@ function extractOrder(text, businessData) {
   let name_hint = null;
   const nm = t.match(/\b(?:this is|name is|i'm|i am)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/);
   if (nm) name_hint = nm[1];
-  return { items, pickup_text, pickup, name_hint, matchedPackage, raw: t };
+
+  /* delivery vs pickup detection */
+  let fulfillment = null; // "delivery" | "pickup" | null
+  let deliveryAddress = null;
+  if (/\bdeliver(y|ed)?\b/i.test(t)) fulfillment = "delivery";
+  else if (/\bpick\s?up\b/i.test(t)) fulfillment = "pickup";
+  // Try to extract a street address for delivery
+  const addrMatch = t.match(/\b\d+\s+[A-Za-z0-9\s]+(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|boulevard|blvd|way|circle|cir|court|ct|parkway|pkwy)[A-Za-z0-9\s,]*\b/i);
+  if (addrMatch) deliveryAddress = addrMatch[0].trim();
+
+  return { items, pickup_text, pickup, name_hint, matchedPackage, fulfillment, deliveryAddress, raw: t };
 }
 
 /* Words that name the category but not a specific menu item. These should
@@ -192,6 +202,15 @@ function validateOrder(structured, businessData, nowMs) {
   if (!structured.items.length && !hasPackage) {
     issues.push({ code: "no_items", message: "No order items detected." });
   }
+  // Delivery or pickup must be specified for orders
+  const hasOrder = structured.items.length > 0 || hasPackage;
+  if (hasOrder && !structured.fulfillment) {
+    issues.push({ code: "no_fulfillment", message: "Delivery or pickup not specified.", soft: true });
+  }
+  // Delivery requires an address
+  if (hasOrder && structured.fulfillment === "delivery" && !structured.deliveryAddress) {
+    issues.push({ code: "no_address", message: "Delivery address not provided.", soft: true });
+  }
   for (const it of structured.items) {
     if (!Number.isFinite(it.qty) || it.qty <= 0 || it.qty > 200) {
       issues.push({ code: "bad_qty", message: `Quantity not sane: ${it.phrase}.` });
@@ -242,6 +261,9 @@ function decide({ intent, confidence, validation, buyerResolvable, questionAnswe
   if (intent === "greeting") return "greet";
   if (intent !== "order") return "escalate";
   if (!validation.valid) return "clarify";
+  // Soft fulfillment issues need clarification before proceeding
+  const codes = (validation.issues || []).map((i) => i.code);
+  if (codes.includes("no_fulfillment") || codes.includes("no_address")) return "clarify";
   if (confidence >= AUTO_APPROVE_CONFIDENCE && buyerResolvable) return "auto_approve";
   return "human_review";
 }
@@ -259,6 +281,7 @@ function buildReply(decision, ctx) {
       const pkg = ctx.structured.matchedPackage && ctx.structured.matchedPackage.name;
       const it = itemsText(ctx.structured.items);
       const when = ctx.structured.pickup_text ? ` for pickup ${ctx.structured.pickup_text}` : "";
+      const fulfillment = ctx.structured.fulfillment;
       let what;
       if (pkg) {
         what = `the ${pkg} package`;
@@ -266,6 +289,16 @@ function buildReply(decision, ctx) {
         what = `a custom package with ${it}`;
       } else {
         what = it;
+      }
+      if (fulfillment === "delivery") {
+        // Calculate delivery fee based on dozens
+        let dozens = 0;
+        for (const item of ctx.structured.items) {
+          if (item.unit === "dozen") dozens += item.qty;
+        }
+        const fee = deliveryFee(dozens);
+        const addr = ctx.structured.deliveryAddress ? ` to ${ctx.structured.deliveryAddress}` : "";
+        return `Got it. ${what} with delivery${addr}${when}. Delivery fee is $${fee}. We'll have it ready.`;
       }
       return `Got it. ${what}${when}. We'll have it ready. Pay at pickup.`;
     }
@@ -279,6 +312,12 @@ function buildReply(decision, ctx) {
       const onlyNoItems = codes.includes("no_items") && !codes.includes("item_not_on_menu") && !codes.includes("generic_category") && !codes.includes("bad_qty");
       if (onlyNoItems) {
         return `What can I get for you?`;
+      }
+      if (codes.includes("no_fulfillment")) {
+        return `Do you need delivery or pickup?`;
+      }
+      if (codes.includes("no_address")) {
+        return `What's the delivery address? Delivery is $35.`;
       }
       if (codes.includes("generic_category")) {
         const menuNames = ((ctx.businessData && ctx.businessData.menu_items) || []).slice(0, 5).map((i) => i.name);
@@ -307,6 +346,15 @@ function buildReply(decision, ctx) {
    just like the sales agent does: base price + 10% custom premium. */
 
 const CUSTOM_PREMIUM_BPS = 1000; // 10%
+const DELIVERY_FLOOR = 35;
+const DELIVERY_INCLUDED_DOZEN = 3;
+const DELIVERY_PER_DOZEN = 4;
+
+function deliveryFee(dozens) {
+  const dz = dozens || 0;
+  if (dz <= DELIVERY_INCLUDED_DOZEN) return DELIVERY_FLOOR;
+  return DELIVERY_FLOOR + Math.round((dz - DELIVERY_INCLUDED_DOZEN) * DELIVERY_PER_DOZEN);
+}
 
 async function buildCustomPackage(serviceKey, businessData, items, callerPhone) {
   const { sb } = require("./station-lib");
@@ -500,7 +548,10 @@ async function runPipeline(event, deps) {
       scheduled_for: new Date(now + 60 * 60 * 1000).toISOString(),
       buyer_email: event.buyer_email,
       contact: { name: structured.name_hint || "Phone order", phone: callerPhone },
-      notes: "Station phone gate. Items: " + itemsText(structured.items) + (structured.pickup_text ? ". Pickup: " + structured.pickup_text : "") + (customPkg ? " [Custom package built via phone]" : ""),
+      notes: "Station phone gate. Items: " + itemsText(structured.items) +
+        (structured.pickup_text ? ". Pickup: " + structured.pickup_text : "") +
+        (structured.fulfillment === "delivery" ? " [DELIVERY REQUESTED]" + (structured.deliveryAddress ? " Address: " + structured.deliveryAddress : "") : " [PICKUP]") +
+        (customPkg ? " [Custom package built via phone]" : ""),
       idempotency_key: event.idempotency_key || undefined,
     };
     const created = await deps.invokeCateringGate(orderInput);
