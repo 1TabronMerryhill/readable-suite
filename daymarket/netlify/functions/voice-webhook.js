@@ -22,13 +22,7 @@
 
 const lib = require("./station-lib");
 
-function numberMap() {
-  try {
-    return JSON.parse(process.env.TWILIO_NUMBER_MAP || "{}");
-  } catch {
-    return {};
-  }
-}
+/* Resolve via DB phone_number column, falling back to the env map. */
 
 async function logCallEvent(serviceKey, fields) {
   if (!serviceKey) return null;
@@ -67,11 +61,10 @@ exports.handler = async (event) => {
   const from = lib.normalizePhone(params.From);
   const to = lib.normalizePhone(params.To);
   const sid = String(params.CallSid || "");
-  const map = numberMap();
-  const businessRef = (to && (map[to] || map[String(params.To)])) || null;
+  const serviceKey = process.env.SUPABASE_SERVICE_KEY || null;
+  const businessRef = await lib.resolveBusinessRefByNumber(serviceKey, to || String(params.To));
 
   /* Best-effort event log; never blocks the TwiML. */
-  const serviceKey = process.env.SUPABASE_SERVICE_KEY || null;
   const logPromise = logCallEvent(serviceKey, {
     event_type: "call_answered",
     from,
