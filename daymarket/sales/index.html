@@ -29,6 +29,34 @@
     display: flex; align-items: center; gap: 8px;
     padding: 10px 14px; flex-shrink: 0;
   }
+  #menu-btn {
+    border: none; background: transparent; font-size: 22px; cursor: pointer;
+    padding: 4px 8px; color: #1a1a1a; line-height: 1;
+  }
+  /* sidebar */
+  #sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: none; z-index: 60; }
+  #sidebar-backdrop.open { display: block; }
+  #sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 300px; max-width: 85vw;
+    background: #fff; z-index: 70; display: flex; flex-direction: column;
+    transform: translateX(-105%); transition: transform .25s ease;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  #sidebar.open { transform: translateX(0); }
+  #sidebar-head { padding: 16px 16px 8px; display: flex; align-items: center; justify-content: space-between; }
+  #sidebar-head h3 { font-size: 17px; }
+  #new-chat-btn {
+    border: 1px solid #e5e5e5; background: #f7f7f7; border-radius: 999px;
+    padding: 8px 14px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  #chat-list { flex: 1; overflow-y: auto; padding: 4px 8px; }
+  .chat-item {
+    padding: 12px 14px; border-radius: 12px; cursor: pointer; margin-bottom: 2px;
+  }
+  .chat-item:active, .chat-item.active { background: #f0f0f0; }
+  .chat-item .t { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chat-item .d { color: #999; font-size: 13px; margin-top: 2px; }
+  .chat-item .cust { color: #666; font-size: 13px; margin-top: 2px; font-style: italic; }
   #biz-name { font-weight: 700; font-size: 16px; }
   #biz-picker {
     border: none; background: transparent; font-weight: 700; font-size: 16px;
@@ -166,9 +194,19 @@
 <body>
 
 <div id="topbar">
+  <button id="menu-btn" type="button" aria-label="Chats">☰</button>
   <select id="biz-picker" aria-label="Selling for"></select>
   <button id="order-pill" type="button">Order · <span id="order-count">0</span></button>
 </div>
+
+<div id="sidebar-backdrop"></div>
+<aside id="sidebar" aria-label="Chat history">
+  <div id="sidebar-head">
+    <h3>Chats</h3>
+    <button id="new-chat-btn" type="button">+ New</button>
+  </div>
+  <div id="chat-list"></div>
+</aside>
 
 <div id="login-wall">
   <h2>Sign in to sell</h2>
@@ -268,21 +306,55 @@
     if (!currentBiz) return;
     addMsg("user", text);
     history.push({ role: "user", content: text });
+    ensureChat().then(function () { return saveMsg("user", text); });
     var t = thinking();
-    fetch(window.DM_SUPABASE_URL + "/functions/v1/sales-agent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ business_id: currentBiz.id, messages: history })
+    // Load customer knowledge for this business to inform the reply
+    loadKnowledge().then(function (kg) {
+      return fetch(window.DM_SUPABASE_URL + "/functions/v1/sales-agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ business_id: currentBiz.id, messages: history, knowledge: kg })
+      });
     }).then(function (r) { return r.json(); }).then(function (d) {
       t.remove();
       var reply = d.reply || d.error || "Sorry, try again.";
       addMsg("ai", reply);
       history.push({ role: "assistant", content: reply });
+      saveMsg("assistant", reply);
       maybeOfferMenu(reply);
     }).catch(function () {
       t.remove();
       addMsg("ai", "Connection issue. Try again.");
     });
+  }
+
+  // Customer knowledge graph: facts learned from past chats
+  var knowledgeCache = null;
+  function loadKnowledge() {
+    if (!currentBiz) return Promise.resolve([]);
+    if (knowledgeCache) return Promise.resolve(knowledgeCache);
+    return DM.supabase.from("dm_sales_knowledge").select("entity_type,entity_key,fact")
+      .eq("business_id", currentBiz.id).order("confidence", { ascending: false }).limit(30)
+      .then(function (r) {
+        knowledgeCache = r.data || [];
+        return knowledgeCache;
+      }).catch(function () { return []; });
+  }
+
+  // After a chat ends (new chat / business switch), extract customer facts
+  function extractKnowledge() {
+    if (!currentChatId || !currentBiz || history.length < 4) return;
+    var chatId = currentChatId;
+    fetch(window.DM_SUPABASE_URL + "/functions/v1/sales-agent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        business_id: currentBiz.id,
+        action: "extract_knowledge",
+        action_data: { chat_id: chatId, messages: history.slice(-20) }
+      })
+    }).catch(function () {});
+    knowledgeCache = null; // refresh next time
   }
 
   function maybeOfferMenu(reply) {
@@ -546,12 +618,108 @@
     });
   });
   bizPicker.addEventListener("change", function () {
+    extractKnowledge();
     var id = bizPicker.value;
     businesses.forEach(function (b) { if (b.id === id) currentBiz = b; });
-    menuCache = null; pkgCache = null; order = []; history = [];
+    menuCache = null; pkgCache = null; knowledgeCache = null;
+    order = []; history = []; currentChatId = null;
     renderOrder();
     chatEl.innerHTML = ""; showEmpty();
     loadMenu();
+  });
+
+  /* ---------- chat history + sidebar ---------- */
+  var sidebar = document.getElementById("sidebar");
+  var sidebarBackdrop = document.getElementById("sidebar-backdrop");
+  var chatListEl = document.getElementById("chat-list");
+  var currentChatId = null;
+  var sellerId = null;
+
+  function openSidebar() { sidebar.classList.add("open"); sidebarBackdrop.classList.add("open"); loadChatList(); }
+  function closeSidebar() { sidebar.classList.remove("open"); sidebarBackdrop.classList.remove("open"); }
+  document.getElementById("menu-btn").addEventListener("click", openSidebar);
+  sidebarBackdrop.addEventListener("click", closeSidebar);
+
+  function newChat() {
+    extractKnowledge();
+    currentChatId = null;
+    order = []; history = []; renderOrder();
+    chatEl.innerHTML = ""; showEmpty();
+    closeSidebar();
+  }
+  document.getElementById("new-chat-btn").addEventListener("click", newChat);
+
+  function ensureChat() {
+    if (currentChatId || !currentBiz || !sellerId) return Promise.resolve(currentChatId);
+    var title = "New sale";
+    return DM.supabase.from("dm_sales_chats").insert({
+      business_id: currentBiz.id, seller_id: sellerId, title: title
+    }).select("id").single().then(function (r) {
+      if (r.error) throw r.error;
+      currentChatId = r.data.id;
+      return currentChatId;
+    });
+  }
+
+  function saveMsg(role, content) {
+    if (!currentChatId) return Promise.resolve();
+    return DM.supabase.from("dm_sales_messages").insert({
+      chat_id: currentChatId, role: role, content: String(content).slice(0, 4000)
+    }).then(function () {
+      // Update chat timestamp + auto-title from first user message
+      var patch = { updated_at: new Date().toISOString() };
+      if (role === "user" && history.filter(function (m) { return m.role === "user"; }).length <= 1) {
+        patch.title = String(content).slice(0, 48);
+      }
+      return DM.supabase.from("dm_sales_chats").update(patch).eq("id", currentChatId);
+    }).catch(function () {});
+  }
+
+  function loadChatList() {
+    if (!sellerId || !currentBiz) return;
+    DM.supabase.from("dm_sales_chats").select("id,title,updated_at")
+      .eq("seller_id", sellerId).eq("business_id", currentBiz.id)
+      .order("updated_at", { ascending: false }).limit(30)
+      .then(function (r) {
+        var chats = r.data || [];
+        if (!chats.length) {
+          chatListEl.innerHTML = '<p class="empty-note">No chats yet.</p>';
+          return;
+        }
+        var html = "";
+        chats.forEach(function (c) {
+          var d = new Date(c.updated_at);
+          var dateStr = d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+          html += '<div class="chat-item' + (c.id === currentChatId ? " active" : "") + '" data-chat="' + c.id + '">' +
+            '<div class="t">' + esc(c.title || "Untitled") + '</div>' +
+            '<div class="d">' + esc(dateStr) + "</div></div>";
+        });
+        chatListEl.innerHTML = html;
+      });
+  }
+
+  function openChat(chatId) {
+    DM.supabase.from("dm_sales_messages").select("role,content")
+      .eq("chat_id", chatId).order("created_at", { ascending: true })
+      .then(function (r) {
+        if (r.error) throw r.error;
+        currentChatId = chatId;
+        history = [];
+        chatEl.innerHTML = "";
+        var msgs = r.data || [];
+        if (!msgs.length) { showEmpty(); }
+        msgs.forEach(function (m) {
+          addMsg(m.role === "user" ? "user" : "ai", m.content);
+          history.push({ role: m.role, content: m.content });
+        });
+        closeSidebar();
+      }).catch(function (err) {
+        addMsg("ai", "Could not open chat: " + (err && err.message || err));
+      });
+  }
+  chatListEl.addEventListener("click", function (e) {
+    var item = e.target.closest("[data-chat]");
+    if (item) openChat(item.getAttribute("data-chat"));
   });
 
   /* ---------- init ---------- */
@@ -564,6 +732,7 @@
       document.getElementById("topbar").style.display = "none";
       return null;
     }
+    sellerId = session.user.id;
     return DM.supabase.from("dm_businesses").select("id,name").eq("owner_id", session.user.id).order("name");
   }).then(function (r) {
     if (!r) return;
