@@ -126,4 +126,3 @@ exports.handler = async (event) => {
 
 /* Exported for tests. */
 exports.productionDeps = productionDeps;
-exports.numberMap = numberMap;
