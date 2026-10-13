@@ -150,4 +150,3 @@ exports.handler = async (event) => {
 };
 
 exports.productionDeps = productionDeps;
-exports.numberMap = numberMap;
