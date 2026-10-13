@@ -4,199 +4,200 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Sales Desk — DayMarket</title>
-<meta name="description" content="DayMarket Sales Desk: the conversational tool for selling group donut packages. Chat, build packages, quote delivery, and close the sale.">
+<meta name="description" content="DayMarket Sales Desk: chat to sell group packages.">
 <link rel="canonical" href="https://daymarket.tabronmerryhill.com/sales/">
 <meta property="og:title" content="Sales Desk — DayMarket">
-<meta property="og:description" content="The conversational sales tool for DayMarket group packages.">
 <meta property="og:url" content="https://daymarket.tabronmerryhill.com/sales/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"DayMarket Sales Desk","url":"https://daymarket.tabronmerryhill.com/sales/","applicationCategory":"BusinessApplication","description":"Conversational sales tool for DayMarket group packages."}
+{"@context":"https://schema.org","@type":"WebApplication","name":"DayMarket Sales Desk","url":"https://daymarket.tabronmerryhill.com/sales/","applicationCategory":"BusinessApplication"}
 </script>
 <script src="../supabase/dm-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase/dm-client.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f7f5f0; --card: #ffffff; --ink: #1a1a1a; --muted: #6b6b6b;
-    --lime: #c8f04a; --lime-dark: #a8d030; --line: #e8e4da;
-    --user-bubble: #1a1a1a; --ai-bubble: #ffffff;
-  }
   html, body { height: 100%; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg); color: var(--ink);
+    background: #fff; color: #1a1a1a;
     display: flex; flex-direction: column; height: 100dvh; overflow: hidden;
   }
-  /* ---------- header ---------- */
-  header {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--line);
-    flex-shrink: 0;
+  /* slim top bar */
+  #topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; flex-shrink: 0;
   }
-  header .logo { font-weight: 800; font-size: 17px; }
-  header .logo span { color: var(--lime-dark); }
+  #biz-name { font-weight: 700; font-size: 16px; }
   #biz-picker {
-    flex: 1; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px;
-    font-size: 15px; background: var(--bg); max-width: 280px;
+    border: none; background: transparent; font-weight: 700; font-size: 16px;
+    color: #1a1a1a; max-width: 55vw; outline: none;
   }
-  #order-toggle {
-    margin-left: auto; background: var(--ink); color: #fff; border: none;
-    border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 700;
-    cursor: pointer; white-space: nowrap;
+  #order-pill {
+    margin-left: auto; border: 1px solid #e5e5e5; background: #f7f7f7;
+    border-radius: 999px; padding: 7px 13px; font-size: 14px; font-weight: 600;
+    cursor: pointer; display: none;
   }
-  #order-toggle .count {
-    display: inline-block; background: var(--lime); color: var(--ink);
-    border-radius: 999px; min-width: 22px; text-align: center;
-    font-size: 13px; padding: 1px 5px; margin-left: 6px;
-  }
-  /* ---------- chat ---------- */
+  /* chat fills everything */
   #chat {
-    flex: 1; overflow-y: auto; padding: 16px 14px 8px;
-    display: flex; flex-direction: column; gap: 12px;
+    flex: 1; overflow-y: auto; padding: 8px 16px;
+    display: flex; flex-direction: column; gap: 14px;
     -webkit-overflow-scrolling: touch;
   }
-  .msg { max-width: 88%; padding: 11px 14px; border-radius: 16px; font-size: 15px; line-height: 1.45; }
-  .msg.user { align-self: flex-end; background: var(--user-bubble); color: #fff; border-bottom-right-radius: 4px; }
-  .msg.ai { align-self: flex-start; background: var(--ai-bubble); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
-  .msg.ai.thinking { color: var(--muted); font-style: italic; }
-  /* menu cards inside chat */
-  .menu-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .msg { max-width: 92%; font-size: 16px; line-height: 1.5; }
+  .msg.user { align-self: flex-end; background: #f0f0f0; border-radius: 20px; padding: 10px 15px; }
+  .msg.ai { align-self: flex-start; padding: 2px 0; }
+  .msg.ai.thinking { color: #999; }
+  .empty-state {
+    margin: auto; text-align: center; color: #999; max-width: 280px;
+  }
+  .empty-state .mark {
+    width: 56px; height: 56px; border-radius: 50%; background: #1a1a1a; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 22px; margin: 0 auto 14px;
+  }
+  .empty-state p { font-size: 15px; line-height: 1.5; }
+  /* menu cards live inside the chat flow */
+  .menu-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
   .menu-card {
     display: flex; align-items: center; justify-content: space-between;
-    background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
-    padding: 10px 12px;
+    background: #f7f7f7; border-radius: 14px; padding: 12px 14px;
   }
   .menu-card .name { font-weight: 600; font-size: 15px; }
-  .menu-card .price { color: var(--muted); font-size: 14px; margin-left: 8px; }
+  .menu-card .price { color: #777; font-size: 14px; margin-left: 8px; }
   .menu-card button {
-    background: var(--lime); border: none; border-radius: 999px;
-    padding: 7px 14px; font-weight: 700; font-size: 14px; cursor: pointer; flex-shrink: 0;
+    background: #1a1a1a; color: #fff; border: none; border-radius: 999px;
+    padding: 8px 16px; font-weight: 700; font-size: 14px; cursor: pointer; flex-shrink: 0;
   }
-  .menu-card button:active { background: var(--lime-dark); }
-  .pkg-card {
-    background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
-    padding: 10px 12px; margin-top: 8px;
-  }
+  .pkg-card { background: #f7f7f7; border-radius: 14px; padding: 12px 14px; margin-top: 10px; }
   .pkg-card .pname { font-weight: 700; font-size: 15px; }
-  .pkg-card .pdesc { color: var(--muted); font-size: 13px; margin: 4px 0; }
+  .pkg-card .pdesc { color: #777; font-size: 13px; margin: 4px 0 8px; }
   .pkg-card button {
-    background: var(--ink); color: #fff; border: none; border-radius: 999px;
-    padding: 7px 14px; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 6px;
+    background: #1a1a1a; color: #fff; border: none; border-radius: 999px;
+    padding: 8px 16px; font-weight: 700; font-size: 14px; cursor: pointer;
   }
-  /* quick actions */
-  #quick-actions { display: flex; gap: 8px; padding: 8px 14px; flex-shrink: 0; overflow-x: auto; background: var(--bg); }
-  #quick-actions button {
-    border: 1px solid var(--line); background: var(--card); border-radius: 999px;
-    padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
-  }
-  /* ---------- composer ---------- */
+  /* composer: one big pill like ChatGPT */
+  #composer-wrap { padding: 8px 12px calc(10px + env(safe-area-inset-bottom)); flex-shrink: 0; background: #fff; }
   #composer {
-    display: flex; gap: 8px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
-    background: var(--card); border-top: 1px solid var(--line); flex-shrink: 0;
+    display: flex; align-items: flex-end; gap: 6px;
+    background: #f0f0f0; border-radius: 28px; padding: 8px 8px 8px 8px;
   }
-  #composer input {
-    flex: 1; border: 1px solid var(--line); border-radius: 999px;
-    padding: 12px 16px; font-size: 16px; outline: none; background: var(--bg);
+  #plus-btn {
+    width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent;
+    font-size: 24px; color: #555; cursor: pointer; flex-shrink: 0; line-height: 1;
   }
-  #composer input:focus { border-color: var(--lime-dark); }
-  #composer button {
-    background: var(--ink); color: #fff; border: none; border-radius: 999px;
-    padding: 0 20px; font-size: 15px; font-weight: 700; cursor: pointer;
+  #chat-input {
+    flex: 1; border: none; background: transparent; outline: none;
+    font-size: 16px; padding: 10px 4px; resize: none; font-family: inherit;
+    max-height: 120px;
   }
-  /* ---------- order sheet ---------- */
-  #sheet-backdrop {
-    position: fixed; inset: 0; background: rgba(0,0,0,.35);
-    display: none; z-index: 40;
+  #send-btn {
+    width: 38px; height: 38px; border-radius: 50%; border: none;
+    background: #1a1a1a; color: #fff; font-size: 18px; cursor: pointer; flex-shrink: 0;
   }
+  #send-btn:disabled { opacity: .3; }
+  /* plus menu */
+  #plus-menu {
+    position: fixed; left: 12px; right: 12px; bottom: calc(76px + env(safe-area-inset-bottom));
+    background: #fff; border: 1px solid #e5e5e5; border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.12); z-index: 60; display: none;
+    overflow: hidden;
+  }
+  #plus-menu.open { display: block; }
+  #plus-menu button {
+    display: block; width: 100%; text-align: left; border: none; background: none;
+    padding: 15px 18px; font-size: 16px; cursor: pointer; border-bottom: 1px solid #f0f0f0;
+  }
+  #plus-menu button:last-child { border-bottom: none; }
+  /* order sheet */
+  #sheet-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: none; z-index: 40; }
   #sheet-backdrop.open { display: block; }
   #order-sheet {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
-    background: var(--card); border-radius: 20px 20px 0 0;
-    max-height: 82dvh; display: flex; flex-direction: column;
+    background: #fff; border-radius: 20px 20px 0 0; max-height: 84dvh;
+    display: flex; flex-direction: column;
     transform: translateY(105%); transition: transform .28s ease;
     padding-bottom: env(safe-area-inset-bottom);
   }
   #order-sheet.open { transform: translateY(0); }
-  #sheet-handle { width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 10px auto 4px; }
-  #sheet-body { overflow-y: auto; padding: 6px 18px 18px; }
-  #sheet-body h2 { font-size: 18px; margin: 6px 0 10px; }
-  .order-line { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+  #sheet-handle { width: 44px; height: 5px; border-radius: 3px; background: #e5e5e5; margin: 10px auto 4px; }
+  #sheet-body { overflow-y: auto; padding: 6px 20px 20px; }
+  #sheet-body h2 { font-size: 19px; margin: 6px 0 10px; }
+  .order-line { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
   .order-line .nm { flex: 1; font-weight: 600; font-size: 15px; }
-  .qty-ctl { display: flex; align-items: center; gap: 8px; }
+  .qty-ctl { display: flex; align-items: center; gap: 10px; }
   .qty-ctl button {
-    width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line);
-    background: var(--bg); font-size: 17px; font-weight: 700; cursor: pointer; line-height: 1;
+    width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e5e5e5;
+    background: #f7f7f7; font-size: 18px; font-weight: 700; cursor: pointer; line-height: 1;
   }
-  .order-line .ln-total { font-weight: 700; min-width: 64px; text-align: right; }
+  .order-line .ln-total { font-weight: 700; min-width: 66px; text-align: right; }
   .fulfill-row { display: flex; gap: 10px; margin: 14px 0 6px; }
   .fulfill-row label {
-    flex: 1; border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+    flex: 1; border: 1px solid #e5e5e5; border-radius: 14px; padding: 13px;
     text-align: center; font-weight: 700; cursor: pointer; font-size: 15px;
   }
   .fulfill-row input { display: none; }
-  .fulfill-row input:checked + span { font-weight: 800; }
-  .fulfill-row label:has(input:checked) { border-color: var(--ink); background: var(--bg); }
+  .fulfill-row label:has(input:checked) { border-color: #1a1a1a; background: #f7f7f7; }
   #delivery-addr { display: none; margin-top: 8px; }
   #delivery-addr textarea {
-    width: 100%; border: 1px solid var(--line); border-radius: 12px;
-    padding: 10px 12px; font-size: 15px; font-family: inherit; resize: vertical; min-height: 64px;
+    width: 100%; border: 1px solid #e5e5e5; border-radius: 14px;
+    padding: 11px 13px; font-size: 15px; font-family: inherit; min-height: 66px; resize: vertical;
   }
+  #delivery-fee-note { color: #777; font-size: 13px; margin-top: 6px; }
   .totals { margin: 12px 0; font-size: 15px; }
   .totals .row { display: flex; justify-content: space-between; padding: 3px 0; }
-  .totals .grand { font-weight: 800; font-size: 18px; border-top: 1px solid var(--line); margin-top: 6px; padding-top: 8px; }
-  .sheet-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-  .sheet-actions button {
-    border: none; border-radius: 14px; padding: 14px; font-size: 16px; font-weight: 800; cursor: pointer;
-  }
-  #btn-place-order { background: var(--lime); color: var(--ink); }
-  #btn-save-package { background: var(--ink); color: #fff; }
-  #btn-close-sheet { background: transparent; color: var(--muted); font-weight: 600; }
-  .empty-note { color: var(--muted); text-align: center; padding: 24px 0; font-size: 15px; }
+  .totals .grand { font-weight: 800; font-size: 19px; border-top: 1px solid #eee; margin-top: 6px; padding-top: 9px; }
+  .fld { width: 100%; border: 1px solid #e5e5e5; border-radius: 14px; padding: 12px 14px; font-size: 15px; margin-bottom: 8px; font-family: inherit; }
+  .sheet-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .sheet-actions button { border: none; border-radius: 16px; padding: 15px; font-size: 16px; font-weight: 800; cursor: pointer; }
+  #btn-place-order { background: #1a1a1a; color: #fff; }
+  #btn-save-package { background: #f0f0f0; color: #1a1a1a; }
+  #btn-close-sheet { background: transparent; color: #999; font-weight: 600; }
+  .empty-note { color: #999; text-align: center; padding: 26px 0; font-size: 15px; }
   #login-wall { display: none; flex: 1; align-items: center; justify-content: center; flex-direction: column; gap: 14px; padding: 24px; text-align: center; }
   @media (min-width: 760px) {
-    #chat { max-width: 720px; margin: 0 auto; width: 100%; }
-    #quick-actions { max-width: 720px; margin: 0 auto; width: 100%; }
-    #composer { max-width: 720px; margin: 0 auto; width: 100%; }
-    #order-sheet { max-width: 520px; margin: 0 auto; border-radius: 20px; bottom: 16px; }
+    #chat, #composer-wrap { max-width: 720px; margin: 0 auto; width: 100%; }
+    #order-sheet, #plus-menu { max-width: 520px; margin: 0 auto; }
+    #order-sheet { border-radius: 20px; bottom: 16px; }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">DayMarket <span>Sales</span></div>
+<div id="topbar">
   <select id="biz-picker" aria-label="Selling for"></select>
-  <button id="order-toggle" type="button">Order<span class="count" id="order-count">0</span></button>
-</header>
+  <button id="order-pill" type="button">Order · <span id="order-count">0</span></button>
+</div>
 
 <div id="login-wall">
   <h2>Sign in to sell</h2>
-  <p style="color:var(--muted)">The Sales Desk needs your business account.</p>
-  <a href="../account/login.html" style="background:var(--ink);color:#fff;padding:12px 28px;border-radius:999px;text-decoration:none;font-weight:700">Sign in</a>
+  <p style="color:#999">The Sales Desk needs your business account.</p>
+  <a href="../account/login.html" style="background:#1a1a1a;color:#fff;padding:12px 28px;border-radius:999px;text-decoration:none;font-weight:700">Sign in</a>
 </div>
 
 <div id="chat" aria-live="polite"></div>
 
-<div id="quick-actions">
-  <button type="button" data-qa="menu">Menu</button>
-  <button type="button" data-qa="packages">Packages</button>
-  <button type="button" data-qa="delivery">Delivery info</button>
-  <button type="button" data-qa="new">New sale</button>
+<div id="composer-wrap">
+  <div id="composer">
+    <button id="plus-btn" type="button" aria-label="More options">+</button>
+    <textarea id="chat-input" rows="1" placeholder="Message…" aria-label="Message"></textarea>
+    <button id="send-btn" type="button" aria-label="Send" disabled>↑</button>
+  </div>
 </div>
 
-<form id="composer">
-  <input id="chat-input" type="text" placeholder="Talk to the customer…" autocomplete="off" aria-label="Message">
-  <button type="submit">Send</button>
-</form>
+<div id="plus-menu">
+  <button type="button" data-pm="menu">Menu</button>
+  <button type="button" data-pm="packages">Packages</button>
+  <button type="button" data-pm="delivery">Delivery info</button>
+  <button type="button" data-pm="new">New sale</button>
+</div>
 
 <div id="sheet-backdrop"></div>
 <section id="order-sheet" aria-label="Current order">
   <div id="sheet-handle"></div>
   <div id="sheet-body">
-    <h2>Current order</h2>
+    <h2>Order</h2>
     <div id="order-lines"></div>
     <div class="fulfill-row">
       <label><input type="radio" name="fulfill" value="pickup" checked><span>Pickup</span></label>
@@ -204,13 +205,11 @@
     </div>
     <div id="delivery-addr">
       <textarea id="delivery-address" placeholder="Delivery address"></textarea>
-      <p class="empty-note" style="padding:8px 0;text-align:left" id="delivery-fee-note">Delivery is $35 minimum.</p>
+      <p id="delivery-fee-note"></p>
     </div>
     <div class="totals" id="order-totals"></div>
-    <div style="margin:10px 0">
-      <input id="order-headcount" type="number" min="1" placeholder="Headcount (optional)" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;margin-bottom:8px">
-      <input id="order-when" type="datetime-local" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px">
-    </div>
+    <input id="order-headcount" class="fld" type="number" min="1" placeholder="Headcount (optional)">
+    <input id="order-when" class="fld" type="datetime-local">
     <div class="sheet-actions">
       <button type="button" id="btn-place-order">Place order</button>
       <button type="button" id="btn-save-package">Save as package</button>
@@ -224,23 +223,26 @@
   "use strict";
   var chatEl = document.getElementById("chat");
   var inputEl = document.getElementById("chat-input");
+  var sendBtn = document.getElementById("send-btn");
+  var plusBtn = document.getElementById("plus-btn");
+  var plusMenu = document.getElementById("plus-menu");
   var bizPicker = document.getElementById("biz-picker");
+  var orderPill = document.getElementById("order-pill");
   var businesses = [];
   var currentBiz = null;
   var history = [];
   var menuCache = null;
   var pkgCache = null;
-  var order = []; // {name, qty, unit_cents}
-  var MARKUP_BPS = 1500; // 15% DayMarket markup
+  var order = [];
+  var MARKUP_BPS = 1500;
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
       .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
-  function money(cents) { return DM.money(cents); }
 
-  /* ---------- messages ---------- */
   function addMsg(role, html, isHtml) {
+    clearEmpty();
     var div = document.createElement("div");
     div.className = "msg " + role;
     if (isHtml) div.innerHTML = html; else div.textContent = html;
@@ -248,13 +250,20 @@
     chatEl.scrollTop = chatEl.scrollHeight;
     return div;
   }
+  function showEmpty() {
+    chatEl.innerHTML = '<div class="empty-state"><div class="mark">D</div>' +
+      "<p>What are we selling today?</p></div>";
+  }
+  function clearEmpty() {
+    var e = chatEl.querySelector(".empty-state");
+    if (e) e.remove();
+  }
   function thinking() {
-    var d = addMsg("ai", "Thinking…");
+    var d = addMsg("ai", "…");
     d.classList.add("thinking");
     return d;
   }
 
-  /* ---------- AI ---------- */
   function sendToAI(text) {
     if (!currentBiz) return;
     addMsg("user", text);
@@ -276,20 +285,18 @@
     });
   }
 
-  // If the AI lists items or the user asks, drop tappable menu cards into chat.
   function maybeOfferMenu(reply) {
     if (!menuCache) return;
     var lower = reply.toLowerCase();
     var hits = menuCache.filter(function (m) { return lower.indexOf(m.name.toLowerCase()) !== -1; });
-    if (hits.length >= 2) renderMenuCards(hits.slice(0, 6), "Tap to add to the order:");
+    if (hits.length >= 2) renderMenuCards(hits.slice(0, 6));
   }
 
-  function renderMenuCards(items, caption) {
-    var html = caption ? "<p style='margin-bottom:4px'>" + esc(caption) + "</p>" : "";
-    html += '<div class="menu-cards">';
+  function renderMenuCards(items) {
+    var html = '<div class="menu-cards">';
     items.forEach(function (it, i) {
       html += '<div class="menu-card"><span><span class="name">' + esc(it.name) +
-        '</span><span class="price">' + esc(money(it.price_cents)) + '</span></span>' +
+        '</span><span class="price">' + esc(DM.money(it.price_cents)) + '</span></span>' +
         '<button type="button" data-menu-add="' + i + '">Add</button></div>';
     });
     html += "</div>";
@@ -298,17 +305,16 @@
   }
 
   function renderPackages(pkgs) {
-    var html = "<p style='margin-bottom:4px'>Packages for " + esc(currentBiz.name) + ":</p>";
+    var html = "";
     pkgs.forEach(function (p, i) {
-      html += '<div class="pkg-card"><div class="pname">' + esc(p.name) + " — " + esc(money(p.base_price_cents)) + "</div>";
+      html += '<div class="pkg-card"><div class="pname">' + esc(p.name) + " — " + esc(DM.money(p.base_price_cents)) + "</div>";
       if (p.description) html += '<div class="pdesc">' + esc(p.description) + "</div>";
-      html += '<button type="button" data-pkg-add="' + i + '">Add package</button></div>';
+      html += '<button type="button" data-pkg-add="' + i + '">Add</button></div>';
     });
     var div = addMsg("ai", html, true);
     div._pkgs = pkgs;
   }
 
-  /* ---------- data ---------- */
   function loadMenu() {
     if (!currentBiz) return Promise.resolve([]);
     if (menuCache) return Promise.resolve(menuCache);
@@ -334,10 +340,9 @@
     order.forEach(function (l) { if (l.name === name) found = l; });
     if (found) found.qty += qty; else order.push({ name: name, qty: qty, unit_cents: unitCents });
     renderOrder();
-    addMsg("ai", "Added " + qty + " × " + name + " to the order.");
+    addMsg("ai", "Added " + qty + " × " + name + ".");
   }
   function dozenCount() {
-    // Rough dozen estimate: assume 12 items per dozen for fee math; packages count as labeled.
     var dozens = 0;
     order.forEach(function (l) {
       var m = /(\d+)\s*dozen/i.exec(l.name);
@@ -365,12 +370,13 @@
   }
   function renderOrder() {
     var lines = document.getElementById("order-lines");
-    var count = document.getElementById("order-count");
+    var pill = document.getElementById("order-pill");
     var n = 0;
     order.forEach(function (l) { n += l.qty; });
-    count.textContent = n;
+    document.getElementById("order-count").textContent = n;
+    pill.style.display = n ? "block" : "none";
     if (!order.length) {
-      lines.innerHTML = '<p class="empty-note">No items yet. Tap Menu or just chat.</p>';
+      lines.innerHTML = '<p class="empty-note">Nothing yet.</p>';
     } else {
       var html = "";
       order.forEach(function (l, i) {
@@ -378,32 +384,28 @@
           '<span class="qty-ctl"><button type="button" data-qty="-1" data-i="' + i + '">−</button>' +
           "<span>" + l.qty + "</span>" +
           '<button type="button" data-qty="1" data-i="' + i + '">+</button></span>' +
-          '<span class="ln-total">' + esc(money(l.unit_cents * l.qty)) + "</span></div>";
+          '<span class="ln-total">' + esc(DM.money(l.unit_cents * l.qty)) + "</span></div>";
       });
       lines.innerHTML = html;
     }
     var t = totals();
-    var th = '<div class="row"><span>Subtotal</span><span>' + esc(money(t.sub)) + "</span></div>" +
-      '<div class="row"><span>DayMarket (15%)</span><span>' + esc(money(t.markup)) + "</span></div>";
-    if (t.fee) th += '<div class="row"><span>Delivery</span><span>' + esc(money(t.fee)) + "</span></div>";
-    th += '<div class="row grand"><span>Total</span><span>' + esc(money(t.total)) + "</span></div>";
+    var th = '<div class="row"><span>Subtotal</span><span>' + esc(DM.money(t.sub)) + "</span></div>" +
+      '<div class="row"><span>DayMarket (15%)</span><span>' + esc(DM.money(t.markup)) + "</span></div>";
+    if (t.fee) th += '<div class="row"><span>Delivery</span><span>' + esc(DM.money(t.fee)) + "</span></div>";
+    th += '<div class="row grand"><span>Total</span><span>' + esc(DM.money(t.total)) + "</span></div>";
     document.getElementById("order-totals").innerHTML = th;
     document.getElementById("delivery-fee-note").textContent =
-      "Delivery is $35 minimum (up to 3 dozen), then $4 per dozen. Current quote: " + money(t.fee || 3500) + ".";
+      "Delivery is $35 minimum. Current quote: " + DM.money(t.fee || 3500) + ".";
   }
 
-  /* ---------- sheet ---------- */
   var sheet = document.getElementById("order-sheet");
   var backdrop = document.getElementById("sheet-backdrop");
   function openSheet() { renderOrder(); sheet.classList.add("open"); backdrop.classList.add("open"); }
   function closeSheet() { sheet.classList.remove("open"); backdrop.classList.remove("open"); }
 
-  /* ---------- actions ---------- */
   function placeOrder() {
     if (!order.length || !currentBiz) return;
-    var session;
-    DM.getSession().then(function (s) {
-      session = s;
+    DM.getSession().then(function (session) {
       if (!session) { window.location.replace("../account/login.html"); return null; }
       var t = totals();
       var when = document.getElementById("order-when").value;
@@ -425,11 +427,8 @@
     }).then(function (r) {
       if (!r) return;
       if (r.error) throw r.error;
-      order = [];
-      renderOrder();
-      closeSheet();
-      history = [];
-      addMsg("ai", "Order placed. The kitchen has it and will confirm. Want to start another sale?");
+      order = []; renderOrder(); closeSheet(); history = [];
+      addMsg("ai", "Order placed. Want to start another sale?");
     }).catch(function (err) {
       addMsg("ai", "Could not place the order: " + (err && err.message || err));
     });
@@ -448,45 +447,64 @@
       base_price_cents: t.sub,
       is_active: true,
       is_custom: true,
-      custom_source: { org_id: null, built_in: "sales-desk", items: items }
+      custom_source: { built_in: "sales-desk", items: items }
     }).then(function (r) {
       if (r.error) throw r.error;
       pkgCache = null;
-      addMsg("ai", "Saved \"" + name + "\" as a package. You can offer it again anytime.");
+      addMsg("ai", "Saved \"" + name + ".\" You can offer it again anytime.");
     }).catch(function (err) {
       addMsg("ai", "Could not save the package: " + (err && err.message || err));
     });
   }
 
   /* ---------- events ---------- */
-  document.getElementById("composer").addEventListener("submit", function (e) {
-    e.preventDefault();
+  function doSend() {
     var v = inputEl.value.trim();
     if (!v) return;
     inputEl.value = "";
+    inputEl.style.height = "auto";
+    sendBtn.disabled = true;
     sendToAI(v);
+  }
+  sendBtn.addEventListener("click", doSend);
+  inputEl.addEventListener("input", function () {
+    sendBtn.disabled = !inputEl.value.trim();
+    inputEl.style.height = "auto";
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + "px";
   });
-  document.getElementById("quick-actions").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-qa]");
+  inputEl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); doSend(); }
+  });
+
+  plusBtn.addEventListener("click", function () {
+    plusMenu.classList.toggle("open");
+  });
+  plusMenu.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-pm]");
     if (!b) return;
-    var qa = b.getAttribute("data-qa");
-    if (qa === "new") {
+    plusMenu.classList.remove("open");
+    var pm = b.getAttribute("data-pm");
+    if (pm === "new") {
       order = []; history = []; renderOrder();
-      addMsg("ai", "Fresh sale started. Who are we selling to today?");
-    } else if (qa === "menu") {
+      chatEl.innerHTML = ""; showEmpty();
+    } else if (pm === "menu") {
       loadMenu().then(function (items) {
-        if (!items.length) addMsg("ai", "No menu items found for this business.");
-        else renderMenuCards(items, "Tap to add to the order:");
+        if (!items.length) addMsg("ai", "No menu items found.");
+        else renderMenuCards(items);
       });
-    } else if (qa === "packages") {
+    } else if (pm === "packages") {
       loadPackages().then(function (pkgs) {
-        if (!pkgs.length) addMsg("ai", "No packages yet for this business.");
+        if (!pkgs.length) addMsg("ai", "No packages yet.");
         else renderPackages(pkgs);
       });
-    } else if (qa === "delivery") {
+    } else if (pm === "delivery") {
       sendToAI("What are the delivery options and fees?");
     }
   });
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest("#plus-menu") && !e.target.closest("#plus-btn")) plusMenu.classList.remove("open");
+  });
+
   chatEl.addEventListener("click", function (e) {
     var add = e.target.closest("[data-menu-add]");
     if (add) {
@@ -504,7 +522,8 @@
       if (p) addToOrder(p.name + " (package)", p.base_price_cents, 1);
     }
   });
-  document.getElementById("order-toggle").addEventListener("click", openSheet);
+
+  orderPill.addEventListener("click", openSheet);
   backdrop.addEventListener("click", closeSheet);
   document.getElementById("btn-close-sheet").addEventListener("click", closeSheet);
   document.getElementById("btn-place-order").addEventListener("click", placeOrder);
@@ -531,18 +550,18 @@
     businesses.forEach(function (b) { if (b.id === id) currentBiz = b; });
     menuCache = null; pkgCache = null; order = []; history = [];
     renderOrder();
-    chatEl.innerHTML = "";
-    addMsg("ai", "Selling for " + currentBiz.name + ". What does the customer need?");
+    chatEl.innerHTML = ""; showEmpty();
     loadMenu();
   });
 
   /* ---------- init ---------- */
+  showEmpty();
   DM.getSession().then(function (session) {
     if (!session) {
       document.getElementById("login-wall").style.display = "flex";
       document.getElementById("chat").style.display = "none";
-      document.getElementById("quick-actions").style.display = "none";
-      document.getElementById("composer").style.display = "none";
+      document.getElementById("composer-wrap").style.display = "none";
+      document.getElementById("topbar").style.display = "none";
       return null;
     }
     return DM.supabase.from("dm_businesses").select("id,name").eq("owner_id", session.user.id).order("name");
@@ -551,19 +570,27 @@
     if (r.error) throw r.error;
     businesses = r.data || [];
     if (!businesses.length) {
-      addMsg("ai", "No businesses found on your account. Add one in the Business dashboard first.");
+      chatEl.innerHTML = "";
+      addMsg("ai", "No businesses on your account yet.");
       return;
     }
-    businesses.forEach(function (b) {
-      var o = document.createElement("option");
-      o.value = b.id; o.textContent = b.name;
-      bizPicker.appendChild(o);
-    });
+    if (businesses.length === 1) {
+      bizPicker.style.display = "none";
+      var nm = document.createElement("span");
+      nm.id = "biz-name"; nm.textContent = businesses[0].name;
+      bizPicker.parentNode.insertBefore(nm, bizPicker);
+    } else {
+      businesses.forEach(function (b) {
+        var o = document.createElement("option");
+        o.value = b.id; o.textContent = b.name;
+        bizPicker.appendChild(o);
+      });
+    }
     currentBiz = businesses[0];
     renderOrder();
-    addMsg("ai", "Selling for " + currentBiz.name + ". What does the customer need?");
     loadMenu();
   }).catch(function (err) {
+    chatEl.innerHTML = "";
     addMsg("ai", "Could not load: " + (err && err.message || err));
   });
 })();
