@@ -98,7 +98,8 @@ exports.handler = async (event) => {
   const member = {
     id: userId,
     email,
-    full_name: `${contactName} — ${orgName}`,
+    full_name: contactName,
+    org_name: orgName,
     pass_type: "organization",
     pass_status: "active",
   };
