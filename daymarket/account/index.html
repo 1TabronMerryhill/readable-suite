@@ -17,6 +17,8 @@
 <main>
 <section class="block tight"><div class="wrap">
 
+<div class="notice ok" id="paid-note" hidden><p style="margin:0">Thanks — your payment is being confirmed. Your order will show as paid shortly.</p></div>
+
 <div id="signing" hidden>
 <p class="kicker">My DayMarket</p>
 <h2>Signing you in…</h2>
@@ -241,7 +243,7 @@
     if (!isOrg()) return;
     try {
       var o = await DM.supabase.from("dm_orders")
-        .select("id,title,scheduled_for,headcount,recurrence,status,notes,delivery_address,total_cents,payment_status,package:dm_packages(name),business:dm_businesses(name)")
+        .select("id,title,scheduled_for,headcount,recurrence,status,notes,delivery_address,total_cents,payment_status,payment_url,package:dm_packages(name),business:dm_businesses(name)")
         .eq("org_id", me)
         .order("scheduled_for", { ascending: true });
       if (o.error) throw o.error;
@@ -570,6 +572,9 @@
     html += "</div><div>" + orderStatusBadge(o.status);
     if (showCancel && o.status === "scheduled") {
       html += ' <button class="btn small ghost" type="button" data-action="cancel-order" data-id="' + esc(o.id) + '">Cancel</button>';
+    }
+    if (o.payment_status !== "paid" && o.payment_url) {
+      html += ' <a class="btn small" href="' + esc(o.payment_url) + '" target="_blank" rel="noopener">Pay now</a>';
     }
     html += "</div></div></div>";
     return html;
@@ -1068,6 +1073,13 @@
   }
 
   document.addEventListener("DOMContentLoaded", init);
+  // Show payment confirmation note after Stripe redirect.
+  try {
+    if (new URLSearchParams(window.location.search).get("paid") === "1") {
+      var pn = document.getElementById("paid-note");
+      if (pn) pn.hidden = false;
+    }
+  } catch (e) {}
 })();
 </script>
 </body>
