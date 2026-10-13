@@ -1127,8 +1127,8 @@
     };
     if (salesMenuCache) { render(salesMenuCache); return; }
     DM.supabase.from("dm_businesses").select("station_data").eq("id", currentBiz.id).single().then(function (r) {
-      var menu = (r.data && r.data.station_data && r.data.station_data.menu) || [];
-      salesMenuCache = menu.map(function (m) { return { name: m.name || m.item, price_cents: Math.round((m.price || 0) * 100) }; });
+      var menu = (r.data && r.data.station_data && r.data.station_data.menu_items) || [];
+      salesMenuCache = menu.map(function (m) { return { name: m.name, price_cents: m.price_cents || 0 }; });
       render(salesMenuCache);
     });
   }
