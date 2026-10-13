@@ -25,13 +25,7 @@
 const lib = require("./station-lib");
 const { runPipeline, defaultGetBusinessData } = require("./station-call");
 
-function numberMap() {
-  try {
-    return JSON.parse(process.env.TWILIO_NUMBER_MAP || "{}");
-  } catch {
-    return {};
-  }
-}
+/* Resolve via DB phone_number column, falling back to the env map. */
 
 function productionDeps(serviceKey) {
   const q = (m, p, b) => lib.sb(serviceKey, m, p, b);
@@ -113,8 +107,7 @@ exports.handler = async (event) => {
   const from = lib.normalizePhone(call.from_number);
   const to = lib.normalizePhone(call.to_number);
   const callId = String(call.call_id || "");
-  const map = numberMap();
-  const businessRef = (to && map[to]) || null;
+  const businessRef = await lib.resolveBusinessRefByNumber(serviceKey, to || call.to_number);
   if (!businessRef) {
     /* Unknown number: never speak for the wrong business. */
     return lib.json(200, {
