@@ -816,15 +816,18 @@
     if (action === "confirm-order") {
       var ord = null;
       for (var oi = 0; oi < bizOrders.length; oi++) if (bizOrders[oi].id === id) ord = bizOrders[oi];
+      var bps = (typeof currentBiz !== "undefined" && currentBiz && currentBiz.fee_bps != null) ? currentBiz.fee_bps : 1500;
       var sug = ord && ord.package && ord.package.base_price_cents ? (ord.package.base_price_cents / 100).toFixed(2) : "";
-      var totalStr = prompt("Confirm this order. Enter the order total in dollars" + (sug ? " (package base: $" + sug + ")" : "") + ":", sug);
+      var totalStr = prompt("Enter YOUR price in dollars (DayMarket adds " + (bps / 100) + "% for the customer total)" + (sug ? " (package base: $" + sug + ")" : "") + ":", sug);
       if (totalStr === null) return;
-      var totalCents = Math.round(parseFloat(totalStr) * 100);
-      if (!(totalCents > 0)) { note("err", "Enter a valid total to confirm the order."); return; }
-      DM.supabase.from("dm_orders").update({ status: "confirmed", total_cents: totalCents }).eq("id", id)
+      var netCents = Math.round(parseFloat(totalStr) * 100);
+      if (!(netCents > 0)) { note("err", "Enter a valid price to confirm the order."); return; }
+      var feeCents = Math.round(netCents * bps / 10000);
+      var totalCents = netCents + feeCents;
+      DM.supabase.from("dm_orders").update({ status: "confirmed", total_cents: totalCents, fee_bps: bps, fee_cents: feeCents, net_cents: netCents }).eq("id", id)
         .then(function (r) {
           if (r.error) throw r.error;
-          return loadBusinessData().then(function () { renderBusiness(); note("ok", "Order confirmed. The org has been notified."); });
+          return loadBusinessData().then(function () { renderBusiness(); note("ok", "Order confirmed at " + DM.money(totalCents) + " (you net " + DM.money(netCents) + "). The org has been notified."); });
         })
         .catch(function (err) { note("err", "Couldn't confirm that order: " + ((err && err.message) || err)); });
       return;
