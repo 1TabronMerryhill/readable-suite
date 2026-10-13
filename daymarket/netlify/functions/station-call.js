@@ -278,18 +278,21 @@ async function defaultGetBusinessData(serviceKey, businessRef, sbFn) {
   const q = (m, p, b) => sb(serviceKey, m, p, b);
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   const f = UUID_RE.test(businessRef) ? "id=eq." + businessRef : "slug=eq." + encodeURIComponent(businessRef);
-  const bRes = await q("GET", "/dm_businesses?" + f + "&select=id,name,slug,status");
+  const bRes = await q("GET", "/dm_businesses?" + f + "&select=id,name,slug,status,station_data");
   const biz = bRes.status === 200 && bRes.data && bRes.data[0];
   if (!biz) return null;
   const pRes = await q("GET", "/dm_packages?active=eq.true&select=id,name,base_price_cents");
   const packages = pRes.status === 200 ? pRes.data || [] : [];
-  /* Operator-seeded structured data (hours, phone, menu, address) via env.
-     Phase 2 moves this to a table; v1 keeps it out of the schema. */
-  let seeded = {};
-  try {
-    const all = JSON.parse(process.env.STATION_BUSINESS_DATA || "{}");
-    seeded = all[biz.slug] || {};
-  } catch { /* ignore bad JSON */ }
+  /* Operator-seeded structured data (hours, phone, menu, address).
+     Primary source is the station_data column on dm_businesses;
+     the STATION_BUSINESS_DATA env var remains as a fallback. */
+  let seeded = (biz.station_data && typeof biz.station_data === "object") ? biz.station_data : {};
+  if (!seeded.menu_items) {
+    try {
+      const all = JSON.parse(process.env.STATION_BUSINESS_DATA || "{}");
+      seeded = all[biz.slug] || {};
+    } catch { /* ignore bad JSON */ }
+  }
   return {
     id: biz.id,
     name: biz.name,
