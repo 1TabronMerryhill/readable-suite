@@ -126,6 +126,31 @@ function voiceGreetingThenSms({ sayText, smsFrom, smsTo, smsText }) {
   );
 }
 
+/* Resolve a Twilio number to a business slug.
+   Primary source is the phone_number column on dm_businesses;
+   TWILIO_NUMBER_MAP env var remains as a fallback. */
+async function resolveBusinessRefByNumber(serviceKey, number) {
+  const e164 = normalizePhone(number);
+  if (e164) {
+    try {
+      const r = await sb(
+        serviceKey,
+        "GET",
+        "/dm_businesses?phone_number=eq." + encodeURIComponent(e164) + "&select=slug&limit=1"
+      );
+      if (r.status === 200 && r.data && r.data[0] && r.data[0].slug) {
+        return r.data[0].slug;
+      }
+    } catch { /* fall through to env map */ }
+  }
+  try {
+    const map = JSON.parse(process.env.TWILIO_NUMBER_MAP || "{}");
+    return map[number] || map[e164] || null;
+  } catch {
+    return null;
+  }
+}
+
 module.exports = {
   json,
   bad,
@@ -135,6 +160,7 @@ module.exports = {
   sb,
   E164_RE,
   normalizePhone,
+  resolveBusinessRefByNumber,
   verifyTwilioSignature,
   parseTwilioBody,
   escXml,
