@@ -733,6 +733,10 @@
       return null;
     }
     sellerId = session.user.id;
+    document.getElementById("login-wall").style.display = "none";
+    document.getElementById("topbar").style.display = "";
+    document.getElementById("chat").style.display = "";
+    document.getElementById("composer-wrap").style.display = "";
     return DM.supabase.from("dm_businesses").select("id,name").eq("owner_id", session.user.id).order("name");
   }).then(function (r) {
     if (!r) return;
