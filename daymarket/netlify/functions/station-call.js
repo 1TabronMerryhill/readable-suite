@@ -70,6 +70,18 @@ function extractOrder(text, businessData) {
   const t = String(text || "");
   const items = [];
   const menu = (businessData && businessData.menu_items) || [];
+  const packages = (businessData && businessData.packages) || [];
+
+  /* Package name matching: "the Morning Meeting package", "Huddle Box", etc. */
+  let matchedPackage = null;
+  const tl = t.toLowerCase();
+  for (const pkg of packages) {
+    const pname = String(pkg.name || "").toLowerCase();
+    if (pname && tl.includes(pname)) {
+      matchedPackage = pkg;
+      break;
+    }
+  }
   /* qty token: must start after whitespace/comma/start, must not run into
      word chars or colons, and must not be a time expression ("9am"). */
   const pat = /(?:^|(?<=[\s,]))(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|a|an|half)(?![\w:])(?!\s*(?::\d{2})?\s*[ap]m\b)\s*(dozen|dozens)?\s*(?:of\s+)?([a-z][a-z\s'-]*?)(?=\s*(?:,|&|\+|$|\band\b|\bfor\b|\bat\b|[.!?]))/gi;
@@ -107,7 +119,7 @@ function extractOrder(text, businessData) {
   let name_hint = null;
   const nm = t.match(/\b(?:this is|name is|i'm|i am)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/);
   if (nm) name_hint = nm[1];
-  return { items, pickup_text, pickup, name_hint, raw: t };
+  return { items, pickup_text, pickup, name_hint, matchedPackage, raw: t };
 }
 
 /* Words that name the category but not a specific menu item. These should
@@ -157,6 +169,14 @@ function answerQuestion(text, businessData) {
     }
     return { unknown: true };
   }
+  if (/\bpackages?\b/.test(t) || /\bwhat (packages?|boxes|bundles|catering)/.test(t)) {
+    const pkgs = bd.packages || [];
+    if (pkgs.length) {
+      const list = pkgs.slice(0, 6).map((p) => `${p.name} $${((p.base_price_cents || 0) / 100).toFixed(2)}`).join(", ");
+      return { answer: `Available packages: ${list}.` };
+    }
+    return { unknown: true };
+  }
   return { unknown: true };
 }
 
@@ -167,7 +187,9 @@ function validateOrder(structured, businessData, nowMs) {
   const suggestions = [];
   const bd = businessData || {};
   const menu = bd.menu_items || [];
-  if (!structured.items.length) {
+  // If the caller named a specific package, no individual items are required
+  const hasPackage = !!(structured.matchedPackage && structured.matchedPackage.name);
+  if (!structured.items.length && !hasPackage) {
     issues.push({ code: "no_items", message: "No order items detected." });
   }
   for (const it of structured.items) {
@@ -234,9 +256,11 @@ function buildReply(decision, ctx) {
   const name = bd.name || "the shop";
   switch (decision) {
     case "auto_approve": {
+      const pkg = ctx.structured.matchedPackage && ctx.structured.matchedPackage.name;
       const it = itemsText(ctx.structured.items);
       const when = ctx.structured.pickup_text ? ` for pickup ${ctx.structured.pickup_text}` : "";
-      return `Got it. ${it}${when}. We'll have it ready. Pay at pickup.`;
+      const what = pkg ? `the ${pkg} package` : it;
+      return `Got it. ${what}${when}. We'll have it ready. Pay at pickup.`;
     }
     case "human_review": {
       const it = ctx.structured.items.length ? itemsText(ctx.structured.items) : "your order";
@@ -389,9 +413,12 @@ async function runPipeline(event, deps) {
   const decision = decide({ intent: "order", confidence, validation, buyerResolvable });
 
   if (decision === "auto_approve") {
+    // Use the matched package if the caller named one, otherwise fall back to first package
+    const pkgName = (structured.matchedPackage && structured.matchedPackage.name) ||
+      (businessData.packages[0] || {}).name || "Morning Meeting";
     const orderInput = {
       business: businessData.slug,
-      package: (businessData.packages[0] || {}).name || "Morning Meeting",
+      package: pkgName,
       scheduled_for: new Date(now + 60 * 60 * 1000).toISOString(),
       buyer_email: event.buyer_email,
       contact: { name: structured.name_hint || "Phone order", phone: callerPhone },
