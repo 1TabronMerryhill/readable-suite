@@ -101,5 +101,4 @@ exports.handler = async (event) => {
   return lib.twiml(200, xml);
 };
 
-exports.numberMap = numberMap;
 exports.logCallEvent = logCallEvent;
