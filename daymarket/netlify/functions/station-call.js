@@ -259,7 +259,14 @@ function buildReply(decision, ctx) {
       const pkg = ctx.structured.matchedPackage && ctx.structured.matchedPackage.name;
       const it = itemsText(ctx.structured.items);
       const when = ctx.structured.pickup_text ? ` for pickup ${ctx.structured.pickup_text}` : "";
-      const what = pkg ? `the ${pkg} package` : it;
+      let what;
+      if (pkg) {
+        what = `the ${pkg} package`;
+      } else if (ctx.customPkg) {
+        what = `a custom package with ${it}`;
+      } else {
+        what = it;
+      }
       return `Got it. ${what}${when}. We'll have it ready. Pay at pickup.`;
     }
     case "human_review": {
@@ -293,6 +300,62 @@ function buildReply(decision, ctx) {
     default:
       return `Thanks for reaching out to ${name}. Someone will be with you shortly.`;
   }
+}
+
+/* ==================== Custom package building ==================== */
+/* When the caller lists items without naming a package, build a custom package
+   just like the sales agent does: base price + 10% custom premium. */
+
+const CUSTOM_PREMIUM_BPS = 1000; // 10%
+
+async function buildCustomPackage(serviceKey, businessData, items, callerPhone) {
+  const { sb } = require("./station-lib");
+  const q = (m, p, b) => sb(serviceKey, m, p, b);
+
+  // Calculate base price from matched menu items
+  let baseCents = 0;
+  const cleanItems = [];
+  for (const it of items) {
+    if (!it.menu_item || it.price_cents == null) continue;
+    // Convert dozen to individual units for pricing (menu prices are per item)
+    const units = it.unit === "dozen" ? it.qty * 12 : it.qty;
+    const lineTotal = units * it.price_cents;
+    baseCents += lineTotal;
+    cleanItems.push({
+      name: it.menu_item,
+      qty: units,
+      unit_price_cents: it.price_cents,
+    });
+  }
+  if (!baseCents || !cleanItems.length) return null;
+
+  const premiumCents = Math.round((baseCents * CUSTOM_PREMIUM_BPS) / 10000);
+  const priceCents = baseCents + premiumCents;
+  const itemList = cleanItems.map((i) => `${i.qty}x ${i.name}`).join(", ");
+
+  // Create the custom package
+  const pkgRes = await q("POST", "/dm_packages", {
+    business_id: businessData.id,
+    name: `Custom Phone Order`,
+    description: `Custom bundle: ${itemList}. Built via phone.`,
+    base_price_cents: priceCents,
+    is_custom: true,
+    active: true,
+    custom_source: {
+      items: cleanItems,
+      base_cents: baseCents,
+      premium_bps: CUSTOM_PREMIUM_BPS,
+      premium_cents: premiumCents,
+      built_via: "voice",
+      caller_phone: callerPhone,
+      built_at: new Date().toISOString(),
+    },
+  });
+
+  if (pkgRes.status === 201 && pkgRes.data && pkgRes.data[0]) {
+    return pkgRes.data[0];
+  }
+  return null;
 }
 
 /* ==================== Orchestration ==================== */
@@ -413,16 +476,31 @@ async function runPipeline(event, deps) {
   const decision = decide({ intent: "order", confidence, validation, buyerResolvable });
 
   if (decision === "auto_approve") {
-    // Use the matched package if the caller named one, otherwise fall back to first package
-    const pkgName = (structured.matchedPackage && structured.matchedPackage.name) ||
-      (businessData.packages[0] || {}).name || "Morning Meeting";
+    // Use the matched package if the caller named one.
+    // If they listed items without naming a package, build a custom package.
+    // Otherwise fall back to first package.
+    let pkgName = (structured.matchedPackage && structured.matchedPackage.name) || null;
+    let customPkg = null;
+
+    if (!pkgName && structured.items.length) {
+      // Build a custom package from the listed items
+      const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+      if (serviceKey) {
+        customPkg = await buildCustomPackage(serviceKey, businessData, structured.items, callerPhone);
+        if (customPkg) pkgName = customPkg.name;
+      }
+    }
+    if (!pkgName) {
+      pkgName = (businessData.packages[0] || {}).name || "Morning Meeting";
+    }
+
     const orderInput = {
       business: businessData.slug,
       package: pkgName,
       scheduled_for: new Date(now + 60 * 60 * 1000).toISOString(),
       buyer_email: event.buyer_email,
       contact: { name: structured.name_hint || "Phone order", phone: callerPhone },
-      notes: "Station phone gate. Items: " + itemsText(structured.items) + (structured.pickup_text ? ". Pickup: " + structured.pickup_text : ""),
+      notes: "Station phone gate. Items: " + itemsText(structured.items) + (structured.pickup_text ? ". Pickup: " + structured.pickup_text : "") + (customPkg ? " [Custom package built via phone]" : ""),
       idempotency_key: event.idempotency_key || undefined,
     };
     const created = await deps.invokeCateringGate(orderInput);
@@ -435,7 +513,7 @@ async function runPipeline(event, deps) {
       return { ok: true, decision: "human_review", reply: buildReply("human_review", { businessData, structured }), confidence, review, verification: ver };
     }
     const ver = await verify("order_auto_approved", { order_id: created.order.id });
-    const reply = buildReply("auto_approve", { businessData, structured });
+    const reply = buildReply("auto_approve", { businessData, structured, customPkg });
     return { ok: true, decision, reply, confidence, order: created.order, verification: ver };
   }
 
