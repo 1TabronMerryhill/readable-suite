@@ -150,7 +150,7 @@ function answerQuestion(text, businessData) {
     }
     return { unknown: true };
   }
-  if (/\bmenu\b/.test(t)) {
+  if (/\bmenu\b/.test(t) || /\bwhat (do you|do u|you) (have|got|sell|offer)\b/.test(t) || /\bwhat('s| is) (your|the) (special|deal|offer)/.test(t) || /\b(specials?|deals?|offerings?)\b/.test(t)) {
     const menu = bd.menu_items || [];
     if (menu.length) {
       return { answer: `${bd.name} menu: ${menu.slice(0, 8).map((i) => i.name).join(", ")}.` };
