@@ -635,7 +635,11 @@
     html += field("headcount", "Headcount", "number", false, "12");
     html += "</div>";
     html += '<div class="field"><label>Repeats</label><select class="input" name="recurrence"><option value="once">Just once</option><option value="weekly">Weekly</option><option value="biweekly">Every two weeks</option><option value="monthly">Monthly</option></select></div>';
-    html += field("delivery_address", "Delivery address", "text", false, "1100 Main St, Suite 200, Columbia, MO");
+    html += '<div class="field"><label>How do you want it?</label><div style="display:flex;gap:16px;margin:6px 0">';
+    html += '<label style="font-weight:400"><input type="radio" name="fulfillment" value="pickup" checked> Pickup</label>';
+    html += '<label style="font-weight:400"><input type="radio" name="fulfillment" value="delivery"> Deliver it <span class="mini">(from $35)</span></label>';
+    html += '</div></div>';
+    html += '<div class="field" data-delivery-fields style="display:none">' + field("delivery_address", "Delivery address", "text", false, "1100 Main St, Suite 200, Columbia, MO") + '<p class="mini" data-delivery-fee-note></p></div>';
     html += '<div class="field"><label for="oo-notes">Dietary needs / notes</label><textarea class="input" id="oo-notes" name="notes" placeholder="Vegetarian options, nut allergy in the group, drop at the front desk…"></textarea></div>';
     html += '<p class="mini">You will be invoiced for this order. Online payment is coming soon.</p>';
     html += '<button class="btn" type="submit">Schedule order</button>';
@@ -1023,6 +1027,8 @@
       var pkgId = val(form, "package_id") || null;
       var bizId = val(form, "business_id") || null;
       var hc = parseInt(val(form, "headcount"), 10);
+      var fulfillment = form.querySelector('input[name="fulfillment"]:checked');
+      var wantsDelivery = fulfillment && fulfillment.value === "delivery";
       DM.supabase.from("dm_orders").insert({
         org_id: me,
         business_id: bizId,
@@ -1031,14 +1037,27 @@
         scheduled_for: toISO(when),
         headcount: isNaN(hc) ? null : hc,
         recurrence: val(form, "recurrence") || "once",
-        notes: val(form, "notes") || null,
-        delivery_address: val(form, "delivery_address") || null,
+        notes: (val(form, "notes") || "") + (wantsDelivery ? " [DELIVERY REQUESTED]" : " [PICKUP]"),
+        delivery_address: wantsDelivery ? (val(form, "delivery_address") || null) : null,
         status: "scheduled"
       }).then(function (r) {
         if (r.error) throw r.error;
         return loadOrgData().then(function () { renderOrg(); note("ok", "Order scheduled. We'll confirm it with the kitchen."); });
       }).catch(function (err) { note("err", "Couldn't schedule that: " + ((err && err.message) || err)); });
       return;
+    }
+  });
+
+  /* ---------- delivery toggle ---------- */
+  document.addEventListener("change", function (ev) {
+    if (ev.target && ev.target.name === "fulfillment") {
+      var form = ev.target.closest("form");
+      var fields = form && form.querySelector("[data-delivery-fields]");
+      var note = form && form.querySelector("[data-delivery-fee-note]");
+      if (fields) fields.style.display = ev.target.value === "delivery" ? "" : "none";
+      if (note && ev.target.value === "delivery") {
+        note.textContent = "Delivery is $35 minimum (up to 3 dozen), then $4 per dozen. We will confirm the exact fee with you.";
+      }
     }
   });
 
