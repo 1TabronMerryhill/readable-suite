@@ -244,7 +244,10 @@ exports.handler = async (event) => {
         }
 
         const premiumCents = Math.round(baseCents * 0.10);
-        const priceCents = baseCents + premiumCents;
+        const shopPriceCents = baseCents + premiumCents;
+        // DayMarket adds 15% on top. Shop nets the full shop price.
+        const markupCents = Math.round(shopPriceCents * 0.15);
+        const priceCents = shopPriceCents + markupCents;
         const itemList = cleanItems.map((i) => `${i.qty}x ${i.name}`).join(", ");
         const packageName = args.name || merged.name || `Custom Package`;
 
@@ -263,6 +266,7 @@ exports.handler = async (event) => {
           package_name: packageName,
           price: (priceCents / 100).toFixed(2),
           price_display: `$${(priceCents / 100).toFixed(2)}`,
+          shop_price: (shopPriceCents / 100).toFixed(2),
           items: itemList,
           message: `Created ${packageName} for $${(priceCents / 100).toFixed(2)}.`,
         });
