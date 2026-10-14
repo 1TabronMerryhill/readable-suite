@@ -33,7 +33,7 @@ function cors(origin) {
   };
 }
 
-/* Notes carry a machine line: [workflow] tier=premium trial_ends=2026-11-13 reports=Q4-2026 */
+/* Notes carry a machine line: [workflow] state=paid tier=premium stripe=cus_xxx trial_ends=2026-11-13 reports=Q4-2026 */
 function parseWorkflowLine(notes) {
   var out = {};
   if (!notes) return out;
@@ -72,20 +72,18 @@ exports.handler = async function (event) {
       return { statusCode: 200, headers: headers, body: JSON.stringify(denied) };
     }
     var fields = rec.fields || {};
-    var status = fields[FLD_STATUS] || fields["Status"] || "";
     var meta = parseWorkflowLine(fields[FLD_NOTES] || fields["Notes"] || "");
+    /* Machine line format: [workflow] state=paid|trial tier=publication|premium
+       trial_ends=YYYY-MM-DD stripe=cus_xxx reports=a,b */
     var today = new Date().toISOString().slice(0, 10);
     var ok = false, tier = null, trial = false;
-    if (status === "Paid - Premium") { ok = true; tier = "premium"; }
-    else if (status === "Paid - Publication") { ok = true; tier = "publication"; }
-    else if (status === "Trial" && meta.trial_ends && meta.trial_ends >= today) {
+    if (meta.state === "paid" && (meta.tier === "premium" || meta.tier === "publication")) {
+      ok = true; tier = meta.tier;
+    } else if (meta.state === "trial" && meta.trial_ends && meta.trial_ends >= today) {
       ok = true; tier = meta.tier === "premium" ? "premium" : "publication"; trial = true;
     }
     var reports = [];
     if (meta.reports) reports = meta.reports.split(",").filter(Boolean);
-    if (status === "Paid - Premium") {
-      /* premium includes all reports; the list is informational */
-    }
     return {
       statusCode: 200, headers: headers,
       body: JSON.stringify({ active: ok, tier: tier, trial: trial, reports: reports })
