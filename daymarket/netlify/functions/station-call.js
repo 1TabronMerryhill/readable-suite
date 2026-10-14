@@ -23,8 +23,71 @@ const { sha256, canonical, normalizePhone } = require("./station-lib");
 
 const AUTO_APPROVE_CONFIDENCE = 0.85;
 
+/* ==================== LLM understanding layer ==================== */
+/* Replaces regex intent classification with real language understanding.
+   The LLM interprets what the caller means; all facts (prices, menu items,
+   packages) come from the business data loaded per-call. The LLM never
+   invents business facts. */
+
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = "openai/gpt-oss-120b";
+
+async function callLLM(messages, maxTokens) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+  try {
+    const res = await fetch(GROQ_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages,
+        max_tokens: maxTokens || 300,
+        temperature: 0.2,
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || null;
+  } catch {
+    return null;
+  }
+}
+
+function businessContext(bd) {
+  const menu = (bd.menu_items || []).map((i) => `${i.name} ($${((i.price_cents || 0) / 100).toFixed(2)})`).join(", ");
+  const pkgs = (bd.packages || []).map((p) => `${p.name} ($${((p.base_price_cents || 0) / 100).toFixed(2)})`).join(", ");
+  return `Business: ${bd.name || "the shop"}. Menu: ${menu || "none listed"}. Packages: ${pkgs || "none listed"}. Hours: ${bd.hours_text || "unknown"}. Address: ${bd.address || "unknown"}.`;
+}
+
+async function understandWithLLM(text, businessData) {
+  const ctx = businessContext(businessData);
+  const prompt =
+    `You are interpreting a phone caller's words for ${businessData.name || "a shop"}. ` +
+    `Context: ${ctx}\n\n` +
+    `Caller said: "${text}"\n\n` +
+    `Reply ONLY as JSON: {"intent": "order"|"question"|"greeting"|"unknown", ` +
+    `"question_topic": "menu"|"packages"|"hours"|"location"|"price"|"specials"|null, ` +
+    `"package_name": "exact package name if they named one, else null", ` +
+    `"summary": "one sentence on what they want"}. ` +
+    `No other text.`;
+
+  const raw = await callLLM([{ role: "user", content: prompt }], 200);
+  if (!raw) return null;
+  try {
+    const m = raw.match(/\{[\s\S]*\}/);
+    if (!m) return null;
+    return JSON.parse(m[1]);
+  } catch {
+    return null;
+  }
+}
+
 /* ==================== Stage 1: intent classification ==================== */
-/* Returns { intent, confidence, rationale }. Deterministic v1. */
+/* LLM-powered with regex fallback. */
 
 const ORDER_WORDS = /\b(dozen|order|pickup|pick up|deliver|want|need|get me|can i get|i'd like|i would like|i wanna|gimme|bring me)\b/i;
 const QUESTION_WORDS = /\b(hours|open|close|when|where|location|address|price|cost|how much|menu|do you have|do you sell|what time)\b/i;
@@ -151,6 +214,48 @@ function matchMenuItem(phrase, menu) {
 }
 
 /* ==================== Stage 2b: question answering (grounded) ==================== */
+
+/* Answer using LLM-detected topic, falling back to regex patterns. */
+function answerQuestionWithTopic(text, businessData, topic) {
+  const bd = businessData || {};
+  // LLM already told us the topic — answer directly from business data
+  if (topic === "menu" || topic === "specials") {
+    const menu = bd.menu_items || [];
+    if (menu.length) {
+      return { answer: `${bd.name} menu: ${menu.slice(0, 8).map((i) => i.name).join(", ")}.` };
+    }
+    return { unknown: true };
+  }
+  if (topic === "packages") {
+    const pkgs = bd.packages || [];
+    if (pkgs.length) {
+      const list = pkgs.slice(0, 6).map((p) => `${p.name} $${((p.base_price_cents || 0) / 100).toFixed(2)}`).join(", ");
+      return { answer: `Available packages: ${list}.` };
+    }
+    return { unknown: true };
+  }
+  if (topic === "hours") {
+    if (bd.hours_text) return { answer: `${bd.name} hours: ${bd.hours_text}.` };
+    return { unknown: true };
+  }
+  if (topic === "location") {
+    if (bd.address) return { answer: `${bd.name} is at ${bd.address}.` };
+    return { unknown: true };
+  }
+  if (topic === "price") {
+    // Try to match a specific item, else list menu prices
+    const menu = bd.menu_items || [];
+    const t = String(text || "").toLowerCase();
+    for (const item of menu) {
+      if (item.price_cents != null && t.includes(item.name.toLowerCase())) {
+        return { answer: `${item.name} is $${(item.price_cents / 100).toFixed(2)}.` };
+      }
+    }
+    return { unknown: true };
+  }
+  // Fall back to regex-based answering
+  return answerQuestion(text, businessData);
+}
 
 function answerQuestion(text, businessData) {
   const t = String(text || "").toLowerCase();
@@ -471,6 +576,17 @@ async function runPipeline(event, deps) {
   }
 
   const classification = classifyIntent(base.text);
+
+  /* Try LLM understanding for richer intent detection */
+  let llmIntent = null;
+  try {
+    llmIntent = await understandWithLLM(base.text, businessData);
+  } catch { /* fall back to regex */ }
+
+  // LLM overrides regex when it has a clear answer
+  const effectiveIntent = (llmIntent && llmIntent.intent && llmIntent.intent !== "unknown")
+    ? { intent: llmIntent.intent, confidence: 0.85, rationale: "llm: " + (llmIntent.summary || ""), llm: llmIntent }
+    : classification;
   const verify = async (eventType, extra) => {
     if (!deps.writeVerification) return null;
     return deps.writeVerification(
@@ -492,24 +608,36 @@ async function runPipeline(event, deps) {
   };
 
   /* ---- question branch ---- */
-  if (classification.intent === "question" || classification.intent === "greeting" || classification.intent === "unknown") {
-    if (classification.intent === "question") {
-      const qa = answerQuestion(base.text, businessData);
+  if (effectiveIntent.intent === "question" || effectiveIntent.intent === "greeting" || effectiveIntent.intent === "unknown") {
+    if (effectiveIntent.intent === "question") {
+      // Use LLM topic if available, else regex
+      const topic = (effectiveIntent.llm && effectiveIntent.llm.question_topic) || null;
+      const qa = answerQuestionWithTopic(base.text, businessData, topic);
       if (!qa.unknown) {
         const decision = decide({ intent: "question", questionAnswered: true });
         const reply = buildReply(decision, { businessData, answer: qa.answer });
         const ver = await verify("question_answered", { reply_text: reply });
-        return { ok: true, decision, reply, confidence: classification.confidence, verification: ver };
+        return { ok: true, decision, reply, confidence: effectiveIntent.confidence, verification: ver };
       }
     }
-    const decision = decide({ intent: classification.intent, questionAnswered: false });
+    const decision = decide({ intent: effectiveIntent.intent, questionAnswered: false });
     const reply = buildReply(decision, { businessData });
     const ver = await verify("question_escalated", { reply_text: reply });
-    return { ok: true, decision, reply, confidence: classification.confidence, verification: ver };
+    return { ok: true, decision, reply, confidence: effectiveIntent.confidence, verification: ver };
   }
 
   /* ---- order branch ---- */
   const structured = extractOrder(base.text, businessData);
+  // If LLM detected a package name, use it
+  if (effectiveIntent.llm && effectiveIntent.llm.package_name && !structured.matchedPackage) {
+    const pname = effectiveIntent.llm.package_name.toLowerCase();
+    for (const pkg of (businessData.packages || [])) {
+      if (String(pkg.name || "").toLowerCase() === pname || String(pkg.name || "").toLowerCase().includes(pname)) {
+        structured.matchedPackage = pkg;
+        break;
+      }
+    }
+  }
   /* menu match bonus to intent confidence */
   if (structured.items.some((i) => i.menu_item)) classification.confidence = Math.min(0.95, classification.confidence + 0.15);
   const validation = validateOrder(structured, businessData, now);
