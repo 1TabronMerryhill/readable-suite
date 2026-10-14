@@ -208,11 +208,71 @@ exports.handler = async (event) => {
         });
       }
 
+      case "create_package": {
+        // Build a custom package from menu items with 10% premium
+        const items = args.items || merged.items || [];
+        if (!items.length) {
+          return json(400, { ok: false, error: "no_items", message: "No items specified for package." });
+        }
+
+        const menu = formatMenu(business);
+        const menuByName = {};
+        for (const m of (business.station_data?.menu_items || [])) {
+          menuByName[m.name.toLowerCase()] = m;
+        }
+
+        let baseCents = 0;
+        const cleanItems = [];
+        for (const it of items) {
+          const menuItem = menuByName[String(it.name || "").toLowerCase()];
+          if (!menuItem || menuItem.price_cents == null) continue;
+          const qty = parseInt(it.quantity || it.qty || 1, 10);
+          // If they said "dozen", convert to units (menu prices are per item)
+          const isDozen = /dozen/i.test(it.unit || "") || qty >= 12;
+          const units = isDozen && qty < 12 ? qty * 12 : qty;
+          const lineTotal = units * menuItem.price_cents;
+          baseCents += lineTotal;
+          cleanItems.push({
+            name: menuItem.name,
+            qty: units,
+            unit_price_cents: menuItem.price_cents,
+          });
+        }
+
+        if (!baseCents || !cleanItems.length) {
+          return json(400, { ok: false, error: "no_valid_items", message: "Could not match items to the menu." });
+        }
+
+        const premiumCents = Math.round(baseCents * 0.10);
+        const priceCents = baseCents + premiumCents;
+        const itemList = cleanItems.map((i) => `${i.qty}x ${i.name}`).join(", ");
+        const packageName = args.name || merged.name || `Custom Package`;
+
+        const pkg = await sbPost("dm_packages", {
+          business_id: business.id,
+          name: packageName,
+          description: `Custom bundle: ${itemList}. Built via phone.`,
+          base_price_cents: priceCents,
+          is_custom: true,
+          active: true,
+        });
+
+        return json(200, {
+          ok: true,
+          package_id: pkg.id,
+          package_name: packageName,
+          price: (priceCents / 100).toFixed(2),
+          price_display: `$${(priceCents / 100).toFixed(2)}`,
+          items: itemList,
+          message: `Created ${packageName} for $${(priceCents / 100).toFixed(2)}.`,
+        });
+      }
+
       default:
         return json(400, {
           ok: false,
           error: "unknown_action",
-          message: `Unknown action: ${action}. Available: get_menu, get_packages, get_hours, get_info, place_order.`,
+          message: `Unknown action: ${action}. Available: get_menu, get_packages, get_hours, get_info, place_order, create_package.`,
         });
     }
   } catch (e) {
