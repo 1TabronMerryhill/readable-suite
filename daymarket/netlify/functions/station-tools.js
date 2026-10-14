@@ -15,16 +15,15 @@
  *   place_order  -> create an order (validated)
  *
  * Auth: x-retell-secret header must match RETELL_FUNCTION_SECRET.
- * Business is resolved from the called number (Twilio number map) or
- * from the business_ref parameter.
+ * Uses Supabase REST API via fetch (no client dependency).
  */
 
-const { createClient } = require("@supabase/supabase-js");
 const { normalizePhone } = require("./station-lib");
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://evmynxxvyafvnreaudpr.supabase.co";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const RETELL_SECRET = process.env.RETELL_FUNCTION_SECRET;
+const REST = SUPABASE_URL + "/rest/v1";
 
 function json(statusCode, obj) {
   return {
@@ -34,38 +33,57 @@ function json(statusCode, obj) {
   };
 }
 
-function getSupabase() {
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) return null;
-  return createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+async function sbGet(table, query) {
+  const url = `${REST}/${table}?${query}`;
+  const res = await fetch(url, {
+    headers: {
+      apikey: SUPABASE_SERVICE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+    },
+  });
+  if (!res.ok) return null;
+  return res.json();
 }
 
-/* Resolve business from called number or explicit ref */
-async function resolveBusiness(supabase, event) {
-  // Try explicit business_ref first
+async function sbPost(table, row) {
+  const url = `${REST}/${table}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_SERVICE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Supabase insert failed: ${txt}`);
+  }
+  const data = await res.json();
+  return Array.isArray(data) ? data[0] : data;
+}
+
+/* Resolve business from slug/ref or called number */
+async function resolveBusiness(event) {
   const ref = event.business_ref;
   if (ref) {
-    const { data } = await supabase
-      .from("dm_businesses")
-      .select("id, name, slug, phone_number, address, hours_text, station_data, status")
-      .or(`slug.eq.${ref},id.eq.${ref}`)
-      .eq("status", "active")
-      .limit(1)
-      .maybeSingle();
-    if (data) return data;
+    const rows = await sbGet(
+      "dm_businesses",
+      `select=id,name,slug,phone_number,address,hours_text,station_data,status&or=(slug.eq.${encodeURIComponent(ref)},id.eq.${encodeURIComponent(ref)})&status=eq.active&limit=1`
+    );
+    if (rows && rows.length) return rows[0];
   }
 
-  // Try called number from Retell payload
   const calledNumber = event.called_number || event.to_number;
   if (calledNumber) {
     const normalized = normalizePhone(calledNumber);
-    const { data } = await supabase
-      .from("dm_businesses")
-      .select("id, name, slug, phone_number, address, hours_text, station_data, status")
-      .eq("phone_number", normalized)
-      .eq("status", "active")
-      .limit(1)
-      .maybeSingle();
-    if (data) return data;
+    const rows = await sbGet(
+      "dm_businesses",
+      `select=id,name,slug,phone_number,address,hours_text,station_data,status&phone_number=eq.${encodeURIComponent(normalized)}&status=eq.active&limit=1`
+    );
+    if (rows && rows.length) return rows[0];
   }
 
   return null;
@@ -80,14 +98,12 @@ function formatMenu(business) {
   }));
 }
 
-async function getPackages(supabase, businessId) {
-  const { data } = await supabase
-    .from("dm_packages")
-    .select("id, name, description, base_price_cents, serves_min, serves_max")
-    .eq("business_id", businessId)
-    .eq("active", true)
-    .order("base_price_cents");
-  return (data || []).map((p) => ({
+async function getPackages(businessId) {
+  const rows = await sbGet(
+    "dm_packages",
+    `select=id,name,description,base_price_cents,serves_min,serves_max&business_id=eq.${encodeURIComponent(businessId)}&active=eq.true&order=base_price_cents`
+  );
+  return (rows || []).map((p) => ({
     id: p.id,
     name: p.name,
     description: p.description,
@@ -98,10 +114,13 @@ async function getPackages(supabase, businessId) {
 }
 
 exports.handler = async (event) => {
-  // Auth check
   const secret = event.headers["x-retell-secret"] || event.headers["X-Retell-Secret"];
   if (RETELL_SECRET && secret !== RETELL_SECRET) {
     return json(401, { ok: false, error: "bad_secret" });
+  }
+
+  if (!SUPABASE_SERVICE_KEY) {
+    return json(500, { ok: false, error: "no_database" });
   }
 
   let body = {};
@@ -111,99 +130,92 @@ exports.handler = async (event) => {
     return json(400, { ok: false, error: "bad_json" });
   }
 
-  // Retell sends function name and args; also handle direct action param
   const action = body.action || body.function_name || (body.name || "").replace(/^station_/, "");
   const args = body.args || body.arguments || body.parameters || {};
+  const merged = { ...body, ...args };
 
-  const supabase = getSupabase();
-  if (!supabase) {
-    return json(500, { ok: false, error: "no_database" });
+  let business;
+  try {
+    business = await resolveBusiness(merged);
+  } catch (e) {
+    return json(500, { ok: false, error: "db_error", message: e.message });
   }
-
-  const business = await resolveBusiness(supabase, { ...body, ...args });
   if (!business) {
     return json(404, { ok: false, error: "business_not_found" });
   }
 
-  switch (action) {
-    case "get_menu": {
-      const menu = formatMenu(business);
-      return json(200, {
-        ok: true,
-        business: business.name,
-        items: menu,
-        summary: menu.map((i) => `${i.name} (${i.price_display})`).join(", "),
-      });
-    }
-
-    case "get_packages": {
-      const packages = await getPackages(supabase, business.id);
-      return json(200, {
-        ok: true,
-        business: business.name,
-        packages,
-        summary: packages.length
-          ? packages.map((p) => `${p.name} (${p.price_display})`).join(", ")
-          : "No packages currently listed.",
-      });
-    }
-
-    case "get_hours": {
-      return json(200, {
-        ok: true,
-        business: business.name,
-        hours: business.hours_text || "Hours not listed.",
-      });
-    }
-
-    case "get_info": {
-      return json(200, {
-        ok: true,
-        business: business.name,
-        address: business.address || "Address not listed.",
-        phone: business.phone_number || "Phone not listed.",
-        hours: business.hours_text || "Hours not listed.",
-      });
-    }
-
-    case "place_order": {
-      // Validate and create order
-      const items = args.items || [];
-      if (!items.length) {
-        return json(400, { ok: false, error: "no_items", message: "No items specified for order." });
+  try {
+    switch (action) {
+      case "get_menu": {
+        const menu = formatMenu(business);
+        return json(200, {
+          ok: true,
+          business: business.name,
+          items: menu,
+          summary: menu.map((i) => `${i.name} (${i.price_display})`).join(", "),
+        });
       }
 
-      // For voice orders without buyer email, queue for human review
-      // (Full order flow with Stripe etc. to be implemented)
-      const { data: order, error } = await supabase
-        .from("dm_orders")
-        .insert({
+      case "get_packages": {
+        const packages = await getPackages(business.id);
+        return json(200, {
+          ok: true,
+          business: business.name,
+          packages,
+          summary: packages.length
+            ? packages.map((p) => `${p.name} (${p.price_display})`).join(", ")
+            : "No packages currently listed.",
+        });
+      }
+
+      case "get_hours": {
+        return json(200, {
+          ok: true,
+          business: business.name,
+          hours: business.hours_text || "Hours not listed.",
+        });
+      }
+
+      case "get_info": {
+        return json(200, {
+          ok: true,
+          business: business.name,
+          address: business.address || "Address not listed.",
+          phone: business.phone_number || "Phone not listed.",
+          hours: business.hours_text || "Hours not listed.",
+        });
+      }
+
+      case "place_order": {
+        const items = args.items || merged.items || [];
+        if (!items.length) {
+          return json(400, { ok: false, error: "no_items", message: "No items specified for order." });
+        }
+
+        const order = await sbPost("dm_orders", {
           business_id: business.id,
           items: items,
           status: "pending_review",
           channel: "voice",
-          caller_phone: normalizePhone(args.caller_phone || body.caller_phone || ""),
-          notes: args.notes || "Voice order via Retell",
-        })
-        .select("id")
-        .single();
+          caller_phone: normalizePhone(args.caller_phone || merged.caller_phone || ""),
+          notes: args.notes || merged.notes || "Voice order via Retell",
+        });
 
-      if (error) {
-        return json(500, { ok: false, error: "order_failed", message: error.message });
+        return json(200, {
+          ok: true,
+          order_id: order.id,
+          message: "Order received and queued for confirmation.",
+        });
       }
 
-      return json(200, {
-        ok: true,
-        order_id: order.id,
-        message: "Order received and queued for confirmation.",
-      });
+      default:
+        return json(400, {
+          ok: false,
+          error: "unknown_action",
+          message: `Unknown action: ${action}. Available: get_menu, get_packages, get_hours, get_info, place_order.`,
+        });
     }
-
-    default:
-      return json(400, {
-        ok: false,
-        error: "unknown_action",
-        message: `Unknown action: ${action}. Available: get_menu, get_packages, get_hours, get_info, place_order.`,
-      });
+  } catch (e) {
+    return json(500, { ok: false, error: "action_failed", message: e.message });
   }
 };
