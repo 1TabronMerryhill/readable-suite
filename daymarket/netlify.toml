@@ -38,3 +38,9 @@
   from = "/api/station/retell"
   to = "/.netlify/functions/retell-function"
   status = 200
+
+# Readable Station — data tools for voice agents (menu, packages, hours, orders).
+[[redirects]]
+  from = "/api/station/tools"
+  to = "/.netlify/functions/station-tools"
+  status = 200
