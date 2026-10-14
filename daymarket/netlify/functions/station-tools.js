@@ -65,6 +65,61 @@ async function sbPost(table, row) {
   return Array.isArray(data) ? data[0] : data;
 }
 
+async function sbPatch(table, id, patch) {
+  const url = `${REST}/${table}?id=eq.${encodeURIComponent(id)}`;
+  const res = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      apikey: SUPABASE_SERVICE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(patch),
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Supabase patch failed: ${txt}`);
+  }
+}
+
+/* Create a Stripe Checkout Session for an order */
+async function createCheckoutSession({ amount_cents, order_id, business_name, customer_phone, description }) {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) throw new Error("STRIPE_SECRET_KEY not configured");
+
+  const params = new URLSearchParams({
+    "payment_method_types[0]": "card",
+    "line_items[0][price_data][currency]": "usd",
+    "line_items[0][price_data][product_data][name]": description || `Order from ${business_name}`,
+    "line_items[0][price_data][unit_amount]": String(amount_cents),
+    "line_items[0][quantity]": "1",
+    mode: "payment",
+    success_url: `https://daymarket.tabronmerryhill.com/order/${order_id}?paid=1`,
+    cancel_url: `https://daymarket.tabronmerryhill.com/order/${order_id}?cancelled=1`,
+    "metadata[order_id]": order_id,
+    "metadata[business]": business_name,
+  });
+  if (customer_phone) {
+    params.set("metadata[customer_phone]", customer_phone);
+  }
+
+  const res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${secretKey}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString(),
+  });
+
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Stripe API error: ${txt}`);
+  }
+
+  return res.json();
+}
+
 /* Resolve business from slug/ref or called number */
 async function resolveBusiness(event) {
   const ref = event.business_ref;
@@ -224,14 +279,47 @@ exports.handler = async (event) => {
           delivery_fee_cents: deliveryFeeCents,
         });
 
+        // Calculate order total for Stripe
+        // Note: items don't have prices here yet — the agent should pass package_id or total
+        // For now, create checkout when total_cents is provided
+        const totalCents = parseInt(args.total_cents || merged.total_cents || 0, 10);
+        let paymentUrl = null;
+        let stripeSessionId = null;
+
+        if (totalCents > 0 && process.env.STRIPE_SECRET_KEY) {
+          try {
+            const session = await createCheckoutSession({
+              amount_cents: totalCents + deliveryFeeCents,
+              order_id: order.id,
+              business_name: business.name,
+              customer_phone: normalizePhone(args.caller_phone || merged.caller_phone || ""),
+              description: fulfillment === "delivery"
+                ? `Order from ${business.name} (delivery)`
+                : `Order from ${business.name} (pickup)`,
+            });
+            paymentUrl = session.url;
+            stripeSessionId = session.id;
+
+            // Attach payment info to order
+            await sbPatch("dm_orders", order.id, {
+              payment_url: paymentUrl,
+              stripe_session_id: stripeSessionId,
+            });
+          } catch (e) {
+            // Log but don't fail the order — payment can be attached later
+            console.error("Stripe checkout failed:", e.message);
+          }
+        }
+
         return json(200, {
           ok: true,
           order_id: order.id,
           fulfillment: fulfillment,
           delivery_fee: (deliveryFeeCents / 100).toFixed(2),
+          payment_url: paymentUrl,
           message: fulfillment === "delivery"
-            ? `Order received for delivery. Delivery fee is $${(deliveryFeeCents / 100).toFixed(2)}.`
-            : "Order received for pickup.",
+            ? `Order received for delivery. Delivery fee is $${(deliveryFeeCents / 100).toFixed(2)}.${paymentUrl ? " Payment link sent." : ""}`
+            : `Order received for pickup.${paymentUrl ? " Payment link sent." : ""}`,
         });
       }
 
@@ -245,6 +333,73 @@ exports.handler = async (event) => {
           fee: feeDollars.toFixed(2),
           fee_display: `$${feeDollars.toFixed(2)}`,
           message: `Delivery fee for ${dozens} dozen is $${feeDollars.toFixed(2)}.`,
+        });
+      }
+
+      case "book_delivery": {
+        // Delivery-only booking: business books DayMarket delivery for their own customer.
+        // Customer pays just the delivery fee via Stripe. Business handles the food/order separately.
+        const customerPhone = normalizePhone(args.customer_phone || merged.customer_phone || "");
+        const deliveryAddress = args.delivery_address || merged.delivery_address || "";
+        const dozens = parseInt(args.dozens || merged.dozens || 1, 10);
+        const businessContact = args.business_contact || merged.business_contact || "";
+
+        if (!customerPhone) {
+          return json(400, { ok: false, error: "no_customer_phone", message: "Customer phone number is required to send the payment link." });
+        }
+        if (!deliveryAddress) {
+          return json(400, { ok: false, error: "no_address", message: "Delivery address is required." });
+        }
+
+        const feeDollars = dozens <= 3 ? 35 : 35 + (dozens - 3) * 4;
+        const feeCents = feeDollars * 100;
+
+        // Create delivery record
+        const delivery = await sbPost("dm_orders", {
+          business_id: business.id,
+          items: [{ name: "Delivery service", quantity: 1, dozens: dozens }],
+          status: "delivery_booked",
+          channel: "voice",
+          caller_phone: customerPhone,
+          fulfillment: "delivery",
+          delivery_address: deliveryAddress,
+          delivery_fee_cents: feeCents,
+          notes: `Delivery-only booking via ${business.name}. Booked by: ${businessContact || "business"}. ${dozens} dozen. Customer pays delivery fee.`,
+        });
+
+        // Create Stripe checkout for delivery fee
+        let paymentUrl = null;
+        let stripeSessionId = null;
+        if (process.env.STRIPE_SECRET_KEY) {
+          try {
+            const session = await createCheckoutSession({
+              amount_cents: feeCents,
+              order_id: delivery.id,
+              business_name: business.name,
+              customer_phone: customerPhone,
+              description: `Delivery from ${business.name} (${dozens} dozen)`,
+            });
+            paymentUrl = session.url;
+            stripeSessionId = session.id;
+            await sbPatch("dm_orders", delivery.id, {
+              payment_url: paymentUrl,
+              stripe_session_id: stripeSessionId,
+            });
+          } catch (e) {
+            console.error("Stripe checkout failed for delivery:", e.message);
+          }
+        }
+
+        return json(200, {
+          ok: true,
+          delivery_id: delivery.id,
+          fee: feeDollars.toFixed(2),
+          fee_display: `$${feeDollars.toFixed(2)}`,
+          payment_url: paymentUrl,
+          customer_phone: customerPhone,
+          message: paymentUrl
+            ? `Delivery booked. Fee is $${feeDollars.toFixed(2)}. Payment link ready to send to customer.`
+            : `Delivery booked. Fee is $${feeDollars.toFixed(2)}. Payment link not yet generated.`,
         });
       }
 
@@ -316,7 +471,7 @@ exports.handler = async (event) => {
         return json(400, {
           ok: false,
           error: "unknown_action",
-          message: `Unknown action: ${action}. Available: get_menu, get_packages, get_hours, get_info, place_order, create_package, get_delivery_fee.`,
+          message: `Unknown action: ${action}. Available: get_menu, get_packages, get_hours, get_info, place_order, create_package, get_delivery_fee, book_delivery.`,
         });
     }
   } catch (e) {
