@@ -69,10 +69,12 @@ async function understandWithLLM(text, businessData) {
     `You are interpreting a phone caller's words for ${businessData.name || "a shop"}. ` +
     `Context: ${ctx}\n\n` +
     `Caller said: "${text}"\n\n` +
-    `Reply ONLY as JSON: {"intent": "order"|"question"|"greeting"|"unknown", ` +
+    `Reply ONLY as JSON: {"intent": "order"|"question"|"greeting"|"conversational"|"unknown", ` +
     `"question_topic": "menu"|"packages"|"hours"|"location"|"price"|"specials"|null, ` +
     `"package_name": "exact package name if they named one, else null", ` +
     `"summary": "one sentence on what they want"}. ` +
+    `Use "conversational" when the caller is signaling intent without content yet: ` +
+    `"I have a question", "can I ask you something", "are you there", "hold on", etc. ` +
     `No other text.`;
 
   const raw = await callLLM([{ role: "user", content: prompt }], 200);
@@ -437,6 +439,8 @@ function buildReply(decision, ctx) {
       return ctx.answer;
     case "escalate":
       return `I don't know that one. I'll have someone from ${name} text you.`;
+    case "conversational":
+      return `Sure, go ahead. What's your question?`;
     case "greet":
       return `Hi, this is ${name}. Are you placing an order or do you have a question?`;
     case "rejected":
@@ -608,7 +612,14 @@ async function runPipeline(event, deps) {
   };
 
   /* ---- question branch ---- */
-  if (effectiveIntent.intent === "question" || effectiveIntent.intent === "greeting" || effectiveIntent.intent === "unknown") {
+  if (effectiveIntent.intent === "question" || effectiveIntent.intent === "greeting" || effectiveIntent.intent === "unknown" || effectiveIntent.intent === "conversational") {
+    // Conversational openers: invite the caller to continue, don't give up
+    if (effectiveIntent.intent === "conversational") {
+      const decision = "conversational";
+      const reply = buildReply(decision, { businessData });
+      const ver = await verify("conversational", { reply_text: reply });
+      return { ok: true, decision, reply, confidence: effectiveIntent.confidence, verification: ver };
+    }
     if (effectiveIntent.intent === "question") {
       // Use LLM topic if available, else regex
       const topic = (effectiveIntent.llm && effectiveIntent.llm.question_topic) || null;
