@@ -192,19 +192,59 @@ exports.handler = async (event) => {
           return json(400, { ok: false, error: "no_items", message: "No items specified for order." });
         }
 
+        const fulfillment = args.fulfillment || merged.fulfillment || "pickup";
+        const deliveryAddress = args.delivery_address || merged.delivery_address || null;
+
+        // Calculate delivery fee: $35 through 3 dozen, $4 per dozen above
+        let deliveryFeeCents = 0;
+        if (fulfillment === "delivery") {
+          if (!deliveryAddress) {
+            return json(400, { ok: false, error: "no_address", message: "Delivery address is required for delivery orders." });
+          }
+          // Estimate dozens from items (rough: assume 12 units per dozen)
+          let totalUnits = 0;
+          for (const it of items) {
+            totalUnits += parseInt(it.quantity || it.qty || 1, 10);
+          }
+          const dozens = Math.ceil(totalUnits / 12);
+          const feeDollars = dozens <= 3 ? 35 : 35 + (dozens - 3) * 4;
+          deliveryFeeCents = feeDollars * 100;
+        }
+
         const order = await sbPost("dm_orders", {
           business_id: business.id,
           items: items,
           status: "pending_review",
           channel: "voice",
           caller_phone: normalizePhone(args.caller_phone || merged.caller_phone || ""),
-          notes: args.notes || merged.notes || "Voice order via Retell",
+          notes: (args.notes || merged.notes || "Voice order via Retell") +
+            (fulfillment === "delivery" ? ` [DELIVERY] Address: ${deliveryAddress}. Fee: $${(deliveryFeeCents / 100).toFixed(2)}.` : " [PICKUP]"),
+          fulfillment: fulfillment,
+          delivery_address: deliveryAddress,
+          delivery_fee_cents: deliveryFeeCents,
         });
 
         return json(200, {
           ok: true,
           order_id: order.id,
-          message: "Order received and queued for confirmation.",
+          fulfillment: fulfillment,
+          delivery_fee: (deliveryFeeCents / 100).toFixed(2),
+          message: fulfillment === "delivery"
+            ? `Order received for delivery. Delivery fee is $${(deliveryFeeCents / 100).toFixed(2)}.`
+            : "Order received for pickup.",
+        });
+      }
+
+      case "get_delivery_fee": {
+        // Calculate delivery fee for a given quantity
+        const dozens = parseInt(args.dozens || merged.dozens || 1, 10);
+        const feeDollars = dozens <= 3 ? 35 : 35 + (dozens - 3) * 4;
+        return json(200, {
+          ok: true,
+          dozens: dozens,
+          fee: feeDollars.toFixed(2),
+          fee_display: `$${feeDollars.toFixed(2)}`,
+          message: `Delivery fee for ${dozens} dozen is $${feeDollars.toFixed(2)}.`,
         });
       }
 
@@ -276,7 +316,7 @@ exports.handler = async (event) => {
         return json(400, {
           ok: false,
           error: "unknown_action",
-          message: `Unknown action: ${action}. Available: get_menu, get_packages, get_hours, get_info, place_order, create_package.`,
+          message: `Unknown action: ${action}. Available: get_menu, get_packages, get_hours, get_info, place_order, create_package, get_delivery_fee.`,
         });
     }
   } catch (e) {
