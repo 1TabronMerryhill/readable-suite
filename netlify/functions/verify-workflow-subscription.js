@@ -56,7 +56,8 @@ exports.handler = async function (event) {
   }
   var email = "";
   try { email = (JSON.parse(event.body || "{}").email || "").toLowerCase().trim(); } catch (e) {}
-  var denied = { active: false, tier: null, trial: false, reports: [] };
+  var denied = { active: false, tier: null, trial: false, reports: [],
+                 ref: null, referrals_paid: 0 };
   if (!email || !AIRTABLE_TOKEN) {
     return { statusCode: 200, headers: headers, body: JSON.stringify(denied) };
   }
@@ -84,9 +85,25 @@ exports.handler = async function (event) {
     }
     var reports = [];
     if (meta.reports) reports = meta.reports.split(",").filter(Boolean);
+    var ref = meta.ref || null;
+    var referralsPaid = 0;
+    if (ref) {
+      try {
+        var rformula = "AND(FIND('referred=" + ref + "',{" + "Notes" + "})," +
+          "FIND('[workflow] state=paid',{Notes}))";
+        var rurl = "https://api.airtable.com/v0/" + BASE + "/" + TABLE +
+          "?filterByFormula=" + encodeURIComponent(rformula) + "&fields%5B%5D=" + FLD_NOTES;
+        var rres = await fetch(rurl, { headers: { Authorization: "Bearer " + AIRTABLE_TOKEN } });
+        if (rres.ok) {
+          var rdata = await rres.json();
+          referralsPaid = (rdata.records || []).length;
+        }
+      } catch (e) { /* referrals stay 0 on lookup failure */ }
+    }
     return {
       statusCode: 200, headers: headers,
-      body: JSON.stringify({ active: ok, tier: tier, trial: trial, reports: reports })
+      body: JSON.stringify({ active: ok, tier: tier, trial: trial, reports: reports,
+                             ref: ref, referrals_paid: referralsPaid })
     };
   } catch (e) {
     console.error("verify-workflow-subscription failed:", e.message);
