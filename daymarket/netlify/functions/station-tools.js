@@ -18,7 +18,7 @@
  * Uses Supabase REST API via fetch (no client dependency).
  */
 
-const { normalizePhone } = require("./station-lib");
+const { normalizePhone, sendSms } = require("./station-lib");
 
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://evmynxxvyafvnreaudpr.supabase.co";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -305,6 +305,20 @@ exports.handler = async (event) => {
               payment_url: paymentUrl,
               stripe_session_id: stripeSessionId,
             });
+
+            // Actually text the payment link (this send never existed before).
+            try {
+              const smsTo = normalizePhone(args.caller_phone || merged.caller_phone || "");
+              const sms = await sendSms(
+                smsTo,
+                `${business.name} order confirmed. Pay here: ${paymentUrl} DayMarket.`
+              );
+              if (sms.ok) console.log("SMS payment link sent", order.id, sms.sid);
+              else console.error("SMS payment link skipped/failed", order.id, sms.skipped || sms.error);
+            } catch (e) {
+              // Log and continue — the order stands even if the text fails.
+              console.error("SMS payment link error", order.id, e.message);
+            }
           } catch (e) {
             // Log but don't fail the order — payment can be attached later
             console.error("Stripe checkout failed:", e.message);
@@ -385,6 +399,16 @@ exports.handler = async (event) => {
               payment_url: paymentUrl,
               stripe_session_id: stripeSessionId,
             });
+            try {
+              const sms = await sendSms(
+                customerPhone,
+                `Delivery from ${business.name} booked. Pay the $${feeDollars.toFixed(2)} fee here: ${paymentUrl} DayMarket.`
+              );
+              if (sms.ok) console.log("SMS delivery link sent", delivery.id, sms.sid);
+              else console.error("SMS delivery link skipped/failed", delivery.id, sms.skipped || sms.error);
+            } catch (e) {
+              console.error("SMS delivery link error", delivery.id, e.message);
+            }
           } catch (e) {
             console.error("Stripe checkout failed for delivery:", e.message);
           }
