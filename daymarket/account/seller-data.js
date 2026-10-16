@@ -17,8 +17,7 @@
 
   /* ============ SCHEMA CONTRACT — wired to migration-sellers-v1.sql (applied Oct 16) ============
      Verified against the migration file and live code (station-tools.js,
-     migration-orders-v1.sql). CUSTOMER_ID stays null: dm_orders has no
-     customer link (FLAG 2 in the worker report). */
+     migration-orders-v1.sql). CUSTOMER_ID wired Oct 16 after migration v2 added the indexed FK. */
   var CONTRACT = {
     SELLERS_TABLE: "dm_sellers",
     SELLERS_COLS: {
@@ -32,7 +31,7 @@
       ID: "id",
       BUSINESS_ID: "business_id",
       SELLER_ID: "seller_id",
-      CUSTOMER_ID: null,
+      CUSTOMER_ID: "customer_id",  /* wired Oct 16: migration v2 applied, indexed FK */
       TOTAL_CENTS: "total_cents",
       STATUS: "status",
       RECURRENCE: "recurrence",
