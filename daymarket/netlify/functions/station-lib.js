@@ -79,6 +79,47 @@ function normalizePhone(raw) {
   return null;
 }
 
+/* ---------- Outbound SMS via Twilio ----------
+   Sends a real SMS through api.twilio.com. Guards, in order:
+   - TWILIO_SMS_ENABLED must be "1"/"true" (kill switch; never send from
+     test/preview paths or before A2P is verified).
+   - TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER present.
+   - `to` must normalize to a real E.164 number; body must be non-empty.
+   Never throws: failures return { ok:false } so callers can log and continue.
+   Env (never committed): TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN,
+   TWILIO_PHONE_NUMBER (the sending number), TWILIO_SMS_ENABLED. */
+async function sendSms(to, body) {
+  const enabled = /^(1|true|yes)$/i.test(String(process.env.TWILIO_SMS_ENABLED || ""));
+  if (!enabled) return { ok: false, skipped: "sms_disabled" };
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const from = process.env.TWILIO_PHONE_NUMBER;
+  if (!accountSid || !authToken || !from) return { ok: false, skipped: "sms_not_configured" };
+  const e164 = normalizePhone(to);
+  if (!e164) return { ok: false, skipped: "bad_phone" };
+  const text = String(body || "").trim();
+  if (!text) return { ok: false, skipped: "empty_body" };
+  try {
+    const res = await fetch(
+      "https://api.twilio.com/2010-04-01/Accounts/" + accountSid + "/Messages.json",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Basic " + Buffer.from(accountSid + ":" + authToken).toString("base64"),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ To: e164, From: from, Body: text.slice(0, 1500) }).toString(),
+      }
+    );
+    let data = null;
+    try { data = await res.json(); } catch (e) { /* non-JSON error body */ }
+    if (!res.ok) return { ok: false, error: (data && data.message) || ("http_" + res.status) };
+    return { ok: true, sid: data && data.sid, to: e164 };
+  } catch (e) {
+    return { ok: false, error: e && e.message ? e.message : String(e) };
+  }
+}
+
 /* ---------- Twilio request signature verification ----------
    Twilio signs: full public URL + POST params sorted by name, values
    concatenated, HMAC-SHA1 with the auth token, base64-encoded.
@@ -160,6 +201,7 @@ module.exports = {
   sb,
   E164_RE,
   normalizePhone,
+  sendSms,
   resolveBusinessRefByNumber,
   verifyTwilioSignature,
   parseTwilioBody,
