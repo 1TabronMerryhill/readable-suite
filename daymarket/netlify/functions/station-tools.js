@@ -41,7 +41,13 @@ async function sbGet(table, query) {
       Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
     },
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    // Never swallow backend errors as "not found": a 400/401 here used to
+    // surface as a lying 404 business_not_found downstream. Throw instead so
+    // the handler returns an honest 500 with the real cause.
+    const txt = await res.text().catch(() => "");
+    throw new Error(`Supabase GET ${table} failed: ${res.status} ${txt.slice(0, 200)}`);
+  }
   return res.json();
 }
 
@@ -124,9 +130,15 @@ async function createCheckoutSession({ amount_cents, order_id, business_name, cu
 async function resolveBusiness(event) {
   const ref = event.business_ref;
   if (ref) {
+    // PostgREST 400s the whole query if a non-UUID value lands in id.eq.
+    // (invalid input syntax for type uuid). Only OR against id when the ref
+    // is actually a UUID; otherwise match the slug alone.
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ref);
+    const enc = encodeURIComponent(ref);
+    const filter = isUuid ? `or=(slug.eq.${enc},id.eq.${enc})` : `slug=eq.${enc}`;
     const rows = await sbGet(
       "dm_businesses",
-      `select=id,name,slug,phone_number,address,hours_text,station_data,status&or=(slug.eq.${encodeURIComponent(ref)},id.eq.${encodeURIComponent(ref)})&status=eq.active&limit=1`
+      `select=id,name,slug,phone_number,address,hours_text,station_data,status&${filter}&status=eq.active&limit=1`
     );
     if (rows && rows.length) return rows[0];
   }
