@@ -138,7 +138,7 @@ async function resolveBusiness(event) {
     const filter = isUuid ? `or=(slug.eq.${enc},id.eq.${enc})` : `slug=eq.${enc}`;
     const rows = await sbGet(
       "dm_businesses",
-      `select=id,name,slug,phone_number,address,hours_text,station_data,status&${filter}&status=eq.active&limit=1`
+      `select=id,name,slug,phone_number,station_data,status&${filter}&status=eq.active&limit=1`
     );
     if (rows && rows.length) return rows[0];
   }
@@ -148,7 +148,7 @@ async function resolveBusiness(event) {
     const normalized = normalizePhone(calledNumber);
     const rows = await sbGet(
       "dm_businesses",
-      `select=id,name,slug,phone_number,address,hours_text,station_data,status&phone_number=eq.${encodeURIComponent(normalized)}&status=eq.active&limit=1`
+      `select=id,name,slug,phone_number,station_data,status&phone_number=eq.${encodeURIComponent(normalized)}&status=eq.active&limit=1`
     );
     if (rows && rows.length) return rows[0];
   }
@@ -236,20 +236,22 @@ exports.handler = async (event) => {
       }
 
       case "get_hours": {
+        const hours = (business.station_data && business.station_data.hours) || "Hours not listed.";
         return json(200, {
           ok: true,
           business: business.name,
-          hours: business.hours_text || "Hours not listed.",
+          hours: hours,
         });
       }
 
       case "get_info": {
+        const sd = business.station_data || {};
         return json(200, {
           ok: true,
           business: business.name,
-          address: business.address || "Address not listed.",
+          address: sd.address || "Address not listed.",
           phone: business.phone_number || "Phone not listed.",
-          hours: business.hours_text || "Hours not listed.",
+          hours: sd.hours || "Hours not listed.",
         });
       }
 
