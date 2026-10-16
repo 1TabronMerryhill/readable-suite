@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Book - DayMarket Seller</title>
+<meta name="description" content="Your DayMarket seller book: customers you converted, sales by shop, and your commission ledger.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dm.css">
+<link rel="stylesheet" href="account.css">
+</head>
+<body>
+<header class="site-header"><div class="wrap"><a class="logo" href="../index.html"><span class="dot"></span><span class="word">Day<em>Market</em></span></a><nav class="site-nav"><a href="../holidays.html">Holidays</a><a href="../packages.html">Packages</a><a href="../membership.html">Membership</a><a href="../businesses.html">For Businesses</a><a href="index.html">Account</a><a class="nav-cta" href="../membership.html">Get the Pass</a></nav></div></header>
+
+<main>
+<section class="block tight"><div class="wrap">
+
+<div id="signing">
+<p class="kicker">DayMarket Seller</p>
+<h2>Signing you in…</h2>
+<div class="spinner" aria-hidden="true"></div>
+</div>
+
+<div class="notice err" id="fatal" hidden><p style="margin:0"></p></div>
+
+<div id="app" hidden>
+<div class="notice" id="notice" role="status"></div>
+
+<div class="dash-head">
+<div>
+<p class="kicker">My book</p>
+<h2 id="hello">Welcome</h2>
+<p class="who" id="who"></p>
+</div>
+<button class="btn ghost small" type="button" data-action="signout">Sign out</button>
+</div>
+
+<p class="lede">This is your book: the customers you brought in, the sales you made, and the money you are owed. Only you see this.</p>
+
+<div class="panel">
+<label for="biz-filter" style="display:block;margin-bottom:6px"><strong>Filter by shop</strong></label>
+<select id="biz-filter" class="input" style="max-width:320px">
+<option value="">All shops</option>
+</select>
+</div>
+
+<div id="cards" class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0"></div>
+
+<section id="ledger-section">
+<h3>Commission ledger</h3>
+<p class="mini">Two ways you get paid. DayMarket: 15% split with the team on every DayMarket order you sell, 7.5% to you. Shops: 15% of the owner cut on big orders you bring in, paid by the shop. Weekly buys you set up pay you again and again, like an insurance book.</p>
+<div id="ledger-body"><div class="notice">Loading…</div></div>
+</section>
+
+<section id="revenue-section" style="margin-top:24px">
+<h3>Money you brought each shop</h3>
+<p class="mini">This is your proof. Gross sales you generated, and what you earned on them, shop by shop.</p>
+<div id="revenue-body"><div class="notice">Loading…</div></div>
+</section>
+
+<section id="customers-section" style="margin-top:24px">
+<h3>My customers</h3>
+<p class="mini">Everyone you converted. Tap a name to see their order history and standing orders.</p>
+<div id="customers-body"><div class="notice">Loading…</div></div>
+</section>
+
+</div>
+</div></section>
+</main>
+
+<footer class="site-footer"><div class="wrap"><div class="cols"><div><h4>DayMarket</h4><a href="../index.html">A daily holiday.</a><a href="../holidays.html">Holiday feed</a><a href="../packages.html">Workplace packages</a></div><div><h4>Membership</h4><a href="../membership.html">Holiday Pass ($12/mo)*</a><a href="../membership.html">Org Membership ($49/mo)*</a><a href="../businesses.html">Business Profile ($99/mo)*</a></div><div><h4>Company</h4><a href="../businesses.html">List your business</a><a href="index.html">My account</a></div></div><p class="fine">* Founding pricing, adjustable. DayMarket is operated by Operator One (Tabron Merryhill Systems). Launch menu platform: Ellianna's Donut Shop, Columbia, MO, (573) 442-5608. © <span data-year></span> DayMarket.</p></div></footer>
+
+<script src="../assets/dm.js"></script>
+<script src="../supabase/dm-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase/dm-client.js"></script>
+<script src="seller-data.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var esc = DM.esc, money = DM.money, SD = window.SellerData;
+  var signingEl = document.getElementById("signing");
+  var fatalEl = document.getElementById("fatal");
+  var noticeEl = document.getElementById("notice");
+  var appEl = document.getElementById("app");
+  var helloEl = document.getElementById("hello");
+  var whoEl = document.getElementById("who");
+  var bizFilterEl = document.getElementById("biz-filter");
+
+  var seller = null, sellerId = null;
+  var sellerNameCol = null;
+
+  function fatal(msg) {
+    fatalEl.hidden = false;
+    fatalEl.querySelector("p").textContent = msg;
+    signingEl.hidden = true;
+  }
+
+  function contractNotice(targetId) {
+    return '<div class="notice">This section is waiting on the seller schema. It will fill in once the migration is applied.</div>';
+  }
+
+  function sectionErr(targetId, err) {
+    var el = document.getElementById(targetId);
+    if (el) el.innerHTML = '<div class="notice err">Could not load this section: ' + esc(err && err.message || err) + '</div>';
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return "";
+    try {
+      return new Date(iso).toLocaleString("en-US", {
+        timeZone: "America/Chicago",
+        weekday: "short", month: "short", day: "numeric",
+        hour: "numeric", minute: "2-digit"
+      });
+    } catch (e) { return iso; }
+  }
+
+  function streamLabel(stream) {
+    return stream === SD.STREAM_DAYMARKET ? "DayMarket share" : "Shop share";
+  }
+
+  function statusBadge(status) {
+    if (status === "paid") return '<span class="status published">Paid</span>';
+    if (status === "canceled") return '<span class="status draft">Canceled</span>';
+    return '<span class="status pending">Owed</span>';
+  }
+
+  /* ---------- summary cards ---------- */
+
+  async function renderCards(businessId) {
+    var cardsEl = document.getElementById("cards");
+    try {
+      var customers = await SD.getBookCustomers(sellerId);
+      var sales = await SD.getSales(sellerId, businessId);
+      var ledger = await SD.getLedger(sellerId, businessId);
+      var rollup = SD.rollupLedger(ledger);
+      var oCols = SD.CONTRACT.ORDERS_COLS;
+      var gross = 0;
+      sales.forEach(function (o) { gross += (o[oCols.TOTAL_CENTS] || 0); });
+
+      var cards = [
+        ["Customers", String(customers.length), "you converted"],
+        ["Gross sales", money(gross), "for the shops"],
+        ["Earned", money(rollup.total.earned), "all commissions"],
+        ["Paid", money(rollup.total.paid), "received"],
+        ["Owed", money(rollup.total.owed), "still coming"]
+      ];
+      var html = "";
+      cards.forEach(function (c) {
+        html += '<div class="panel" style="margin:0"><p class="kicker" style="margin:0 0 4px">' + esc(c[0]) + '</p>' +
+          '<p style="font-size:1.6em;font-weight:800;margin:0">' + esc(c[1]) + '</p>' +
+          '<p class="mini" style="margin:4px 0 0">' + esc(c[2]) + '</p></div>';
+      });
+      cardsEl.innerHTML = html;
+    } catch (e) {
+      cardsEl.innerHTML = SD.isContractError(e) ? contractNotice() :
+        '<div class="notice err">Could not load totals: ' + esc(e.message) + '</div>';
+    }
+  }
+
+  /* ---------- business filter ---------- */
+
+  async function loadBusinessFilter() {
+    try {
+      var sales = await SD.getSales(sellerId);
+      var oCols = SD.CONTRACT.ORDERS_COLS;
+      var seen = {};
+      sales.forEach(function (o) {
+        var bid = o[oCols.BUSINESS_ID];
+        if (bid && !seen[bid]) seen[bid] = (o.business && o.business.name) || "Shop";
+      });
+      var html = '<option value="">All shops</option>';
+      Object.keys(seen).forEach(function (bid) {
+        html += '<option value="' + esc(bid) + '">' + esc(seen[bid]) + '</option>';
+      });
+      bizFilterEl.innerHTML = html;
+    } catch (e) {
+      // Filter is a nicety; sections render their own notices.
+    }
+  }
+
+  /* ---------- ledger ---------- */
+
+  async function renderLedger(businessId) {
+    var bodyEl = document.getElementById("ledger-body");
+    try {
+      var ledger = await SD.getLedger(sellerId, businessId);
+      var cols = SD.CONTRACT.COMMISSIONS_COLS;
+      var rollup = SD.rollupLedger(ledger);
+      if (!ledger.length) {
+        bodyEl.innerHTML = '<div class="panel"><p class="lede">No commissions yet. When an order you brought in is recorded, it shows here with both your shares.</p></div>';
+        return;
+      }
+      var html = '<div class="panel" style="margin-bottom:12px"><p class="mini" style="margin:0">DayMarket share earned: <strong>' +
+        esc(money(rollup.daymarket.earned)) + '</strong> (' + esc(money(rollup.daymarket.owed)) + ' owed) &nbsp;·&nbsp; Shop share earned: <strong>' +
+        esc(money(rollup.business.earned)) + '</strong> (' + esc(money(rollup.business.owed)) + ' owed)</p></div>';
+      html += '<div class="panel"><table style="width:100%;border-collapse:collapse;font-size:14px"><thead><tr>' +
+        '<th style="text-align:left;padding:6px">Date</th><th style="text-align:left;padding:6px">Shop</th>' +
+        '<th style="text-align:left;padding:6px">Share</th><th style="text-align:right;padding:6px">Earned</th>' +
+        '<th style="text-align:right;padding:6px">Status</th></tr></thead><tbody>';
+      ledger.forEach(function (r) {
+        var bname = (r.business && r.business.name) || "Shop";
+        var dt = fmtDate(r[cols.CREATED_AT]) || fmtDate(r[cols.PAID_AT]);
+        html += '<tr style="border-top:1px solid #eee"><td style="padding:6px">' + esc(dt) + '</td>' +
+          '<td style="padding:6px">' + esc(bname) + '</td>' +
+          '<td style="padding:6px">' + esc(streamLabel(r[cols.STREAM])) + '</td>' +
+          '<td style="padding:6px;text-align:right">' + esc(money(r[cols.AMOUNT_CENTS])) + '</td>' +
+          '<td style="padding:6px;text-align:right">' + statusBadge(r[cols.STATUS]) + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+      bodyEl.innerHTML = html;
+    } catch (e) {
+      bodyEl.innerHTML = SD.isContractError(e) ? contractNotice() : sectionErrHtml(e);
+    }
+  }
+
+  function sectionErrHtml(e) {
+    return '<div class="notice err">Could not load this section: ' + esc(e && e.message || e) + '</div>';
+  }
+
+  /* ---------- revenue per shop ---------- */
+
+  async function renderRevenue() {
+    var bodyEl = document.getElementById("revenue-body");
+    try {
+      var sales = await SD.getSales(sellerId);
+      var perBiz = SD.revenueByBusiness(sales);
+      var ledger = await SD.getLedger(sellerId);
+      var cols = SD.CONTRACT.COMMISSIONS_COLS;
+      if (!perBiz.length) {
+        bodyEl.innerHTML = '<div class="panel"><p class="lede">No sales recorded yet.</p></div>';
+        return;
+      }
+      var html = "";
+      perBiz.forEach(function (b) {
+        var earned = 0;
+        ledger.forEach(function (r) {
+          if (cols.BUSINESS_ID && r[cols.BUSINESS_ID] === b.business_id) earned += (r[cols.AMOUNT_CENTS] || 0);
+        });
+        html += '<div class="panel" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">' +
+          '<div><h3 style="margin:0 0 4px">' + esc(b.name) + '</h3>' +
+          '<p class="mini" style="margin:0">' + esc(String(b.orders)) + ' order' + (b.orders === 1 ? '' : 's') + '</p></div>' +
+          '<div style="text-align:right"><p style="margin:0;font-weight:800">' + esc(money(b.gross)) + '</p>' +
+          '<p class="mini" style="margin:0">you earned ' + esc(money(earned)) + ' on it</p></div></div></div>';
+      });
+      bodyEl.innerHTML = html;
+    } catch (e) {
+      bodyEl.innerHTML = SD.isContractError(e) ? contractNotice() : sectionErrHtml(e);
+    }
+  }
+
+  /* ---------- customers ---------- */
+
+  async function renderCustomers() {
+    var bodyEl = document.getElementById("customers-body");
+    try {
+      var customers = await SD.getBookCustomers(sellerId);
+      var cols = SD.CONTRACT.CUSTOMERS_COLS;
+      if (!customers.length) {
+        bodyEl.innerHTML = '<div class="panel"><p class="lede">No customers yet. When someone buys because of you, they land here with their order history.</p></div>';
+        return;
+      }
+      var html = "";
+      customers.forEach(function (cu) {
+        var cid = cu[cols.ID];
+        var contact = [];
+        if (cols.PHONE && cu[cols.PHONE]) contact.push(cu[cols.PHONE]);
+        if (cols.EMAIL && cu[cols.EMAIL]) contact.push(cu[cols.EMAIL]);
+        var lastOrd = cols.LAST_ORDER_AT && cu[cols.LAST_ORDER_AT] ? " · last order " + esc(fmtDate(cu[cols.LAST_ORDER_AT])) : "";
+        var histBtn = SD.CONTRACT.ORDERS_COLS.CUSTOMER_ID
+          ? '<button class="btn small ghost" type="button" data-action="customer-history" data-id="' + esc(cid) + '">Order history</button>'
+          : "";
+        html += '<div class="panel" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">' +
+          '<div><h3 style="margin:0 0 4px">' + esc(cu[cols.NAME]) + '</h3>' +
+          '<p class="mini" style="margin:0">' + esc(contact.join(" · ") || "no contact on file") +
+          (cols.ORDER_COUNT && cu[cols.ORDER_COUNT] != null ? " · " + esc(String(cu[cols.ORDER_COUNT])) + " orders" : "") + lastOrd + '</p></div>' +
+          histBtn + '</div>' +
+          '<div id="hist-' + esc(cid) + '" hidden></div></div>';
+      });
+      bodyEl.innerHTML = html;
+    } catch (e) {
+      bodyEl.innerHTML = SD.isContractError(e) ? contractNotice() : sectionErrHtml(e);
+    }
+  }
+
+  async function toggleCustomerHistory(customerId) {
+    var el = document.getElementById("hist-" + customerId);
+    if (!el) return;
+    if (!el.hidden) { el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = '<p class="mini">Loading…</p>';
+    try {
+      var orders = await SD.getCustomerOrders(customerId);
+      var oCols = SD.CONTRACT.ORDERS_COLS;
+      if (!orders.length) { el.innerHTML = '<p class="mini">No orders yet.</p>'; return; }
+      var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px"><tbody>';
+      orders.forEach(function (o) {
+        var bname = (o.business && o.business.name) || "Shop";
+        var recurring = (o[oCols.RECURRENCE] || "once") !== "once" ? ' <span class="status published">Weekly</span>' : "";
+        var otype = oCols.ORDER_TYPE && o[oCols.ORDER_TYPE] === "daymarket_delivery" ? ' <span class="mini">delivery</span>' : "";
+        html += '<tr style="border-top:1px solid #eee"><td style="padding:6px">' + esc(fmtDate(o[oCols.SCHEDULED_FOR]) || fmtDate(o[oCols.CREATED_AT])) + '</td>' +
+          '<td style="padding:6px">' + esc(o[oCols.TITLE] || "") + recurring + otype + '</td>' +
+          '<td style="padding:6px">' + esc(bname) + '</td>' +
+          '<td style="padding:6px;text-align:right">' + esc(money(o[oCols.TOTAL_CENTS])) + '</td></tr>';
+      });
+      html += '</tbody></table>';
+      el.innerHTML = html;
+    } catch (e) {
+      el.innerHTML = '<p class="mini">Could not load: ' + esc(e.message) + '</p>';
+    }
+  }
+
+  /* ---------- unlinked seller: claim step ---------- */
+
+  function renderUnlinked(session) {
+    signingEl.hidden = true;
+    appEl.hidden = false;
+    helloEl.textContent = "My book";
+    whoEl.textContent = (session && session.user && session.user.email) || "";
+    document.getElementById("cards").innerHTML = "";
+    var sections = ["ledger-body", "revenue-body", "customers-body"];
+    sections.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = "";
+    });
+    var heads = document.querySelectorAll("#app section h3");
+    for (var i = 0; i < heads.length; i++) heads[i].style.display = "none";
+    bizFilterEl.closest(".panel").style.display = "none";
+    noticeEl.className = "notice";
+    noticeEl.innerHTML = '<strong>Your seller account is not linked yet.</strong><br>' +
+      'If Milly added your email to your seller row, tap below to claim it.<br><br>' +
+      '<button class="btn" type="button" data-action="claim-seller">Claim my seller account</button> ' +
+      '<span class="mini" id="claim-msg"></span><br><br>' +
+      '<span class="mini">If claiming does not work, talk to Milly.</span>';
+  }
+
+  async function claimSeller() {
+    var msgEl = document.getElementById("claim-msg");
+    if (msgEl) msgEl.textContent = "Claiming…";
+    try {
+      var r = await DM.supabase.rpc("dm_claim_seller");
+      if (r.error) throw r.error;
+      if (msgEl) msgEl.textContent = "Claimed. Loading your book…";
+      window.location.reload();
+    } catch (e) {
+      if (msgEl) msgEl.textContent = "Could not claim it. Talk to Milly.";
+    }
+  }
+
+  /* ---------- events ---------- */
+
+  document.addEventListener("click", function (ev) {
+    var t = ev.target && ev.target.closest ? ev.target.closest("[data-action]") : null;
+    if (!t) return;
+    var action = t.getAttribute("data-action");
+    if (action === "signout") {
+      DM.supabase.auth.signOut().then(function () { window.location.replace("login.html"); });
+      return;
+    }
+    if (action === "customer-history") {
+      toggleCustomerHistory(t.getAttribute("data-id"));
+      return;
+    }
+    if (action === "claim-seller") {
+      claimSeller();
+      return;
+    }
+  });
+
+  bizFilterEl.addEventListener("change", function () {
+    var bid = bizFilterEl.value || null;
+    renderCards(bid);
+    renderLedger(bid);
+  });
+
+  /* ---------- init ---------- */
+
+  async function init() {
+    try {
+      var session = await DM.requireAuth();
+      if (!session) return;
+      await DM.upsertMember(session);
+
+      // Strict seller gate: only a signed-in seller with her own row gets in.
+      // No view-as, no cross-seller access. The owner uses the owner page.
+      // Unlinked sellers get a claim step (dm_claim_seller RPC matches their
+      // auth email to an unclaimed seller row); "talk to Milly" is the fallback.
+      seller = await SD.getSellerForUser(session.user.id);
+      if (!seller) {
+        renderUnlinked(session);
+        return;
+      }
+      sellerNameCol = SD.CONTRACT.SELLERS_COLS.NAME;
+      sellerId = seller[SD.CONTRACT.SELLERS_COLS.ID];
+
+      helloEl.textContent = "Welcome, " + seller[sellerNameCol];
+      whoEl.textContent = session.user.email || "";
+      signingEl.hidden = true;
+      appEl.hidden = false;
+
+      await loadBusinessFilter();
+      await renderCards(null);
+      await renderLedger(null);
+      await renderRevenue();
+      await renderCustomers();
+    } catch (e) {
+      if (SD.isContractError(e)) {
+        // Schema not live yet: show the shell so the layout can be reviewed.
+        signingEl.hidden = true;
+        appEl.hidden = false;
+        helloEl.textContent = "My book";
+        noticeEl.className = "notice";
+        noticeEl.textContent = "The seller schema is not live yet. The layout below is ready and will fill in once the migration is applied.";
+        renderCards(null); renderLedger(null); renderRevenue(); renderCustomers();
+      } else {
+        fatal(e && e.message || String(e));
+      }
+    }
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+</body>
+</html>
