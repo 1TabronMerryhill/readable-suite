@@ -166,10 +166,21 @@ function formatMenu(business) {
 }
 
 async function getPackages(businessId) {
-  const rows = await sbGet(
+  const FIELDS = "select=id,name,description,base_price_cents,serves_min,serves_max";
+  // Business-specific packages first.
+  let rows = await sbGet(
     "dm_packages",
-    `select=id,name,description,base_price_cents,serves_min,serves_max&business_id=eq.${encodeURIComponent(businessId)}&active=eq.true&order=base_price_cents`
+    `${FIELDS}&business_id=eq.${encodeURIComponent(businessId)}&active=eq.true&order=base_price_cents`
   );
+  if (!rows || !rows.length) {
+    // Fallback: DayMarket's operator catalog (business_id NULL) belongs to
+    // DayMarket itself and is sold across shops — e.g. the Meeting Box for
+    // Milly's "ten people" call. Business-specific packages win when present.
+    rows = await sbGet(
+      "dm_packages",
+      `${FIELDS}&business_id=is.null&active=eq.true&order=base_price_cents`
+    );
+  }
   return (rows || []).map((p) => ({
     id: p.id,
     name: p.name,
