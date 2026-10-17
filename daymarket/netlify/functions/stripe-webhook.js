@@ -156,11 +156,22 @@ exports.handler = async (event) => {
   // Find the order this checkout session was linked to. Sessions are written
   // before the customer pays, so this must exist. Delivery fees use their own
   // session column (two-link model), so check both.
-  const found = await sb(
+  const encId = encodeURIComponent(sessionId);
+  let found = await sb(
     serviceKey,
     "GET",
-    `/dm_orders?or=(stripe_session_id.eq.${encodeURIComponent(sessionId)},delivery_stripe_session_id.eq.${encodeURIComponent(sessionId)})&select=id,payment_status,delivery_payment_status,stripe_session_id,delivery_stripe_session_id`
+    `/dm_orders?or=(stripe_session_id.eq.${encId},delivery_stripe_session_id.eq.${encId})&select=id,payment_status,delivery_payment_status,stripe_session_id,delivery_stripe_session_id`
   );
+  if (found.status !== 200) {
+    // Schema may predate the delivery columns; fall back to the order-only
+    // lookup so payments still settle instead of 400ing the whole webhook.
+    console.error("stripe-webhook: two-column lookup failed, falling back", found.status);
+    found = await sb(
+      serviceKey,
+      "GET",
+      `/dm_orders?stripe_session_id=eq.${encId}&select=id,payment_status`
+    );
+  }
   const order = found.status === 200 && found.data && found.data[0];
   if (!order) {
     // Data problem, not transient: log it loudly, ack so Stripe stops retrying.
