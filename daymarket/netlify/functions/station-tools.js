@@ -482,8 +482,8 @@ exports.handler = async (event) => {
             paymentUrl = session.url;
             stripeSessionId = session.id;
             await sbPatch("dm_orders", delivery.id, {
-              payment_url: paymentUrl,
-              stripe_session_id: stripeSessionId,
+              delivery_payment_url: paymentUrl,
+              delivery_stripe_session_id: stripeSessionId,
             });
             try {
               const sms = await sendSms(
