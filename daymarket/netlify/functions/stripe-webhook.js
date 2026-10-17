@@ -153,12 +153,13 @@ exports.handler = async (event) => {
     return json(400, { ok: false, error: "bad_session" });
   }
 
-  // Find the order this checkout session was linked to (set-order-payment
-  // writes stripe_session_id before the customer pays, so this must exist).
+  // Find the order this checkout session was linked to. Sessions are written
+  // before the customer pays, so this must exist. Delivery fees use their own
+  // session column (two-link model), so check both.
   const found = await sb(
     serviceKey,
     "GET",
-    `/dm_orders?stripe_session_id=eq.${encodeURIComponent(sessionId)}&select=id,payment_status`
+    `/dm_orders?or=(stripe_session_id.eq.${encodeURIComponent(sessionId)},delivery_stripe_session_id.eq.${encodeURIComponent(sessionId)})&select=id,payment_status,delivery_payment_status,stripe_session_id,delivery_stripe_session_id`
   );
   const order = found.status === 200 && found.data && found.data[0];
   if (!order) {
@@ -166,12 +167,16 @@ exports.handler = async (event) => {
     console.error("stripe-webhook: no order for session", eventId, sessionId);
     return json(200, { ok: false, error: "order_not_found" });
   }
-  if (order.payment_status === "paid") {
+  // Mark the right ledger: delivery-fee sessions settle delivery_payment_status,
+  // order sessions settle payment_status.
+  const isDeliveryLink = order.delivery_stripe_session_id === sessionId;
+  const statusField = isDeliveryLink ? "delivery_payment_status" : "payment_status";
+  if (order[statusField] === "paid") {
     return json(200, { ok: true, already: "paid" });
   }
 
   const updated = await sb(serviceKey, "PATCH", `/dm_orders?id=eq.${encodeURIComponent(order.id)}`, {
-    payment_status: "paid",
+    [statusField]: "paid",
   });
   if (updated.status !== 200) {
     console.error("stripe-webhook: failed to mark order paid", eventId, order.id);
