@@ -331,6 +331,7 @@ exports.handler = async (event) => {
         // Calculate order total for Stripe.
         let paymentUrl = null;
         let stripeSessionId = null;
+        let smsSent = false;
 
         if (totalCents > 0 && process.env.STRIPE_SECRET_KEY) {
           try {
@@ -359,7 +360,7 @@ exports.handler = async (event) => {
                 smsTo,
                 `${business.name} order confirmed. Pay here: ${paymentUrl} DayMarket.`
               );
-              if (sms.ok) console.log("SMS payment link sent", order.id, sms.sid);
+              if (sms.ok) { console.log("SMS payment link sent", order.id, sms.sid); smsSent = true; }
               else console.error("SMS payment link skipped/failed", order.id, sms.skipped || sms.error);
             } catch (e) {
               // Log and continue — the order stands even if the text fails.
@@ -378,8 +379,8 @@ exports.handler = async (event) => {
           delivery_fee: (deliveryFeeCents / 100).toFixed(2),
           payment_url: paymentUrl,
           message: fulfillment === "delivery"
-            ? `Order received for delivery. Delivery fee is $${(deliveryFeeCents / 100).toFixed(2)}.${paymentUrl ? " Payment link sent." : ""}`
-            : `Order received for pickup.${paymentUrl ? " Payment link sent." : ""}`,
+            ? `Order received for delivery. Delivery fee is $${(deliveryFeeCents / 100).toFixed(2)}.${paymentUrl && smsSent ? " Payment link sent." : ""}`
+            : `Order received for pickup.${paymentUrl && smsSent ? " Payment link sent." : ""}`,
         });
       }
 
