@@ -291,9 +291,33 @@ exports.handler = async (event) => {
           deliveryFeeCents = feeDollars * 100;
         }
 
+        // Server-side total: deterministic package-price lookup first, agent's
+        // total_cents only as fallback. Never trust the model for money.
+        let totalCents = parseInt(args.total_cents || merged.total_cents || 0, 10);
+        const packageId = args.package_id || merged.package_id || null;
+        let packageName = null;
+        if ((!totalCents || totalCents <= 0) && packageId) {
+          try {
+            const pkgs = await sbGet(
+              "dm_packages",
+              `select=id,name,base_price_cents&id=eq.${encodeURIComponent(packageId)}&limit=1`
+            );
+            if (pkgs && pkgs.length && pkgs[0].base_price_cents != null) {
+              totalCents = pkgs[0].base_price_cents;
+              packageName = pkgs[0].name;
+            }
+          } catch (e) {
+            console.error("package price lookup failed:", e.message);
+          }
+        }
+
         const order = await sbPost("dm_orders", {
           business_id: business.id,
+          package_id: packageId,
+          title: `Voice order - ${packageName || business.name}`,
+          scheduled_for: new Date().toISOString(),
           items: items,
+          total_cents: totalCents > 0 ? totalCents : null,
           status: "pending_review",
           channel: "voice",
           caller_phone: normalizePhone(args.caller_phone || merged.caller_phone || ""),
@@ -304,10 +328,7 @@ exports.handler = async (event) => {
           delivery_fee_cents: deliveryFeeCents,
         });
 
-        // Calculate order total for Stripe
-        // Note: items don't have prices here yet — the agent should pass package_id or total
-        // For now, create checkout when total_cents is provided
-        const totalCents = parseInt(args.total_cents || merged.total_cents || 0, 10);
+        // Calculate order total for Stripe.
         let paymentUrl = null;
         let stripeSessionId = null;
 
