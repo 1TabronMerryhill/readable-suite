@@ -328,49 +328,87 @@ exports.handler = async (event) => {
           delivery_fee_cents: deliveryFeeCents,
         });
 
+        // Payment links. Two separate charges by design:
+        //   Link 1 (order): the food total. Paid to DayMarket or straight through
+        //     the business — whichever the merchant arrangement is.
+        //   Link 2 (delivery): DayMarket Delivery's fee, due right away at booking,
+        //     independent of how the food is paid. A delivery always generates its
+        //     own link even when the order itself is paid elsewhere (e.g. the shop
+        //     directly). Pickup generates no delivery link at all.
         // Calculate order total for Stripe.
         let paymentUrl = null;
         let stripeSessionId = null;
+        let deliveryPaymentUrl = null;
+        let deliveryStripeSessionId = null;
         let smsSent = false;
 
-        if (totalCents > 0 && process.env.STRIPE_SECRET_KEY) {
-          try {
-            const session = await createCheckoutSession({
-              amount_cents: totalCents + deliveryFeeCents,
-              order_id: order.id,
-              business_name: business.name,
-              customer_phone: normalizePhone(args.caller_phone || merged.caller_phone || ""),
-              description: fulfillment === "delivery"
-                ? `Order from ${business.name} (delivery)`
-                : `Order from ${business.name} (pickup)`,
-            });
-            paymentUrl = session.url;
-            stripeSessionId = session.id;
+        if (process.env.STRIPE_SECRET_KEY) {
+          // Link 1: the order.
+          if (totalCents > 0) {
+            try {
+              const session = await createCheckoutSession({
+                amount_cents: totalCents,
+                order_id: order.id,
+                business_name: business.name,
+                customer_phone: normalizePhone(args.caller_phone || merged.caller_phone || ""),
+                description: `Order from ${business.name} (${fulfillment})`,
+              });
+              paymentUrl = session.url;
+              stripeSessionId = session.id;
+              await sbPatch("dm_orders", order.id, {
+                payment_url: paymentUrl,
+                stripe_session_id: stripeSessionId,
+              });
+            } catch (e) {
+              console.error("Stripe order checkout failed:", e.message);
+            }
+          }
+          // Link 2: the delivery fee. Always its own session so the delivery
+          // money is separable and due immediately, whatever happens with the food.
+          if (fulfillment === "delivery" && deliveryFeeCents > 0) {
+            try {
+              const dSession = await createCheckoutSession({
+                amount_cents: deliveryFeeCents,
+                order_id: order.id,
+                business_name: "DayMarket Delivery",
+                customer_phone: normalizePhone(args.caller_phone || merged.caller_phone || ""),
+                description: `DayMarket Delivery fee (${business.name} order)`,
+              });
+              deliveryPaymentUrl = dSession.url;
+              deliveryStripeSessionId = dSession.id;
+              await sbPatch("dm_orders", order.id, {
+                delivery_payment_url: deliveryPaymentUrl,
+                delivery_stripe_session_id: deliveryStripeSessionId,
+              });
+            } catch (e) {
+              console.error("Stripe delivery checkout failed:", e.message);
+            }
+          }
 
-            // Attach payment info to order
-            await sbPatch("dm_orders", order.id, {
-              payment_url: paymentUrl,
-              stripe_session_id: stripeSessionId,
-            });
-
-            // Actually text the payment link (this send never existed before).
+          // Text the link(s). One SMS carrying whichever links exist.
+          if (paymentUrl || deliveryPaymentUrl) {
             try {
               const smsTo = normalizePhone(args.caller_phone || merged.caller_phone || "");
-              const sms = await sendSms(
-                smsTo,
-                `${business.name} order confirmed. Pay here: ${paymentUrl} DayMarket.`
-              );
-              if (sms.ok) { console.log("SMS payment link sent", order.id, sms.sid); smsSent = true; }
+              let smsBody = `${business.name} order confirmed.`;
+              if (paymentUrl) smsBody += ` Pay order: ${paymentUrl}`;
+              if (deliveryPaymentUrl) smsBody += ` Pay delivery ($${(deliveryFeeCents / 100).toFixed(2)}): ${deliveryPaymentUrl}`;
+              smsBody += ` DayMarket.`;
+              const sms = await sendSms(smsTo, smsBody);
+              if (sms.ok) { console.log("SMS payment link(s) sent", order.id, sms.sid); smsSent = true; }
               else console.error("SMS payment link skipped/failed", order.id, sms.skipped || sms.error);
             } catch (e) {
-              // Log and continue — the order stands even if the text fails.
               console.error("SMS payment link error", order.id, e.message);
             }
-          } catch (e) {
-            // Log but don't fail the order — payment can be attached later
-            console.error("Stripe checkout failed:", e.message);
           }
         }
+
+        const linksSentNote = paymentUrl && deliveryPaymentUrl && smsSent
+          ? " Order and delivery links sent."
+          : paymentUrl && smsSent
+            ? " Payment link sent."
+            : deliveryPaymentUrl && smsSent
+              ? " Delivery link sent."
+              : "";
 
         return json(200, {
           ok: true,
@@ -378,9 +416,10 @@ exports.handler = async (event) => {
           fulfillment: fulfillment,
           delivery_fee: (deliveryFeeCents / 100).toFixed(2),
           payment_url: paymentUrl,
+          delivery_payment_url: deliveryPaymentUrl,
           message: fulfillment === "delivery"
-            ? `Order received for delivery. Delivery fee is $${(deliveryFeeCents / 100).toFixed(2)}.${paymentUrl && smsSent ? " Payment link sent." : ""}`
-            : `Order received for pickup.${paymentUrl && smsSent ? " Payment link sent." : ""}`,
+            ? `Order received for delivery. Delivery fee is $${(deliveryFeeCents / 100).toFixed(2)}.${linksSentNote}`
+            : `Order received for pickup.${linksSentNote}`,
         });
       }
 
