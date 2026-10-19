@@ -202,10 +202,10 @@ exports.handler = async (event) => {
       endTs
     );
 
-    // Cost: Retell's call_cost if present, else duration-based fallback.
+    // Cost: Retell's combined_cost is already in cents (e.g. 40.33 = $0.4033).
     let costCents = null;
     const rc = call.call_cost || {};
-    if (rc.combined_cost != null) costCents = Math.round(rc.combined_cost * 100);
+    if (rc.combined_cost != null) costCents = Math.round(rc.combined_cost);
 
     // Idempotent upsert on retell_call_id.
     const existing = await sbGet(
