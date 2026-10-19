@@ -10,6 +10,20 @@
 
 const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
 const SITE = "https://openline.tabronmerryhill.com";
+// Dashboard origins allowed to call this checkout endpoint (CORS).
+const ALLOWED_ORIGINS = new Set([
+  "https://openline.tabronmerryhill.com",
+  "https://daymarket-voice-dashboard.netlify.app",
+]);
+
+function cors(origin) {
+  const allow = ALLOWED_ORIGINS.has(origin) ? origin : "https://openline.tabronmerryhill.com";
+  return {
+    "Access-Control-Allow-Origin": allow,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+}
 
 const PRICES = {
   shared_monthly: 14900,
@@ -47,21 +61,31 @@ function setLine(params, i, { name, amount, recurring }) {
 }
 
 exports.handler = async (event) => {
+  const headers = cors(event.headers && (event.headers.origin || event.headers.Origin));
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 200, headers, body: "" };
+  }
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method not allowed" };
+    return { statusCode: 405, headers, body: "Method not allowed" };
   }
   let body;
   try {
     body = JSON.parse(event.body || "{}");
   } catch {
-    return { statusCode: 400, body: JSON.stringify({ ok: false, error: "bad_json" }) };
+    return { statusCode: 400, headers, body: JSON.stringify({ ok: false, error: "bad_json" }) };
   }
+
+  const done = (statusCode, obj) => ({
+    statusCode,
+    headers: { ...headers, "Content-Type": "application/json" },
+    body: JSON.stringify(obj),
+  });
 
   try {
     // ---- Minute reload pack ----
     if (body.sku === "minutes-100") {
       if (!body.business_id) {
-        return { statusCode: 400, body: JSON.stringify({ ok: false, error: "business_id required" }) };
+        return done(400, { ok: false, error: "business_id required" });
       }
       const params = new URLSearchParams({
         "payment_method_types[0]": "card",
@@ -74,18 +98,18 @@ exports.handler = async (event) => {
       });
       setLine(params, 0, { name: "OpenLine: 100 extra minutes", amount: PRICES.minutes_100 });
       const s = await stripePost(params);
-      return { statusCode: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ok: true, url: s.url }) };
+      return done(200, { ok: true, url: s.url });
     }
 
     // ---- Plan purchase ----
     const plan = body.plan;
     if (plan !== "shared" && plan !== "dedicated") {
-      return { statusCode: 400, body: JSON.stringify({ ok: false, error: "plan must be shared or dedicated" }) };
+      return done(400, { ok: false, error: "plan must be shared or dedicated" });
     }
     const addons = Array.isArray(body.addons) ? body.addons : [];
     const biz = body.business || {};
     if (!biz.name || !biz.email) {
-      return { statusCode: 400, body: JSON.stringify({ ok: false, error: "business name and email required" }) };
+      return done(400, { ok: false, error: "business name and email required" });
     }
 
     const params = new URLSearchParams({
@@ -115,9 +139,9 @@ exports.handler = async (event) => {
     }
 
     const s = await stripePost(params);
-    return { statusCode: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ok: true, url: s.url }) };
+    return done(200, { ok: true, url: s.url });
   } catch (e) {
     console.error("openline-checkout failed:", e.message);
-    return { statusCode: 500, body: JSON.stringify({ ok: false, error: "checkout_failed" }) };
+    return done(500, { ok: false, error: "checkout_failed" });
   }
 };
