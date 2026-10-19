@@ -19,6 +19,7 @@
  */
 
 const { normalizePhone, sendSms } = require("./station-lib");
+const crypto = require("crypto");
 
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://evmynxxvyafvnreaudpr.supabase.co";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -124,6 +125,66 @@ async function createCheckoutSession({ amount_cents, order_id, business_name, cu
   }
 
   return res.json();
+}
+
+/* Gatekeeper loop: named humans responsible for the order gate.
+ *
+ * fulfillmentTypeFor: orders placed before the shop's production_start are
+ * pre-orders (chefs aren't in yet), not ASAP tickets. production_start and
+ * timezone live in business.station_data (e.g. "01:00", "America/Chicago").
+ *
+ * notifyGatekeepers: texts every active gatekeeper a ticket summary with a
+ * signed confirm link. Tapping it confirms the order (no login) and fires
+ * the customer confirmation text. Failures never break the order itself.
+ */
+function fulfillmentTypeFor(business) {
+  const sd = business.station_data || {};
+  const prodStart = sd.production_start; // "HH:MM"
+  if (!prodStart) return "asap";
+  const tz = sd.timezone || "America/Chicago";
+  try {
+    const nowStr = new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit", minute: "2-digit", timeZone: tz,
+    });
+    return nowStr < prodStart ? "preorder" : "asap";
+  } catch (e) {
+    return "asap";
+  }
+}
+
+async function notifyGatekeepers({ business, order, items, totalCents, fulfillment, fType, confirmToken, callerPhone }) {
+  let gks = [];
+  try {
+    gks = await sbGet(
+      "dm_gatekeepers",
+      `select=id,name,phone&business_id=eq.${encodeURIComponent(business.id)}&is_active=eq.true&order=role.asc`
+    );
+  } catch (e) {
+    console.error("gatekeeper lookup failed:", e.message);
+    return;
+  }
+  if (!gks || !gks.length) {
+    console.log("gatekeeper notify: no gatekeepers for", business.slug || business.id);
+    return;
+  }
+  const itemSummary = items
+    .map((it) => `${it.quantity || it.qty || 1}x ${it.name || "item"}`)
+    .join(", ")
+    .slice(0, 120);
+  const totalStr = totalCents > 0 ? ` $${(totalCents / 100).toFixed(2)}` : "";
+  const kind = fType === "preorder" ? "Pre-order" : "New order";
+  const when = fulfillment === "delivery" ? "delivery" : "pickup";
+  for (const gk of gks) {
+    if (!gk.phone) continue;
+    const link = `https://daymarket.tabronmerryhill.com/.netlify/functions/confirm-order?t=${confirmToken}&g=${gk.id}`;
+    const body = `${kind} for ${business.name}: ${itemSummary}${totalStr} (${when}). ${callerPhone}. ${gk.name}, tap to confirm: ${link}`;
+    try {
+      const sms = await sendSms(gk.phone, body);
+      console.log("gatekeeper SMS", sms.ok ? "sent" : "failed", gk.name, order.id, sms.ok ? sms.sid : (sms.skipped || sms.error));
+    } catch (e) {
+      console.error("gatekeeper SMS error:", gk.name, e.message);
+    }
+  }
 }
 
 /* Resolve business from slug/ref or called number */
@@ -478,10 +539,35 @@ exports.handler = async (event) => {
               ? " Delivery link sent."
               : "";
 
+        // Gatekeeper loop: stamp fulfillment timing, mint a confirm token, and
+        // text the humans over the gate. Never breaks the order on failure.
+        let fulfillmentType = "asap";
+        try {
+          const confirmToken = crypto.randomBytes(32).toString("hex");
+          fulfillmentType = fulfillmentTypeFor(business);
+          await sbPatch("dm_orders", order.id, {
+            fulfillment_type: fulfillmentType,
+            confirm_token: confirmToken,
+          });
+          await notifyGatekeepers({
+            business,
+            order,
+            items,
+            totalCents,
+            fulfillment,
+            fType: fulfillmentType,
+            confirmToken,
+            callerPhone: normalizePhone(args.caller_phone || merged.caller_phone || ""),
+          });
+        } catch (e) {
+          console.error("gatekeeper loop failed:", e.message);
+        }
+
         return json(200, {
           ok: true,
           order_id: order.id,
           fulfillment: fulfillment,
+          fulfillment_type: fulfillmentType,
           delivery_fee: (deliveryFeeCents / 100).toFixed(2),
           payment_url: paymentUrl,
           delivery_payment_url: deliveryPaymentUrl,
