@@ -305,8 +305,12 @@ exports.handler = async (event) => {
           deliveryFeeCents = feeDollars * 100;
         }
 
-        // Server-side total: deterministic package-price lookup first, agent's
-        // total_cents only as fallback. Never trust the model for money.
+        // Server-side total: deterministic pricing, never trust the model for
+        // money. Resolution order:
+        //   1. package_id lookup (already priced with premium + markup baked in)
+        //   2. item-by-item: match package names first (priced already), then
+        //      menu items (shop price + 10% custom premium + 15% DayMarket markup)
+        //   3. model's total_cents as last resort
         let totalCents = parseInt(args.total_cents || merged.total_cents || 0, 10);
         const packageId = args.package_id || merged.package_id || null;
         let packageName = null;
@@ -322,6 +326,56 @@ exports.handler = async (event) => {
             }
           } catch (e) {
             console.error("package price lookup failed:", e.message);
+          }
+        }
+        if (!totalCents || totalCents <= 0) {
+          // Item-by-item server-side pricing.
+          try {
+            const menuByName = {};
+            for (const m of (business.station_data?.menu_items || [])) {
+              if (m.name) menuByName[String(m.name).toLowerCase()] = m;
+            }
+            const pkgsByName = {};
+            try {
+              const pkgs = await sbGet(
+                "dm_packages",
+                `select=id,name,base_price_cents&business_id=eq.${encodeURIComponent(business.id)}&active=eq.true&order=created_at.desc&limit=200`
+              );
+              for (const p of (pkgs || [])) {
+                const k = String(p.name || "").toLowerCase();
+                if (k && !(k in pkgsByName)) pkgsByName[k] = p;
+              }
+            } catch (e) {
+              console.error("package list lookup failed:", e.message);
+            }
+            let priced = 0;
+            for (const it of items) {
+              const name = String(it.name || "").toLowerCase();
+              const qty = parseInt(it.quantity || it.qty || 1, 10) || 1;
+              if (!name) continue;
+              const pkg = pkgsByName[name];
+              if (pkg && pkg.base_price_cents != null) {
+                // Packages are already priced (premium + markup baked in).
+                totalCents += parseInt(pkg.base_price_cents, 10) * qty;
+                priced += qty;
+                continue;
+              }
+              const menuItem = menuByName[name];
+              if (menuItem && menuItem.price_cents != null) {
+                // Menu price is the shop's shelf price: stack 10% custom
+                // premium + 15% DayMarket markup on top, same as create_package.
+                const base = parseInt(menuItem.price_cents, 10) * qty;
+                const shopPrice = base + Math.round(base * 0.10);
+                const withMarkup = shopPrice + Math.round(shopPrice * 0.15);
+                totalCents += withMarkup;
+                priced += qty;
+              } else {
+                console.error("place_order: unpriced item, no link for it:", it.name);
+              }
+            }
+            if (priced > 0) console.log("place_order: server-side item total", totalCents, "cents");
+          } catch (e) {
+            console.error("item pricing failed:", e.message);
           }
         }
 
