@@ -153,6 +153,50 @@ exports.handler = async (event) => {
     return json(400, { ok: false, error: "bad_session" });
   }
 
+  const meta = session.metadata || {};
+
+  // ---- OpenLine minute reload pack: add minutes to the business's open cycle.
+  if (meta.type === "minutes_reload") {
+    const businessId = meta.business_id || "";
+    const minutes = parseInt(meta.minutes || "0", 10) || 0;
+    if (!businessId || !minutes) {
+      console.error("stripe-webhook: minutes_reload missing business/minutes", eventId);
+      return json(200, { ok: false, error: "bad_reload_metadata" });
+    }
+    const cyc = await sb(serviceKey, "GET",
+      `/dm_voice_billing_cycles?business_id=eq.${encodeURIComponent(businessId)}&status=eq.open&order=cycle_start.desc&limit=1&select=id,included_minutes`);
+    if (cyc.status !== 200 || !cyc.data || !cyc.data.length) {
+      console.error("stripe-webhook: no open cycle for minutes reload", eventId, businessId);
+      return json(200, { ok: false, error: "no_open_cycle" });
+    }
+    const row = cyc.data[0];
+    const upd = await sb(serviceKey, "PATCH",
+      `/dm_voice_billing_cycles?id=eq.${encodeURIComponent(row.id)}`,
+      { included_minutes: parseFloat(row.included_minutes || 0) + minutes });
+    if (upd.status !== 200) {
+      console.error("stripe-webhook: failed to add reloaded minutes", eventId, businessId);
+      return json(500, { ok: false, error: "db_error" });
+    }
+    console.log("stripe-webhook: minutes reloaded", eventId, businessId, minutes);
+    return json(200, { ok: true, reloaded_minutes: minutes });
+  }
+
+  // ---- OpenLine plan purchase: new subscriber. v1 is manual provisioning:
+  // log loudly so the owner provisions the business (auth user + owner_id +
+  // voice_plan in station_data). Never silently swallow a paying customer.
+  if (meta.type === "openline_plan") {
+    console.log("stripe-webhook: NEW OPENLINE CUSTOMER",
+      eventId,
+      "plan=" + (meta.plan || "?"),
+      "business=" + (meta.business_name || "?"),
+      "email=" + (meta.contact_email || "?"),
+      "phone=" + (meta.contact_phone || "?"),
+      "addons=" + (meta.addons || "none"),
+      "customer=" + (session.customer || "?"),
+      "subscription=" + (session.subscription || "?"));
+    return json(200, { ok: true, openline_plan: meta.plan || "?" });
+  }
+
   // Find the order this checkout session was linked to. Sessions are written
   // before the customer pays, so this must exist. Delivery fees use their own
   // session column (two-link model), so check both.
