@@ -153,6 +153,20 @@ async function resolveBusiness(event) {
     if (rows && rows.length) return rows[0];
   }
 
+  // Fallback: this backend serves the Ellianna's voice agent, and the model
+  // sometimes omits business_ref (seen on place_order -> 404 business_not_found,
+  // order lost, no payment link). Resolve the default shop instead of failing
+  // the order. Explicit-but-unmatched refs still fall through to null below.
+  // DEFAULT_BUSINESS_SLUG env overrides; the concierge agent will set its own.
+  if (!ref) {
+    const defSlug = process.env.DEFAULT_BUSINESS_SLUG || "elliannas-donut-shop";
+    const rows = await sbGet(
+      "dm_businesses",
+      `select=id,name,slug,phone_number,station_data,status&slug=eq.${encodeURIComponent(defSlug)}&status=eq.active&limit=1`
+    );
+    if (rows && rows.length) return rows[0];
+  }
+
   return null;
 }
 
