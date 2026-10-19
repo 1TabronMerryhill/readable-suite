@@ -119,12 +119,17 @@ async function ensureOpenCycle(business) {
   }
   const plan =
     (business.station_data && business.station_data.voice_plan) || "shared";
+  const isDedicated = plan === "dedicated";
   return sbPost("dm_voice_billing_cycles", {
     business_id: business.id,
     cycle_start: start,
     cycle_end: end,
-    plan: plan === "dedicated" ? "dedicated" : "shared",
+    plan: isDedicated ? "dedicated" : "shared",
     status: "open",
+    // Shared includes 300 minutes; dedicated is fully metered (pass-through).
+    included_minutes: isDedicated ? 0 : 300,
+    minutes_used: 0,
+    overage_minutes: 0,
   });
 }
 
