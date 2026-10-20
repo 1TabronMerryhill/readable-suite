@@ -11,6 +11,19 @@
  *   dm_voice_billing_cycles: minutes_used / overage_minutes rolled up here.
  *     Money math (base, rates) lives in the dashboard config; this webhook
  *     only tracks minutes and ensures the cycle exists.
+ *
+ * Business attribution:
+ *   1. Pinned agents (per-shop OpenLine agents): the business whose
+ *      dm_businesses.retell_agent_id matches, hardcoded map as fallback.
+ *   2. The concierge agent is pinned to NO business. Its calls resolve
+ *      through dm_voice_contexts (written by get_business_context during
+ *      the call): the first business context on the call is the shop it
+ *      served, and listing_slug is stamped on the call row. Multi-shop
+ *      calls keep every context row, so statement-time splitting reads
+ *      the full truth from dm_voice_contexts.
+ *   3. Calls that served only a system listing (VictoryLap, OpenLine) or
+ *      never picked a listing are logged with business_id NULL: DayMarket
+ *      overhead, never rolled into a shop's billing cycle.
  */
 
 const SUPABASE_URL =
@@ -83,10 +96,52 @@ function normalizePhone(raw) {
 async function resolveBusinessId(slug) {
   const rows = await sbGet(
     "dm_businesses",
-    `select=id,station_data&slug=eq.${encodeURIComponent(slug)}&limit=1`
+    `select=id,station_data,slug&slug=eq.${encodeURIComponent(slug)}&limit=1`
   );
   if (!rows.length) return null;
   return rows[0];
+}
+
+/* Pinned-agent resolution: a shop's own agent carries the shop's
+ * retell_agent_id on its business row. The hardcoded map is only a
+ * fallback for agents onboarded before that column existed. Returns
+ * null for unpinned agents (the concierge), which resolve by context. */
+async function resolvePinnedBusiness(agentId) {
+  try {
+    const rows = await sbGet(
+      "dm_businesses",
+      `select=id,station_data,slug&retell_agent_id=eq.${encodeURIComponent(agentId)}&status=eq.active&limit=1`
+    );
+    if (rows.length) return rows[0];
+  } catch (e) {
+    console.error("agent business lookup failed:", e.message);
+  }
+  const slug = AGENT_BUSINESS[agentId];
+  if (slug) return resolveBusinessId(slug);
+  return null;
+}
+
+/* Concierge resolution: what did this call actually serve? Reads the
+ * contexts minted during the call. Returns the first context's listing
+ * slug plus the first BUSINESS context's business row (or nulls when the
+ * call served only systems, or nothing). */
+async function resolveCallContext(callId) {
+  const contexts = await sbGet(
+    "dm_voice_contexts",
+    `select=listing_slug,business_id,created_at&retell_call_id=eq.${encodeURIComponent(callId)}&order=created_at.asc`
+  );
+  if (!contexts.length) return { listingSlug: null, business: null };
+  const listingSlug = contexts[0].listing_slug || null;
+  const bizCtx = contexts.find((c) => c.business_id);
+  let business = null;
+  if (bizCtx) {
+    const rows = await sbGet(
+      "dm_businesses",
+      `select=id,station_data,slug&id=eq.${encodeURIComponent(bizCtx.business_id)}&limit=1`
+    );
+    if (rows.length) business = rows[0];
+  }
+  return { listingSlug, business };
 }
 
 function monthBounds(d) {
@@ -133,14 +188,28 @@ async function ensureOpenCycle(business) {
   });
 }
 
-async function classifyOutcome(call, businessId, callerPhone, startTs, endTs) {
+async function classifyOutcome(call, businessId, callerPhone, startTs, endTs, callId) {
   const durationS = Math.round(
     ((endTs || Date.now()) - (startTs || Date.now())) / 1000
   );
   if (durationS < 10) return { outcome: "missed", orderId: null };
-  // Did this call produce an order? Match caller + time window.
+  // A take_message row on this exact call is the strongest callback
+  // signal there is: the caller explicitly left a message.
   try {
-    if (callerPhone) {
+    if (callId) {
+      const msgs = await sbGet(
+        "dm_callback_requests",
+        `select=id&retell_call_id=eq.${encodeURIComponent(callId)}&limit=1`
+      );
+      if (msgs.length) return { outcome: "callback", orderId: null };
+    }
+  } catch (e) {
+    console.error("callback match failed:", e.message);
+  }
+  // Did this call produce an order? Match caller + time window. Only
+  // possible when the call is attributed to a business.
+  try {
+    if (businessId && callerPhone) {
       const winStart = new Date(startTs - 5 * 60 * 1000).toISOString();
       const winEnd = new Date(endTs + 15 * 60 * 1000).toISOString();
       const orders = await sbGet(
@@ -179,17 +248,16 @@ exports.handler = async (event) => {
   const agentId = call.agent_id;
   if (!callId || !agentId) return json(400, { ok: false, error: "missing_call" });
 
-  const slug = AGENT_BUSINESS[agentId];
-  if (!slug) {
-    console.error("voice webhook: unknown agent", agentId);
-    return json(200, { ok: true, ignored: "unknown_agent" });
-  }
-
   try {
-    const business = await resolveBusinessId(slug);
+    // Attribution: pinned agent -> its business. Unpinned (concierge) ->
+    // whatever the call's contexts say it served. Neither -> the call is
+    // still logged, as unattributed DayMarket overhead.
+    let business = await resolvePinnedBusiness(agentId);
+    let listingSlug = business ? business.slug || AGENT_BUSINESS[agentId] || null : null;
     if (!business) {
-      console.error("voice webhook: unknown business slug", slug);
-      return json(200, { ok: true, ignored: "unknown_business" });
+      const ctx = await resolveCallContext(callId);
+      listingSlug = ctx.listingSlug;
+      business = ctx.business;
     }
 
     const startTs = call.start_timestamp || Date.now();
@@ -201,10 +269,11 @@ exports.handler = async (event) => {
     const callerPhone = normalizePhone(call.from_number);
     const { outcome, orderId } = await classifyOutcome(
       call,
-      business.id,
+      business ? business.id : null,
       callerPhone,
       startTs,
-      endTs
+      endTs,
+      callId
     );
 
     // Cost: Retell's combined_cost is already in cents (e.g. 40.33 = $0.4033).
@@ -218,7 +287,8 @@ exports.handler = async (event) => {
       `select=id&retell_call_id=eq.${encodeURIComponent(callId)}&limit=1`
     );
     const row = {
-      business_id: business.id,
+      business_id: business ? business.id : null,
+      listing_slug: listingSlug,
       retell_call_id: callId,
       agent_id: agentId,
       caller_phone: callerPhone,
@@ -236,23 +306,29 @@ exports.handler = async (event) => {
       saved = await sbPost("dm_voice_calls", row);
     }
 
-    // Roll minutes into the open billing cycle.
-    const cycle = await ensureOpenCycle(business);
-    const minutes = durationS / 60;
-    const newUsed = parseFloat(cycle.minutes_used || 0) + minutes;
-    const included = parseFloat(cycle.included_minutes || 0);
-    const overage = Math.max(0, newUsed - included);
-    await sbPatch("dm_voice_billing_cycles", cycle.id, {
-      minutes_used: Math.round(newUsed * 100) / 100,
-      overage_minutes: Math.round(overage * 100) / 100,
-    });
+    // Roll minutes into the open billing cycle — attributed calls only.
+    // Unattributed and system-listing calls are DayMarket overhead: the
+    // concierge account is DayMarket's, and shops only ever pay for
+    // their own calls.
+    if (business) {
+      const cycle = await ensureOpenCycle(business);
+      const minutes = durationS / 60;
+      const newUsed = parseFloat(cycle.minutes_used || 0) + minutes;
+      const included = parseFloat(cycle.included_minutes || 0);
+      const overage = Math.max(0, newUsed - included);
+      await sbPatch("dm_voice_billing_cycles", cycle.id, {
+        minutes_used: Math.round(newUsed * 100) / 100,
+        overage_minutes: Math.round(overage * 100) / 100,
+      });
+    }
 
     console.log(
       "voice call logged",
       callId,
       outcome,
       durationS + "s",
-      business.id
+      business ? business.id : "unattributed",
+      listingSlug || "no-listing"
     );
     return json(200, { ok: true, call_row: saved.id, outcome });
   } catch (e) {

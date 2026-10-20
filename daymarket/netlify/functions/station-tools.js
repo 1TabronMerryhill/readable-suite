@@ -14,6 +14,16 @@
  *   get_info     -> address, phone, name
  *   place_order  -> create an order (validated)
  *
+ * Concierge (directory) actions — no business resolution required:
+ *   lookup_directory    -> listings matching ONE caller intent, nothing else
+ *   get_business_context -> load one listing (shop context or system facts)
+ *   take_message        -> write a callback/message row (dm_callback_requests)
+ *
+ * Routing is enforced HERE, not just in the agent prompt: lookup_directory
+ * only ever returns listings whose intents include the caller's intent.
+ * A hungry caller gets food listings. They never see health, phone, or
+ * systems listings, and hidden listings never surface at all.
+ *
  * Auth: x-retell-secret header must match RETELL_FUNCTION_SECRET.
  * Uses Supabase REST API via fetch (no client dependency).
  */
@@ -70,6 +80,28 @@ async function sbPost(table, row) {
   }
   const data = await res.json();
   return Array.isArray(data) ? data[0] : data;
+}
+
+/* Insert without a read-back. return=representation forces the new row
+ * through SELECT policies too, which public-intake tables (callback
+ * requests) and operator-only tables (voice contexts) deliberately do
+ * not grant. Callers that need an id mint it themselves. */
+async function sbPostMinimal(table, row) {
+  const url = `${REST}/${table}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_SERVICE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Supabase insert failed: ${txt}`);
+  }
 }
 
 async function sbPatch(table, id, patch) {
@@ -266,6 +298,339 @@ async function getPackages(businessId) {
   }));
 }
 
+/* ------------------------------------------------------------------ *
+ * Station directory — the concierge routing layer.
+ *
+ * The directory (dm_directory_listings) holds every business and system
+ * the concierge may route to, each tagged with the caller intents it
+ * serves. lookup_directory returns ONLY listings matching the caller's
+ * intent, in priority order. That scoping is the product rule: a hungry
+ * caller hears food options and nothing else. No cross-suggestion, ever.
+ * Hidden listings (seeded but not market-ready) never surface.
+ * ------------------------------------------------------------------ */
+
+const INTENT_LABELS = {
+  food_ordering: "ordering food",
+  health: "health programs, labs, or coaching",
+  business_phone: "a phone answering service for their business",
+  business_systems: "business systems or workflow help",
+};
+
+// Keyword signals per intent, matched as substrings of the caller's words.
+// The intent enum stays small and exact (concierge contract):
+// food_ordering | health | business_phone | business_systems.
+const INTENT_KEYWORDS = {
+  food_ordering: [
+    "donut", "doughnut", "hungry", "food", "eat", "breakfast", "lunch",
+    "dinner", "brunch", "coffee", "catering", "bakery", "pastry",
+    "pastries", "fritter", "dozen", "snack", "meal", "dessert", "cake",
+  ],
+  health: [
+    "health", "fitness", "labs", "lab work", "blood work", "bloodwork",
+    "doctor", "clinic", "weight", "coaching", "wellness", "hormone",
+    "vitamin", "cholesterol", "get in shape",
+  ],
+  business_phone: [
+    "missed call", "missed calls", "misses calls", "miss calls",
+    "can't answer", "cant answer", "answering", "receptionist",
+    "voicemail", "phone agent", "answer my calls", "answer the phone",
+    "after hours", "front desk", "calls when",
+  ],
+  business_systems: [
+    "workflow", "systems", "consulting", "sprint", "processes",
+    "operations", "automation", "software",
+  ],
+};
+
+// Owner phrasing with no specific need ("I own a shop, what can you do
+// for me") is not an intent by itself: it narrows to the two owner-facing
+// categories and the agent asks one clarifying question.
+const OWNER_SIGNALS = [
+  "i own", "my shop", "my store", "my restaurant", "my business",
+  "business owner", "for my business", "i run a", "we run a",
+];
+
+function classifyIntent(query) {
+  const q = String(query || "").toLowerCase();
+  if (!q) return { intent: null, ambiguous: [] };
+  const scores = {};
+  for (const [intent, words] of Object.entries(INTENT_KEYWORDS)) {
+    let s = 0;
+    for (const w of words) if (q.includes(w)) s += 1;
+    if (s > 0) scores[intent] = s;
+  }
+  const ranked = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  if (!ranked.length) {
+    if (OWNER_SIGNALS.some((w) => q.includes(w))) {
+      return { intent: null, ambiguous: ["business_phone", "business_systems"] };
+    }
+    return { intent: null, ambiguous: [] };
+  }
+  const top = ranked[0][1];
+  const winners = ranked.filter(([, s]) => s === top).map(([i]) => i);
+  if (winners.length === 1) return { intent: winners[0], ambiguous: [] };
+  return { intent: null, ambiguous: winners };
+}
+
+async function getDirectoryListings() {
+  // Live and pilot listings only. Hidden rows exist in the table (seeded
+  // ahead of market-readiness) and must never reach a caller.
+  return sbGet(
+    "dm_directory_listings",
+    "select=id,slug,display_name,kind,intents,description,business_id,facts,gates,status,priority&status=in.(live,pilot)&order=priority.asc"
+  );
+}
+
+function listingForAgent(l) {
+  const out = {
+    slug: l.slug,
+    display_name: l.display_name,
+    kind: l.kind,
+    description: l.description || "",
+    gates: l.gates || [],
+  };
+  if (l.kind === "business") {
+    out.business_ref = l.slug;
+    out.orderable = (l.gates || []).includes("order");
+  } else {
+    out.orderable = false;
+    if (l.facts && l.facts.signup_url) out.signup_url = l.facts.signup_url;
+  }
+  return out;
+}
+
+async function handleLookupDirectory(args) {
+  let listings;
+  try {
+    listings = await getDirectoryListings();
+  } catch (e) {
+    return json(500, { ok: false, error: "db_error", message: e.message });
+  }
+  const knownIntents = [...new Set(listings.flatMap((l) => l.intents || []))];
+
+  let intent = args.intent || null;
+  if (intent && !Object.prototype.hasOwnProperty.call(INTENT_LABELS, intent)) {
+    intent = null; // unknown category string: fall through to query / clarify
+  }
+  if (!intent) {
+    const query = args.query || args.need || args.message || "";
+    if (!query) {
+      // No intent and no words to classify: hand back the intent menu so
+      // the agent asks ONE clarifying question, then calls again.
+      return json(200, {
+        ok: true,
+        needs_intent: true,
+        intents: knownIntents.map((k) => ({ intent: k, label: INTENT_LABELS[k] || k })),
+        listings: [],
+        rule: "Ask the caller one clarifying question to pin down their intent, then call lookup_directory again with that intent. Do not list businesses or services before the intent is known.",
+      });
+    }
+    const { intent: classified, ambiguous } = classifyIntent(query);
+    if (!classified) {
+      if (ambiguous.length) {
+        return json(200, {
+          ok: true,
+          needs_intent: true,
+          ambiguous_intents: ambiguous.map((k) => ({ intent: k, label: INTENT_LABELS[k] || k })),
+          listings: [],
+          rule: "The caller's need could be more than one thing. Ask one clarifying question, then call lookup_directory with the chosen intent. Do not offer any listing yet.",
+        });
+      }
+      return json(200, {
+        ok: true,
+        intent: null,
+        listings: [],
+        summary: "Nothing on the directory matches that yet.",
+        rule: "Say plainly that we do not have that yet and offer to take a message. Never invent a business or service.",
+      });
+    }
+    intent = classified;
+  }
+
+  const matches = listings.filter((l) => (l.intents || []).includes(intent)).map(listingForAgent);
+  return json(200, {
+    ok: true,
+    intent,
+    listings: matches,
+    summary: matches.length
+      ? matches.map((m) => `${m.name}: ${m.description}`).join(" ")
+      : "Nothing live on the directory for that yet.",
+    rule: "Offer ONLY these listings. Do not mention, hint at, or cross-suggest any other business or service. To work with one, call get_business_context with its slug.",
+  });
+}
+
+function callIdFrom(args) {
+  return args.call_id || (args.call && args.call.call_id) || null;
+}
+
+/* Mint + persist a voice context. The context_id is the enforcement token
+ * for the concierge path: business-scoped tools presented with one are
+ * rejected unless the context's business matches the call's business_ref.
+ * The row also persists call_id -> listing for the call-sync webhook,
+ * which tags dm_voice_calls with the listing served (billing split). */
+async function mintContext({ callId, listingSlug, businessId }) {
+  const contextId = crypto.randomUUID();
+  try {
+    await sbPostMinimal("dm_voice_contexts", {
+      id: contextId,
+      retell_call_id: callId || null,
+      listing_slug: listingSlug,
+      business_id: businessId || null,
+    });
+  } catch (e) {
+    // Loud, not fatal: the call continues, but enforcement downstream can
+    // only validate contexts that actually persisted.
+    console.error("voice context persist failed:", e.message);
+  }
+  return contextId;
+}
+
+async function handleGetBusinessContext(args) {
+  const ref = args.business_ref || args.slug || args.listing || "";
+  if (!ref) {
+    return json(400, { ok: false, error: "no_ref", message: "A listing slug (business_ref) is required." });
+  }
+  const callId = callIdFrom(args);
+  let listings;
+  try {
+    listings = await getDirectoryListings();
+  } catch (e) {
+    return json(500, { ok: false, error: "db_error", message: e.message });
+  }
+  const listing = listings.find((l) => l.slug === ref);
+
+  if (listing && listing.kind === "system") {
+    const facts = listing.facts || {};
+    const contextId = await mintContext({ callId, listingSlug: listing.slug, businessId: null });
+    return json(200, {
+      ok: true,
+      context_id: contextId,
+      listing: listing.slug,
+      display_name: listing.display_name,
+      kind: "system",
+      orderable: false,
+      description: listing.description || "",
+      facts,
+      gates: listing.gates || [],
+      signup_url: facts.signup_url || null,
+      summary: `${listing.display_name}: ${listing.description || ""}`,
+      rule: "Info only. Answer questions from these facts. Do not take an order for this listing, and do not promise to text the signup link. Speak the link or take a message with take_message.",
+    });
+  }
+
+  // Business listing (or a business slug with no listing yet): load the
+  // live business row. Deliberately lean: menu and packages stay on-demand
+  // through get_menu / get_packages with business_ref, same as the pilot
+  // agent works. Facts like address and phone come from get_info.
+  const businessId = listing && listing.business_id ? listing.business_id : null;
+  let rows;
+  try {
+    const filter = businessId
+      ? `id=eq.${encodeURIComponent(businessId)}`
+      : `slug=eq.${encodeURIComponent(ref)}`;
+    rows = await sbGet(
+      "dm_businesses",
+      `select=id,name,slug,phone_number,station_data,status&${filter}&status=eq.active&limit=1`
+    );
+  } catch (e) {
+    return json(500, { ok: false, error: "db_error", message: e.message });
+  }
+  if (!rows || !rows.length) {
+    return json(404, { ok: false, error: "listing_not_found", message: `No live listing or business for: ${ref}` });
+  }
+  const business = rows[0];
+  const sd = business.station_data || {};
+  const contextId = await mintContext({
+    callId,
+    listingSlug: listing ? listing.slug : business.slug,
+    businessId: business.id,
+  });
+  return json(200, {
+    ok: true,
+    context_id: contextId,
+    listing: listing ? listing.slug : business.slug,
+    display_name: business.name,
+    kind: "business",
+    orderable: true,
+    business_ref: business.slug,
+    description: (listing && listing.description) || business.tagline || "",
+    hours: sd.hours || "Hours not listed.",
+    production_start: sd.production_start || null,
+    timezone: sd.timezone || "America/Chicago",
+    gates: listing ? listing.gates || [] : ["order", "info"],
+    summary: `${business.name}: ${(listing && listing.description) || business.tagline || ""}`,
+    rule: "You are now working as this business for the rest of the call. Pass this context_id and business_ref on every business tool call (get_menu, get_packages, create_package, place_order, get_delivery_fee). Do not bring up any other listing unless the caller asks to switch.",
+  });
+}
+
+/* take_message: write a real row to dm_callback_requests. This is the
+ * store behind every "we'll call you back" promise — the concierge's
+ * fallback and the pilot agent's callback path both land here. It sends
+ * NO text and makes NO promise beyond a person following up. */
+async function handleTakeMessage(args) {
+  const name = String(args.name || "").trim();
+  const phone = normalizePhone(args.phone || args.caller_phone || "");
+  const message = String(args.message || "").trim();
+  const listingSlug = args.listing_slug || args.business_ref || null;
+  const callId = callIdFrom(args);
+  if (!message) {
+    return json(400, { ok: false, error: "no_message", message: "A message is required." });
+  }
+  if (!phone) {
+    return json(400, { ok: false, error: "no_phone", message: "A callback phone number is required to take a message." });
+  }
+  let businessId = null;
+  if (listingSlug) {
+    try {
+      const listings = await getDirectoryListings();
+      const l = listings.find((x) => x.slug === listingSlug);
+      if (l && l.business_id) businessId = l.business_id;
+    } catch (e) {
+      console.error("take_message listing lookup failed:", e.message);
+    }
+  }
+  try {
+    const messageId = crypto.randomUUID();
+    await sbPostMinimal("dm_callback_requests", {
+      id: messageId,
+      name: name || null,
+      phone,
+      message,
+      listing_slug: listingSlug,
+      business_id: businessId,
+      retell_call_id: callId,
+      source: args.source || "concierge",
+    });
+    return json(200, {
+      ok: true,
+      message_id: messageId,
+      summary: `Message saved for ${name || "caller"} at ${phone}.`,
+      rule: "Tell the caller a person will follow up. Do not promise a text or a specific callback time.",
+    });
+  } catch (e) {
+    return json(500, { ok: false, error: "db_error", message: e.message });
+  }
+}
+
+/* Context enforcement for business-scoped tools. Only applies when the
+ * caller PRESENTS a context_id (the concierge path). No context_id means
+ * the pinned per-shop agent path, which is unaffected. A presented
+ * context must exist, must belong to the resolved business, and — when
+ * both sides carry a call_id — must belong to this call. System contexts
+ * (business_id null) can never authorize a business tool. */
+async function validateContext(contextId, business, args) {
+  const rows = await sbGet(
+    "dm_voice_contexts",
+    `select=id,retell_call_id,listing_slug,business_id&id=eq.${encodeURIComponent(contextId)}&limit=1`
+  );
+  if (!rows || !rows.length) return "context_not_found";
+  const ctx = rows[0];
+  if (!ctx.business_id || ctx.business_id !== business.id) return "context_business_mismatch";
+  const callId = callIdFrom(args);
+  if (callId && ctx.retell_call_id && ctx.retell_call_id !== callId) return "context_call_mismatch";
+  return null;
+}
+
 exports.handler = async (event) => {
   const secret = event.headers["x-retell-secret"] || event.headers["X-Retell-Secret"];
   if (RETELL_SECRET && secret !== RETELL_SECRET) {
@@ -287,6 +652,19 @@ exports.handler = async (event) => {
   const args = body.args || body.arguments || body.parameters || {};
   const merged = { ...body, ...args };
 
+  // Concierge directory actions run BEFORE business resolution: the whole
+  // point is that the caller has not picked a business yet. They must never
+  // fall through to the default-business fallback below.
+  if (action === "lookup_directory" || action === "list_directory" || action === "search_directory") {
+    return handleLookupDirectory({ ...merged, intent: merged.intent || null });
+  }
+  if (action === "get_business_context") {
+    return handleGetBusinessContext(merged);
+  }
+  if (action === "take_message") {
+    return handleTakeMessage(merged);
+  }
+
   let business;
   try {
     business = await resolveBusiness(merged);
@@ -295,6 +673,26 @@ exports.handler = async (event) => {
   }
   if (!business) {
     return json(404, { ok: false, error: "business_not_found" });
+  }
+
+  // Concierge context enforcement: only when the caller presents a
+  // context_id. The pinned per-shop agent never does, so it is unaffected.
+  const presentedContext = merged.context_id || args.context_id || null;
+  if (presentedContext) {
+    let ctxError = null;
+    try {
+      ctxError = await validateContext(presentedContext, business, merged);
+    } catch (e) {
+      ctxError = "context_check_failed";
+      console.error("context validation error:", e.message);
+    }
+    if (ctxError) {
+      return json(403, {
+        ok: false,
+        error: "context_mismatch",
+        message: `This call's context does not cover ${business.name}. Load the right listing with get_business_context first. (${ctxError})`,
+      });
+    }
   }
 
   try {
@@ -737,7 +1135,7 @@ exports.handler = async (event) => {
         return json(400, {
           ok: false,
           error: "unknown_action",
-          message: `Unknown action: ${action}. Available: get_menu, get_packages, get_hours, get_info, place_order, create_package, get_delivery_fee, book_delivery.`,
+          message: `Unknown action: ${action}. Available: lookup_directory, get_business_context, take_message, get_menu, get_packages, get_hours, get_info, place_order, create_package, get_delivery_fee, book_delivery.`,
         });
     }
   } catch (e) {
