@@ -471,7 +471,9 @@ exports.handler = async (event) => {
         let deliveryStripeSessionId = null;
         let smsSent = false;
 
-        if (process.env.STRIPE_SECRET_KEY) {
+        // Payment links are skipped entirely for demo businesses
+        // (station_data.demo) so demo orders never touch live Stripe.
+        if (process.env.STRIPE_SECRET_KEY && !(business.station_data && business.station_data.demo)) {
           // Link 1: the order.
           if (totalCents > 0) {
             try {
@@ -621,10 +623,10 @@ exports.handler = async (event) => {
           notes: `Delivery-only booking via ${business.name}. Booked by: ${businessContact || "business"}. ${dozens} dozen. Customer pays delivery fee.`,
         });
 
-        // Create Stripe checkout for delivery fee
+        // Create Stripe checkout for delivery fee (skipped for demo businesses)
         let paymentUrl = null;
         let stripeSessionId = null;
-        if (process.env.STRIPE_SECRET_KEY) {
+        if (process.env.STRIPE_SECRET_KEY && !(business.station_data && business.station_data.demo)) {
           try {
             const session = await createCheckoutSession({
               amount_cents: feeCents,
