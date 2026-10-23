@@ -44,3 +44,12 @@
   from = "/api/station/tools"
   to = "/.netlify/functions/station-tools"
   status = 200
+
+# DayMarket AI sells agent — holiday proposals (manager input + business data).
+# Required env vars (set in the Netlify dashboard, never committed):
+#   GROQ_API_KEY         — shared with the station functions
+#   SUPABASE_SERVICE_KEY — already required by the station functions
+[[redirects]]
+  from = "/api/daymarket/ai-holiday"
+  to = "/.netlify/functions/ai-holiday"
+  status = 200

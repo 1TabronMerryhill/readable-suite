@@ -373,6 +373,35 @@
     return html;
   }
 
+  /* ---------- AI sells agent proposal (local draft, never auto-published) ---------- */
+  function aiProposalKey() {
+    return "dm_ai_proposal_" + (currentBiz && currentBiz.id ? currentBiz.id : "none");
+  }
+  function loadAIProposal() {
+    try {
+      var raw = window.localStorage.getItem(aiProposalKey());
+      if (!raw) return null;
+      var p = JSON.parse(raw);
+      if (!p || !p.holiday || typeof p.holiday.title !== "string" || !Array.isArray(p.offers)) return null;
+      return p;
+    } catch (e) { return null; }
+  }
+  function saveAIProposal(proposal) {
+    try {
+      window.localStorage.setItem(aiProposalKey(), JSON.stringify({ holiday: proposal, offers: proposal.offers || [] }));
+    } catch (e) { /* private mode: proposal just won't persist */ }
+  }
+  function clearAIProposal() {
+    try { window.localStorage.removeItem(aiProposalKey()); } catch (e) {}
+  }
+  function toLocalInput(iso) {
+    if (!iso) return "";
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + "T" + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+
   function renderBusiness() {
     var html = "";
     if (!businesses.length) {
@@ -479,6 +508,43 @@
     html += '<div class="form-row"><div class="field"><label for="nh-starts">Starts</label><input class="input" type="datetime-local" id="nh-starts" name="starts_at"></div>';
     html += '<div class="field"><label for="nh-ends">Ends</label><input class="input" type="datetime-local" id="nh-ends" name="ends_at"></div></div>';
     html += '<button class="btn small" type="submit">Create draft</button></form></details>';
+
+    // AI sells agent: request form + pending proposal panel (proposal is a
+    // local draft only; nothing is created or published until the manager acts)
+    html += '<details class="panel"><summary style="cursor:pointer;font-weight:700">Ask the AI to build it</summary>';
+    html += '<div class="mt"><div class="field"><label>What is slow or extra right now?</label><input class="input" id="ai-slow" type="text" placeholder="Slow Tuesdays, extra glazed at close"></div>';
+    html += '<div class="field"><label>Goal</label><select class="input" id="ai-goal"><option value="move inventory">Move inventory</option><option value="bring new customers">Bring in new customers</option><option value="fill a slow morning">Fill a slow morning</option></select></div>';
+    html += '<div class="field"><label>Anything else the AI should know?</label><textarea class="input" id="ai-notes" placeholder="Prices, limits, dates you have in mind"></textarea></div>';
+    html += '<button class="btn small" type="button" data-action="ai-build-holiday">Build my holiday</button> <span class="mini" id="ai-status"></span></div></details>';
+    var aiProposal = loadAIProposal();
+    if (aiProposal) {
+      html += '<div class="panel"><p class="kicker">AI proposal</p>';
+      html += "<h3 style='margin:0 0 4px'>" + esc(aiProposal.holiday.title) + "</h3>";
+      if (aiProposal.holiday.description) html += '<p class="mt-sm" style="margin-bottom:0">' + esc(aiProposal.holiday.description) + "</p>";
+      var aiWin = datesLine(aiProposal.holiday);
+      if (aiWin) html += '<p class="mini" style="margin:0">' + esc(aiWin) + "</p>";
+      html += '<div style="margin-top:8px"><button class="btn small" type="button" data-action="ai-fill-holiday">Use these details in the form above</button> <button class="btn small ghost" type="button" data-action="ai-dismiss">Dismiss</button></div>';
+      var aiDrafts = bizHolidays.filter(function (h) { return h.status === "draft"; });
+      html += '<p class="mini mt"><strong>Proposed offers</strong></p>';
+      if (!aiProposal.offers.length) html += '<p class="mini">No offers proposed. Add your own below.</p>';
+      aiProposal.offers.forEach(function (o, oi) {
+        html += '<div class="offer"><div><h4>' + esc(o.title) + "</h4>";
+        if (o.details) html += "<p>" + esc(o.details) + "</p>";
+        html += '<div class="prices"><span class="member-price">' + esc(DM.money(o.member_price_cents)) + "</span>";
+        if (o.regular_price_cents !== null && o.regular_price_cents !== undefined) html += '<span class="regular-price">' + esc(DM.money(o.regular_price_cents)) + "</span>";
+        html += "</div><span class='left'>" + (o.quantity_total ? esc(String(o.quantity_total)) + " max" : "Unlimited") + "</span></div>";
+        if (aiDrafts.length) html += '<div style="margin-top:8px"><button class="btn small" type="button" data-action="ai-add-offer" data-idx="' + oi + '">Add as draft offer</button></div>';
+        html += "</div>";
+      });
+      if (aiDrafts.length) {
+        html += '<div class="field" style="margin-top:8px"><label>Add offers to</label><select class="input" id="ai-target-holiday">';
+        aiDrafts.forEach(function (h) { html += '<option value="' + esc(h.id) + '">' + esc(h.title) + "</option>"; });
+        html += "</select></div>";
+      } else {
+        html += '<p class="mini">Create the draft holiday first, then come back here to add these offers.</p>';
+      }
+      html += "</div>";
+    }
 
     if (!bizHolidays.length) {
       html += '<div class="panel"><p class="lede">No holidays yet. Create one above, add offers to it, then publish. Members see it instantly.</p></div>';
@@ -752,7 +818,7 @@
   var reviewHolidays = [];
   function isOperator() {
     return !!(session && session.user && session.user.email &&
-      session.user.email.toLowerCase() === "tabronmerryhill@gmail.com");
+      ["tabronmerryhill@gmail.com", "tabron@tabronmerryhill.com"].indexOf(session.user.email.toLowerCase()) !== -1);
   }
   async function loadOperatorData() {
     reviewHolidays = [];
@@ -924,6 +990,86 @@
       updateRow("dm_offers", id, { status: "draft" })
         .then(function () { return refreshBusiness("Offer deactivated."); })
         .catch(bizErr);
+      return;
+    }
+    if (action === "ai-build-holiday") {
+      if (!currentBiz) { note("err", "Pick a business first."); return; }
+      var slowEl = document.getElementById("ai-slow");
+      var goalEl = document.getElementById("ai-goal");
+      var notesEl = document.getElementById("ai-notes");
+      var statusEl = document.getElementById("ai-status");
+      el.disabled = true;
+      if (statusEl) statusEl.textContent = "Asking the AI…";
+      DM.getSession().then(function (s) {
+        if (!s) throw new Error("Sign in first.");
+        return fetch("/api/daymarket/ai-holiday", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + s.access_token },
+          body: JSON.stringify({
+            business_id: currentBiz.id,
+            slow_item: slowEl ? slowEl.value : "",
+            goal: goalEl ? goalEl.value : "",
+            notes: notesEl ? notesEl.value : ""
+          })
+        });
+      }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        el.disabled = false;
+        if (statusEl) statusEl.textContent = "";
+        if (!res.ok) throw new Error((res.j && res.j.error) || "The AI agent could not be reached.");
+        saveAIProposal(res.j.proposal);
+        renderBusiness();
+        note("ok", "Proposal ready. Review it below, then create the draft.");
+      }).catch(function (err) {
+        el.disabled = false;
+        if (statusEl) statusEl.textContent = "";
+        note("err", (err && err.message) || err);
+      });
+      return;
+    }
+    if (action === "ai-fill-holiday") {
+      var p = loadAIProposal();
+      if (!p) return;
+      var form = document.querySelector('form[data-form="new-holiday"]');
+      if (!form) return;
+      var det = form.closest("details");
+      if (det) det.open = true;
+      var t = form.querySelector('[name="title"]');
+      if (t) t.value = p.holiday.title || "";
+      var d = form.querySelector('[name="description"]');
+      if (d) d.value = p.holiday.description || "";
+      var st = form.querySelector('[name="starts_at"]');
+      if (st) st.value = toLocalInput(p.holiday.starts_at);
+      var en = form.querySelector('[name="ends_at"]');
+      if (en) en.value = toLocalInput(p.holiday.ends_at);
+      note("ok", "Holiday details filled in. Check them, then create the draft.");
+      return;
+    }
+    if (action === "ai-add-offer") {
+      var p2 = loadAIProposal();
+      var sel = document.getElementById("ai-target-holiday");
+      var idx = parseInt(el.getAttribute("data-idx"), 10);
+      if (!p2 || !p2.offers[idx] || !sel || !sel.value) { note("err", "Pick a draft holiday first."); return; }
+      var off = p2.offers[idx];
+      DM.supabase.from("dm_offers").insert({
+        holiday_id: sel.value,
+        title: off.title,
+        details: off.details || null,
+        regular_price_cents: off.regular_price_cents,
+        member_price_cents: off.member_price_cents,
+        quantity_total: off.quantity_total,
+        status: "draft"
+      }).then(function (r) {
+        if (r.error) throw r.error;
+        p2.offers.splice(idx, 1);
+        saveAIProposal(p2);
+        return refreshBusiness("Offer added as a draft. Activate it when the holiday is ready.");
+      }).catch(bizErr);
+      return;
+    }
+    if (action === "ai-dismiss") {
+      clearAIProposal();
+      renderBusiness();
       return;
     }
     if (action === "mark-redeemed") {
