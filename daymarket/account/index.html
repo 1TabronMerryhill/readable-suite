@@ -608,7 +608,7 @@
     } else if (aiAnyHolidayProposal) {
       html += '<p class="mini">Create the draft holiday first, then come back here to add these offers.</p>';
     }
-    html += '<div style="display:flex;gap:8px"><input class="input" id="sales-input" type="text" placeholder="Ask about best sellers, slow days, or what to build…" style="flex:1">';
+    html += '<div style="display:flex;gap:8px;align-items:flex-end"><textarea class="input" id="sales-input" rows="1" placeholder="Ask about best sellers, slow days, or what to build…" style="flex:1;resize:none;min-height:0;overflow-y:hidden;line-height:1.4"></textarea>';
     html += '<button class="btn small" type="button" data-action="sales-send">Send</button>';
     html += '<button class="btn small ghost" type="button" data-action="sales-menu">Menu</button></div>';
     html += '<div id="sales-menu-popup" style="display:none;margin-top:12px;max-height:200px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:8px"></div>';
@@ -1346,6 +1346,26 @@
       note("err", (err && err.message) || err);
     });
   }
+
+  // Chat composer: grows as you type (up to ~5 lines, then scrolls),
+  // Enter sends, Shift+Enter adds a line, like the Muse chat field.
+  // Delegated to the document so it survives panel re-renders.
+  document.addEventListener("input", function (ev) {
+    var t = ev.target;
+    if (!t || t.id !== "sales-input") return;
+    t.style.height = "auto";
+    var h = Math.min(t.scrollHeight, 140);
+    t.style.height = h + "px";
+    t.style.overflowY = t.scrollHeight > 140 ? "auto" : "hidden";
+  });
+  document.addEventListener("keydown", function (ev) {
+    var t = ev.target;
+    if (!t || t.id !== "sales-input") return;
+    if (ev.key === "Enter" && !ev.shiftKey) {
+      ev.preventDefault();
+      salesSend();
+    }
+  });
 
   function salesShowMenu() {
     var popup = document.getElementById("sales-menu-popup");
