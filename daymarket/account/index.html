@@ -373,26 +373,59 @@
     return html;
   }
 
-  /* ---------- AI sells agent proposal (local draft, never auto-published) ---------- */
-  function aiProposalKey() {
-    return "dm_ai_proposal_" + (currentBiz && currentBiz.id ? currentBiz.id : "none");
+  /* ---------- AI sales agent chat (ported from the VictoryLap coach chat) ---------- */
+  /* Short replies, like texting: paragraphs become one bubble each; a long
+     single paragraph splits into sentence groups; tables stay whole. */
+  function splitReply(text) {
+    var raw = String(text || "");
+    var blocks = raw.split(/\n\s*\n+/).map(function (s) { return s.trim(); }).filter(Boolean);
+    var out = [];
+    blocks.forEach(function (block) {
+      if (/^\|/.test(block)) { out.push(block); return; }
+      var lines = block.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+      if (lines.length > 1) { lines.forEach(function (l) { out.push(l); }); return; }
+      var sentences = block.match(/[^.!?]+[.!?]+["')\]]*\s*/g) || [block];
+      var group = "";
+      sentences.forEach(function (s) {
+        group += s;
+        if (group.split(/[.!?]/).length > 2) { out.push(group.trim()); group = ""; }
+      });
+      if (group.trim()) out.push(group.trim());
+    });
+    return out.length ? out : [raw];
   }
-  function loadAIProposal() {
-    try {
-      var raw = window.localStorage.getItem(aiProposalKey());
-      if (!raw) return null;
-      var p = JSON.parse(raw);
-      if (!p || !p.holiday || typeof p.holiday.title !== "string" || !Array.isArray(p.offers)) return null;
-      return p;
-    } catch (e) { return null; }
+  var aiThreadId = null;
+  var aiThreads = [];
+  var aiMessages = [];
+  var aiMenuOpen = false;
+  var aiChatBusy = false;
+  function loadAIThreads() {
+    if (!currentBiz) return Promise.resolve([]);
+    return DM.supabase.from("dm_agent_threads").select("id,title,origin,updated_at").eq("business_id", currentBiz.id).order("updated_at", { ascending: false }).then(function (r) {
+      if (!r.error) aiThreads = r.data || [];
+      return aiThreads;
+    });
   }
-  function saveAIProposal(proposal) {
-    try {
-      window.localStorage.setItem(aiProposalKey(), JSON.stringify({ holiday: proposal, offers: proposal.offers || [] }));
-    } catch (e) { /* private mode: proposal just won't persist */ }
+  function loadAIMessages() {
+    if (!aiThreadId) { aiMessages = []; return Promise.resolve([]); }
+    return DM.supabase.from("dm_agent_messages").select("id,role,content,intent,proposal,created_at").eq("thread_id", aiThreadId).order("created_at", { ascending: true }).then(function (r) {
+      if (!r.error) aiMessages = r.data || [];
+      return aiMessages;
+    });
   }
-  function clearAIProposal() {
-    try { window.localStorage.removeItem(aiProposalKey()); } catch (e) {}
+  function aiFindMessage(id) {
+    for (var i = 0; i < aiMessages.length; i++) if (aiMessages[i].id === id) return aiMessages[i];
+    return null;
+  }
+  function aiDraftOffers() {
+    var list = [];
+    bizHolidays.forEach(function (h) {
+      if (h.status !== "draft") return;
+      (h.dm_offers || []).forEach(function (o) {
+        if (o.status === "draft") list.push({ holiday: h, offer: o });
+      });
+    });
+    return list;
   }
   function toLocalInput(iso) {
     if (!iso) return "";
@@ -488,11 +521,94 @@
     }
     html += "</div>";
 
-    // Sales Agent
+    // Sales Agent (upgraded with the VictoryLap coach chat patterns: threads,
+    // short bubbles, proposal buttons that apply only on tap, proactive signals)
     html += '<p class="kicker">Sales agent</p>';
-    html += '<div class="panel"><p class="lede">Your AI sales assistant. It knows your full menu and all DayMarket packages. Chat to build custom packages, quote delivery, or answer customer questions.</p>';
-    html += '<div id="sales-chat" style="height:300px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:12px;margin:12px 0;background:#fafafa"></div>';
-    html += '<div style="display:flex;gap:8px"><input class="input" id="sales-input" type="text" placeholder="Ask about packages, build a custom order, quote delivery…" style="flex:1">';
+    html += '<div class="panel"><p class="lede">Your AI sales assistant. It knows your menu, your past holidays, and what actually sold. Ask about best sellers, slow days, or what is live, or tell it what is slow and let it build a holiday. Nothing goes live without your review and DayMarket approval.</p>';
+    var aiSignals = [];
+    var aiPast = bizHolidays.filter(function (h) { return h.status === "published" || h.status === "ended"; });
+    if (!bizHolidays.some(function (h) { return h.status === "published"; }) && aiPast.length) {
+      var aiLast = aiPast.slice().sort(function (a, b) { return new Date(b.starts_at || 0) - new Date(a.starts_at || 0); })[0];
+      aiSignals.push({ key: "no-live", text: "No holiday live right now. Your last holiday was " + aiLast.title + ". Want to run it again or build a new one?" });
+    }
+    bizHolidays.forEach(function (h) {
+      (h.dm_offers || []).forEach(function (o) {
+        if (o.quantity_total && (o.quantity_claimed || 0) >= o.quantity_total) {
+          aiSignals.push({ key: "sold-out", text: o.title + " sold out. Raise the cap next time?" });
+        }
+      });
+    });
+    aiSignals.forEach(function (s) {
+      html += '<div style="margin:8px 0;padding:8px;background:#fff8e6;border-radius:8px"><span class="mini">' + esc(s.text) + "</span> ";
+      html += '<button class="btn small" type="button" data-action="ai-discuss-signal" data-key="' + esc(s.key) + '" data-text="' + esc(s.text) + '">Discuss with AI</button></div>';
+    });
+    html += '<div style="display:flex;gap:8px;align-items:center;margin:8px 0">';
+    html += '<button class="btn small" type="button" data-action="ai-new-chat">+ New</button>';
+    html += '<button class="btn small ghost" type="button" data-action="ai-menu">☰ Past conversations</button></div>';
+    if (aiMenuOpen) {
+      html += '<div style="margin:8px 0;max-height:200px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:8px">';
+      if (!aiThreads.length) html += '<p class="mini">No past conversations yet.</p>';
+      aiThreads.forEach(function (t) {
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px solid #eee">';
+        html += "<span>" + esc(t.title) + (t.origin === "proactive" ? ' <span class="mini">· DayMarket started</span>' : "") + "</span>";
+        html += '<button class="btn small ghost" type="button" data-action="ai-open-thread" data-id="' + esc(t.id) + '">Open</button></div>';
+      });
+      html += "</div>";
+    }
+    html += '<div id="sales-chat" style="height:300px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:12px;margin:12px 0;background:#fafafa">';
+    if (!aiThreadId) {
+      html += '<p class="mini">Start a conversation. Ask about best sellers, slow days, or what is live, or tell the agent what is slow and let it build a holiday.</p>';
+    } else if (!aiMessages.length && !aiChatBusy) {
+      html += '<p class="mini">Loading conversation…</p>';
+    } else {
+      aiMessages.forEach(function (m) {
+        if (m.role === "member") {
+          html += '<div style="margin:8px 0;text-align:right"><span style="display:inline-block;padding:8px 12px;border-radius:12px;max-width:80%;background:#007bff;color:#fff">' + esc(m.content) + "</span></div>";
+        } else {
+          splitReply(m.content).forEach(function (chunk) {
+            html += '<div style="margin:8px 0;text-align:left"><span style="display:inline-block;padding:8px 12px;border-radius:12px;max-width:80%;background:#e9ecef;color:#333">' + esc(chunk) + "</span></div>";
+          });
+          var p = m.proposal;
+          if (p) {
+            var applied = !!(m.intent && m.intent.indexOf("applied:") === 0);
+            if (applied) {
+              html += '<div style="margin:4px 0 10px"><button class="btn small" type="button" disabled>Applied.</button></div>';
+            } else if (p.type === "holiday") {
+              html += '<div style="margin:4px 0 10px"><button class="btn small" type="button" data-action="ai-use-holiday" data-msg="' + esc(m.id) + '">Use these details</button></div>';
+              (p.offers || []).forEach(function (o, oi) {
+                html += '<div style="margin:4px 0"><span class="mini">' + esc(o.title) + "</span> ";
+                html += '<button class="btn small" type="button" data-action="ai-add-chat-offer" data-msg="' + esc(m.id) + '" data-idx="' + oi + '">Add as draft offer</button></div>';
+              });
+            } else if (p.type === "edit") {
+              var aiMatch = null;
+              aiDraftOffers().forEach(function (d) {
+                if (!aiMatch && d.offer.title === p.target_offer_title) aiMatch = d;
+              });
+              if (!aiMatch) aiDraftOffers().forEach(function (d) {
+                if (!aiMatch && d.offer.title.toLowerCase().indexOf(String(p.target_offer_title).toLowerCase()) !== -1) aiMatch = d;
+              });
+              if (aiMatch) {
+                html += '<div style="margin:4px 0 10px"><button class="btn small" type="button" data-action="ai-apply-edit" data-msg="' + esc(m.id) + '">Apply: ' + esc(p.label || "Apply this change") + "</button></div>";
+              } else {
+                html += '<p class="mini">That offer is no longer a draft, so this change cannot apply.</p>';
+              }
+            }
+          }
+        }
+      });
+      if (aiChatBusy) html += '<div style="margin:8px 0;text-align:left"><span style="display:inline-block;padding:8px 12px;border-radius:12px;max-width:80%;background:#e9ecef;color:#333">Thinking…</span></div>';
+    }
+    html += "</div>";
+    var aiAnyHolidayProposal = aiMessages.some(function (m) { return m.proposal && m.proposal.type === "holiday" && (m.proposal.offers || []).length; });
+    var aiDrafts = bizHolidays.filter(function (h) { return h.status === "draft"; });
+    if (aiAnyHolidayProposal && aiDrafts.length) {
+      html += '<div class="field" style="margin-top:8px"><label>Add offers to</label><select class="input" id="ai-target-holiday">';
+      aiDrafts.forEach(function (h) { html += '<option value="' + esc(h.id) + '">' + esc(h.title) + "</option>"; });
+      html += "</select></div>";
+    } else if (aiAnyHolidayProposal) {
+      html += '<p class="mini">Create the draft holiday first, then come back here to add these offers.</p>';
+    }
+    html += '<div style="display:flex;gap:8px"><input class="input" id="sales-input" type="text" placeholder="Ask about best sellers, slow days, or what to build…" style="flex:1">';
     html += '<button class="btn small" type="button" data-action="sales-send">Send</button>';
     html += '<button class="btn small ghost" type="button" data-action="sales-menu">Menu</button></div>';
     html += '<div id="sales-menu-popup" style="display:none;margin-top:12px;max-height:200px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:8px"></div>';
@@ -508,43 +624,6 @@
     html += '<div class="form-row"><div class="field"><label for="nh-starts">Starts</label><input class="input" type="datetime-local" id="nh-starts" name="starts_at"></div>';
     html += '<div class="field"><label for="nh-ends">Ends</label><input class="input" type="datetime-local" id="nh-ends" name="ends_at"></div></div>';
     html += '<button class="btn small" type="submit">Create draft</button></form></details>';
-
-    // AI sells agent: request form + pending proposal panel (proposal is a
-    // local draft only; nothing is created or published until the manager acts)
-    html += '<details class="panel"><summary style="cursor:pointer;font-weight:700">Ask the AI to build it</summary>';
-    html += '<div class="mt"><div class="field"><label>What is slow or extra right now?</label><input class="input" id="ai-slow" type="text" placeholder="Slow Tuesdays, extra glazed at close"></div>';
-    html += '<div class="field"><label>Goal</label><select class="input" id="ai-goal"><option value="move inventory">Move inventory</option><option value="bring new customers">Bring in new customers</option><option value="fill a slow morning">Fill a slow morning</option></select></div>';
-    html += '<div class="field"><label>Anything else the AI should know?</label><textarea class="input" id="ai-notes" placeholder="Prices, limits, dates you have in mind"></textarea></div>';
-    html += '<button class="btn small" type="button" data-action="ai-build-holiday">Build my holiday</button> <span class="mini" id="ai-status"></span></div></details>';
-    var aiProposal = loadAIProposal();
-    if (aiProposal) {
-      html += '<div class="panel"><p class="kicker">AI proposal</p>';
-      html += "<h3 style='margin:0 0 4px'>" + esc(aiProposal.holiday.title) + "</h3>";
-      if (aiProposal.holiday.description) html += '<p class="mt-sm" style="margin-bottom:0">' + esc(aiProposal.holiday.description) + "</p>";
-      var aiWin = datesLine(aiProposal.holiday);
-      if (aiWin) html += '<p class="mini" style="margin:0">' + esc(aiWin) + "</p>";
-      html += '<div style="margin-top:8px"><button class="btn small" type="button" data-action="ai-fill-holiday">Use these details in the form above</button> <button class="btn small ghost" type="button" data-action="ai-dismiss">Dismiss</button></div>';
-      var aiDrafts = bizHolidays.filter(function (h) { return h.status === "draft"; });
-      html += '<p class="mini mt"><strong>Proposed offers</strong></p>';
-      if (!aiProposal.offers.length) html += '<p class="mini">No offers proposed. Add your own below.</p>';
-      aiProposal.offers.forEach(function (o, oi) {
-        html += '<div class="offer"><div><h4>' + esc(o.title) + "</h4>";
-        if (o.details) html += "<p>" + esc(o.details) + "</p>";
-        html += '<div class="prices"><span class="member-price">' + esc(DM.money(o.member_price_cents)) + "</span>";
-        if (o.regular_price_cents !== null && o.regular_price_cents !== undefined) html += '<span class="regular-price">' + esc(DM.money(o.regular_price_cents)) + "</span>";
-        html += "</div><span class='left'>" + (o.quantity_total ? esc(String(o.quantity_total)) + " max" : "Unlimited") + "</span></div>";
-        if (aiDrafts.length) html += '<div style="margin-top:8px"><button class="btn small" type="button" data-action="ai-add-offer" data-idx="' + oi + '">Add as draft offer</button></div>';
-        html += "</div>";
-      });
-      if (aiDrafts.length) {
-        html += '<div class="field" style="margin-top:8px"><label>Add offers to</label><select class="input" id="ai-target-holiday">';
-        aiDrafts.forEach(function (h) { html += '<option value="' + esc(h.id) + '">' + esc(h.title) + "</option>"; });
-        html += "</select></div>";
-      } else {
-        html += '<p class="mini">Create the draft holiday first, then come back here to add these offers.</p>';
-      }
-      html += "</div>";
-    }
 
     if (!bizHolidays.length) {
       html += '<div class="panel"><p class="lede">No holidays yet. Create one above, add offers to it, then publish. Members see it instantly.</p></div>';
@@ -992,65 +1071,71 @@
         .catch(bizErr);
       return;
     }
-    if (action === "ai-build-holiday") {
-      if (!currentBiz) { note("err", "Pick a business first."); return; }
-      var slowEl = document.getElementById("ai-slow");
-      var goalEl = document.getElementById("ai-goal");
-      var notesEl = document.getElementById("ai-notes");
-      var statusEl = document.getElementById("ai-status");
-      el.disabled = true;
-      if (statusEl) statusEl.textContent = "Asking the AI…";
-      DM.getSession().then(function (s) {
-        if (!s) throw new Error("Sign in first.");
-        return fetch("/api/daymarket/ai-holiday", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: "Bearer " + s.access_token },
-          body: JSON.stringify({
-            business_id: currentBiz.id,
-            slow_item: slowEl ? slowEl.value : "",
-            goal: goalEl ? goalEl.value : "",
-            notes: notesEl ? notesEl.value : ""
-          })
-        });
-      }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-      .then(function (res) {
-        el.disabled = false;
-        if (statusEl) statusEl.textContent = "";
-        if (!res.ok) throw new Error((res.j && res.j.error) || "The AI agent could not be reached.");
-        saveAIProposal(res.j.proposal);
-        renderBusiness();
-        note("ok", "Proposal ready. Review it below, then create the draft.");
-      }).catch(function (err) {
-        el.disabled = false;
-        if (statusEl) statusEl.textContent = "";
-        note("err", (err && err.message) || err);
-      });
+    if (action === "ai-new-chat") {
+      aiThreadId = null;
+      aiMessages = [];
+      aiMenuOpen = false;
+      renderBusiness();
       return;
     }
-    if (action === "ai-fill-holiday") {
-      var p = loadAIProposal();
-      if (!p) return;
+    if (action === "ai-menu") {
+      aiMenuOpen = !aiMenuOpen;
+      if (aiMenuOpen) loadAIThreads().then(function () { renderBusiness(); });
+      else renderBusiness();
+      return;
+    }
+    if (action === "ai-open-thread") {
+      aiThreadId = id;
+      aiMenuOpen = false;
+      loadAIMessages().then(function () { renderBusiness(); });
+      return;
+    }
+    if (action === "ai-discuss-signal") {
+      if (!currentBiz) return;
+      var sigText = el.getAttribute("data-text") || "";
+      var sigKey = el.getAttribute("data-key") || "";
+      DM.supabase.from("dm_agent_threads").insert({
+        business_id: currentBiz.id,
+        title: sigText.slice(0, 40) || "Conversation",
+        origin: "proactive",
+        context: { signal: sigKey }
+      }).select("id").then(function (r) {
+        if (r.error) throw r.error;
+        var tid = r.data[0].id;
+        return DM.supabase.from("dm_agent_messages").insert({
+          thread_id: tid, role: "agent", content: sigText, intent: null, proposal: null
+        }).then(function () { return tid; });
+      }).then(function (tid) {
+        aiThreadId = tid;
+        return loadAIMessages();
+      }).then(function () { renderBusiness(); })
+      .catch(bizErr);
+      return;
+    }
+    if (action === "ai-use-holiday") {
+      var m = aiFindMessage(el.getAttribute("data-msg"));
+      if (!m || !m.proposal || m.proposal.type !== "holiday") return;
       var form = document.querySelector('form[data-form="new-holiday"]');
       if (!form) return;
       var det = form.closest("details");
       if (det) det.open = true;
       var t = form.querySelector('[name="title"]');
-      if (t) t.value = p.holiday.title || "";
+      if (t) t.value = m.proposal.holiday.title || "";
       var d = form.querySelector('[name="description"]');
-      if (d) d.value = p.holiday.description || "";
+      if (d) d.value = m.proposal.holiday.description || "";
       var st = form.querySelector('[name="starts_at"]');
-      if (st) st.value = toLocalInput(p.holiday.starts_at);
+      if (st) st.value = toLocalInput(m.proposal.holiday.starts_at);
       var en = form.querySelector('[name="ends_at"]');
-      if (en) en.value = toLocalInput(p.holiday.ends_at);
+      if (en) en.value = toLocalInput(m.proposal.holiday.ends_at);
       note("ok", "Holiday details filled in. Check them, then create the draft.");
       return;
     }
-    if (action === "ai-add-offer") {
-      var p2 = loadAIProposal();
+    if (action === "ai-add-chat-offer") {
+      var m2 = aiFindMessage(el.getAttribute("data-msg"));
       var sel = document.getElementById("ai-target-holiday");
       var idx = parseInt(el.getAttribute("data-idx"), 10);
-      if (!p2 || !p2.offers[idx] || !sel || !sel.value) { note("err", "Pick a draft holiday first."); return; }
-      var off = p2.offers[idx];
+      if (!m2 || !m2.proposal || !m2.proposal.offers[idx] || !sel || !sel.value) { note("err", "Pick a draft holiday first."); return; }
+      var off = m2.proposal.offers[idx];
       DM.supabase.from("dm_offers").insert({
         holiday_id: sel.value,
         title: off.title,
@@ -1061,15 +1146,34 @@
         status: "draft"
       }).then(function (r) {
         if (r.error) throw r.error;
-        p2.offers.splice(idx, 1);
-        saveAIProposal(p2);
         return refreshBusiness("Offer added as a draft. Activate it when the holiday is ready.");
       }).catch(bizErr);
       return;
     }
-    if (action === "ai-dismiss") {
-      clearAIProposal();
-      renderBusiness();
+    if (action === "ai-apply-edit") {
+      var m3 = aiFindMessage(el.getAttribute("data-msg"));
+      if (!m3 || !m3.proposal || m3.proposal.type !== "edit") return;
+      var p = m3.proposal;
+      var match = null;
+      aiDraftOffers().forEach(function (d) {
+        if (!match && d.offer.title === p.target_offer_title) match = d;
+      });
+      if (!match) aiDraftOffers().forEach(function (d) {
+        if (!match && d.offer.title.toLowerCase().indexOf(String(p.target_offer_title).toLowerCase()) !== -1) match = d;
+      });
+      if (!match) { note("err", "That offer is no longer a draft."); return; }
+      DM.supabase.from("dm_offers").update(p.changes).eq("id", match.offer.id).eq("status", "draft").select("id").then(function (r) {
+        if (r.error) throw r.error;
+        if (!r.data || !r.data.length) { note("err", "That proposal is no longer current."); return null; }
+        return DM.supabase.from("dm_agent_messages").update({ intent: "applied:" + p.id }).eq("id", m3.id);
+      }).then(function (r2) {
+        if (!r2) return;
+        if (r2.error) throw r2.error;
+        return loadAIMessages().then(function () {
+          renderBusiness();
+          note("ok", "Change applied.");
+        });
+      }).catch(bizErr);
       return;
     }
     if (action === "mark-redeemed") {
@@ -1214,45 +1318,32 @@
   });
 
   /* ---------- sales agent ---------- */
-  var salesHistory = [];
   var salesBuilderItems = [];
   var salesMenuCache = null;
-
-  function salesChatEl() { return document.getElementById("sales-chat"); }
-  function salesAddMsg(role, text) {
-    var el = salesChatEl();
-    if (!el) return;
-    var div = document.createElement("div");
-    div.style.margin = "8px 0";
-    div.style.textAlign = role === "user" ? "right" : "left";
-    div.innerHTML = '<span style="display:inline-block;padding:8px 12px;border-radius:12px;max-width:80%;' +
-      (role === "user" ? "background:#007bff;color:#fff" : "background:#e9ecef;color:#333") + '">' +
-      esc(text) + "</span>";
-    el.appendChild(div);
-    el.scrollTop = el.scrollHeight;
-  }
 
   function salesSend() {
     var input = document.getElementById("sales-input");
     var text = input ? input.value.trim() : "";
-    if (!text || !currentBiz) return;
-    salesAddMsg("user", text);
-    input.value = "";
-    salesHistory.push({ role: "user", content: text });
-    salesAddMsg("assistant", "Thinking…");
-    var chatEl = salesChatEl();
-    fetch("https://evmynxxvyafvnreaudpr.supabase.co/functions/v1/sales-agent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "apikey": window.DM_SUPABASE_ANON_KEY },
-      body: JSON.stringify({ business_id: currentBiz.id, messages: salesHistory })
-    }).then(function (r) { return r.json(); }).then(function (d) {
-      chatEl.removeChild(chatEl.lastChild);
-      var reply = d.reply || d.error || "Sorry, try again.";
-      salesAddMsg("assistant", reply);
-      salesHistory.push({ role: "assistant", content: reply });
-    }).catch(function () {
-      chatEl.removeChild(chatEl.lastChild);
-      salesAddMsg("assistant", "Connection issue. Try again.");
+    if (!text || !currentBiz || aiChatBusy) return;
+    aiChatBusy = true;
+    renderBusiness();
+    DM.getSession().then(function (s) {
+      if (!s) throw new Error("Sign in first.");
+      return fetch("/api/daymarket/ai-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + s.access_token },
+        body: JSON.stringify({ business_id: currentBiz.id, thread_id: aiThreadId, message: text })
+      });
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+    .then(function (res) {
+      aiChatBusy = false;
+      if (!res.ok) throw new Error((res.j && res.j.error) || "The agent could not be reached.");
+      aiThreadId = res.j.thread_id;
+      return loadAIMessages().then(function () { loadAIThreads(); renderBusiness(); });
+    }).catch(function (err) {
+      aiChatBusy = false;
+      renderBusiness();
+      note("err", (err && err.message) || err);
     });
   }
 
@@ -1305,23 +1396,19 @@
 
   function salesBuildPackage() {
     if (!salesBuilderItems.length || !currentBiz) return;
-    salesAddMsg("user", "Build package from " + salesBuilderItems.length + " items");
-    salesAddMsg("assistant", "Building…");
-    var chatEl = salesChatEl();
     fetch("https://evmynxxvyafvnreaudpr.supabase.co/functions/v1/sales-agent", {
       method: "POST",
       headers: { "Content-Type": "application/json", "apikey": window.DM_SUPABASE_ANON_KEY },
       body: JSON.stringify({ business_id: currentBiz.id, action: "build_package", action_data: { items: salesBuilderItems } })
     }).then(function (r) { return r.json(); }).then(function (d) {
-      chatEl.removeChild(chatEl.lastChild);
       if (d.package) {
-        salesAddMsg("assistant", "Built: " + d.package.name + " at " + DM.money(d.package.base_price_cents) + ". " + (d.package.description || ""));
         salesClearBuilder();
+        note("ok", "Built: " + d.package.name + " at " + DM.money(d.package.base_price_cents) + ". " + (d.package.description || ""));
         loadBusinessData().then(renderBusiness);
       } else {
-        salesAddMsg("assistant", "Could not build: " + (d.error || "unknown"));
+        note("err", "Could not build: " + (d.error || "unknown"));
       }
-    });
+    }).catch(function () { note("err", "Connection issue. Try again."); });
   }
 
   function salesClearBuilder() {
