@@ -4,18 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DayMarket - A daily holiday.</title>
-<meta name="description" content="DayMarket is a daily holiday: local businesses create deal events, members unlock them, and workplace packages land on schedule.">
+<meta name="description" content="Pick what kind of shopper you are today. See live offers in Columbia, starting with Elliannas Morning Drop. No account needed to browse. The Holiday Pass comes last, after you see the value.">
 <link rel="canonical" href="https://daymarket.tabronmerryhill.com/">
 <meta property="og:site_name" content="DayMarket">
 <meta property="og:type" content="website">
 <meta property="og:title" content="DayMarket - A daily holiday.">
-<meta property="og:description" content="DayMarket is a daily holiday: local businesses create deal events, members unlock them, and workplace packages land on schedule.">
+<meta property="og:description" content="Pick what kind of shopper you are today. See live offers in Columbia, starting with Elliannas Morning Drop. No account needed to browse. The Holiday Pass comes last, after you see the value.">
 <meta property="og:url" content="https://daymarket.tabronmerryhill.com/">
 <meta property="og:image" content="https://daymarket.tabronmerryhill.com/assets/img/glazed-donut.jpg">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="DayMarket - A daily holiday.">
-<meta name="twitter:description" content="DayMarket is a daily holiday: local businesses create deal events, members unlock them, and workplace packages land on schedule.">
+<meta name="twitter:description" content="Pick what kind of shopper you are today. See live offers in Columbia, starting with Elliannas Morning Drop. No account needed to browse. The Holiday Pass comes last, after you see the value.">
+<style>
+.picker-row{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 8px}
+.picker-btn{border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:12px 20px;font-weight:800;font-size:15px;cursor:pointer}
+.picker-btn[aria-pressed="true"]{background:var(--yellow);border-color:var(--ink)}
+.picker-note{font-size:13px;color:var(--muted);margin:0}
+.offer-panel{display:none}
+.offer-panel.active{display:block}
+.pref-row{margin-top:16px}
+.pref-row label{font-weight:700;font-size:14px;display:block;margin-bottom:6px}
+.pref-row input{width:100%;max-width:520px;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px}
+.pref-saved{font-size:13px;color:var(--muted);margin:8px 0 0}
+</style>
 <meta name="twitter:image" content="https://daymarket.tabronmerryhill.com/assets/img/glazed-donut.jpg">
 <script type="application/ld+json">
 [
@@ -51,26 +63,90 @@
 <section class="hero"><div class="wrap">
 <div class="hero-split">
 <div>
-<p class="kicker">DayMarket · Columbia, MO</p>
-<h1>A <span class="accent">daily holiday.</span></h1>
-<p class="lead">We sell packages, not food. Local businesses create <strong>holidays</strong>. Deal events with Black Friday energy. Members unlock them. Workplace packages land on schedule.</p>
-<div class="btn-row">
-<a class="btn amber" href="membership.html">Get the Holiday Pass</a>
-<a class="btn ghost" href="businesses.html">For businesses</a>
+<p class="kicker">Columbia, MO. No account needed to browse.</p>
+<h1>What are you <span class="accent">today?</span></h1>
+<p class="lead">Pick an occasion. See offers for that occasion. Switch anytime. Buying comes last, after you see the value.</p>
+<div class="picker-row" role="group" aria-label="What kind of shopper are you today">
+<button class="picker-btn" type="button" data-occasion="hungry" aria-pressed="true">Hungry</button>
+<button class="picker-btn" type="button" data-occasion="health" aria-pressed="false">Health</button>
+<button class="picker-btn" type="button" data-occasion="service" aria-pressed="false">Service</button>
+<button class="picker-btn" type="button" data-occasion="insurance" aria-pressed="false">Insurance</button>
+<button class="picker-btn" type="button" data-occasion="browsing" aria-pressed="false">Just browsing</button>
 </div>
-<div class="capture inline">
-<h3>Join the founding list</h3>
-<p>Be first in when the holidays drop.</p>
-<form class="capture-form" data-interest="founding list">
-<input type="text" name="name" placeholder="Your name" autocomplete="name">
-<input type="email" name="email" placeholder="Email address" required autocomplete="email">
-<button class="btn small" type="submit">Notify me</button>
-</form>
-<p class="msg"></p>
-<p class="fine">No payments yet. Founding members lock founding pricing.</p>
+<p class="picker-note">Your pick is saved in this browser only. No account yet. It moves to your account when you join.</p>
 </div>
 </div>
-<div class="hero-photo"><img src="assets/img/1-dozen-mix-fancy.jpg" alt="DayMarket package assortment"></div>
+<div class="hero-photo"><img src="assets/img/glazed-donut.jpg" alt="Glazed donuts from Ellianna's Donut Shop"></div>
+</div>
+</div></section>
+
+<section class="block tight" id="offers"><div class="wrap">
+<p class="kicker">Offers for you</p>
+<h2 id="offers-heading">Offers for Hungry</h2>
+<p class="sub">Switch your occasion above, or right here, and these offers change. No signup to look.</p>
+<div class="picker-row" role="group" aria-label="Switch occasion">
+<button class="picker-btn" type="button" data-occasion="hungry" aria-pressed="true">Hungry</button>
+<button class="picker-btn" type="button" data-occasion="health" aria-pressed="false">Health</button>
+<button class="picker-btn" type="button" data-occasion="service" aria-pressed="false">Service</button>
+<button class="picker-btn" type="button" data-occasion="insurance" aria-pressed="false">Insurance</button>
+<button class="picker-btn" type="button" data-occasion="browsing" aria-pressed="false">Just browsing</button>
+</div>
+
+<div class="offer-panel active" data-panel="hungry">
+<div class="holiday-card">
+<div class="ph"><img src="assets/img/glazed-donut.jpg" alt="Glazed donuts from Ellianna's Donut Shop"><span class="badge founding">Founding</span></div>
+<div class="bd">
+<p class="biz">Ellianna's Donut Shop · Columbia, MO</p>
+<h3>The Morning Drop</h3>
+<p>Sat Oct 24, 6:00 to 9:00 AM at Ellianna's Donut Shop, 1105 Grindstone Pkwy, Columbia, MO.</p>
+<p class="deal">$10.99 members, regular $14.99. A dozen glazed. 25 claims.</p>
+<p>Save $4.00 on this dozen with the Holiday Pass. Pass is $12 per month.</p>
+<a class="go" href="businesses/elliannas-donut-shop/index.html">See Ellianna's →</a>
+</div>
+</div>
+<div class="pref-row"><label for="pref-hungry">Hungry profile. What do you want today? Optional.</label><input id="pref-hungry" type="text" data-pref="hungry" placeholder="Example: glazed, pickup, Saturday morning"><p class="pref-saved" data-saved="hungry"></p></div>
+</div>
+
+<div class="offer-panel" data-panel="health">
+<div class="card"><h3>No live Health offers yet in Columbia.</h3><p>DayMarket has one live business today, Ellianna's Donut Shop, which is food. Health businesses have not joined DayMarket yet. Tell us what you need, and we will alert you when a Health business joins.</p>
+<form class="capture-form mt" data-interest="DayMarket health offers request"><input type="email" name="email" placeholder="Email address" required autocomplete="email" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;max-width:320px"><button class="btn small" type="submit">Tell me when Health offers arrive</button></form><p class="msg"></p></div>
+<div class="pref-row"><label for="pref-health">Health profile. What are you looking for? Optional.</label><input id="pref-health" type="text" data-pref="health" placeholder="Example: clinic visit, wellness, low sugar options"><p class="pref-saved" data-saved="health"></p></div>
+</div>
+
+<div class="offer-panel" data-panel="service">
+<div class="card"><h3>No live Service offers yet in Columbia.</h3><p>Service shops have not joined DayMarket yet. Tell us what trade you need, and we will alert you when a Service business joins.</p>
+<form class="capture-form mt" data-interest="DayMarket service offers request"><input type="email" name="email" placeholder="Email address" required autocomplete="email" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;max-width:320px"><button class="btn small" type="submit">Tell me when Service offers arrive</button></form><p class="msg"></p></div>
+<div class="pref-row"><label for="pref-service">Service profile. What do you need done? Optional.</label><input id="pref-service" type="text" data-pref="service" placeholder="Example: plumbing, electrical, garage door"><p class="pref-saved" data-saved="service"></p></div>
+</div>
+
+<div class="offer-panel" data-panel="insurance">
+<div class="card"><h3>No live Insurance offers yet in Columbia.</h3><p>Insurance businesses have not joined DayMarket yet. Tell us what coverage you are comparing, and we will alert you when an Insurance business joins.</p>
+<form class="capture-form mt" data-interest="DayMarket insurance offers request"><input type="email" name="email" placeholder="Email address" required autocomplete="email" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;max-width:320px"><button class="btn small" type="submit">Tell me when Insurance offers arrive</button></form><p class="msg"></p></div>
+<div class="pref-row"><label for="pref-insurance">Insurance profile. What are you comparing? Optional.</label><input id="pref-insurance" type="text" data-pref="insurance" placeholder="Example: home, auto, health coverage"><p class="pref-saved" data-saved="insurance"></p></div>
+</div>
+
+<div class="offer-panel" data-panel="browsing">
+<div class="holiday-card">
+<div class="ph"><img src="assets/img/glazed-donut.jpg" alt="Glazed donuts from Ellianna's Donut Shop"><span class="badge founding">Founding</span></div>
+<div class="bd">
+<p class="biz">Ellianna's Donut Shop · Columbia, MO</p>
+<h3>The Morning Drop</h3>
+<p>Sat Oct 24, 6:00 to 9:00 AM at Ellianna's Donut Shop, 1105 Grindstone Pkwy, Columbia, MO.</p>
+<p class="deal">$10.99 members, regular $14.99. A dozen glazed. 25 claims.</p>
+<a class="go" href="holidays.html">See all holidays →</a>
+</div>
+</div>
+<p class="sub mt">Browsing shows everything live today. Pick Hungry, Health, Service, or Insurance above to filter by occasion.</p>
+</div>
+
+</div></section>
+
+<section class="block"><div class="wrap">
+<div class="band">
+<h2>One pass. <span class="accent">Every holiday.</span></h2>
+<p>You saw the deal first. Now the Pass makes sense. The Holiday Pass unlocks member prices, early access, and alerts for your occasions. $12 per month, founding pricing.</p>
+<a class="btn amber" href="membership.html">See membership</a>
+<p class="fine" style="color:#c9cfe8;margin-top:14px">No payments are collected yet. Joining the founding list reserves your spot and founding rate.</p>
 </div>
 </div></section>
 
@@ -94,28 +170,6 @@
 </div>
 </div></section>
 
-<section class="block tight"><div class="wrap">
-<p class="kicker">Featured holiday</p>
-<div class="holiday-card">
-<div class="ph"><img src="assets/img/glazed-donut.jpg" alt="Glazed donuts from Ellianna's Donut Shop"><span class="badge founding">Founding</span></div>
-<div class="bd">
-<p class="biz">Ellianna's Donut Shop · Columbia, MO</p>
-<h3>The Morning Drop</h3>
-<p>Sat Oct 24, 6:00 to 9:00 AM at Ellianna's Donut Shop, Columbia, MO.</p>
-<p class="deal">$10.99 members, regular $14.99. A dozen glazed. 25 claims.</p>
-<a class="go" href="businesses/elliannas-donut-shop/index.html">See Ellianna's →</a>
-</div>
-</div>
-</div></section>
-
-<section class="block"><div class="wrap">
-<div class="band">
-<h2>One pass. <span class="accent">Every holiday.</span></h2>
-<p>The Holiday Pass unlocks every deal event on DayMarket, plus org and business tiers for workplaces and owners.</p>
-<a class="btn amber" href="membership.html">See membership</a>
-</div>
-</div></section>
-
 <section class="block"><div class="wrap">
 <p class="kicker">For workplaces</p>
 <h2>Packages, <span class="accent">not dozens.</span></h2>
@@ -132,5 +186,42 @@
 
 <footer class="site-footer"><div class="wrap"><div class="cols"><div><h4>DayMarket</h4><a href="index.html">A daily holiday.</a><a href="holidays.html">Holiday feed</a><a href="packages.html">Workplace packages</a></div><div><h4>Membership</h4><a href="membership.html">Holiday Pass ($12/mo)*</a><a href="membership.html">Org Membership ($49/mo)*</a><a href="businesses.html">Business Profile ($99/mo)*</a></div><div><h4>Company</h4><a href="businesses.html">List your business</a><a href="index.html">About</a></div></div><p class="fine">* Founding pricing, adjustable. No payments are collected yet; joining the founding list reserves your spot and founding rate. DayMarket is operated by Operator One (Tabron Merryhill Systems). Launch menu platform: Ellianna's Donut Shop, Columbia, MO, (573) 442-5608. © <span data-year></span> DayMarket.</p></div></footer>
 <script src="assets/dm.js"></script>
+<script>
+(function () {
+  "use strict";
+  var labels = { hungry: "Hungry", health: "Health", service: "Service", insurance: "Insurance", browsing: "Just browsing" };
+  function readPref(key) { try { return localStorage.getItem("dm-pref-" + key) || ""; } catch (e) { return ""; } }
+  function writePref(key, val) { try { localStorage.setItem("dm-pref-" + key, val); } catch (e) {} }
+  function readOccasion() { try { var v = localStorage.getItem("dm-occasion"); return labels[v] ? v : "hungry"; } catch (e) { return "hungry"; } }
+  function showSaved() {
+    document.querySelectorAll("[data-saved]").forEach(function (el) {
+      var v = readPref(el.getAttribute("data-saved"));
+      el.textContent = v ? "Saved in this browser: " + v : "";
+    });
+  }
+  function select(occasion) {
+    if (!labels[occasion]) occasion = "hungry";
+    try { localStorage.setItem("dm-occasion", occasion); } catch (e) {}
+    document.querySelectorAll("[data-occasion]").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-occasion") === occasion ? "true" : "false");
+    });
+    document.querySelectorAll("[data-panel]").forEach(function (p) {
+      p.classList.toggle("active", p.getAttribute("data-panel") === occasion);
+    });
+    var h = document.getElementById("offers-heading");
+    if (h) h.textContent = "Offers for " + labels[occasion];
+  }
+  document.querySelectorAll("[data-occasion]").forEach(function (b) {
+    b.addEventListener("click", function () { select(b.getAttribute("data-occasion")); });
+  });
+  document.querySelectorAll("[data-pref]").forEach(function (input) {
+    var key = input.getAttribute("data-pref");
+    input.value = readPref(key);
+    input.addEventListener("change", function () { writePref(key, input.value.trim()); showSaved(); });
+  });
+  showSaved();
+  select(readOccasion());
+})();
+</script>
 </body>
 </html>
