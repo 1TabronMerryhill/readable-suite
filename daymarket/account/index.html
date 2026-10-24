@@ -89,6 +89,9 @@
   var myOrders = [];
   var orgPackages = [];
   var orgBusinesses = [];
+  var bizJoins = [];
+  var orgJoins = [];
+  var lastOrgInvite = null;
 
   var esc = DM.esc;
 
@@ -232,6 +235,15 @@
         .order("created_at", { ascending: false });
       if (!po.error) bizPayouts = po.data || [];
     } catch (e) { bizPayouts = []; }
+
+    try {
+      var bj = await DM.supabase.from("dm_org_calendars")
+        .select("id,status,joined_at,org:dm_members(id,email,full_name,org_name)")
+        .eq("business_id", currentBiz.id)
+        .eq("status", "active")
+        .order("joined_at", { ascending: true });
+      if (!bj.error) bizJoins = bj.data || [];
+    } catch (e) { bizJoins = []; }
   }
 
   function isOrg() {
@@ -239,7 +251,19 @@
   }
 
   async function loadOrgData() {
-    myOrders = []; orgPackages = []; orgBusinesses = [];
+    myOrders = []; orgPackages = []; orgBusinesses = []; orgJoins = [];
+    // Calendar links load for any organization account, active or not,
+    // so an invited org sees its kitchens before it pays.
+    if (member && member.pass_type === "organization") {
+      try {
+        var jn = await DM.supabase.from("dm_org_calendars")
+          .select("id,status,business:dm_businesses(id,name)")
+          .eq("org_id", me)
+          .eq("status", "active")
+          .order("joined_at", { ascending: true });
+        if (!jn.error) orgJoins = jn.data || [];
+      } catch (e) { orgJoins = []; }
+    }
     if (!isOrg()) return;
     try {
       var o = await DM.supabase.from("dm_orders")
@@ -259,11 +283,15 @@
       .order("base_price_cents", { ascending: true, nullsFirst: false });
     if (!p.error) orgPackages = p.data || [];
 
-    var b = await DM.supabase.from("dm_businesses")
-      .select("id,name")
-      .eq("status", "active")
-      .order("name", { ascending: true });
-    if (!b.error) orgBusinesses = b.data || [];
+    if (orgJoins.length) {
+      orgBusinesses = orgJoins.map(function (j) { return j.business; }).filter(Boolean);
+    } else {
+      var b = await DM.supabase.from("dm_businesses")
+        .select("id,name")
+        .eq("status", "active")
+        .order("name", { ascending: true });
+      if (!b.error) orgBusinesses = b.data || [];
+    }
   }
 
   /* ---------- member view ---------- */
@@ -279,7 +307,11 @@
     var pt = member ? member.pass_type : "none";
     var ps = member ? member.pass_status : "inactive";
     html += "<p>" + badge(ps) + " &nbsp;<strong>" + esc(passName(pt)) + "</strong></p>";
-    html += '<p class="lede">Paid passes launch soon. Founding members lock founding pricing. No payments are collected yet.</p>';
+    if (member && member.pass_type === "organization" && member.pass_status === "active") {
+      html += '<p class="lede">Organization membership is active at $49/mo.</p>';
+    } else {
+      html += '<p class="lede">Paid passes launch soon. Founding members lock founding pricing. No payments are collected yet.</p>';
+    }
     html += '<p><a class="go" href="../membership.html">See membership →</a></p></div>';
 
     html += '<p class="kicker">Today\'s holidays</p>';
@@ -655,9 +687,13 @@
         html += "</div>";
         html += '<span class="left">' + (left === Infinity ? "Unlimited" : left + " of " + o.quantity_total + " left") + " · " + (o.quantity_claimed || 0) + " claimed";
         if (o.member_price_cents !== null && o.member_price_cents !== undefined) {
-          var bps = (currentBiz && currentBiz.fee_bps != null) ? currentBiz.fee_bps : 1500;
-          var netC = o.member_price_cents - Math.round(o.member_price_cents * bps / 10000);
-          html += " · you net " + esc(DM.money(netC)) + " after the " + (bps / 100) + "% fee";
+          if (o.pricing_source === "auto") {
+            html += " · you net " + esc(DM.money(o.member_price_cents)) + " in full (members skip the 15% markup)";
+          } else {
+            var bps = (currentBiz && currentBiz.fee_bps != null) ? currentBiz.fee_bps : 1500;
+            var netC = o.member_price_cents - Math.round(o.member_price_cents * bps / 10000);
+            html += " · you net " + esc(DM.money(netC)) + " after the " + (bps / 100) + "% fee";
+          }
         }
         html += "</span>";
         html += "</div><div style='display:flex;gap:8px;align-items:center;flex-wrap:wrap'>" + badge(o.status);
@@ -703,6 +739,30 @@
     }
     html += "</div>";
 
+    // Organizations on this business's calendar
+    html += '<p class="kicker">Organizations</p>';
+    html += '<div class="panel"><h3>Organizations on your calendar</h3>';
+    html += '<p class="lede">Invite an organization and it joins your calendar. It pays the $49/mo membership, then schedules orders with you on single days or set days. Either side can leave at any time.</p>';
+    if (!bizJoins.length) {
+      html += '<p class="mini">No organizations on your calendar yet.</p>';
+    } else {
+      bizJoins.forEach(function (j) {
+        var oname = (j.org && (j.org.org_name || j.org.full_name)) || (j.org && j.org.email) || "Organization";
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #eee"><span>' + esc(oname) + "</span>";
+        html += '<button class="btn small ghost" type="button" data-action="leave-calendar" data-id="' + esc(j.id) + '">Remove</button></div>';
+      });
+    }
+    if (lastOrgInvite) {
+      html += '<div class="mt"><p class="mini"><strong>Invite link for ' + esc(lastOrgInvite.name) + ':</strong> send this to the org. It signs them in once and expires, so ask them to use it promptly. If it lapses, invite again for a fresh one.</p>';
+      html += '<input class="input" readonly value="' + esc(lastOrgInvite.link) + '"></div>';
+    }
+    html += '<details class="mt"><summary style="cursor:pointer;font-weight:700">+ Invite an organization</summary>';
+    html += '<form data-form="invite-org" class="mt">';
+    html += field("org_name", "Organization name", "text", true, "Rotary Club of Columbia");
+    html += field("contact_name", "Contact name", "text", true, "Jordan Smith");
+    html += field("email", "Contact email", "email", true, "jordan@example.org");
+    html += '<button class="btn small" type="submit">Send invite</button></form></details></div>';
+
     businessViewEl.innerHTML = html;
   }
 
@@ -739,6 +799,25 @@
   function renderOrg() {
     var html = "";
     if (!isOrg()) {
+      if (member && member.pass_type === "organization") {
+        html += '<p class="kicker">Organization membership</p>';
+        html += '<div class="panel"><h3>Membership required to order</h3>';
+        html += '<p class="lede">Organization membership is $49/mo. Pay it once and your calendar unlocks: schedule orders with your kitchens on single days or set days.</p>';
+        html += '<button class="btn" type="button" data-action="org-pay">Pay $49/mo</button>';
+        html += '<p class="mini" id="org-pay-note"></p></div>';
+        html += '<p class="kicker">Kitchens on your calendar</p>';
+        if (!orgJoins.length) {
+          html += '<div class="panel"><p class="lede">No kitchens on your calendar yet. A business invites you and it appears here.</p></div>';
+        } else {
+          orgJoins.forEach(function (j) {
+            var bname = (j.business && j.business.name) || "Kitchen";
+            html += '<div class="panel" style="display:flex;justify-content:space-between;align-items:center"><span>' + esc(bname) + "</span>";
+            html += '<button class="btn small ghost" type="button" data-action="leave-calendar" data-id="' + esc(j.id) + '">Remove</button></div>';
+          });
+        }
+        orgViewEl.innerHTML = html;
+        return;
+      }
       html += '<p class="kicker">For organizations</p>';
       html += '<div class="panel"><h3>Feed the whole office</h3>';
       html += '<p class="lede">Organization membership ($49/mo) unlocks the workplace workspace: your calendar with packages attached, standing orders, and one invoice. Meeting boxes, morning meetings, appreciation moments: handled.</p>';
@@ -768,6 +847,18 @@
     if (standing.length) {
       html += '<p class="kicker">Standing orders</p>';
       standing.forEach(function (o) { html += renderOrderCard(o, true); });
+    }
+
+    if (orgJoins.length) {
+      html += '<p class="kicker">Kitchens on your calendar</p>';
+      orgJoins.forEach(function (j) {
+        var bname = (j.business && j.business.name) || "Kitchen";
+        html += '<div class="panel" style="display:flex;justify-content:space-between;align-items:center"><span>' + esc(bname) + "</span>";
+        html += '<button class="btn small ghost" type="button" data-action="leave-calendar" data-id="' + esc(j.id) + '">Remove</button></div>';
+      });
+    } else {
+      html += '<p class="kicker">Kitchens on your calendar</p>';
+      html += '<div class="panel"><p class="lede">No specific kitchens joined, so every active kitchen is available below.</p></div>';
     }
 
     html += '<p class="kicker">Schedule an order</p>';
@@ -971,6 +1062,50 @@
           return loadOrgData().then(function () { renderOrg(); note("ok", "Order canceled."); });
         })
         .catch(function (err) { note("err", "Couldn't cancel: " + ((err && err.message) || err)); });
+      return;
+    }
+    if (action === "org-pay") {
+      DM.getSession().then(function (s) {
+        if (!s) throw new Error("Sign in first.");
+        return fetch("/api/daymarket/org-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + s.access_token },
+          body: JSON.stringify({})
+        });
+      }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); })
+      .then(function (res) {
+        if (res.j && res.j.error === "already_active") { note("ok", "Membership is already active."); return; }
+        if (res.j && res.j.error === "billing_not_configured") { note("err", "Membership billing is being set up. Try again soon."); return; }
+        if (!res.ok || !res.j.url) throw new Error((res.j && res.j.error) || "Checkout failed.");
+        window.location.href = res.j.url;
+      }).catch(function (err) { note("err", (err && err.message) || err); });
+      return;
+    }
+    if (action === "leave-calendar") {
+      if (!window.confirm("Remove this calendar link? Future unconfirmed orders with this kitchen stop, confirmed ones stand.")) return;
+      var joinRow = null;
+      bizJoins.forEach(function (j) { if (j.id === id) joinRow = j; });
+      if (!joinRow) orgJoins.forEach(function (j) { if (j.id === id) joinRow = j; });
+      if (!joinRow) { note("err", "That link is no longer here."); return; }
+      var nowIso = new Date().toISOString();
+      var cancelFailed = false;
+      DM.supabase.from("dm_org_calendars").update({ status: "left", left_at: nowIso }).eq("id", id)
+        .then(function (r) {
+          if (r.error) throw r.error;
+          return DM.supabase.from("dm_orders").update({ status: "canceled" })
+            .eq("org_id", joinRow.org_id).eq("business_id", joinRow.business_id)
+            .eq("status", "scheduled").gt("scheduled_for", nowIso);
+        })
+        .then(function (r2) {
+          if (r2 && r2.error) cancelFailed = true;
+          if (currentBiz) return loadBusinessData().then(function () { renderBusiness(); });
+          return loadOrgData().then(function () { renderOrg(); });
+        })
+        .then(function () {
+          if (cancelFailed) note("err", "Link removed, but future orders may need canceling by hand.");
+          else note("ok", "Removed. Future unconfirmed orders with this kitchen are canceled.");
+        })
+        .catch(function (err) { note("err", "Couldn't remove: " + ((err && err.message) || err)); });
       return;
     }
     if (action === "confirm-order") {
@@ -1213,6 +1348,37 @@
     }
   });
 
+  // Auto draft offers: one per priced menu item, priced by the package
+  // engine (menu + 10% custom premium = member/shop price; + 15% DayMarket
+  // markup = regular price). Members skip the markup. Quantities stay
+  // unlimited until the manager sets a cap. Returns a promise of the count.
+  function autoOffersForHoliday(holidayId) {
+    var items = (currentBiz && currentBiz.station_data && currentBiz.station_data.menu_items) || [];
+    var offers = [];
+    items.forEach(function (it) {
+      var base = it && it.price_cents;
+      if (!it || !it.name || typeof base !== "number" || isNaN(base) || base < 0) return;
+      var premium = Math.round(base * 0.10);
+      var shop = base + premium;
+      var markup = Math.round(shop * 0.15);
+      offers.push({
+        holiday_id: holidayId,
+        title: it.name,
+        details: it.description || null,
+        regular_price_cents: shop + markup,
+        member_price_cents: shop,
+        quantity_total: null,
+        status: "draft",
+        pricing_source: "auto"
+      });
+    });
+    if (!offers.length) return Promise.resolve(0);
+    return DM.supabase.from("dm_offers").insert(offers).then(function (r) {
+      if (r.error) throw r.error;
+      return offers.length;
+    });
+  }
+
   document.addEventListener("submit", function (ev) {
     var form = ev.target.closest("[data-form]");
     if (!form) return;
@@ -1262,9 +1428,16 @@
         starts_at: toISO(val(form, "starts_at")),
         ends_at: toISO(val(form, "ends_at")),
         status: "draft"
-      }).then(function (r) {
+      }).select("id").then(function (r) {
         if (r.error) throw r.error;
-        return refreshBusiness("Holiday created as a draft. Add offers, then publish it.");
+        var hid = r.data && r.data[0] && r.data[0].id;
+        if (!hid) return refreshBusiness("Holiday created as a draft. Add offers, then publish it.");
+        return autoOffersForHoliday(hid).then(function (n) {
+          if (n > 0) return refreshBusiness("Holiday created as a draft with " + n + " offers from your menu. Check prices, set quantities, then publish it.");
+          return refreshBusiness("Holiday created as a draft. No priced menu items found, so add offers by hand.");
+        }).catch(function () {
+          return refreshBusiness("Holiday created as a draft. Automatic offers did not generate, add them by hand.");
+        });
       }).catch(bizErr);
       return;
     }
@@ -1288,7 +1461,33 @@
       return;
     }
 
+    if (kind === "invite-org") {
+      var orgName = val(form, "org_name");
+      var contactName = val(form, "contact_name");
+      var orgEmail = val(form, "email");
+      if (!orgName || !contactName || !orgEmail) { note("err", "Fill in the organization, contact, and email."); return; }
+      if (!currentBiz) { note("err", "Pick a business first."); return; }
+      DM.getSession().then(function (s) {
+        if (!s) throw new Error("Sign in first.");
+        return fetch("/api/daymarket/org-invite", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + s.access_token },
+          body: JSON.stringify({ business_id: currentBiz.id, org_name: orgName, contact_name: contactName, email: orgEmail })
+        });
+      }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (!res.ok) throw new Error((res.j && res.j.error) || "Invite failed.");
+        lastOrgInvite = { name: orgName, link: res.j.magic_link };
+        return loadBusinessData().then(function () {
+          renderBusiness();
+          note("ok", res.j.already_linked ? "Already on your calendar. Fresh sign-in link below, send it to the org." : "Invite created. Send the sign-in link below to the org.");
+        });
+      }).catch(function (err) { note("err", (err && err.message) || err); });
+      return;
+    }
+
     if (kind === "new-order") {
+      if (!isOrg()) { note("err", "Organization membership is required to schedule orders. Pay the $49/mo membership first."); return; }
       var oTitle = val(form, "title");
       var when = val(form, "scheduled_for");
       if (!oTitle) { note("err", "Say what this order is for."); return; }
