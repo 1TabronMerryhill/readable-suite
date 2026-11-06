@@ -1,0 +1,720 @@
+{
+ "generated": "2026-11-06T13:50:00-06:00",
+ "firm": "OpOne Capital",
+ "book": {
+  "real": {
+   "total": 78.08,
+   "cash": 31.25,
+   "equity": 46.83,
+   "positions": 3
+  },
+  "paper": {
+   "total": 105.44,
+   "cash": 105.44,
+   "open": 0,
+   "closed": 0
+  }
+ },
+ "attention": "Gold is $6 from its $4,090 target. Nothing else needs you.",
+ "positions": [
+  {
+   "symbol": "MU",
+   "qty": 0.02258,
+   "fill": 691.7347,
+   "last": 691.79,
+   "pnl": 0.0,
+   "stop": 656.39,
+   "target": 740,
+   "kill": "break below 656.39; weekly close below 600 kills the longer thesis",
+   "order_id": "6aee297b-80a8-43e4-822c-893ce54dc96c",
+   "filled_at": "2026-11-06T19:24:43.559Z"
+  },
+  {
+   "symbol": "QCOM",
+   "qty": 0.093966,
+   "fill": 166.23,
+   "last": 165.68,
+   "pnl": -0.05,
+   "stop": 156.75,
+   "target": 172,
+   "kill": "152.50 or Apple modem headline",
+   "order_id": "6aee297f-a42b-40d3-bf15-cbbe2ba573e5",
+   "filled_at": "2026-11-06T19:24:47.78Z"
+  },
+  {
+   "symbol": "GLD",
+   "qty": 0.0419,
+   "fill": 372.7899,
+   "last": 372.81,
+   "pnl": 0.0,
+   "stop": 368.16,
+   "target": 376.39,
+   "kill": "daily close below spot 3970",
+   "order_id": "6aee2984-f2e0-474f-9720-70b9fb7e0d14",
+   "filled_at": "2026-11-06T19:24:52.517Z"
+  }
+ ],
+ "conditionals": [
+  {
+   "symbol": "AMD",
+   "condition": "pullback to $436.50",
+   "last": 445.57,
+   "stop": 404.4,
+   "targets": [
+    460,
+    476
+   ]
+  },
+  {
+   "symbol": "DUOL",
+   "condition": "reclaim above $161.27",
+   "last": 158.31,
+   "stop": 150,
+   "targets": [
+    175,
+    184
+   ]
+  }
+ ],
+ "gold": {
+  "spot": 4084.1,
+  "entry": 4040,
+  "target": 4090,
+  "stop": 4000,
+  "kill": "daily close below 3970"
+ },
+ "brief": {
+  "date": "2026-11-06",
+  "overall": "Thursday rout was a policy scare. Friday opened split: chips rebounded, Dow fell. Payrolls hot, 10-year near 4.9 percent, Dec hike odds near 80 percent. Tuesday CPI is the next gate.",
+  "slots": [
+   {
+    "slot": 1,
+    "symbol": "MU",
+    "call": "long, LIVE",
+    "note": "Memory pricing power, take-or-pay over 35 percent of forecast revenue through 2030."
+   },
+   {
+    "slot": 2,
+    "symbol": "QCOM",
+    "call": "long continuation, LIVE",
+    "note": "Bounce only. Buybacks plus dividends ran ahead of free cash flow."
+   },
+   {
+    "slot": 3,
+    "symbol": "AMD",
+    "call": "long, CONDITIONAL pullback only to $436.50",
+    "note": "Bounce only. Worth $384 to $480 on run-rate earnings, no 20 percent margin of safety."
+   },
+   {
+    "slot": 4,
+    "symbol": "DUOL",
+    "call": "long, CONDITIONAL reclaim only above $161.27",
+    "note": "Q3 revenue $309M, up 14 percent. Breakout failed to hold."
+   },
+   {
+    "slot": 5,
+    "symbol": "GLD",
+    "call": "long, LIVE",
+    "note": "Gold entry $4,040 triggered. Target $4,090, stop $4,000."
+   }
+  ]
+ },
+ "wire": [
+  {
+   "time": "07:30 CT",
+   "headline": "Payrolls hot: +165,000 vs ~65,000 expected; unemployment 4.1%.",
+   "verdict": "Hawkish. Stood down the NVDA and AMD long legs at the open.",
+   "refs": [
+    "theme:jobs_hot",
+    "theme:rates_hawkish"
+   ]
+  },
+  {
+   "time": "11:34 CT",
+   "headline": "Chips rebound: SOXX +6.5% at the open; AMD +9.3%.",
+   "verdict": "Follow-through confirmed. AMD stays conditional on the pullback, no chasing.",
+   "refs": [
+    "theme:semis_contagion",
+    "asset:AMD"
+   ]
+  },
+  {
+   "time": "11:34 CT",
+   "headline": "MU: fiscal Q4 revenue $54.23B, up 379%; Q1 FY27 guide $61.5B.",
+   "verdict": "Thesis intact. Watch the Taiwan plant halt and data-center capex.",
+   "refs": [
+    "asset:MU",
+    "theme:ai_capex"
+   ]
+  },
+  {
+   "time": "Nov 3",
+   "headline": "DUOL Q3: revenue $309M, up 14%; DAU +29% to 64.9M; EPS $0.54 vs $0.57.",
+   "verdict": "Breakout failed to hold. Reclaim above $161.27 or no trade.",
+   "refs": [
+    "asset:DUOL",
+    "theme:earnings_power"
+   ]
+  }
+ ],
+ "graph": {
+  "nodes": [
+   {
+    "id": "asset:AMD",
+    "type": "asset",
+    "label": "AMD",
+    "properties": {}
+   },
+   {
+    "id": "asset:BTC",
+    "type": "asset",
+    "label": "BTC",
+    "properties": {}
+   },
+   {
+    "id": "asset:DIA",
+    "type": "asset",
+    "label": "DIA",
+    "properties": {}
+   },
+   {
+    "id": "asset:DUOL",
+    "type": "asset",
+    "label": "DUOL",
+    "properties": {}
+   },
+   {
+    "id": "asset:GLD",
+    "type": "asset",
+    "label": "GLD",
+    "properties": {}
+   },
+   {
+    "id": "asset:MU",
+    "type": "asset",
+    "label": "MU",
+    "properties": {}
+   },
+   {
+    "id": "asset:QCOM",
+    "type": "asset",
+    "label": "QCOM",
+    "properties": {}
+   },
+   {
+    "id": "theme:dollar_strength",
+    "type": "theme",
+    "label": "dollar_strength",
+    "properties": {}
+   },
+   {
+    "id": "theme:ai_capex",
+    "type": "theme",
+    "label": "ai_capex",
+    "properties": {}
+   },
+   {
+    "id": "theme:semis_contagion",
+    "type": "theme",
+    "label": "semis_contagion",
+    "properties": {}
+   },
+   {
+    "id": "news:2026-11-06-payrolls-hot",
+    "type": "news_event",
+    "label": "October nonfarm payrolls +165k vs ~65k consensus, unemployment 4.1% vs 4.2%, wages +0.4% MoM",
+    "properties": {
+     "date": "2026-11-06",
+     "driver": "macro",
+     "themes": [
+      "jobs_hot",
+      "rates_hawkish"
+     ],
+     "source": "Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS"
+    }
+   },
+   {
+    "id": "theme:jobs_hot",
+    "type": "theme",
+    "label": "jobs_hot",
+    "properties": {}
+   },
+   {
+    "id": "theme:rates_hawkish",
+    "type": "theme",
+    "label": "rates_hawkish",
+    "properties": {}
+   },
+   {
+    "id": "news:2026-11-06-amd-10q",
+    "type": "news_event",
+    "label": "AMD Q3 2026 10-Q filed Nov 4, 2026: revenue $13,377m (+45%), Data Center $8,546m (+97%), net income $2,428m (+95%), Q4 guide ~$17bn",
+    "properties": {
+     "date": "2026-11-06",
+     "driver": "earnings",
+     "themes": [
+      "earnings_power",
+      "ai_capex"
+     ],
+     "source": "AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026"
+    }
+   },
+   {
+    "id": "theme:earnings_power",
+    "type": "theme",
+    "label": "earnings_power",
+    "properties": {}
+   },
+   {
+    "id": "news:2026-11-06-qcom-10k",
+    "type": "news_event",
+    "label": "Qualcomm FY2026 10-K filed Nov 4, 2026: revenue $43,120m (-3%), GAAP net income $13,628m (+146%) on $5.7bn one-off tax benefit, operating income down 30%, handsets -13%, automotive +52%",
+    "properties": {
+     "date": "2026-11-06",
+     "driver": "earnings",
+     "themes": [
+      "earnings_power"
+     ],
+     "source": "Qualcomm 10-K accession 0000804328-26-000128; 8-K Ex-99.1 Nov 4, 2026"
+    }
+   },
+   {
+    "id": "news:2026-11-06-mu-valuation",
+    "type": "news_event",
+    "label": "Micron at 3.7x FY2027 earnings; Q1 FY27 guide revenue $61.5B, non-GAAP EPS $38.15; take-or-pay covers >35% of forecast revenue through 2030, ~$32B deposits; buybacks resume Dec 9",
+    "properties": {
+     "date": "2026-11-06",
+     "driver": "earnings",
+     "themes": [
+      "earnings_power",
+      "ai_capex"
+     ],
+     "source": "Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026"
+    }
+   },
+   {
+    "id": "news:2026-11-06-duol-q3",
+    "type": "news_event",
+    "label": "Duolingo Q3 revenue $309M (+14%), DAU +29% to 64.9M, paid subs +14% to 13.1M, Q4 guide raised; shares closed $161.27 Nov 4 after +37% intraday, now below it",
+    "properties": {
+     "date": "2026-11-06",
+     "driver": "earnings",
+     "themes": [
+      "earnings_beat",
+      "earnings_power"
+     ],
+     "source": "Midday packages 2026-11-06; Invezz/TipRanks Nov 6, 2026"
+    }
+   },
+   {
+    "id": "news:2026-11-06-chip-rebound",
+    "type": "news_event",
+    "label": "Nasdaq +1.1-2% at the open on a chip rebound, SOXX +6.5%, after Thursday's 5.5% rout; Dow -518 on hot payrolls pushing 10-yr yield to ~4.87%",
+    "properties": {
+     "date": "2026-11-06",
+     "driver": "macro",
+     "themes": [
+      "ai_regulation",
+      "breadth_rotation",
+      "rates_hawkish"
+     ],
+     "source": "Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026"
+    }
+   },
+   {
+    "id": "theme:ai_regulation",
+    "type": "theme",
+    "label": "ai_regulation",
+    "properties": {}
+   },
+   {
+    "id": "theme:gold_safe_haven",
+    "type": "theme",
+    "label": "gold_safe_haven",
+    "properties": {}
+   },
+   {
+    "id": "trade:2026-11-06-1",
+    "type": "trade",
+    "label": "2026-11-06 slot 1 long NVDA",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 1,
+     "direction": "long",
+     "entry": 188.5,
+     "target": 196,
+     "stop": 181.6,
+     "kill": "loses 181.60 Thu close / hot payrolls stands it down",
+     "size": 21.08,
+     "horizon": "day",
+     "status": "stood_down_payrolls"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-2",
+    "type": "trade",
+    "label": "2026-11-06 slot 2 long AMD",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 2,
+     "direction": "long",
+     "entry": 436.5,
+     "target": 460,
+     "stop": 404.4,
+     "kill": "loses 404.40 Thu close / hot payrolls stands it down",
+     "size": 21.08,
+     "horizon": "day",
+     "status": "stood_down_payrolls"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-3",
+    "type": "trade",
+    "label": "2026-11-06 slot 3 long BTC",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 3,
+     "direction": "long",
+     "entry": 76150,
+     "target": 79000,
+     "stop": 75000,
+     "kill": "break below 75000",
+     "size": 21.08,
+     "horizon": "day",
+     "status": "signal_only"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-4",
+    "type": "trade",
+    "label": "2026-11-06 slot 4 long GOLD",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 4,
+     "direction": "long",
+     "entry": 4040,
+     "target": 4090,
+     "stop": 4000,
+     "kill": "loses 4000 / dollar reclaim plus yields spiking",
+     "size": 21.08,
+     "horizon": "day",
+     "status": "signal_only"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-5",
+    "type": "trade",
+    "label": "2026-11-06 slot 5 short DIA",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 5,
+     "direction": "short",
+     "entry": 510,
+     "target": 505,
+     "stop": 514.27,
+     "kill": "reclaims 514.27 Thu close",
+     "size": 21.08,
+     "horizon": "day",
+     "status": "signal_only"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-6",
+    "type": "trade",
+    "label": "2026-11-06 slot 6 long AMD",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 6,
+     "direction": "long",
+     "entry": 436.5,
+     "target": 460,
+     "stop": 404.4,
+     "kill": "loses 404.40 Thu close / payrolls stand-down not cleared",
+     "size": 21.08,
+     "horizon": "day",
+     "status": "signal_only"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-7",
+    "type": "trade",
+    "label": "2026-11-06 slot 7 long QCOM",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 7,
+     "direction": "long",
+     "entry": 160.85,
+     "target": 172,
+     "stop": 152.5,
+     "kill": "loses 152.50 / Apple modem headline / handset guide cut",
+     "size": 21.08,
+     "horizon": "day",
+     "status": "signal_only"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-8",
+    "type": "trade",
+    "label": "2026-11-06 slot 1 long MU",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 1,
+     "direction": "long",
+     "entry": 685.34,
+     "target": 740,
+     "stop": 656.39,
+     "kill": "break below 656.39; weekly close below 600 kills the longer thesis",
+     "size": 15.62,
+     "horizon": "day",
+     "status": "filled_open"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-9",
+    "type": "trade",
+    "label": "2026-11-06 slot 2 long QCOM",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 2,
+     "direction": "long",
+     "entry": 163.75,
+     "target": 172,
+     "stop": 156.75,
+     "kill": "152.50 or Apple modem headline",
+     "size": 15.62,
+     "horizon": "day",
+     "status": "filled_open"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-10",
+    "type": "trade",
+    "label": "2026-11-06 slot 5 long GLD",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 5,
+     "direction": "long",
+     "entry": 371.82,
+     "target": 376.39,
+     "stop": 368.16,
+     "kill": "daily close below spot 3970",
+     "size": 15.62,
+     "horizon": "day",
+     "status": "filled_open"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-11",
+    "type": "trade",
+    "label": "2026-11-06 slot 3 long AMD",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 3,
+     "direction": "long",
+     "entry": 436.5,
+     "target": 460,
+     "stop": 404.4,
+     "kill": "close below 404.40",
+     "size": 15.62,
+     "horizon": "day",
+     "status": "conditional_pullback"
+    }
+   },
+   {
+    "id": "trade:2026-11-06-12",
+    "type": "trade",
+    "label": "2026-11-06 slot 4 long DUOL",
+    "properties": {
+     "date": "2026-11-06",
+     "slot": 4,
+     "direction": "long",
+     "entry": 161.27,
+     "target": 175,
+     "stop": 150,
+     "kill": "close below 150",
+     "size": 15.62,
+     "horizon": "day",
+     "status": "conditional_reclaim"
+    }
+   }
+  ],
+  "edges": [
+   {
+    "from": "news:2026-11-06-payrolls-hot",
+    "to": "theme:jobs_hot",
+    "type": "mentions",
+    "evidence": "Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "news:2026-11-06-payrolls-hot",
+    "to": "theme:rates_hawkish",
+    "type": "mentions",
+    "evidence": "Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "news:2026-11-06-amd-10q",
+    "to": "theme:earnings_power",
+    "type": "mentions",
+    "evidence": "AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "news:2026-11-06-amd-10q",
+    "to": "theme:ai_capex",
+    "type": "mentions",
+    "evidence": "AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "news:2026-11-06-qcom-10k",
+    "to": "theme:earnings_power",
+    "type": "mentions",
+    "evidence": "Qualcomm 10-K accession 0000804328-26-000128; 8-K Ex-99.1 Nov 4, 2026",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "news:2026-11-06-mu-valuation",
+    "to": "theme:earnings_power",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "news:2026-11-06-mu-valuation",
+    "to": "theme:ai_capex",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "news:2026-11-06-duol-q3",
+    "to": "theme:earnings_power",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; Invezz/TipRanks Nov 6, 2026",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "news:2026-11-06-chip-rebound",
+    "to": "theme:ai_regulation",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "news:2026-11-06-chip-rebound",
+    "to": "theme:rates_hawkish",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-2",
+    "to": "asset:AMD",
+    "type": "decides",
+    "evidence": "brief-2026-11-06",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-3",
+    "to": "asset:BTC",
+    "type": "decides",
+    "evidence": "brief-2026-11-06",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-5",
+    "to": "asset:DIA",
+    "type": "decides",
+    "evidence": "brief-2026-11-06",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-6",
+    "to": "asset:AMD",
+    "type": "decides",
+    "evidence": "trade-packages-2026-11-06-amd-qcom.md",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-7",
+    "to": "asset:QCOM",
+    "type": "decides",
+    "evidence": "trade-packages-2026-11-06-amd-qcom.md",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-8",
+    "to": "asset:MU",
+    "type": "decides",
+    "evidence": "midday-packages-2026-11-06; real order via Robinhood MCP",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-9",
+    "to": "asset:QCOM",
+    "type": "decides",
+    "evidence": "midday-packages-2026-11-06; real order via Robinhood MCP",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-10",
+    "to": "asset:GLD",
+    "type": "decides",
+    "evidence": "midday-packages-2026-11-06; real order via Robinhood MCP",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-11",
+    "to": "asset:AMD",
+    "type": "decides",
+    "evidence": "midday-packages-2026-11-06",
+    "date": "2026-11-06"
+   },
+   {
+    "from": "trade:2026-11-06-12",
+    "to": "asset:DUOL",
+    "type": "decides",
+    "evidence": "midday-packages-2026-11-06",
+    "date": "2026-11-06"
+   }
+  ],
+  "total_nodes": 118,
+  "total_edges": 117,
+  "patterns": [
+   {
+    "theme": "ai_capex",
+    "n": 1,
+    "wins": 0,
+    "avg_r": -1.0,
+    "status": "candidate",
+    "min_n_live": 10,
+    "decay_half_life_days": 30,
+    "why": "1 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot."
+   },
+   {
+    "theme": "ai_earnings_momentum",
+    "n": 1,
+    "wins": 0,
+    "avg_r": -1.0,
+    "status": "candidate",
+    "min_n_live": 10,
+    "decay_half_life_days": 30,
+    "why": "1 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot."
+   },
+   {
+    "theme": "semis_contagion",
+    "n": 3,
+    "wins": 0,
+    "avg_r": -1.0,
+    "status": "candidate",
+    "min_n_live": 10,
+    "decay_half_life_days": 30,
+    "why": "3 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot."
+   }
+  ],
+  "connector_candidates": 16
+ },
+ "quotes_as_of": "13:22 CT Nov 6, 2026 (Robinhood live); gold 13:16 CT Yahoo snapshot"
+}
