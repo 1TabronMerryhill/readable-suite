@@ -16,26 +16,63 @@
    Env (set in the Netlify dashboard, never committed):
      FINNHUB_WEBHOOK_SECRET — the secret shown on the Finnhub dashboard
      Webhook page. The value is never written to a file, a log, or chat.
+     BUS_URL, BUS_TOKEN — the Railway feed pipeline service. When both are
+     set, a verified event is POSTed to BUS_URL/ingest with the Bearer
+     token, after the 200 ack. When unset, the receiver keeps the log-only
+     behavior below.
 
-   Endpoint (after deploy): https://readable.tabronmerryhill.com/api/finnhub-webhook
-   (200 rewrite in netlify.toml to /.netlify/functions/finnhub-webhook).
+   Endpoint: https://opone.tabronmerryhill.com/api/finnhub-webhook
+   (200 rewrite in desk/netlify.toml to /.netlify/functions/finnhub-webhook).
 
    v1 scope: verify the secret, ack 200, log the event to the function logs
-   (Netlify dashboard). No event store yet: the Desk's event bus (Phase 3)
-   will consume these. The exact Finnhub event catalog was not verifiable
-   from public docs; the receiver is payload-agnostic and logs whatever
-   JSON arrives, so the Test Webhook button reveals the shape live. */
+   (Netlify dashboard), then forward it to the bus when configured. The
+   forward is bounded (2s) and never fails the ack: a bus error is logged,
+   the ack still goes out. The bus validates the event against the Desk
+   contract, so a raw Finnhub event that does not match the contract is
+   rejected there; once the Test Webhook button reveals the real payload
+   shape, map it to a contract event here. The exact Finnhub event catalog
+   was not verifiable from public docs; the receiver is payload-agnostic
+   and logs whatever JSON arrives, so the Test Webhook button reveals the
+   shape live. */
 
 "use strict";
 
 var crypto = require("crypto");
 
 var WEBHOOK_SECRET = process.env.FINNHUB_WEBHOOK_SECRET || "";
+var BUS_URL = (process.env.BUS_URL || "").replace(/\/$/, "");
+var BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 function secretsEqual(a, b) {
   if (!a || !b) return false;
   var ba = Buffer.from(a, "utf8"), bb = Buffer.from(b, "utf8");
   return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
+}
+
+// Forward a verified event to the Railway bus /ingest. Fire and forget
+// with a 2s cap: the ack is already decided, a bus error is logged and
+// never fails it. The response is sent when this handler returns, so the
+// forward runs before the return but cannot hold it up.
+async function forwardToBus(evt) {
+  if (!BUS_URL || !BUS_TOKEN) return;
+  var ctrl = new AbortController();
+  var timer = setTimeout(function () { ctrl.abort(); }, 2000);
+  try {
+    var res = await fetch(BUS_URL + "/ingest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + BUS_TOKEN,
+      },
+      body: JSON.stringify(evt),
+      signal: ctrl.signal,
+    });
+    console.log("finnhub-webhook forward: bus=" + res.status);
+  } catch (e) {
+    console.log("finnhub-webhook forward failed: " + e.message);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 exports.handler = async function (event) {
@@ -69,6 +106,11 @@ exports.handler = async function (event) {
     console.log("finnhub-webhook event: type=" + kind + " keys=" + keys);
   } catch (e) {
     console.log("finnhub-webhook event: unlogged (" + e.message + ")");
+  }
+  // Forward to the bus when configured. Bounded and safe: it cannot fail
+  // the ack, and a bus error is only logged.
+  if (evt) {
+    await forwardToBus(evt);
   }
   return ack;
 };
