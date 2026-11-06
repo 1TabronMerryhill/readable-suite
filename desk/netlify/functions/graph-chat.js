@@ -7,7 +7,7 @@
 // that context, citing node and edge ids.
 //
 // STAGED Nov 6, 2026. Not deployed. It ships with the Desk site
-// (desk.tabronmerryhill.com, proposed) in the next coordinated deploy
+// (opone.tabronmerryhill.com) in the next coordinated deploy
 // batch, on Milly's word. The Desk site must have GROQ_API_KEY set in its
 // Netlify environment, same as the Readable site already has.
 
@@ -15,7 +15,7 @@ const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 
 // Narrow this to the Desk origin when the subdomain is live.
-const ALLOWED_ORIGIN = "https://desk.tabronmerryhill.com";
+const ALLOWED_ORIGIN = "https://opone.tabronmerryhill.com";
 
 const SYSTEM_PROMPT = [
   "You are the voice of OpOne Capital's knowledge graph.",
