@@ -197,6 +197,16 @@
   .ask-form button{background:var(--text);color:#0a0b0d;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:15px;padding:13px 24px;cursor:pointer}
   .ask-empty{font-size:14px;color:var(--faint);line-height:1.65}
 
+  /* live status */
+  .livebadge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;border:1px solid var(--line2);border-radius:999px;padding:5px 11px;color:var(--muted)}
+  .livebadge .dot{width:8px;height:8px;border-radius:50%;background:var(--faint);flex:none}
+  .livebadge.live{color:var(--text);border-color:var(--muted)}
+  .livebadge.live .dot{background:var(--text);animation:pulse 2s infinite}
+  .livebadge.snap{border-style:dashed}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(236,238,241,.35)}70%{box-shadow:0 0 0 7px rgba(236,238,241,0)}100%{box-shadow:0 0 0 0 rgba(236,238,241,0)}}
+  .refreshrow{margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .refreshmeta{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+
   footer{margin-top:48px;border-top:1px solid var(--line);padding-top:22px;display:grid;gap:10px}
   footer p{margin:0;font-size:12.5px;color:var(--faint);line-height:1.7;max-width:860px}
   footer .mono{font-family:var(--mono);font-size:11.5px}
@@ -219,6 +229,7 @@
   }
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
+    .livebadge.live .dot{animation:none}
   }
 </style>
 </head>
@@ -231,7 +242,8 @@
       <span class="desk">The Desk</span>
     </div>
     <div class="topmeta">
-      Snapshot <b>Fri Nov 6, 2026, 1:50 PM CT</b><br />
+      <span class="livebadge" id="liveBadge"><span class="dot"></span><span id="liveBadgeText">CHECKING LIVE FEED</span></span><br />
+      <span id="liveAsOf">Book snapshot <b>Fri Nov 6, 2026, 1:50 PM CT</b> until the feed answers</span><br />
       Future home <b>desk.tabronmerryhill.com</b> (proposed, not wired yet)
     </div>
   </div>
@@ -239,21 +251,21 @@
   <!-- 01 GLANCE -->
   <section class="glance" aria-label="The firm at a glance">
     <div class="glance-grid">
-      <div class="stat"><div class="k">Real book</div><div class="v">$78.08</div><div class="s">Total value, live book</div></div>
-      <div class="stat"><div class="k">Cash</div><div class="v">$31.25</div><div class="s">Ready to deploy</div></div>
-      <div class="stat"><div class="k">In positions</div><div class="v">$46.83</div><div class="s">Equity across the book</div></div>
-      <div class="stat"><div class="k">Open positions</div><div class="v">3</div><div class="s">MU, QCOM, GLD</div></div>
+      <div class="stat"><div class="k">Real book</div><div class="v" id="gTotal">$78.08</div><div class="s">Total value, live book</div></div>
+      <div class="stat"><div class="k">Cash</div><div class="v" id="gCash">$31.25</div><div class="s">Ready to deploy</div></div>
+      <div class="stat"><div class="k">In positions</div><div class="v" id="gEquity">$46.83</div><div class="s">Equity across the book</div></div>
+      <div class="stat"><div class="k">Open positions</div><div class="v" id="gCount">3</div><div class="s" id="gSymbols">MU, QCOM, GLD</div></div>
     </div>
     <div class="attention">
       <span class="k">Needs you</span>
-      <span class="t">Gold is $6 from its $4,090 target. Nothing else needs you.</span>
+      <span class="t" id="attentionText">Gold is $6 from its $4,090 target. Nothing else needs you.</span>
     </div>
-    <p class="paperline">Paper book <b>$105.44</b>, all cash, flat. <b>0 open, 0 closed.</b> Prices as of <b>1:22 PM CT Nov 6, 2026 (Robinhood live)</b>; gold <b>1:16 PM CT Yahoo snapshot</b>.</p>
+    <p class="paperline" id="paperLine">Paper book <b>$105.44</b>, all cash, flat. <b>0 open, 0 closed.</b> Prices as of <b>1:22 PM CT Nov 6, 2026 (Robinhood live)</b>; gold <b>1:16 PM CT Yahoo snapshot</b>.</p>
 
     <div class="feed" aria-label="Feed and system status">
       <div class="row1">
         <span class="k">Feed</span>
-        <span class="src"><b>Snapshot, not live.</b> This page reads one frozen graph snapshot. The Finnhub webhook and the live wire plug in when the Desk site deploys.</span>
+        <span class="src" id="feedLine"><b>Checking the live feed.</b> Prices, the book, and the attention line refresh from /api/desk-data every 60 seconds.</span>
       </div>
       <div class="pipe" aria-label="System pipeline">
         <span class="node staged"><b>Finnhub webhook</b>real time feed, staged</span>
@@ -268,7 +280,11 @@
         <span class="arr">&rarr;</span>
         <span class="node"><b>This page</b>the visible surface</span>
       </div>
-      <p class="fine">JSON is the data contract between every layer. The Groq answering layer is a staged function that replaces local retrieval in the Ask panel later, with no layout change. No key and no live API call lives in this page.</p>
+      <p class="fine">The brief, the Wire, and the graph map come from the daily graph snapshot. They change daily, not by the minute. Gold spot stays on the Nov 6, 2026, 1:16 PM CT Yahoo snapshot until a live spot source lands. The GLD price itself is live when the feed answers. If the feed fails, this page shows the Nov 6, 2026, 1:50 PM CT snapshot and labels itself SNAPSHOT. It never shows stale prices as live. JSON is the data contract between every layer. No key lives in this page. The Groq answering layer is a staged function that replaces local retrieval in the Ask panel later, with no layout change.</p>
+      <div class="refreshrow">
+        <button class="fbtn" id="refreshBtn" type="button">Refresh now</button>
+        <span class="refreshmeta" id="refreshMeta">First check running.</span>
+      </div>
     </div>
   </section>
 
@@ -277,7 +293,7 @@
     <div class="sec-head">
       <span class="sec-num">02</span>
       <h2 class="sec-title">Positions</h2>
-      <p class="sec-note">Three live. Every card draws its own price line with entry, stop, target, and kill on it. No trade sits on this desk without a kill criterion on its card.</p>
+      <p class="sec-note">Three live. Every card draws its own price line with entry, stop, target, and kill on it. Last prices refresh every 60 seconds when the live feed answers. No trade sits on this desk without a kill criterion on its card.</p>
     </div>
     <div class="pos-grid" id="posGrid"></div>
 
@@ -286,7 +302,7 @@
       <p>Not positions. No money is in these names. Each one arms only if its trigger prints.</p>
     </div>
     <div class="cond-grid" id="condGrid"></div>
-    <p class="paperline" style="margin-top:14px">Card values are priced off the lasts above, so they can sit a cent or two off the book. <b>Book totals in the glance are as filed in the snapshot.</b></p>
+    <p class="paperline" style="margin-top:14px">Card values are priced off the lasts above, so they can sit a cent or two off the book. <b>Book totals in the glance come from the same feed as the cards when live, and from the snapshot when it is not.</b></p>
   </section>
 
   <!-- 03 WIRE -->
@@ -370,9 +386,9 @@
   </section>
 
   <footer>
-    <p><span class="mono">SOURCE.</span> All values on this page come from one embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT. Position fills are real orders via Robinhood. News evidence is cited on each graph node and edge. Nothing here is fetched live and nothing is saved.</p>
+    <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 60 seconds when the Desk site answers, feed yahoo-live. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
-    <p><span class="mono">NEXT.</span> Subdomain desk.tabronmerryhill.com is proposed and not wired yet. When the Desk site deploys, the Finnhub webhook feeds the wire in real time and the Groq layer answers in the Ask panel in place of local retrieval.</p>
+    <p><span class="mono">NEXT.</span> Subdomain desk.tabronmerryhill.com is proposed and not wired yet. The Finnhub webhook feeds the wire in real time when the Desk site deploys, and the Groq layer answers in the Ask panel in place of local retrieval. Gold spot joins the live feed when a live spot source lands.</p>
   </footer>
 </div>
 <script>
@@ -442,8 +458,28 @@ function scaleSVG(p){
   s += '</svg>';
   return s;
 }
+function regenMarks(p){
+  var m=[];
+  if(p.symbol==="QCOM") m.push({v:152.50,l:"KILL 152.50",c:"stop"});
+  m.push({v:p.stop,l:"STOP "+fmt(p.stop),c:"stop"});
+  m.push({v:p.fill,l:"FILL "+fmt(p.fill),c:"fill"});
+  m.push({v:p.last,l:"LAST "+fmt(p.last),c:"last"});
+  p.targets.forEach(function(t,i){ m.push({v:t,l:(p.targets.length>1? "T"+(i+1)+" " : "TARGET ")+fmt(t,(t%1===0?0:2)),c:"tgt"}); });
+  m.sort(function(a,b){ return a.v-b.v; });
+  return m;
+}
+function regenCondMarks(p){
+  var m=[{v:p.stop,l:"STOP "+fmt(p.stop),c:"stop"}];
+  if(p.symbol==="AMD") m.push({v:436.50,l:"TRIGGER 436.50",c:"fill"});
+  if(p.symbol==="DUOL") m.push({v:161.27,l:"TRIGGER 161.27",c:"fill"});
+  m.push({v:p.last,l:"LAST "+fmt(p.last),c:"last"});
+  p.targets.forEach(function(t,i){ m.push({v:t,l:"T"+(i+1)+" "+fmt(t,(t%1===0?0:2)),c:"tgt"}); });
+  m.sort(function(a,b){ return a.v-b.v; });
+  return m;
+}
 function renderPositions(){
   var g=document.getElementById("posGrid");
+  g.innerHTML="";
   POSITIONS.forEach(function(p){
     var val = p.qty*p.last;
     var pnlCls = p.pnl>0 ? "up" : (p.pnl<0 ? "down" : "flat");
@@ -457,7 +493,7 @@ function renderPositions(){
     card.innerHTML =
       '<div class="card-top"><div><div class="sym">'+p.symbol+'</div><div class="co">'+esc(p.name)+'</div></div><span class="tag live">Live position</span></div>'
       + '<div class="price-row"><div><div class="lbl">Last</div><div class="last">$'+fmt(p.last)+'</div></div><div><div class="lbl">P&amp;L</div><div class="pnl '+pnlCls+'">'+pnlTxt+'</div></div><div><div class="lbl">Value</div><div class="last" style="font-size:19px">$'+fmt(val)+'</div></div></div>'
-      + '<div class="scale">'+scaleSVG({symbol:p.symbol,min:p.scaleMin,max:p.scaleMax,marks:p.marks})+'</div>'
+      + '<div class="scale">'+scaleSVG({symbol:p.symbol,min:p.scaleMin,max:p.scaleMax,marks:regenMarks(p)})+'</div>'
       + '<div class="levels">'
       + '<div class="lv"><div class="k">Fill</div><div class="v">$'+fmt(p.fill)+' <small>x '+p.qty+'</small></div></div>'
       + '<div class="lv"><div class="k">Filled</div><div class="v" style="font-size:13.5px">'+p.filled+'</div></div>'
@@ -470,13 +506,14 @@ function renderPositions(){
     g.appendChild(card);
   });
   var cg=document.getElementById("condGrid");
+  cg.innerHTML="";
   CONDITIONALS.forEach(function(p){
     var card=document.createElement("article"); card.className="card cond";
     card.innerHTML =
       '<div class="card-top"><div><div class="sym">'+p.symbol+'</div><div class="co">'+esc(p.name)+'</div></div><span class="tag">Conditional. Not a position</span></div>'
       + '<div class="cond-trigger">'+esc(p.condition)+'</div>'
       + '<div class="price-row"><div><div class="lbl">Last</div><div class="last">$'+fmt(p.last)+'</div></div></div>'
-      + '<div class="scale">'+scaleSVG({symbol:p.symbol,min:p.scaleMin,max:p.scaleMax,marks:p.marks})+'</div>'
+      + '<div class="scale">'+scaleSVG({symbol:p.symbol,min:p.scaleMin,max:p.scaleMax,marks:regenCondMarks(p)})+'</div>'
       + '<div class="levels">'
       + '<div class="lv"><div class="k">Stop if armed</div><div class="v">$'+fmt(p.stop)+'</div></div>'
       + '<div class="lv"><div class="k">Targets</div><div class="v">'+p.targets.map(function(t){return "$"+fmt(t, (t%1===0?0:2));}).join(" then ")+'</div></div>'
@@ -763,6 +800,147 @@ function ask(q){
   document.getElementById("askInput").value="";
 }
 document.getElementById("askForm").addEventListener("submit",function(e){ e.preventDefault(); ask(document.getElementById("askInput").value); });
+</script>
+<script>
+/* ---- Live layer: fetch /api/desk-data on load and every 60 seconds ---- */
+var LIVE_URL="/api/desk-data";
+var SNAPSHOT_ASOF="Nov 6, 2026, 1:50 PM CT";
+var liveState={ checked:false, live:false, fails:0, lastOkAsOf:null, lastCheck:null, nextIn:60, feed:"yahoo-live" };
+var BOOK={ total:78.08, cash:31.25, equity:46.83, count:3, symbols:"MU, QCOM, GLD", paperTotal:105.44, paperOpen:0, paperClosed:0,
+  attention:"Gold is $6 from its $4,090 target. Nothing else needs you." };
+function numOr(v,fallback){ return (typeof v==="number" && isFinite(v)) ? v : fallback; }
+function fmtAsOf(iso){
+  try{
+    var d=new Date(iso); if(isNaN(d.getTime())) return null;
+    var parts=new Intl.DateTimeFormat("en-US",{timeZone:"America/Chicago",month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit",hour12:true,timeZoneName:"short"}).formatToParts(d);
+    var m={}; parts.forEach(function(p){ m[p.type]=p.value; });
+    if(!m.month) return null;
+    return m.month+" "+m.day+", "+m.year+", "+m.hour+":"+m.minute+" "+m.dayPeriod+" "+m.timeZoneName;
+  }catch(e){ return null; }
+}
+function renderGlance(){
+  document.getElementById("gTotal").textContent="$"+fmt(BOOK.total);
+  document.getElementById("gCash").textContent="$"+fmt(BOOK.cash);
+  document.getElementById("gEquity").textContent="$"+fmt(BOOK.equity);
+  document.getElementById("gCount").textContent=String(BOOK.count);
+  document.getElementById("gSymbols").textContent=BOOK.symbols;
+  document.getElementById("attentionText").textContent=BOOK.attention;
+  var pl=document.getElementById("paperLine");
+  if(liveState.live){
+    pl.innerHTML="Paper book <b>$"+fmt(BOOK.paperTotal)+"</b>, all cash, flat. <b>"+BOOK.paperOpen+" open, "+BOOK.paperClosed+" closed.</b> Prices as of <b>"+esc(liveState.lastOkAsOf||"")+"</b> (feed <b>"+esc(liveState.feed)+"</b>). Gold spot stays on the <b>1:16 PM CT Nov 6 Yahoo snapshot</b>.";
+  } else {
+    pl.innerHTML="Paper book <b>$"+fmt(BOOK.paperTotal)+"</b>, all cash, flat. <b>"+BOOK.paperOpen+" open, "+BOOK.paperClosed+" closed.</b> Prices as of <b>1:22 PM CT Nov 6, 2026 (Robinhood live)</b>; gold <b>1:16 PM CT Yahoo snapshot</b>.";
+  }
+}
+function setBadge(){
+  var b=document.getElementById("liveBadge"), t=document.getElementById("liveBadgeText"), a=document.getElementById("liveAsOf");
+  var f=document.getElementById("feedLine"), rm=document.getElementById("refreshMeta");
+  if(!liveState.checked){
+    b.className="livebadge"; t.textContent="CHECKING LIVE FEED";
+  } else if(liveState.live){
+    b.className="livebadge live"; t.textContent="LIVE";
+    a.innerHTML="Prices as of <b>"+esc(liveState.lastOkAsOf||"")+"</b> · feed <b>"+esc(liveState.feed)+"</b> · refreshes every 60 seconds";
+    f.innerHTML="<b>Live.</b> Prices, the book, and the attention line refresh from /api/desk-data every 60 seconds. Last update "+esc(liveState.lastOkAsOf||"")+".";
+  } else {
+    b.className="livebadge snap"; t.textContent="SNAPSHOT";
+    a.innerHTML="Snapshot <b>Fri "+SNAPSHOT_ASOF+"</b>. Live data is unreachable.";
+    var extra = liveState.fails>=3 ? " Live data has failed "+liveState.fails+" times in a row." : "";
+    f.innerHTML="<b>Snapshot, not live.</b>"+extra+" Showing the embedded Nov 6, 2026 snapshot ("+SNAPSHOT_ASOF+"). The page keeps checking every 60 seconds and switches to live on its own when the feed answers.";
+  }
+  if(rm){ rm.textContent = liveState.lastCheck ? ("Last checked "+liveState.lastCheck+" CT · next check in "+liveState.nextIn+"s") : "First check running."; }
+}
+function updateCorpusPositions(){
+  if(typeof CORPUS==="undefined") return;
+  POSITIONS.forEach(function(p){
+    CORPUS.forEach(function(it){
+      if(it.title===p.symbol+" live position"){
+        it.body="Filled "+p.qty+" shares at $"+fmt(p.fill)+". Last $"+fmt(p.last)+". P and L $"+fmt(p.pnl)+". Stop $"+fmt(p.stop)+". Targets "+p.targets.map(function(t){return "$"+fmt(t,(t%1===0?0:2));}).join(" then ")+". Position value $"+fmt(p.qty*p.last)+"."+(liveState.live? " Prices live as of "+(liveState.lastOkAsOf||"")+".":"");
+      }
+    });
+  });
+  CONDITIONALS.forEach(function(p){
+    CORPUS.forEach(function(it){
+      if(it.title===p.symbol+" conditional, not a position"){
+        it.body="Trigger: "+p.condition+". Last $"+fmt(p.last)+". No money in this name yet. Stop if armed $"+fmt(p.stop)+". Targets "+p.targets.map(function(t){return "$"+fmt(t,(t%1===0?0:2));}).join(" then ")+".";
+      }
+    });
+  });
+  CORPUS.forEach(function(it){
+    if(it.title==="The book"){ it.body="Real book $"+fmt(BOOK.total)+" total: $"+fmt(BOOK.cash)+" cash and $"+fmt(BOOK.equity)+" in positions across "+BOOK.count+" open positions ("+BOOK.symbols+"). Paper book $"+fmt(BOOK.paperTotal)+", all cash, flat, "+BOOK.paperOpen+" open and "+BOOK.paperClosed+" closed."; }
+    if(it.title==="Attention item"){ it.body=BOOK.attention; }
+  });
+}
+function applyLive(data){
+  if(!data || !data.book || !data.book.real || !Array.isArray(data.positions) || !data.positions.length) throw new Error("bad shape");
+  var real=data.book.real;
+  BOOK.total=numOr(real.total,BOOK.total);
+  BOOK.cash=numOr(real.cash,BOOK.cash);
+  BOOK.equity=numOr(real.equity,BOOK.equity);
+  BOOK.count=(typeof real.positions==="number") ? real.positions : data.positions.length;
+  if(data.book.paper){
+    BOOK.paperTotal=numOr(data.book.paper.total,BOOK.paperTotal);
+    if(typeof data.book.paper.open==="number") BOOK.paperOpen=data.book.paper.open;
+    if(typeof data.book.paper.closed==="number") BOOK.paperClosed=data.book.paper.closed;
+  }
+  if(typeof data.attention==="string" && data.attention) BOOK.attention=data.attention;
+  BOOK.symbols=data.positions.map(function(p){ return p.symbol; }).join(", ");
+  data.positions.forEach(function(lp){
+    var p=null; POSITIONS.forEach(function(x){ if(x.symbol===lp.symbol) p=x; });
+    if(!p) return;
+    if(typeof lp.last==="number") p.last=lp.last;
+    if(typeof lp.pnl==="number") p.pnl=lp.pnl;
+    if(typeof lp.qty==="number") p.qty=lp.qty;
+    if(typeof lp.fill==="number") p.fill=lp.fill;
+    if(typeof lp.stop==="number") p.stop=lp.stop;
+    var tg = Array.isArray(lp.targets) ? lp.targets : (typeof lp.target==="number" ? [lp.target] : null);
+    if(tg && tg.length){
+      var extra=p.targets.filter(function(t){ return tg.indexOf(t)<0 && t>tg[tg.length-1]; });
+      p.targets=tg.concat(extra);
+    }
+    if(p.last>p.scaleMax) p.scaleMax=Math.ceil(p.last*1.04);
+    if(p.last<p.scaleMin) p.scaleMin=Math.floor(p.last*0.96);
+    if(p.symbol==="GLD" && data.gold && p.gold){
+      p.gold={ spot:numOr(data.gold.spot,p.gold.spot), entry:numOr(data.gold.entry,p.gold.entry), target:numOr(data.gold.target,p.gold.target), stop:numOr(data.gold.stop,p.gold.stop) };
+    }
+  });
+  if(Array.isArray(data.conditionals)){
+    data.conditionals.forEach(function(lc){
+      var c=null; CONDITIONALS.forEach(function(x){ if(x.symbol===lc.symbol) c=x; });
+      if(!c) return;
+      if(typeof lc.last==="number") c.last=lc.last;
+      if(typeof lc.stop==="number") c.stop=lc.stop;
+      if(Array.isArray(lc.targets) && lc.targets.length) c.targets=lc.targets;
+      if(c.last>c.scaleMax) c.scaleMax=Math.ceil(c.last*1.04);
+      if(c.last<c.scaleMin) c.scaleMin=Math.floor(c.last*0.96);
+    });
+  }
+  liveState.checked=true; liveState.live=true; liveState.fails=0;
+  liveState.feed=(typeof data.feed==="string" && data.feed) ? data.feed : "yahoo-live";
+  liveState.lastOkAsOf=fmtAsOf(data.generated) || (typeof data.quotes_as_of==="string" ? data.quotes_as_of : null) || liveState.lastOkAsOf || "just now";
+  renderGlance(); renderPositions(); updateCorpusPositions(); setBadge();
+}
+function fetchLive(){
+  liveState.nextIn=60;
+  try{ liveState.lastCheck=new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true}); }catch(e){ liveState.lastCheck=null; }
+  setBadge();
+  fetch(LIVE_URL,{cache:"no-store",headers:{"Accept":"application/json"}}).then(function(r){
+    if(!r.ok) throw new Error("http "+r.status);
+    return r.json();
+  }).then(function(data){
+    applyLive(data);
+  }).catch(function(){
+    liveState.checked=true; liveState.live=false; liveState.fails++;
+    renderGlance(); setBadge();
+  });
+}
+document.getElementById("refreshBtn").addEventListener("click",function(){ fetchLive(); });
+renderGlance(); setBadge(); fetchLive();
+setInterval(fetchLive,60000);
+setInterval(function(){
+  if(liveState.nextIn>0) liveState.nextIn--;
+  var rm=document.getElementById("refreshMeta");
+  if(rm && liveState.lastCheck) rm.textContent="Last checked "+liveState.lastCheck+" CT · next check in "+liveState.nextIn+"s";
+},1000);
 </script>
 </body>
 </html>
