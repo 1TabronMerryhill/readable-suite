@@ -1,0 +1,8 @@
+# Runtime files the service writes. The baseline data/desk-data.json is
+# committed; everything the service generates is not.
+data/events.jsonl
+data/desk-data-live.json
+data/price_moves.json
+data/*.log
+__pycache__/
+*.pyc
