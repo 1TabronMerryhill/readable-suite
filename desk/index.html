@@ -244,7 +244,7 @@
     <div class="topmeta">
       <span class="livebadge" id="liveBadge"><span class="dot"></span><span id="liveBadgeText">CHECKING LIVE FEED</span></span><br />
       <span id="liveAsOf">Book snapshot <b>Fri Nov 6, 2026, 1:50 PM CT</b> until the feed answers</span><br />
-      Future home <b>desk.tabronmerryhill.com</b> (proposed, not wired yet)
+      Home <b>opone.tabronmerryhill.com</b>
     </div>
   </div>
 
@@ -388,7 +388,7 @@
   <footer>
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 60 seconds when the Desk site answers, feed yahoo-live. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
-    <p><span class="mono">NEXT.</span> Subdomain desk.tabronmerryhill.com is proposed and not wired yet. The Finnhub webhook feeds the wire in real time when the Desk site deploys, and the Groq layer answers in the Ask panel in place of local retrieval. Gold spot joins the live feed when a live spot source lands.</p>
+    <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is being wired now. The Finnhub webhook feeds the wire in real time when the Desk site deploys, and the Groq layer answers in the Ask panel in place of local retrieval. Gold spot joins the live feed when a live spot source lands.</p>
   </footer>
 </div>
 <script>
