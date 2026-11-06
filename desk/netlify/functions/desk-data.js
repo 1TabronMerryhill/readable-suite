@@ -1,15 +1,24 @@
 // desk-data.js — the Desk live data endpoint.
 // GET /api/desk-data returns the Desk snapshot with LIVE prices.
 // Fills and levels are the Nov 6, 2026 real executions (static facts,
-// updated in this file when a trade happens). Prices come from Yahoo
-// Finance v8 chart (the same endpoint bobby_trade.py uses), server side,
-// no key. Gold spot stays on the Nov 6 13:16 CT snapshot until a live spot
+// updated in this file when a trade happens).
+//
+// Prices come from the Desk feed pipeline first: when BUS_URL and
+// BUS_TOKEN are set (Netlify env vars), the function reads the latest
+// ticks from the Railway bus GET /snapshot. Any symbol the bus has no
+// tick for yet is filled from Yahoo. When those vars are unset, or the
+// bus call fails, the whole snapshot falls back to Yahoo Finance v8
+// chart (the same endpoint bobby_trade.py uses), server side, no key.
+// Gold spot stays on the Nov 6 13:16 CT snapshot until a live spot
 // source lands; the GLD position price is live, so its profit and loss is
-// exact. If any quote fails, the endpoint returns 502 and the page falls
-// back to its embedded snapshot. Never serve a fill price as a last price.
+// exact. If every price source fails, the endpoint returns 502 and the
+// page falls back to its embedded snapshot. Never serve a fill price as
+// a last price.
 
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0 Safari/537.36";
 const SYMBOLS = ["MU", "QCOM", "GLD", "AMD", "DUOL"];
+const BUS_URL = (process.env.BUS_URL || "").replace(/\/$/, "");
+const BUS_TOKEN = process.env.BUS_TOKEN || "";
 const CASH = 31.25;
 const GOLD = {
   spot: 4084.10, entry: 4040, target: 4090, stop: 4000,
@@ -48,15 +57,65 @@ async function yahooPrice(sym) {
 
 function round2(n) { return Math.round(n * 100) / 100; }
 
+// Latest ticks from the Railway bus. Returns a prices map, or null when
+// the bus is not configured or the call fails (caller falls back to Yahoo).
+async function busPrices() {
+  if (!BUS_URL || !BUS_TOKEN) return null;
+  let res;
+  try {
+    res = await fetch(BUS_URL + "/snapshot", {
+      headers: { Authorization: "Bearer " + BUS_TOKEN },
+    });
+  } catch (e) {
+    return null;
+  }
+  if (!res.ok) return null;
+  let d;
+  try {
+    d = await res.json();
+  } catch (e) {
+    return null;
+  }
+  const ticks = d && d.ticks;
+  if (!ticks || typeof ticks !== "object") return null;
+  const prices = {};
+  for (const sym of SYMBOLS) {
+    const t = ticks[sym];
+    if (t && typeof t.price === "number" && isFinite(t.price)) {
+      prices[sym] = t.price;
+    }
+  }
+  return Object.keys(prices).length ? prices : null;
+}
+
 exports.handler = async () => {
   const headers = { "Content-Type": "application/json", "Cache-Control": "no-store" };
-  let prices;
-  try {
-    const vals = await Promise.all(SYMBOLS.map(yahooPrice));
-    prices = Object.fromEntries(SYMBOLS.map((s, i) => [s, vals[i]]));
-  } catch (e) {
-    return { statusCode: 502, headers,
-      body: JSON.stringify({ error: "quote_failed", detail: String((e && e.message) || e) }) };
+  let prices = await busPrices();
+  let feed = "bus-live";
+  let quotesAsOf = "live ticks from the Desk feed pipeline (Railway bus)";
+  if (prices) {
+    // Fill any symbol the bus has no tick for yet from Yahoo.
+    const missing = SYMBOLS.filter((s) => !(s in prices));
+    if (missing.length) {
+      try {
+        const vals = await Promise.all(missing.map(yahooPrice));
+        missing.forEach((s, i) => { prices[s] = vals[i]; });
+        quotesAsOf += "; " + missing.join(", ") + " from Yahoo until the first tick";
+      } catch (e) {
+        return { statusCode: 502, headers,
+          body: JSON.stringify({ error: "quote_failed", detail: String((e && e.message) || e) }) };
+      }
+    }
+  } else {
+    feed = "yahoo-live";
+    quotesAsOf = "live, fetched now from Yahoo Finance v8 chart";
+    try {
+      const vals = await Promise.all(SYMBOLS.map(yahooPrice));
+      prices = Object.fromEntries(SYMBOLS.map((s, i) => [s, vals[i]]));
+    } catch (e) {
+      return { statusCode: 502, headers,
+        body: JSON.stringify({ error: "quote_failed", detail: String((e && e.message) || e) }) };
+    }
   }
 
   const positions = FILLS.map((f) => {
@@ -77,13 +136,13 @@ exports.handler = async () => {
   return { statusCode: 200, headers, body: JSON.stringify({
     generated: new Date().toISOString(),
     firm: "OpOne Capital",
-    feed: "yahoo-live",
+    feed,
     book: { real: { total, cash: CASH, equity, positions: 3 },
             paper: { total: 105.44, cash: 105.44, open: 0, closed: 0 } },
     attention,
     positions,
     conditionals: CONDITIONALS.map((c) => ({ ...c, last: prices[c.symbol] })),
     gold: { ...GOLD },
-    quotes_as_of: "live, fetched now from Yahoo Finance v8 chart; gold spot as of " + GOLD.as_of,
+    quotes_as_of: quotesAsOf + "; gold spot as of " + GOLD.as_of,
   }) };
 };
