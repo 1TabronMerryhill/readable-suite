@@ -27,7 +27,7 @@ The firm's one-screen intelligence desk. Live, not a snapshot.
 
 Netlify site, built from `1TabronMerryhill/readable-suite`, base directory
 `desk`, no build command, publish directory `.`. Custom domain (proposed
-`desk.tabronmerryhill.com`) is added once Milly gives the word on the name.
+`opone.tabronmerryhill.com`) is being wired now (Milly's word Nov 6, 2026).
 Env vars are set in the Netlify dashboard by Milly, never committed.
 
 ## The stack
