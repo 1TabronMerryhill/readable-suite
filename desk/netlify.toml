@@ -1,0 +1,44 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Desk live data: GET /api/desk-data returns the live snapshot
+# (Robinhood fills + Yahoo live prices, refreshed by the page every 60s).
+# Required env vars (set in the Netlify dashboard, never committed):
+#   GROQ_API_KEY         — Groq key for /api/graph-chat (same key as the Readable site)
+#   GROQ_MODEL           — optional, defaults to openai/gpt-oss-120b
+#   FINNHUB_WEBHOOK_SECRET — secret from the Finnhub dashboard Webhook page, for /api/finnhub-webhook
+# Required env var (set in the Netlify dashboard, never committed):
+#   GROQ_API_KEY        — Groq key for /api/graph-chat (same key as the Readable site)
+#   GROQ_MODEL          — optional, defaults to openai/gpt-oss-120b
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "public, max-age=60"
+
+# Live Desk data endpoint. The page polls this every 60 seconds.
+[[redirects]]
+  from = "/api/desk-data"
+  to = "/.netlify/functions/desk-data"
+  status = 200
+  force = true
+
+# Finnhub dashboard outbound webhook. Finnhub POSTs events here with an
+# X-Finnhub-Secret header. The function acks 200 before doing any logic.
+[[redirects]]
+  from = "/api/finnhub-webhook"
+  to = "/.netlify/functions/finnhub-webhook"
+  status = 200
+  force = true
+
+# Talk to the graph. The Desk sends the question plus retrieved graph
+# context; Groq answers only from that context, citing node and edge ids.
+[[redirects]]
+  from = "/api/graph-chat"
+  to = "/.netlify/functions/graph-chat"
+  status = 200
+  force = true
