@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
+<link rel="icon" href="data:," />
+<title>The Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    color-scheme: dark;
+    --bg:#08090b;
+    --bg2:#0d0f12;
+    --panel:#101216;
+    --panel2:#14171c;
+    --line:#23262d;
+    --line2:#2e323b;
+    --text:#eceef1;
+    --muted:#9aa1ab;
+    --faint:#6b7280;
+    --green:#3fb96f;
+    --green-dim:#2a7d4b;
+    --red:#e5534b;
+    --red-dim:#8c3531;
+    --mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:"Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  a{color:var(--text)}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 20px 72px}
+
+  /* top bar */
+  .topbar{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;justify-content:space-between;padding:18px 0 14px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .brand .firm{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--muted)}
+  .brand .desk{font-size:22px;font-weight:800;letter-spacing:-.01em}
+  .topmeta{font-family:var(--mono);font-size:11.5px;color:var(--faint);text-align:right;line-height:1.7}
+  .topmeta b{color:var(--muted);font-weight:500}
+
+  /* section scaffolding */
+  section{padding:34px 0 6px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+  .sec-num{font-family:var(--mono);font-size:12px;color:var(--faint)}
+  .sec-title{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:0}
+  .sec-note{font-size:13.5px;color:var(--muted);margin:0;line-height:1.55;max-width:640px}
+
+  /* glance */
+  .glance{padding-top:26px}
+  .glance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .stat{background:var(--panel);padding:18px 20px 16px}
+  .stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase}
+  .stat .v{font-size:clamp(30px,4.6vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-top:6px;font-variant-numeric:tabular-nums}
+  .stat .s{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .attention{margin-top:14px;border:1px solid var(--line2);border-left:3px solid var(--text);background:var(--panel2);border-radius:8px;padding:16px 20px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
+  .attention .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+  .attention .t{font-size:17px;font-weight:600;line-height:1.45}
+  .paperline{margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--faint);line-height:1.7}
+  .paperline b{color:var(--muted);font-weight:500}
+
+  /* feed strip */
+  .feed{margin-top:22px;border:1px solid var(--line);border-radius:10px;background:var(--bg2);padding:16px 20px}
+  .feed .row1{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline}
+  .feed .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase}
+  .feed .src{font-size:13.5px;color:var(--muted)}
+  .feed .src b{color:var(--text);font-weight:600}
+  .pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+  .pipe .node{font-family:var(--mono);font-size:11.5px;border:1px solid var(--line2);border-radius:6px;padding:7px 10px;background:var(--panel);color:var(--muted);line-height:1.5}
+  .pipe .node b{color:var(--text);font-weight:600;display:block;font-size:12px}
+  .pipe .arr{color:var(--faint);font-family:var(--mono);font-size:13px}
+  .pipe .node.staged{border-style:dashed}
+  .feed .fine{margin-top:12px;font-size:12.5px;color:var(--faint);line-height:1.6}
+
+  /* positions */
+  .pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column}
+  .card.cond{background:transparent;border-style:dashed;border-color:var(--line2)}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .sym{font-size:30px;font-weight:800;letter-spacing:-.01em;line-height:1}
+  .co{font-size:12.5px;color:var(--muted);margin-top:5px}
+  .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;padding:5px 8px;border:1px solid var(--line2);border-radius:5px;color:var(--muted);white-space:nowrap;text-transform:uppercase}
+  .tag.live{color:var(--text);border-color:var(--line2)}
+  .price-row{display:flex;align-items:baseline;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .price-row .last{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+  .price-row .lbl{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase}
+  .pnl{font-family:var(--mono);font-size:14px;font-weight:700}
+  .up{color:var(--green)} .down{color:var(--red)} .flat{color:var(--muted)}
+  .scale{margin:18px 0 4px}
+  .scale svg{display:block;width:100%;height:auto}
+  .levels{margin-top:12px;border-top:1px solid var(--line);padding-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+  .lv .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+  .lv .v{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+  .lv .v small{color:var(--muted);font-weight:400;font-size:12px}
+  .killbox{margin-top:14px;border:1px solid var(--red-dim);border-radius:7px;padding:11px 13px;background:rgba(229,83,75,.05)}
+  .killbox .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--red);text-transform:uppercase}
+  .killbox .v{font-size:14px;font-weight:600;line-height:1.5;margin-top:3px}
+  .goldstrip{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .goldstrip .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+  .goldstrip .v{font-size:14.5px;line-height:1.6;margin-top:4px}
+  .goldstrip .v b{font-variant-numeric:tabular-nums}
+  .cond-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}
+  .cond-head{margin-top:26px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .cond-head h3{margin:0;font-size:16px;font-weight:700}
+  .cond-head p{margin:0;font-size:13px;color:var(--muted)}
+  .cond-trigger{font-size:16px;font-weight:700;margin-top:14px;line-height:1.45}
+  .orderline{margin-top:auto;padding-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.6;word-break:break-all}
+
+  /* wire */
+  .wire-list{border-top:1px solid var(--line)}
+  .wire-item{display:grid;grid-template-columns:86px 1fr;gap:6px 20px;padding:18px 2px;border-bottom:1px solid var(--line)}
+  .wire-time{font-family:var(--mono);font-size:12px;color:var(--faint);padding-top:3px;white-space:nowrap}
+  .wire-h{font-size:16.5px;font-weight:600;line-height:1.45;margin:0}
+  .wire-v{font-size:14px;color:var(--muted);line-height:1.6;margin:5px 0 0}
+  .wire-v b{color:var(--text);font-weight:600}
+  .refs{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+  .ref{font-family:var(--mono);font-size:11px;border:1px solid var(--line2);border-radius:5px;padding:3px 8px;color:var(--muted)}
+
+  /* brief */
+  .brief-overall{font-size:clamp(18px,2.4vw,22px);line-height:1.55;font-weight:500;max-width:820px;margin:0}
+  .slots{margin-top:20px;border-top:1px solid var(--line)}
+  .slot{display:grid;grid-template-columns:52px 92px 1fr;gap:6px 18px;padding:15px 2px;border-bottom:1px solid var(--line);align-items:baseline}
+  .slot .n{font-family:var(--mono);font-size:12px;color:var(--faint)}
+  .slot .s{font-size:17px;font-weight:800}
+  .slot .call{font-family:var(--mono);font-size:11.5px;color:var(--muted);display:block;margin-top:3px;line-height:1.5}
+  .slot .note{font-size:14.5px;color:var(--muted);line-height:1.6}
+  .slot .note b{color:var(--text)}
+
+  /* graph */
+  .graph-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:14px}
+  .gstat{background:var(--panel);padding:15px 18px}
+  .gstat .v{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+  .gstat .k{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .graph-box{border:1px solid var(--line);border-radius:10px;background:var(--bg2);padding:10px 6px 4px;overflow:hidden}
+  .graph-box svg{display:block;width:100%;height:auto}
+  .gnode{cursor:pointer}
+  .gnode rect{fill:var(--panel2);stroke:var(--line2);rx:6}
+  .gnode:hover rect{stroke:var(--muted)}
+  .gnode.sel rect{stroke:var(--text);stroke-width:1.6}
+  .gnode text{fill:var(--text);font-family:var(--sans)}
+  .gnode .sub{fill:var(--faint);font-family:var(--mono)}
+  .gedge{stroke:#3a3f47;stroke-width:1;fill:none;opacity:.55}
+  .gedge.hot{stroke:var(--text);stroke-width:1.6;opacity:1}
+  .gedge.dim{opacity:.12}
+  .graph-legend{display:flex;flex-wrap:wrap;gap:6px 20px;padding:12px 8px 10px;font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .graph-detail{margin-top:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:18px 20px}
+  .graph-detail .id{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .graph-detail h4{margin:6px 0 0;font-size:17px;line-height:1.5;font-weight:600}
+  .graph-detail .props{margin-top:10px;font-size:13.5px;color:var(--muted);line-height:1.7}
+  .graph-detail .props b{color:var(--text);font-weight:600}
+  .graph-detail .conns{margin-top:12px;border-top:1px solid var(--line);padding-top:12px;display:grid;gap:8px}
+  .conn{font-size:13px;color:var(--muted);line-height:1.6}
+  .conn .mono{font-family:var(--mono);font-size:11.5px;color:var(--text)}
+  .conn .ev{display:block;font-size:12px;color:var(--faint)}
+  .graph-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .fbtn{font-family:var(--mono);font-size:11.5px;background:var(--panel);color:var(--muted);border:1px solid var(--line2);border-radius:6px;padding:8px 13px;cursor:pointer}
+  .fbtn.on{color:var(--text);border-color:var(--text)}
+  .edge-list{margin-top:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .edge-row{display:grid;grid-template-columns:1.2fr 90px 1fr;gap:4px 16px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:12.5px;align-items:baseline}
+  .edge-row:last-child{border-bottom:none}
+  .edge-row .mono{font-family:var(--mono);font-size:11.5px;word-break:break-all}
+  .edge-row .tp{font-family:var(--mono);font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+  .edge-row .ev{grid-column:1 / -1;font-size:12px;color:var(--faint)}
+  .patterns{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+  .pat{background:var(--panel);border:1px dashed var(--line2);border-radius:10px;padding:16px 18px}
+  .pat .t{font-family:var(--mono);font-size:13px;font-weight:700}
+  .pat .row{display:flex;gap:16px;margin-top:9px;font-family:var(--mono);font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .pat .why{font-size:12.5px;color:var(--faint);line-height:1.6;margin-top:9px}
+  .pat .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line2);border-radius:5px;padding:3px 7px}
+
+  /* ask */
+  .ask-box{border:1px solid var(--line2);border-radius:12px;background:var(--panel);overflow:hidden}
+  .ask-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;justify-content:space-between}
+  .ask-head .t{font-size:16px;font-weight:700}
+  .ask-head .honest{font-size:12px;color:var(--faint);line-height:1.5;max-width:520px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px 20px 0}
+  .chip{font-size:12.5px;background:var(--panel2);border:1px solid var(--line2);color:var(--muted);border-radius:999px;padding:7px 13px;cursor:pointer;font-family:var(--sans)}
+  .chip:hover{color:var(--text);border-color:var(--muted)}
+  .msgs{padding:18px 20px;display:grid;gap:16px;max-height:560px;overflow-y:auto}
+  .msg-q{justify-self:end;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:10px 14px;font-size:14.5px;max-width:85%;line-height:1.5}
+  .msg-a{justify-self:start;max-width:94%;width:100%}
+  .msg-a .none{font-size:15px;font-weight:600}
+  .hit{border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin-top:9px;background:var(--bg2)}
+  .hit .ht{font-size:14.5px;font-weight:700;line-height:1.45}
+  .hit .hb{font-size:13.5px;color:var(--muted);line-height:1.65;margin-top:4px}
+  .hit .hb b{color:var(--text)}
+  .hit .ids{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+  .hit .kill{margin-top:9px;font-size:13px;line-height:1.55;border-top:1px solid var(--line);padding-top:9px}
+  .hit .kill .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--red);text-transform:uppercase;display:block}
+  .ask-form{display:flex;gap:10px;padding:14px 20px 18px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .ask-form input{flex:1 1 260px;background:var(--bg);border:1px solid var(--line2);border-radius:8px;color:var(--text);font-family:var(--sans);font-size:15px;padding:13px 15px;outline:none}
+  .ask-form input:focus{border-color:var(--muted)}
+  .ask-form button{background:var(--text);color:#0a0b0d;border:none;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:15px;padding:13px 24px;cursor:pointer}
+  .ask-empty{font-size:14px;color:var(--faint);line-height:1.65}
+
+  footer{margin-top:48px;border-top:1px solid var(--line);padding-top:22px;display:grid;gap:10px}
+  footer p{margin:0;font-size:12.5px;color:var(--faint);line-height:1.7;max-width:860px}
+  footer .mono{font-family:var(--mono);font-size:11.5px}
+
+  @media (max-width:900px){
+    .pos-grid{grid-template-columns:1fr}
+    .patterns{grid-template-columns:1fr}
+    .graph-stats{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 14px 56px}
+    .glance-grid{grid-template-columns:repeat(2,1fr)}
+    .cond-grid{grid-template-columns:1fr}
+    .wire-item{grid-template-columns:1fr}
+    .slot{grid-template-columns:40px 1fr}
+    .slot .note{grid-column:1 / -1}
+    .edge-row{grid-template-columns:1fr}
+    .topmeta{text-align:left}
+    .msg-q{max-width:95%}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="firm">OPONE CAPITAL</span>
+      <span class="desk">The Desk</span>
+    </div>
+    <div class="topmeta">
+      Snapshot <b>Fri Nov 6, 2026, 1:50 PM CT</b><br />
+      Future home <b>desk.tabronmerryhill.com</b> (proposed, not wired yet)
+    </div>
+  </div>
+
+  <!-- 01 GLANCE -->
+  <section class="glance" aria-label="The firm at a glance">
+    <div class="glance-grid">
+      <div class="stat"><div class="k">Real book</div><div class="v">$78.08</div><div class="s">Total value, live book</div></div>
+      <div class="stat"><div class="k">Cash</div><div class="v">$31.25</div><div class="s">Ready to deploy</div></div>
+      <div class="stat"><div class="k">In positions</div><div class="v">$46.83</div><div class="s">Equity across the book</div></div>
+      <div class="stat"><div class="k">Open positions</div><div class="v">3</div><div class="s">MU, QCOM, GLD</div></div>
+    </div>
+    <div class="attention">
+      <span class="k">Needs you</span>
+      <span class="t">Gold is $6 from its $4,090 target. Nothing else needs you.</span>
+    </div>
+    <p class="paperline">Paper book <b>$105.44</b>, all cash, flat. <b>0 open, 0 closed.</b> Prices as of <b>1:22 PM CT Nov 6, 2026 (Robinhood live)</b>; gold <b>1:16 PM CT Yahoo snapshot</b>.</p>
+
+    <div class="feed" aria-label="Feed and system status">
+      <div class="row1">
+        <span class="k">Feed</span>
+        <span class="src"><b>Snapshot, not live.</b> This page reads one frozen graph snapshot. The Finnhub webhook and the live wire plug in when the Desk site deploys.</span>
+      </div>
+      <div class="pipe" aria-label="System pipeline">
+        <span class="node staged"><b>Finnhub webhook</b>real time feed, staged</span>
+        <span class="arr">&rarr;</span>
+        <span class="node"><b>C++ tick normalizer</b>cleans the ticks</span>
+        <span class="arr">&rarr;</span>
+        <span class="node"><b>Java event bus</b>moves the events</span>
+        <span class="arr">&rarr;</span>
+        <span class="node"><b>Python graph + watch</b>the memory and the brain</span>
+        <span class="arr">&rarr;</span>
+        <span class="node"><b>JSON contract</b>desk-data.json</span>
+        <span class="arr">&rarr;</span>
+        <span class="node"><b>This page</b>the visible surface</span>
+      </div>
+      <p class="fine">JSON is the data contract between every layer. The Groq answering layer is a staged function that replaces local retrieval in the Ask panel later, with no layout change. No key and no live API call lives in this page.</p>
+    </div>
+  </section>
+
+  <!-- 02 POSITIONS -->
+  <section aria-label="Positions">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Positions</h2>
+      <p class="sec-note">Three live. Every card draws its own price line with entry, stop, target, and kill on it. No trade sits on this desk without a kill criterion on its card.</p>
+    </div>
+    <div class="pos-grid" id="posGrid"></div>
+
+    <div class="cond-head">
+      <h3>Conditionals</h3>
+      <p>Not positions. No money is in these names. Each one arms only if its trigger prints.</p>
+    </div>
+    <div class="cond-grid" id="condGrid"></div>
+    <p class="paperline" style="margin-top:14px">Card values are priced off the lasts above, so they can sit a cent or two off the book. <b>Book totals in the glance are as filed in the snapshot.</b></p>
+  </section>
+
+  <!-- 03 WIRE -->
+  <section aria-label="The wire">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">The Wire</h2>
+      <p class="sec-note">What came in today, what the desk made of it, and the graph references each item carries.</p>
+    </div>
+    <div class="wire-list" id="wireList"></div>
+  </section>
+
+  <!-- 04 BRIEF -->
+  <section aria-label="The brief">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">The Brief</h2>
+      <p class="sec-note">Nov 6, 2026. The overall read first, then the five slots in order.</p>
+    </div>
+    <p class="brief-overall">Thursday rout was a policy scare. Friday opened split: chips rebounded, Dow fell. Payrolls hot, 10-year near 4.9 percent, Dec hike odds near 80 percent. Tuesday CPI is the next gate.</p>
+    <div class="slots" id="slotList"></div>
+  </section>
+
+  <!-- 05 GRAPH -->
+  <section aria-label="The knowledge graph">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">The Graph, Alive</h2>
+      <p class="sec-note">The live subset of the firm knowledge graph. News mentions themes. Trades decide assets. Tap any node to read it and see what it connects to.</p>
+    </div>
+    <div class="graph-stats">
+      <div class="gstat"><div class="v">118</div><div class="k">Nodes in the full graph</div></div>
+      <div class="gstat"><div class="v">117</div><div class="k">Edges in the full graph</div></div>
+      <div class="gstat"><div class="v">0</div><div class="k">Live patterns. None has earned it yet</div></div>
+      <div class="gstat"><div class="v">16</div><div class="k">Connector candidates waiting</div></div>
+    </div>
+    <div class="graph-filters" role="group" aria-label="Graph filter">
+      <button class="fbtn on" data-filter="all" type="button">All edges</button>
+      <button class="fbtn" data-filter="mentions" type="button">News mentions themes</button>
+      <button class="fbtn" data-filter="decides" type="button">Trades decide assets</button>
+    </div>
+    <div class="graph-box">
+      <div id="graphSvg"></div>
+      <div class="graph-legend">
+        <span>NEWS = news_event</span><span>THEME = theme</span><span>TRADE = trade</span><span>ASSET = asset</span>
+        <span>This map: 33 nodes, 20 edges (the live subset)</span>
+      </div>
+    </div>
+    <div class="graph-detail" id="graphDetail"></div>
+    <div class="edge-list" id="edgeList" aria-label="Edge list"></div>
+
+    <div class="cond-head">
+      <h3>Pattern candidates</h3>
+      <p>Counted, not believed. A pattern needs 10 live scored outcomes before the desk treats it as live. None has. Patterns are never drawn as edges.</p>
+    </div>
+    <div class="patterns" id="patList"></div>
+  </section>
+
+  <!-- 06 ASK -->
+  <section aria-label="Ask the graph">
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <h2 class="sec-title">Ask the Graph</h2>
+      <p class="sec-note">Ask in plain words. The answer comes from the graph snapshot on this page, and every answer shows the ids it came from.</p>
+    </div>
+    <div class="ask-box">
+      <div class="ask-head">
+        <span class="t">Talk to the memory</span>
+        <span class="honest">Local retrieval from the graph snapshot. The Groq voice plugs in when the Desk site deploys.</span>
+      </div>
+      <div class="chips" id="chipRow"></div>
+      <div class="msgs" id="msgs">
+        <p class="ask-empty">Nothing asked yet. Try one of the questions above, or type your own. If the graph does not hold it, the panel says so plainly and invents nothing.</p>
+      </div>
+      <form class="ask-form" id="askForm">
+        <label for="askInput" class="sec-num" style="position:absolute;left:-9999px">Ask the graph a question</label>
+        <input id="askInput" type="text" placeholder="Ask about a position, a theme, a headline, a kill..." autocomplete="off" />
+        <button type="submit">Ask</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <p><span class="mono">SOURCE.</span> All values on this page come from one embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT. Position fills are real orders via Robinhood. News evidence is cited on each graph node and edge. Nothing here is fetched live and nothing is saved.</p>
+    <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
+    <p><span class="mono">NEXT.</span> Subdomain desk.tabronmerryhill.com is proposed and not wired yet. When the Desk site deploys, the Finnhub webhook feeds the wire in real time and the Groq layer answers in the Ask panel in place of local retrieval.</p>
+  </footer>
+</div>
+<script>
+var POSITIONS = [
+  { symbol:"MU", name:"Micron Technology", qty:0.02258, fill:691.73, last:691.79, pnl:0.00,
+    stop:656.39, targets:[740,780], kill:"Break below $656.39. Weekly close below $600 kills the longer thesis.",
+    order_id:"6aee297b-80a8-43e4-822c-893ce54dc96c", filled:"Nov 6, 2026, 1:24 PM CT",
+    scaleMin:630, scaleMax:800,
+    marks:[ {v:656.39,l:"STOP 656.39",c:"stop"}, {v:691.73,l:"FILL 691.73",c:"fill"}, {v:691.79,l:"LAST 691.79",c:"last"}, {v:740,l:"T1 740",c:"tgt"}, {v:780,l:"T2 780",c:"tgt"} ] },
+  { symbol:"QCOM", name:"Qualcomm", qty:0.093966, fill:166.23, last:165.68, pnl:-0.05,
+    stop:156.75, targets:[172,180], kill:"$152.50, or an Apple modem headline.",
+    order_id:"6aee297f-a42b-40d3-bf15-cbbe2ba573e5", filled:"Nov 6, 2026, 1:24 PM CT",
+    scaleMin:144, scaleMax:188,
+    marks:[ {v:152.50,l:"KILL 152.50",c:"stop"}, {v:156.75,l:"STOP 156.75",c:"stop"}, {v:165.68,l:"LAST 165.68",c:"last"}, {v:166.23,l:"FILL 166.23",c:"fill"}, {v:172,l:"T1 172",c:"tgt"}, {v:180,l:"T2 180",c:"tgt"} ] },
+  { symbol:"GLD", name:"SPDR Gold Shares", qty:0.0419, fill:372.79, last:372.81, pnl:0.00,
+    stop:368.16, targets:[376.39], kill:"Daily close below spot $3,970.",
+    order_id:"6aee2984-f2e0-474f-9720-70b9fb7e0d14", filled:"Nov 6, 2026, 1:24 PM CT",
+    scaleMin:362, scaleMax:382,
+    marks:[ {v:368.16,l:"STOP 368.16",c:"stop"}, {v:372.79,l:"FILL 372.79",c:"fill"}, {v:372.81,l:"LAST 372.81",c:"last"}, {v:376.39,l:"TARGET 376.39",c:"tgt"} ],
+    gold:{ spot:4084.10, entry:4040, target:4090, stop:4000 } }
+];
+var CONDITIONALS = [
+  { symbol:"AMD", name:"Advanced Micro Devices", last:445.57, condition:"Pullback to $436.50 only", stop:404.40, targets:[460,476],
+    kill:"Close below $404.40.", scaleMin:390, scaleMax:490,
+    marks:[ {v:404.40,l:"STOP 404.40",c:"stop"}, {v:436.50,l:"TRIGGER 436.50",c:"fill"}, {v:445.57,l:"LAST 445.57",c:"last"}, {v:460,l:"T1 460",c:"tgt"}, {v:476,l:"T2 476",c:"tgt"} ] },
+  { symbol:"DUOL", name:"Duolingo", last:158.31, condition:"Reclaim above $161.27 only", stop:150, targets:[175,184],
+    kill:"Close below $150.", scaleMin:140, scaleMax:192,
+    marks:[ {v:150,l:"STOP 150",c:"stop"}, {v:158.31,l:"LAST 158.31",c:"last"}, {v:161.27,l:"TRIGGER 161.27",c:"fill"}, {v:175,l:"T1 175",c:"tgt"}, {v:184,l:"T2 184",c:"tgt"} ] }
+];
+var WIRE = [
+  { time:"07:30 CT", headline:"Payrolls hot: +165,000 vs about 65,000 expected; unemployment 4.1%.", verdict:"Hawkish. Stood down the NVDA and AMD long legs at the open.", refs:["theme:jobs_hot","theme:rates_hawkish"] },
+  { time:"11:34 CT", headline:"Chips rebound: SOXX +6.5% at the open; AMD +9.3%.", verdict:"Follow-through confirmed. AMD stays conditional on the pullback, no chasing.", refs:["theme:semis_contagion","asset:AMD"] },
+  { time:"11:34 CT", headline:"MU: fiscal Q4 revenue $54.23B, up 379%; Q1 FY27 guide $61.5B.", verdict:"Thesis intact. Watch the Taiwan plant halt and data-center capex.", refs:["asset:MU","theme:ai_capex"] },
+  { time:"Nov 3", headline:"DUOL Q3: revenue $309M, up 14%; DAU +29% to 64.9M; EPS $0.54 vs $0.57.", verdict:"Breakout failed to hold. Reclaim above $161.27 or no trade.", refs:["asset:DUOL","theme:earnings_power"] }
+];
+var SLOTS = [
+  { slot:1, symbol:"MU", call:"long, LIVE", note:"Memory pricing power, take-or-pay over 35 percent of forecast revenue through 2030." },
+  { slot:2, symbol:"QCOM", call:"long continuation, LIVE", note:"Bounce only. Buybacks plus dividends ran ahead of free cash flow." },
+  { slot:3, symbol:"AMD", call:"long, CONDITIONAL pullback only to $436.50", note:"Bounce only. Worth $384 to $480 on run-rate earnings, no 20 percent margin of safety." },
+  { slot:4, symbol:"DUOL", call:"long, CONDITIONAL reclaim only above $161.27", note:"Q3 revenue $309M, up 14 percent. Breakout failed to hold." },
+  { slot:5, symbol:"GLD", call:"long, LIVE", note:"Gold entry $4,040 triggered. Target $4,090, stop $4,000." }
+];
+var PATTERNS = [
+  { theme:"ai_capex", n:1, wins:0, avg_r:-1.0, why:"1 scored signal outcome, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot." },
+  { theme:"ai_earnings_momentum", n:1, wins:0, avg_r:-1.0, why:"1 scored signal outcome, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot." },
+  { theme:"semis_contagion", n:3, wins:0, avg_r:-1.0, why:"3 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot." }
+];
+
+function fmt(n,d){ return n.toLocaleString("en-US",{minimumFractionDigits:(d==null?2:d),maximumFractionDigits:(d==null?2:d)}); }
+function esc(s){ var d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
+
+function scaleSVG(p){
+  var W=320,H=64,pad=8, y=26;
+  function x(v){ return pad + (v-p.min)/(p.max-p.min)*(W-2*pad); }
+  var s = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Price line for '+p.symbol+'">';
+  s += '<line x1="'+pad+'" y1="'+y+'" x2="'+(W-pad)+'" y2="'+y+'" stroke="#2e323b" stroke-width="2"/>';
+  // stop to target zone
+  s += '<line x1="'+x(p.marks[0].v)+'" y1="'+y+'" x2="'+x(p.marks[p.marks.length-1].v)+'" y2="'+y+'" stroke="#4a5058" stroke-width="2"/>';
+  p.marks.forEach(function(m,i){
+    var cx=x(m.v);
+    var col = (m.c==="stop") ? "#e5534b" : (m.c==="tgt") ? "#3fb96f" : "#eceef1";
+    var above = (i%2===0);
+    var ly = above ? 8 : 44;
+    s += '<circle cx="'+cx+'" cy="'+y+'" r="3.4" fill="'+col+'" stroke="#08090b" stroke-width="1"/>';
+    s += '<text x="'+cx+'" y="'+ly+'" text-anchor="middle" font-size="7.2" fill="'+col+'" font-family="JetBrains Mono, monospace">'+m.l+'</text>';
+  });
+  s += '</svg>';
+  return s;
+}
+function renderPositions(){
+  var g=document.getElementById("posGrid");
+  POSITIONS.forEach(function(p){
+    var val = p.qty*p.last;
+    var pnlCls = p.pnl>0 ? "up" : (p.pnl<0 ? "down" : "flat");
+    var pnlTxt = (p.pnl>0?"+":"") + "$"+fmt(p.pnl);
+    var card=document.createElement("article"); card.className="card";
+    var goldHtml="";
+    if(p.gold){
+      var dist=(p.gold.target-p.gold.spot);
+      goldHtml='<div class="goldstrip"><div class="k">Gold spot underneath GLD</div><div class="v">Spot <b>$'+fmt(p.gold.spot)+'</b>. Entry <b>$'+fmt(p.gold.entry,0)+'</b>. Target <b>$'+fmt(p.gold.target,0)+'</b>, so <b>$'+fmt(dist)+'</b> to go. Stop <b>$'+fmt(p.gold.stop,0)+'</b>.</div></div>';
+    }
+    card.innerHTML =
+      '<div class="card-top"><div><div class="sym">'+p.symbol+'</div><div class="co">'+esc(p.name)+'</div></div><span class="tag live">Live position</span></div>'
+      + '<div class="price-row"><div><div class="lbl">Last</div><div class="last">$'+fmt(p.last)+'</div></div><div><div class="lbl">P&amp;L</div><div class="pnl '+pnlCls+'">'+pnlTxt+'</div></div><div><div class="lbl">Value</div><div class="last" style="font-size:19px">$'+fmt(val)+'</div></div></div>'
+      + '<div class="scale">'+scaleSVG({symbol:p.symbol,min:p.scaleMin,max:p.scaleMax,marks:p.marks})+'</div>'
+      + '<div class="levels">'
+      + '<div class="lv"><div class="k">Fill</div><div class="v">$'+fmt(p.fill)+' <small>x '+p.qty+'</small></div></div>'
+      + '<div class="lv"><div class="k">Filled</div><div class="v" style="font-size:13.5px">'+p.filled+'</div></div>'
+      + '<div class="lv"><div class="k">Stop</div><div class="v">$'+fmt(p.stop)+'</div></div>'
+      + '<div class="lv"><div class="k">Targets</div><div class="v">'+p.targets.map(function(t){return "$"+fmt(t, (t%1===0?0:2));}).join(" then ")+'</div></div>'
+      + '</div>'
+      + goldHtml
+      + '<div class="killbox"><div class="k">Kill criterion</div><div class="v">'+esc(p.kill)+'</div></div>'
+      + '<div class="orderline">Order '+p.order_id+'<br/>$15.62 deployed in this slot</div>';
+    g.appendChild(card);
+  });
+  var cg=document.getElementById("condGrid");
+  CONDITIONALS.forEach(function(p){
+    var card=document.createElement("article"); card.className="card cond";
+    card.innerHTML =
+      '<div class="card-top"><div><div class="sym">'+p.symbol+'</div><div class="co">'+esc(p.name)+'</div></div><span class="tag">Conditional. Not a position</span></div>'
+      + '<div class="cond-trigger">'+esc(p.condition)+'</div>'
+      + '<div class="price-row"><div><div class="lbl">Last</div><div class="last">$'+fmt(p.last)+'</div></div></div>'
+      + '<div class="scale">'+scaleSVG({symbol:p.symbol,min:p.scaleMin,max:p.scaleMax,marks:p.marks})+'</div>'
+      + '<div class="levels">'
+      + '<div class="lv"><div class="k">Stop if armed</div><div class="v">$'+fmt(p.stop)+'</div></div>'
+      + '<div class="lv"><div class="k">Targets</div><div class="v">'+p.targets.map(function(t){return "$"+fmt(t, (t%1===0?0:2));}).join(" then ")+'</div></div>'
+      + '</div>'
+      + '<div class="killbox"><div class="k">Kill criterion if armed</div><div class="v">'+esc(p.kill)+'</div></div>';
+    cg.appendChild(card);
+  });
+}
+function renderWire(){
+  var w=document.getElementById("wireList");
+  WIRE.forEach(function(it){
+    var d=document.createElement("div"); d.className="wire-item";
+    d.innerHTML='<div class="wire-time">'+esc(it.time)+'</div><div><p class="wire-h">'+esc(it.headline)+'</p><p class="wire-v"><b>Verdict.</b> '+esc(it.verdict)+'</p><div class="refs">'+it.refs.map(function(r){return '<span class="ref">'+esc(r)+'</span>';}).join("")+'</div></div>';
+    w.appendChild(d);
+  });
+  var sl=document.getElementById("slotList");
+  SLOTS.forEach(function(s){
+    var d=document.createElement("div"); d.className="slot";
+    d.innerHTML='<div class="n">SLOT '+s.slot+'</div><div><span class="s">'+s.symbol+'</span><span class="call">'+esc(s.call)+'</span></div><div class="note">'+esc(s.note)+'</div>';
+    sl.appendChild(d);
+  });
+  var pl=document.getElementById("patList");
+  PATTERNS.forEach(function(pt){
+    var d=document.createElement("div"); d.className="pat";
+    d.innerHTML='<div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><span class="t">'+esc(pt.theme)+'</span><span class="st">Candidate</span></div>'
+      +'<div class="row"><span>n = '+pt.n+' of 10 needed</span><span>wins '+pt.wins+'</span><span>avg <span class="down" style="font-weight:700">'+fmt(pt.avg_r,1)+'R</span></span></div>'
+      +'<div class="why">'+esc(pt.why)+'</div>';
+    pl.appendChild(d);
+  });
+}
+renderPositions(); renderWire();
+</script>
+<script>
+var NODES = [
+ {id:"asset:AMD",type:"asset",short:"AMD",label:"AMD",props:{}},
+ {id:"asset:BTC",type:"asset",short:"BTC",label:"BTC",props:{}},
+ {id:"asset:DIA",type:"asset",short:"DIA",label:"DIA",props:{}},
+ {id:"asset:DUOL",type:"asset",short:"DUOL",label:"DUOL",props:{}},
+ {id:"asset:GLD",type:"asset",short:"GLD",label:"GLD",props:{}},
+ {id:"asset:MU",type:"asset",short:"MU",label:"MU",props:{}},
+ {id:"asset:QCOM",type:"asset",short:"QCOM",label:"QCOM",props:{}},
+ {id:"theme:dollar_strength",type:"theme",short:"dollar_strength",label:"dollar_strength",props:{}},
+ {id:"theme:ai_capex",type:"theme",short:"ai_capex",label:"ai_capex",props:{}},
+ {id:"theme:semis_contagion",type:"theme",short:"semis_contagion",label:"semis_contagion",props:{}},
+ {id:"news:2026-11-06-payrolls-hot",type:"news_event",short:"Payrolls hot",label:"October nonfarm payrolls +165k vs about 65k consensus, unemployment 4.1% vs 4.2%, wages +0.4% MoM",props:{date:"2026-11-06",driver:"macro",source:"Discord #opone-capital brief 2026-11-06; Reuters/BLS"}},
+ {id:"theme:jobs_hot",type:"theme",short:"jobs_hot",label:"jobs_hot",props:{}},
+ {id:"theme:rates_hawkish",type:"theme",short:"rates_hawkish",label:"rates_hawkish",props:{}},
+ {id:"news:2026-11-06-amd-10q",type:"news_event",short:"AMD 10-Q",label:"AMD Q3 2026 10-Q filed Nov 4, 2026: revenue $13,377m (+45%), Data Center $8,546m (+97%), net income $2,428m (+95%), Q4 guide about $17bn",props:{date:"2026-11-06",driver:"earnings",source:"AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026"}},
+ {id:"theme:earnings_power",type:"theme",short:"earnings_power",label:"earnings_power",props:{}},
+ {id:"news:2026-11-06-qcom-10k",type:"news_event",short:"QCOM 10-K",label:"Qualcomm FY2026 10-K filed Nov 4, 2026: revenue $43,120m (-3%), GAAP net income $13,628m (+146%) on $5.7bn one-off tax benefit, operating income down 30%, handsets -13%, automotive +52%",props:{date:"2026-11-06",driver:"earnings",source:"Qualcomm 10-K accession 0000804328-26-000128; 8-K Ex-99.1 Nov 4, 2026"}},
+ {id:"news:2026-11-06-mu-valuation",type:"news_event",short:"MU valuation",label:"Micron at 3.7x FY2027 earnings; Q1 FY27 guide revenue $61.5B, non-GAAP EPS $38.15; take-or-pay covers over 35% of forecast revenue through 2030, about $32B deposits; buybacks resume Dec 9",props:{date:"2026-11-06",driver:"earnings",source:"Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026"}},
+ {id:"news:2026-11-06-duol-q3",type:"news_event",short:"DUOL Q3",label:"Duolingo Q3 revenue $309M (+14%), DAU +29% to 64.9M, paid subs +14% to 13.1M, Q4 guide raised; shares closed $161.27 Nov 4 after +37% intraday, now below it",props:{date:"2026-11-06",driver:"earnings",source:"Midday packages 2026-11-06; Invezz/TipRanks Nov 6, 2026"}},
+ {id:"news:2026-11-06-chip-rebound",type:"news_event",short:"Chip rebound",label:"Nasdaq +1.1 to 2% at the open on a chip rebound, SOXX +6.5%, after Thursday 5.5% rout; Dow -518 on hot payrolls pushing 10-yr yield to about 4.87%",props:{date:"2026-11-06",driver:"macro",source:"Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026"}},
+ {id:"theme:ai_regulation",type:"theme",short:"ai_regulation",label:"ai_regulation",props:{}},
+ {id:"theme:gold_safe_haven",type:"theme",short:"gold_safe_haven",label:"gold_safe_haven",props:{}},
+ {id:"trade:2026-11-06-1",type:"trade",short:"Slot 1 NVDA",label:"2026-11-06 slot 1 long NVDA",props:{slot:1,direction:"long",entry:188.5,target:196,stop:181.6,kill:"loses 181.60 Thu close / hot payrolls stands it down",status:"stood_down_payrolls"}},
+ {id:"trade:2026-11-06-2",type:"trade",short:"Slot 2 AMD",label:"2026-11-06 slot 2 long AMD",props:{slot:2,direction:"long",entry:436.5,target:460,stop:404.4,kill:"loses 404.40 Thu close / hot payrolls stands it down",status:"stood_down_payrolls"}},
+ {id:"trade:2026-11-06-3",type:"trade",short:"Slot 3 BTC",label:"2026-11-06 slot 3 long BTC",props:{slot:3,direction:"long",entry:76150,target:79000,stop:75000,kill:"break below 75000",status:"signal_only"}},
+ {id:"trade:2026-11-06-4",type:"trade",short:"Slot 4 GOLD",label:"2026-11-06 slot 4 long GOLD",props:{slot:4,direction:"long",entry:4040,target:4090,stop:4000,kill:"loses 4000 / dollar reclaim plus yields spiking",status:"signal_only"}},
+ {id:"trade:2026-11-06-5",type:"trade",short:"Slot 5 DIA short",label:"2026-11-06 slot 5 short DIA",props:{slot:5,direction:"short",entry:510,target:505,stop:514.27,kill:"reclaims 514.27 Thu close",status:"signal_only"}},
+ {id:"trade:2026-11-06-6",type:"trade",short:"Slot 6 AMD",label:"2026-11-06 slot 6 long AMD",props:{slot:6,direction:"long",entry:436.5,target:460,stop:404.4,kill:"loses 404.40 Thu close / payrolls stand-down not cleared",status:"signal_only"}},
+ {id:"trade:2026-11-06-7",type:"trade",short:"Slot 7 QCOM",label:"2026-11-06 slot 7 long QCOM",props:{slot:7,direction:"long",entry:160.85,target:172,stop:152.5,kill:"loses 152.50 / Apple modem headline / handset guide cut",status:"signal_only"}},
+ {id:"trade:2026-11-06-8",type:"trade",short:"Slot 1 MU live",label:"2026-11-06 slot 1 long MU",props:{slot:1,direction:"long",entry:685.34,target:740,stop:656.39,kill:"break below 656.39; weekly close below 600 kills the longer thesis",status:"filled_open"}},
+ {id:"trade:2026-11-06-9",type:"trade",short:"Slot 2 QCOM live",label:"2026-11-06 slot 2 long QCOM",props:{slot:2,direction:"long",entry:163.75,target:172,stop:156.75,kill:"152.50 or Apple modem headline",status:"filled_open"}},
+ {id:"trade:2026-11-06-10",type:"trade",short:"Slot 5 GLD live",label:"2026-11-06 slot 5 long GLD",props:{slot:5,direction:"long",entry:371.82,target:376.39,stop:368.16,kill:"daily close below spot 3970",status:"filled_open"}},
+ {id:"trade:2026-11-06-11",type:"trade",short:"Slot 3 AMD cond.",label:"2026-11-06 slot 3 long AMD",props:{slot:3,direction:"long",entry:436.5,target:460,stop:404.4,kill:"close below 404.40",status:"conditional_pullback"}},
+ {id:"trade:2026-11-06-12",type:"trade",short:"Slot 4 DUOL cond.",label:"2026-11-06 slot 4 long DUOL",props:{slot:4,direction:"long",entry:161.27,target:175,stop:150,kill:"close below 150",status:"conditional_reclaim"}}
+];
+var EDGES = [
+ {from:"news:2026-11-06-payrolls-hot",to:"theme:jobs_hot",type:"mentions",evidence:"Discord #opone-capital brief 2026-11-06; Reuters/BLS"},
+ {from:"news:2026-11-06-payrolls-hot",to:"theme:rates_hawkish",type:"mentions",evidence:"Discord #opone-capital brief 2026-11-06; Reuters/BLS"},
+ {from:"news:2026-11-06-amd-10q",to:"theme:earnings_power",type:"mentions",evidence:"AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026"},
+ {from:"news:2026-11-06-amd-10q",to:"theme:ai_capex",type:"mentions",evidence:"AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026"},
+ {from:"news:2026-11-06-qcom-10k",to:"theme:earnings_power",type:"mentions",evidence:"Qualcomm 10-K accession 0000804328-26-000128; 8-K Ex-99.1 Nov 4, 2026"},
+ {from:"news:2026-11-06-mu-valuation",to:"theme:earnings_power",type:"mentions",evidence:"Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026"},
+ {from:"news:2026-11-06-mu-valuation",to:"theme:ai_capex",type:"mentions",evidence:"Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026"},
+ {from:"news:2026-11-06-duol-q3",to:"theme:earnings_power",type:"mentions",evidence:"Midday packages 2026-11-06; Invezz/TipRanks Nov 6, 2026"},
+ {from:"news:2026-11-06-chip-rebound",to:"theme:ai_regulation",type:"mentions",evidence:"Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026"},
+ {from:"news:2026-11-06-chip-rebound",to:"theme:rates_hawkish",type:"mentions",evidence:"Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026"},
+ {from:"trade:2026-11-06-2",to:"asset:AMD",type:"decides",evidence:"brief-2026-11-06"},
+ {from:"trade:2026-11-06-3",to:"asset:BTC",type:"decides",evidence:"brief-2026-11-06"},
+ {from:"trade:2026-11-06-5",to:"asset:DIA",type:"decides",evidence:"brief-2026-11-06"},
+ {from:"trade:2026-11-06-6",to:"asset:AMD",type:"decides",evidence:"trade-packages-2026-11-06-amd-qcom.md"},
+ {from:"trade:2026-11-06-7",to:"asset:QCOM",type:"decides",evidence:"trade-packages-2026-11-06-amd-qcom.md"},
+ {from:"trade:2026-11-06-8",to:"asset:MU",type:"decides",evidence:"midday-packages-2026-11-06; real order via Robinhood MCP"},
+ {from:"trade:2026-11-06-9",to:"asset:QCOM",type:"decides",evidence:"midday-packages-2026-11-06; real order via Robinhood MCP"},
+ {from:"trade:2026-11-06-10",to:"asset:GLD",type:"decides",evidence:"midday-packages-2026-11-06; real order via Robinhood MCP"},
+ {from:"trade:2026-11-06-11",to:"asset:AMD",type:"decides",evidence:"midday-packages-2026-11-06"},
+ {from:"trade:2026-11-06-12",to:"asset:DUOL",type:"decides",evidence:"midday-packages-2026-11-06"}
+];
+var nodeById={}; NODES.forEach(function(n){ nodeById[n.id]=n; });
+var graphFilter="all", selectedId=null;
+
+function layoutGraph(){
+  var cols={ news_event:{x:8,w:212}, theme:{x:300,w:196}, trade:{x:576,w:196}, asset:{x:852,w:120} };
+  var counts={news_event:0,theme:0,trade:0,asset:0};
+  var pos={};
+  // order: keep NODES order within each type, but sort themes/news/trades as listed
+  NODES.forEach(function(n){
+    var c=cols[n.type]; var i=counts[n.type]++;
+    var rowH = n.type==="trade" ? 40 : 52;
+    var y = 34 + i*rowH;
+    pos[n.id]={x:c.x,y:y,w:c.w,h:(n.type==="trade"?32:42),cx:c.x+c.w,cy:y+(n.type==="trade"?16:21),lx:c.x,ly:y+(n.type==="trade"?16:21)};
+  });
+  return {cols:cols,pos:pos,H:34+12*40+16};
+}
+function renderGraph(){
+  var L=layoutGraph(); var pos=L.pos;
+  var W=980,H=L.H;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Knowledge graph map">';
+  // headers
+  [["NEWS",8],["THEMES",300],["TRADES",576],["ASSETS",852]].forEach(function(h){
+    s+='<text x="'+h[1]+'" y="18" font-size="10" fill="#6b7280" font-family="JetBrains Mono, monospace" letter-spacing="2">'+h[0]+'</text>';
+  });
+  EDGES.forEach(function(e,idx){
+    if(graphFilter!=="all" && e.type!==graphFilter) return;
+    var a=pos[e.from], b=pos[e.to]; if(!a||!b) return;
+    var hot = selectedId && (e.from===selectedId||e.to===selectedId);
+    var dim = selectedId && !hot;
+    var x1=a.cx,y1=a.cy,x2=b.lx,y2=b.ly, mx=(x1+x2)/2;
+    s+='<path class="gedge'+(hot?" hot":dim?" dim":"")+'" data-edge="'+idx+'" d="M'+x1+' '+y1+' C '+mx+' '+y1+', '+mx+' '+y2+', '+x2+' '+y2+'"/>';
+  });
+  NODES.forEach(function(n){
+    var p=pos[n.id];
+    var hasEdge = EDGES.some(function(e){ return (graphFilter==="all"||e.type===graphFilter) && (e.from===n.id||e.to===n.id); });
+    var op = (graphFilter!=="all" && !hasEdge) ? ' opacity="0.35"' : '';
+    var sel = selectedId===n.id ? ' sel' : '';
+    var tag = n.type==="news_event"?"NEWS":n.type.toUpperCase();
+    s+='<g class="gnode'+sel+'" data-id="'+esc(n.id)+'"'+op+' tabindex="0" role="button" aria-label="'+esc(n.id)+'">'
+      +'<rect x="'+p.x+'" y="'+p.y+'" width="'+p.w+'" height="'+p.h+'" rx="6"></rect>'
+      +'<text x="'+(p.x+10)+'" y="'+(p.y+17)+'" font-size="12.5" font-weight="700">'+esc(n.short)+'</text>'
+      +'<text class="sub" x="'+(p.x+10)+'" y="'+(p.y+(n.type==="trade"?27:33))+'" font-size="8.5">'+tag+' · '+esc(n.id.length>30?n.id.slice(0,30)+"...":n.id)+'</text>'
+      +'</g>';
+  });
+  s+='</svg>';
+  document.getElementById("graphSvg").innerHTML=s;
+  var gs=document.querySelectorAll(".gnode");
+  for(var i=0;i<gs.length;i++){
+    (function(el){
+      el.addEventListener("click",function(){ selectNode(el.getAttribute("data-id")); });
+      el.addEventListener("keydown",function(ev){ if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); selectNode(el.getAttribute("data-id")); } });
+    })(gs[i]);
+  }
+  renderEdgeList();
+}
+function propsText(n){
+  var p=n.props||{}; var parts=[];
+  Object.keys(p).forEach(function(k){ parts.push("<b>"+esc(k)+":</b> "+esc(String(p[k]))); });
+  return parts.length? parts.join(" &nbsp;·&nbsp; ") : "No extra properties recorded on this node in the snapshot.";
+}
+function selectNode(id){
+  selectedId = (selectedId===id)? null : id;
+  renderGraph(); renderDetail();
+}
+function renderDetail(){
+  var box=document.getElementById("graphDetail");
+  if(!selectedId){
+    box.innerHTML='<div class="id">NO NODE SELECTED</div><h4>Pick any node on the map.</h4><div class="props">You will see its full label, its recorded properties, and every edge touching it in this subset, with the evidence on each edge. Two nodes in this subset, dollar_strength and gold_safe_haven, are recorded themes with no edges in the live subset. They still show here because the graph holds them.</div>';
+    return;
+  }
+  var n=nodeById[selectedId];
+  var conns=EDGES.filter(function(e){return e.from===selectedId||e.to===selectedId;});
+  var ch = conns.length ? conns.map(function(e){
+    var other = e.from===selectedId? e.to : e.from;
+    return '<div class="conn"><span class="mono">'+esc(e.from)+'</span> '+esc(e.type)+' <span class="mono">'+esc(e.to)+'</span><span class="ev">Evidence: '+esc(e.evidence)+' · Nov 6, 2026 · connects to '+esc(other)+'</span></div>';
+  }).join("") : '<div class="conn">No edges touch this node in the live subset. It is in the graph, and the subset draws no line for it.</div>';
+  box.innerHTML='<div class="id">'+esc(n.id)+' &nbsp;·&nbsp; type: '+esc(n.type)+'</div><h4>'+esc(n.label)+'</h4><div class="props">'+propsText(n)+'</div><div class="conns">'+ch+'</div>';
+}
+function renderEdgeList(){
+  var el=document.getElementById("edgeList"); el.innerHTML="";
+  var head=document.createElement("div"); head.className="edge-row";
+  head.innerHTML='<span class="tp">From</span><span class="tp">Edge</span><span class="tp">To</span>';
+  el.appendChild(head);
+  EDGES.forEach(function(e){
+    if(graphFilter!=="all" && e.type!==graphFilter) return;
+    var d=document.createElement("div"); d.className="edge-row";
+    d.innerHTML='<span class="mono">'+esc(e.from)+'</span><span class="tp">'+esc(e.type)+'</span><span class="mono">'+esc(e.to)+'</span><span class="ev">Evidence: '+esc(e.evidence)+'</span>';
+    el.appendChild(d);
+  });
+}
+document.querySelectorAll(".fbtn").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll(".fbtn").forEach(function(x){x.classList.remove("on");});
+    b.classList.add("on"); graphFilter=b.getAttribute("data-filter"); renderGraph();
+  });
+});
+renderGraph(); renderDetail();
+
+/* ---- Ask the graph: local retrieval ---- */
+var CORPUS=[];
+POSITIONS.forEach(function(p){
+  CORPUS.push({ title:p.symbol+" live position", ids:["asset:"+p.symbol, p.symbol==="MU"?"trade:2026-11-06-8":p.symbol==="QCOM"?"trade:2026-11-06-9":"trade:2026-11-06-10"],
+    body:"Filled "+p.qty+" shares at $"+fmt(p.fill)+". Last $"+fmt(p.last)+". P and L $"+fmt(p.pnl)+". Stop $"+fmt(p.stop)+". Targets "+p.targets.map(function(t){return "$"+fmt(t, (t%1===0?0:2));}).join(" then ")+". Position value $"+fmt(p.qty*p.last)+".",
+    kill:p.kill, text:(p.symbol+" "+p.name+" position fill last stop target filled order live").toLowerCase()+" "+p.kill.toLowerCase() });
+});
+CONDITIONALS.forEach(function(p){
+  CORPUS.push({ title:p.symbol+" conditional, not a position", ids:["asset:"+p.symbol, p.symbol==="AMD"?"trade:2026-11-06-11":"trade:2026-11-06-12"],
+    body:"Trigger: "+p.condition+". Last $"+fmt(p.last)+". No money in this name yet. Stop if armed $"+fmt(p.stop)+". Targets "+p.targets.map(function(t){return "$"+fmt(t, (t%1===0?0:2));}).join(" then ")+".",
+    kill:p.kill, text:(p.symbol+" "+p.name+" conditional trigger pullback reclaim stop target").toLowerCase()+" "+p.kill.toLowerCase() });
+});
+CORPUS.push({ title:"Gold underneath GLD", ids:["asset:GLD","trade:2026-11-06-4","trade:2026-11-06-10"],
+  body:"Gold spot $4,084.10 (Yahoo snapshot 1:16 PM CT). Entry spot $4,040 triggered. Target $4,090, so $5.90 to go, called $6 in the attention line. Stop spot $4,000.",
+  kill:"Daily close below spot $3,970.", text:"gold gld spot target close attention target 4090 4040 safe haven" });
+CORPUS.push({ title:"The book", ids:["book:real","book:paper"],
+  body:"Real book $78.08 total: $31.25 cash and $46.83 in positions across 3 open positions (MU, QCOM, GLD). Paper book $105.44, all cash, flat, 0 open and 0 closed.",
+  kill:null, text:"book total cash equity balance paper positions how much money account" });
+CORPUS.push({ title:"Attention item", ids:["brief:2026-11-06"],
+  body:"Gold is $6 from its $4,090 target. Nothing else needs you.",
+  kill:null, text:"attention needs you urgent gold target" });
+CORPUS.push({ title:"Brief, overall read, Nov 6 2026", ids:["brief:2026-11-06"],
+  body:"Thursday rout was a policy scare. Friday opened split: chips rebounded, Dow fell. Payrolls hot, 10-year near 4.9 percent, Dec hike odds near 80 percent. Tuesday CPI is the next gate.",
+  kill:null, text:"brief overall read today market payrolls cpi dow chips rout policy scare gate" });
+SLOTS.forEach(function(s){
+  CORPUS.push({ title:"Brief slot "+s.slot+": "+s.symbol, ids:["brief:slot-"+s.slot,"asset:"+s.symbol],
+    body:"Call: "+s.call+". "+s.note, kill:null, text:("brief slot "+s.slot+" "+s.symbol+" "+s.call+" "+s.note).toLowerCase() });
+});
+WIRE.forEach(function(w,i){
+  CORPUS.push({ title:"Wire "+w.time+": "+w.headline, ids:w.refs.slice(),
+    body:"Verdict: "+w.verdict, kill:null, text:(w.headline+" "+w.verdict+" wire news").toLowerCase() });
+});
+NODES.forEach(function(n){
+  var extra = n.props && n.props.kill ? n.props.kill : null;
+  var body = n.label;
+  if(n.type==="trade"&&n.props.entry){ body += ". Entry "+n.props.entry+", target "+n.props.target+", stop "+n.props.stop+", status "+n.props.status+"."; }
+  if(n.props&&n.props.source){ body += " Source: "+n.props.source+"."; }
+  CORPUS.push({ title:(n.type==="theme"?"Theme: ":"")+n.id, ids:[n.id], body:body, kill:extra,
+    text:(n.id+" "+n.label+" "+JSON.stringify(n.props)).toLowerCase() });
+});
+PATTERNS.forEach(function(pt){
+  CORPUS.push({ title:"Pattern candidate: "+pt.theme, ids:["pattern:"+pt.theme],
+    body:pt.why+" Status is candidate, not live. It needs 10 live scored outcomes (min_n_live 10) and has "+pt.n+". Live patterns on the desk: 0.",
+    kill:null, text:("pattern "+pt.theme+" candidate live win rate outcomes decay").toLowerCase() });
+});
+CORPUS.push({ title:"Graph size", ids:["graph:full"],
+  body:"Full graph: 118 nodes and 117 edges. This page maps the live subset: 33 nodes and 20 edges. Live patterns: 0. Pattern candidates: 3. Connector candidates waiting: 16. A candidate is not a connector until it is confirmed.",
+  kill:null, text:"graph size nodes edges how many connectors candidates patterns full subset" });
+
+var STOPW={"what":1,"is":1,"the":1,"a":1,"an":1,"of":1,"to":1,"in":1,"on":1,"for":1,"and":1,"or":1,"do":1,"does":1,"did":1,"show":1,"me":1,"tell":1,"about":1,"how":1,"why":1,"when":1,"which":1,"with":1,"from":1,"it":1,"its":1,"are":1,"was":1,"were":1,"be":1,"can":1,"you":1,"our":1,"we":1,"i":1,"should":1,"would":1,"any":1,"there":1,"this":1,"that":1};
+var SUGGEST=["What kills the QCOM trade?","How close is gold to its target?","What did the payrolls news change?","Why is AMD only conditional?","What is the MU thesis?","How big is the graph?"];
+var chipRow=document.getElementById("chipRow");
+SUGGEST.forEach(function(q){
+  var b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=q;
+  b.addEventListener("click",function(){ ask(q); });
+  chipRow.appendChild(b);
+});
+function scoreItem(item,q,toks){
+  var s=0; var ql=q.toLowerCase();
+  item.ids.forEach(function(id){ if(id.toLowerCase().indexOf(ql)>=0) s+=12; });
+  // symbol exact match
+  var syms=["MU","QCOM","GLD","AMD","DUOL","NVDA","BTC","DIA"];
+  syms.forEach(function(sym){ if(new RegExp("\\b"+sym+"\\b","i").test(q) && item.text.toUpperCase().indexOf(sym)>=0) s+=9; });
+  toks.forEach(function(t){
+    if(item.text.indexOf(t)>=0) s+=2;
+    item.ids.forEach(function(id){ if(id.toLowerCase().indexOf(t)>=0) s+=3; });
+    if(item.title.toLowerCase().indexOf(t)>=0) s+=3;
+  });
+  if(/kill|stop|risk|exit|lose|in valid|invalid/.test(ql) && item.kill) s+=6;
+  if(/buy|sell|trade|enter|take/.test(ql) && item.kill) s+=2;
+  return s;
+}
+function ask(q){
+  q=(q||"").trim(); if(!q) return;
+  var msgs=document.getElementById("msgs");
+  var empty=msgs.querySelector(".ask-empty"); if(empty) empty.remove();
+  var qd=document.createElement("div"); qd.className="msg-q"; qd.textContent=q; msgs.appendChild(qd);
+  var toks=q.toLowerCase().replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(function(t){return t.length>1 && !STOPW[t];});
+  var scored=CORPUS.map(function(it){ return {it:it,s:scoreItem(it,q,toks)}; }).filter(function(x){return x.s>=4;}).sort(function(a,b){return b.s-a.s;});
+  var ad=document.createElement("div"); ad.className="msg-a";
+  if(!scored.length){
+    ad.innerHTML='<p class="none">The graph does not record that.</p>';
+  } else {
+    var top=scored.slice(0,4);
+    var html='<div style="font-size:13px;color:var(--muted)">From the graph snapshot, '+top.length+' matching record'+(top.length>1?"s":"")+':</div>';
+    top.forEach(function(x){
+      html+='<div class="hit"><div class="ht">'+esc(x.it.title)+'</div><div class="hb">'+esc(x.it.body)+'</div>'
+        +'<div class="ids">'+x.it.ids.map(function(id){return '<span class="ref">'+esc(id)+'</span>';}).join("")+'</div>'
+        +(x.it.kill?'<div class="kill"><span class="k">Kill criterion</span>'+esc(x.it.kill)+'</div>':'')
+        +'</div>';
+    });
+    ad.innerHTML=html;
+  }
+  msgs.appendChild(ad);
+  msgs.scrollTop=msgs.scrollHeight;
+  document.getElementById("askInput").value="";
+}
+document.getElementById("askForm").addEventListener("submit",function(e){ e.preventDefault(); ask(document.getElementById("askInput").value); });
+</script>
+</body>
+</html>
