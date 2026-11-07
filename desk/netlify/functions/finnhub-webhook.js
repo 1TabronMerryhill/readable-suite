@@ -49,6 +49,29 @@ function secretsEqual(a, b) {
   return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
 }
 
+// Wrap a verified Finnhub event into a Desk contract event before the
+// forward. The bus only accepts the 12 contract types with ts as a
+// string, and a raw Finnhub body matches neither, so an unwrapped
+// forward is rejected there. Until the Test Webhook button reveals the
+// real payload shape, every raw event goes in as news.event with the
+// whole body in payload; an event that already matches the contract
+// passes through unchanged. Once the shape is known, map trade-shaped
+// events to quote.tick here.
+function toContractEvent(evt) {
+  if (evt && typeof evt.type === "string" && typeof evt.ts === "string"
+      && typeof evt.id === "string" && evt.payload) {
+    return evt;
+  }
+  return {
+    type: "news.event",
+    id: "finnhub-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+    ts: new Date().toISOString(),
+    source: "finnhub",
+    feed: "finnhub",
+    payload: evt,
+  };
+}
+
 // Forward a verified event to the Railway bus /ingest. Fire and forget
 // with a 2s cap: the ack is already decided, a bus error is logged and
 // never fails it. The response is sent when this handler returns, so the
@@ -64,7 +87,7 @@ async function forwardToBus(evt) {
         "Content-Type": "application/json",
         Authorization: "Bearer " + BUS_TOKEN,
       },
-      body: JSON.stringify(evt),
+      body: JSON.stringify(toContractEvent(evt)),
       signal: ctrl.signal,
     });
     console.log("finnhub-webhook forward: bus=" + res.status);
