@@ -205,7 +205,7 @@ return c.id + " (" + c.type + ") " + c.label + (c.evidence? " -- " + c.evidence:
 
 // ---- Numbers: in the context, or derivable from it ----
 function extractNumbers(text) {
-var clean = String(text || "").replace(/]+】/g, " ").replace(/\[[a-z_]+:[^\]]+\]/g, " ");
+var clean = String(text || "").replace(/【[a-z_]+:[^】]+】/g, " ").replace(/\[[a-z_]+:[^\]]+\]/g, " ");
 var out = [];
 var re = /\$?\s*(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)\s*%?/g;
 var m;
@@ -259,7 +259,7 @@ return false;
 
 // ---- Citations: both bracket forms count ----
 function extractCitations(answer) {
-var found = (String(answer || "").match(/]+】/g) || []).concat(String(answer || "").match(/\[[a-z_]+:[^\]]+\]/g) || []);
+var found = (String(answer || "").match(/【[a-z_]+:[^】]+】/g) || []).concat(String(answer || "").match(/\[[a-z_]+:[^\]]+\]/g) || []);
 var ids = {};
 found.forEach(function (m) { ids[m.slice(1, -1)] = true;});
 return Object.keys(ids);
