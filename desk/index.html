@@ -207,6 +207,61 @@
   .refreshrow{margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .refreshmeta{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
 
+  /* newsroom */
+  .nr-picker{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:flex-start;margin-bottom:16px}
+  .nr-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .nr-group .glab{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-right:2px}
+  .symbtn{font-family:var(--mono);font-size:12.5px;font-weight:700;background:var(--panel);color:var(--muted);border:1px solid var(--line2);border-radius:6px;padding:8px 13px;cursor:pointer}
+  .symbtn:hover{color:var(--text);border-color:var(--muted)}
+  .symbtn.on{color:var(--text);border-color:var(--text);background:var(--panel2)}
+  .nr-chart-card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:20px}
+  .nr-chart-head{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:flex-start;justify-content:space-between}
+  .nr-tf{display:flex;gap:8px;flex-wrap:wrap}
+  .nr-canvas-wrap{margin-top:16px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);overflow:hidden}
+  .nr-canvas-wrap canvas{display:block;width:100%;height:300px;cursor:crosshair}
+  .nr-candle{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px;min-height:20px}
+  .nr-candle b{color:var(--text);font-weight:600}
+  .nr-meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:6px}
+  .nr-meta .bad{color:var(--red)}
+  .nr-tools{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin-top:14px}
+  .nr-toggle{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;cursor:pointer}
+  .nr-toggle input{accent-color:var(--text)}
+  .nr-askrow{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .nr-asknote{font-size:12.5px;color:var(--faint)}
+  .nr-panels{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .nr-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+  .nr-card h3{margin:0;font-size:16px;font-weight:700}
+  .nr-card .sub{font-size:12.5px;color:var(--faint);margin-top:4px;line-height:1.55}
+  .nr-rows{margin-top:14px;display:grid;gap:0}
+  .nr-row{display:grid;grid-template-columns:170px 1fr;gap:6px 16px;padding:10px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.6}
+  .nr-row:first-child{border-top:none}
+  .nr-row .k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--faint);text-transform:uppercase;padding-top:2px}
+  .nr-row .v{color:var(--muted)}
+  .nr-row .v b{color:var(--text);font-weight:600}
+  .nr-row .v .src{display:block;font-size:11.5px;color:var(--faint);margin-top:3px}
+  .nr-verdict{margin-top:14px;border:1px solid var(--line2);border-radius:7px;padding:11px 13px;background:var(--panel2)}
+  .nr-verdict .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+  .nr-verdict .v{font-size:14px;font-weight:600;line-height:1.5;margin-top:3px}
+  .nr-check{margin-top:12px;display:grid;gap:10px}
+  .nr-check .step{border-top:1px solid var(--line);padding-top:10px}
+  .nr-check .step:first-child{border-top:none;padding-top:0}
+  .nr-check .sk{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--faint);text-transform:uppercase}
+  .nr-check .sv{font-size:13.5px;color:var(--muted);line-height:1.65;margin-top:3px}
+  .nr-check .sv b{color:var(--text)}
+  .ins-list{border-top:1px solid var(--line)}
+  .ins-item{display:grid;grid-template-columns:86px 1fr;gap:6px 20px;padding:18px 2px;border-bottom:1px solid var(--line)}
+  .ins-date{font-family:var(--mono);font-size:12px;color:var(--faint);padding-top:3px;white-space:nowrap}
+  .ins-h{font-size:16.5px;font-weight:600;line-height:1.45;margin:0}
+  .ins-b{font-size:14px;color:var(--muted);line-height:1.65;margin:6px 0 0}
+  .ins-b b{color:var(--text);font-weight:600}
+  .ins-lesson{margin-top:10px;border-left:2px solid var(--line2);padding-left:12px;font-size:13.5px;color:var(--muted);line-height:1.6}
+  .ins-lesson .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;display:block;margin-bottom:2px}
+  .ins-ev{margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.6}
+  .openq{background:var(--panel);border:1px dashed var(--line2);border-radius:10px;padding:16px 18px}
+  .openq .q{font-size:15px;font-weight:700;line-height:1.5}
+  .openq .a{font-size:13.5px;color:var(--muted);line-height:1.65;margin-top:8px}
+  .openq .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line2);border-radius:5px;padding:3px 7px;display:inline-block;margin-top:10px}
+
   footer{margin-top:48px;border-top:1px solid var(--line);padding-top:22px;display:grid;gap:10px}
   footer p{margin:0;font-size:12.5px;color:var(--faint);line-height:1.7;max-width:860px}
   footer .mono{font-family:var(--mono);font-size:11.5px}
@@ -226,6 +281,10 @@
     .edge-row{grid-template-columns:1fr}
     .topmeta{text-align:left}
     .msg-q{max-width:95%}
+    .nr-panels{grid-template-columns:1fr}
+    .nr-row{grid-template-columns:1fr;gap:2px}
+    .ins-item{grid-template-columns:1fr}
+    .nr-askrow{margin-left:0}
   }
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
@@ -305,20 +364,62 @@
     <p class="paperline" style="margin-top:14px">Card values are priced off the lasts above, so they can sit a cent or two off the book. <b>Book totals in the glance come from the same feed as the cards when live, and from the snapshot when it is not.</b></p>
   </section>
 
-  <!-- 03 WIRE -->
-  <section aria-label="The wire">
+  <!-- 03 NEWSROOM -->
+  <section aria-label="Newsroom">
     <div class="sec-head">
       <span class="sec-num">03</span>
+      <h2 class="sec-title">Newsroom</h2>
+      <p class="sec-note">The fund's lens: how the fund reads a market, a business, and capital. One symbol at a time. Every number says where it came from. The firm's live book stays in Positions above. A member sees the lens, not the firm's book.</p>
+    </div>
+    <div class="nr-picker" id="nrPicker" role="group" aria-label="Symbol picker"></div>
+    <div class="nr-chart-card">
+      <div class="nr-chart-head">
+        <div><div class="sym" id="nrSym">MU</div><div class="co" id="nrName">Micron Technology</div></div>
+        <div class="nr-tf" role="group" aria-label="Timeframe">
+          <button class="fbtn" data-range="1mo" type="button">1mo</button>
+          <button class="fbtn on" data-range="3mo" type="button">3mo</button>
+          <button class="fbtn" data-range="6mo" type="button">6mo</button>
+          <button class="fbtn" data-range="1y" type="button">1y</button>
+        </div>
+      </div>
+      <div class="nr-canvas-wrap"><canvas id="nrCanvas" height="300"></canvas></div>
+      <div class="nr-candle" id="nrCandle">Tap a candle to read its open, high, low, close, and volume.</div>
+      <div class="nr-meta" id="nrMeta">Chart loading.</div>
+      <div class="nr-tools">
+        <label class="nr-toggle"><input type="checkbox" id="nrSmaToggle" checked /> Show SMA 20 and SMA 50</label>
+        <div class="nr-askrow"><span class="nr-asknote" id="nrAskNote"></span><button class="fbtn" id="nrAskBtn" type="button">Ask the graph about MU</button></div>
+      </div>
+    </div>
+    <div class="nr-panels">
+      <div class="nr-card" id="nrTA"></div>
+      <div class="nr-card" id="nrFA"></div>
+    </div>
+    <div class="cond-head">
+      <h3>Research insights</h3>
+      <p>Dated entries from the graph facts and the Nov 6 briefs and packages. Nothing dated Nov 6 is presented as today's news.</p>
+    </div>
+    <div class="ins-list" id="insList"></div>
+    <div class="cond-head">
+      <h3>Open questions</h3>
+      <p>Connector candidates from the graph. Questions, not conclusions. They stay open until Milly answers them.</p>
+    </div>
+    <div class="patterns" id="openQList"></div>
+  </section>
+
+  <!-- 04 WIRE -->
+  <section aria-label="The wire">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
       <h2 class="sec-title">The Wire</h2>
       <p class="sec-note">What came in today, what the desk made of it, and the graph references each item carries.</p>
     </div>
     <div class="wire-list" id="wireList"></div>
   </section>
 
-  <!-- 04 BRIEF -->
+  <!-- 05 BRIEF -->
   <section aria-label="The brief">
     <div class="sec-head">
-      <span class="sec-num">04</span>
+      <span class="sec-num">05</span>
       <h2 class="sec-title">The Brief</h2>
       <p class="sec-note">Nov 6, 2026. The overall read first, then the five slots in order.</p>
     </div>
@@ -326,10 +427,10 @@
     <div class="slots" id="slotList"></div>
   </section>
 
-  <!-- 05 GRAPH -->
+  <!-- 06 GRAPH -->
   <section aria-label="The knowledge graph">
     <div class="sec-head">
-      <span class="sec-num">05</span>
+      <span class="sec-num">06</span>
       <h2 class="sec-title">The Graph, Alive</h2>
       <p class="sec-note">The live subset of the firm knowledge graph. News mentions themes. Trades decide assets. Tap any node to read it and see what it connects to.</p>
     </div>
@@ -361,10 +462,10 @@
     <div class="patterns" id="patList"></div>
   </section>
 
-  <!-- 06 ASK -->
-  <section aria-label="Ask the graph">
+  <!-- 07 ASK -->
+  <section aria-label="Ask the graph" id="askSection">
     <div class="sec-head">
-      <span class="sec-num">06</span>
+      <span class="sec-num">07</span>
       <h2 class="sec-title">Ask the Graph</h2>
       <p class="sec-note">Ask in plain words. The answer comes from the graph snapshot on this page, and every answer shows the ids it came from.</p>
     </div>
@@ -694,9 +795,9 @@ function renderEdgeList(){
     el.appendChild(d);
   });
 }
-document.querySelectorAll(".fbtn").forEach(function(b){
+document.querySelectorAll(".graph-filters .fbtn").forEach(function(b){
   b.addEventListener("click",function(){
-    document.querySelectorAll(".fbtn").forEach(function(x){x.classList.remove("on");});
+    document.querySelectorAll(".graph-filters .fbtn").forEach(function(x){x.classList.remove("on");});
     b.classList.add("on"); graphFilter=b.getAttribute("data-filter"); renderGraph();
   });
 });
@@ -941,6 +1042,656 @@ setInterval(function(){
   var rm=document.getElementById("refreshMeta");
   if(rm && liveState.lastCheck) rm.textContent="Last checked "+liveState.lastCheck+" CT · next check in "+liveState.nextIn+"s";
 },1000);
+</script>
+<script>
+/* ---- Newsroom: charts, technicals, fundamentals, research ---- */
+/* Candles come only from /api/chart (Yahoo v8). TA is computed from
+   those candles plus the server SMA and RSI. Fundamentals come only
+   from the recorded Nov 6 packages and graph facts. Anything not in
+   the record is labeled "not yet checked" or "not recorded". */
+var NR_SYMBOLS = [
+  { sym:"MU", name:"Micron Technology", group:"Live positions" },
+  { sym:"QCOM", name:"Qualcomm", group:"Live positions" },
+  { sym:"GLD", name:"SPDR Gold Shares", group:"Live positions" },
+  { sym:"AMD", name:"Advanced Micro Devices", group:"Conditionals" },
+  { sym:"DUOL", name:"Duolingo", group:"Conditionals" },
+  { sym:"NVDA", name:"NVIDIA", group:"Watchlist" },
+  { sym:"DIA", name:"SPDR Dow Jones Industrial Average ETF", group:"Watchlist" },
+  { sym:"SPY", name:"SPDR S&P 500 ETF", group:"Watchlist" },
+  { sym:"ANET", name:"Arista Networks", group:"Watchlist" },
+  { sym:"APP", name:"AppLovin", group:"Watchlist" },
+  { sym:"IREN", name:"IREN Limited", group:"Watchlist" },
+  { sym:"AVGO", name:"Broadcom", group:"Watchlist" },
+  { sym:"MRVL", name:"Marvell Technology", group:"Watchlist" },
+  { sym:"GOOGL", name:"Alphabet", group:"Watchlist" },
+  { sym:"BRK.B", name:"Berkshire Hathaway", group:"Watchlist" },
+  { sym:"VST", name:"Vistra", group:"Watchlist" },
+  { sym:"FRO", name:"Frontline", group:"Watchlist" }
+];
+var NR_NOT_CHECKED = "Not yet checked in the record.";
+var NR_FA = {
+  MU: { status:"Live position. The plan below is the Nov 6 midday package.",
+    thesis:"The cheapest earnings on the crash board, and the business backs it. Fiscal Q4 revenue $54.23B, up 379 percent year over year. Non-GAAP EPS $33.42, up more than 1,000 percent. Fiscal 2026 GAAP EPS $74.33. Q1 fiscal 2027 guide: revenue $61.5B, non-GAAP EPS $38.15. Take-or-pay deals cover more than 35 percent of forecast revenue through 2030, with about $32B in cash deposits. Buybacks resume December 9 under a $35.16B authorization.",
+    verdict:"Bounce, live. The package calls it a bounce worth taking with a kill underneath it, not a hold on valuation alone.",
+    kill:"Break below $656.39 ends the day trade. A weekly close below $600, or a take-or-pay renegotiation headline, kills the longer thesis.",
+    capital:"Capital committed: $15.62 real in this slot. Paper size $21.08. Max loss $1.12 on the paper size. Profit to $740 is $1.42 (1.3R). Profit to $780 is $2.64 (2.4R). Concentration: slots 1, 2, and 3 are one trade, the chip bounce. That is $63.24 of the $105.44 paper book on a single theme. If the bounce fails, all three stop together, for about $3.68 of paper max loss.",
+    fill:691.73, stop:656.39, targets:[740,780], trigger:null, hardKill:null,
+    worth:"At the Thursday close it traded at 3.7 times estimated fiscal 2027 earnings. No dollar worth and no margin of safety number is recorded in the package.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:"Take-or-pay covers over 35 percent of forecast revenue through 2030, with about $32B in cash deposits. R and D spend is not recorded in the package."},
+      {step:"Shareholder returns", text:"Buybacks resume December 9 under a $35.16B authorization."} ],
+    crash:{ price:718.405, high:1255, down:-42.8, m10:1129.50, m20:1004.00, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"Open risk: the Taiwan Taoyuan plant halt and union dispute. UBS expects 10 percent fewer data centers in its baseline, up to 15 to 20 percent fewer. A memory downturn arriving before 2028 is the bear case." },
+  QCOM: { status:"Live position. The plan below is the Nov 6 midday package.",
+    thesis:"Bounce continuation. Automotive up 52 percent, Data Center $5B target reiterated, but the core shrank and returns exceeded free cash flow by about $3,020M. The price is doing what a bounce does after a 36 percent fall.",
+    verdict:"Bounce only. Not a gem.",
+    kill:"$152.50, the November 5 kill level, or an Apple modem headline, or a handset guide cut.",
+    capital:"Capital committed: $15.62 real in this slot. Paper size $21.08. Max loss $1.01 on the paper size. Profit to $172 is $0.94 (0.9R). Profit to $180 is $1.97 (1.9R). Concentration: slots 1, 2, and 3 are one trade, the chip bounce. That is $63.24 of the $105.44 paper book on a single theme.",
+    fill:166.23, stop:156.75, targets:[172,180], trigger:null, hardKill:null,
+    worth:"FY2026 non-GAAP EPS $10.54. Worth $158.10 at 15 times, $189.72 at 18 times. Q1 FY2027 guidance annualised is $9.00, worth $135 at 15 times and $162 at 18 times. For a 20 percent margin of safety at $160.85, worth would have to be at least $201, about 22 times forward earnings while non-GAAP income is falling. No 20 percent margin of safety.",
+    business:[ {step:"Management", text:"Mixed, with a capital allocation problem. CEO Cristiano Amon. Revenue down 3 percent to $43,120m, operating income down 30 percent to $8,658m, operating cash flow down $2,867m to $11,145m, capital expenditure more than doubled to $2,494m. Management is spending into a shrinking core."},
+      {step:"Employees", text:"Unknown from the filings, leaning negative. Headcount about 57,000, up from about 52,000 a year earlier. An October 19 to 20 internal memo about a performance-focused reduction was reported by Reuters, with no number disclosed. That memo is news only, not a filing."},
+      {step:"Cash and R and D", text:"FY2026 R and D $10,207m, 23.7 percent of revenue. It produced automotive growth, the Alphawave acquisition behind the Data Center push, and IoT growth. It did not stop handset chips falling 13 percent to $24,072m, or Apple increasingly using its own modems."},
+      {step:"Shareholder returns", text:"Red flag. Buybacks $7,817m plus dividends $3,854m is $11,671m returned, against free cash flow of $8,651m. About $3,020m more returned than the business generated, while handsets fell and operating income fell 30 percent."} ],
+    crash:{ price:160.845, high:259.92, down:-38.1, m10:233.93, m20:207.94, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"FY2026 GAAP net income of $13,628m, up 146 percent, is almost entirely a $5.7bn one-off income tax benefit. Non-GAAP net income fell 15 percent to $11,311m. Use the clean numbers." },
+  GLD: { status:"Live position. GLD tracks spot gold. The plan below is the Nov 6 midday package.",
+    thesis:"Hot payrolls pushed the dollar up 0.63 percent to 102.12 and hike odds to about 77 to 80 percent, and gold is still holding above $4,040. A haven holding its entry against a stronger dollar is strength, not weakness.",
+    verdict:"Long, live from the morning brief. Entry $4,040 triggered. Target $4,090, stop $4,000.",
+    kill:"A daily close below spot $3,970.",
+    capital:"Capital committed: $15.62 real in this slot. Paper size $21.08 in GLD, 0.0566 shares. Max loss to the stop is about $0.21 on the paper size, using the GLD equivalent of the $40 spot move.",
+    fill:372.79, stop:368.16, targets:[376.39], trigger:null, hardKill:354.67,
+    worth:"Gold has no earnings, so no earnings multiple applies. No intrinsic worth is recorded. GLD is priced off spot gold.",
+    business:[ {step:"Business check", text:"Not applicable. Gold is not a business. There is no management, no employees, and no R and D to check."} ],
+    crash:{ price:371.88, high:null, down:-27.0, m10:null, m20:null, band:"20%+ crash", source:"Robinhood fundamentals, Nov 6, 2026 (watchlist-consolidated-2026-11-06.md). 52-week high not recorded as a number." },
+    notes:"Spot about $4,072 at midday Nov 6. December futures opened at $4,098.50 and slid to $4,072. Gold spot stays on the Nov 6, 1:16 PM CT Yahoo snapshot until a live spot source lands. Hard kill below $354.67 is a break below the 52-week low." },
+  AMD: { status:"Conditional. Not a position. Entry only on a pullback to $436.50.",
+    thesis:"Bounce only. Q3 2026 was AMD's largest quarter ever: revenue $13,377m, up 45 percent, Data Center $8,546m, up 97 percent, net income $2,428m, up 95 percent. Q4 guidance is about $17bn. The growth is real, and the price already pays for most of it.",
+    verdict:"Bounce only. Not a gem.",
+    kill:"A close below $404.40. If there is no pullback, there is no trade, and that scores as no trade, not a loss.",
+    capital:"No capital committed yet. This is a conditional. Paper size at entry $21.08. Max loss $1.55. Profit to $460 is $1.14 (0.7R). Profit to $476 is $1.91 (1.2R). The first target does not pay 1R. Concentration: slots 1, 2, and 3 are one trade, the chip bounce.",
+    fill:null, stop:404.40, targets:[460,476], trigger:436.50, hardKill:null,
+    worth:"Q3 non-GAAP EPS $2.09. Q4 non-GAAP EPS lands near $2.40 on the package assumptions, an annualised run rate near $9.60. Worth $384 at 40 times, $480 at 50 times. Price $457.05. For a 20 percent margin of safety at $457.05, worth would have to be at least $571, about a 59 times multiple. No 20 percent margin of safety.",
+    business:[ {step:"Management", text:"Good on growth, aggressive on commitments. CEO Lisa Su, CFO Jean Hu. Against the record quarter: $4.75bn of senior notes issued in Aug to Sep 2026, purchase commitments of $48,761m, cloud-compute commitments of $6,175m, data-centre leases not yet commenced of $13.3bn, and guarantees of up to $8.5bn. A $1,097m non-cash warrant fair value charge hit Q3 GAAP earnings."},
+      {step:"Employees", text:"Unknown from the filings, leaning neutral. Headcount about 31,000, up from 28,000 in 2024. No layoff disclosure in the Q3 10-Q. No satisfaction, turnover, or pay evidence in the filings. Do not claim employees are happy."},
+      {step:"Cash and R and D", text:"Q3 R and D $2,803m, 21.0 percent of revenue. Nine months R and D $7,728m, 22.0 percent. FY2025 R and D $8,091m, 23.4 percent. It produced EPYC processors and the Instinct MI450 Series GPU behind Data Center growth of 97 percent."},
+      {step:"Shareholder returns", text:"No red flag, because returns come last and are small. No dividend. Buybacks $0m in Q3 2026 and $221m in the first nine months, against $9.2bn of remaining authority. Cash went to the Data Center ramp, debt repayment of $875m, and a working capital build."} ],
+    crash:{ price:457.05, high:658.52, down:-30.6, m10:592.67, m20:526.82, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"Stood down at the open Nov 6 on the hot payrolls print. The tape proved the bounce anyway, so the leg waits for the pullback price instead of chasing." },
+  DUOL: { status:"Conditional. Not a position. Entry only on a reclaim and hold above $161.27.",
+    thesis:"Q3 reported November 3. Revenue $309M, up 14 percent, beating $303M. Bookings $316M. Daily active users up 29 percent to 64.9M. Paid subscribers up 14 percent to 13.1M. Net income $27.2M, 8.8 percent margin. Q4 guide raised: revenue $322M, bookings $382M. Full year revenue $1.221B. The stock jumped 37 percent intraday November 4 and closed at $161.27, up 26 percent from $128. The breakout failed to hold.",
+    verdict:"Breakout reclaim only. A touch of $160 is no longer the trigger. A reclaim is.",
+    kill:"A close below $150, or a daily active user or subscriber stall headline.",
+    capital:"No capital committed yet. This is a conditional. Paper size at entry $21.08. Max loss $1.47. Profit to $175 is $1.79 (1.2R). Profit to $184 is $2.97 (2.0R).",
+    fill:null, stop:150, targets:[175,184], trigger:161.27, hardKill:null,
+    worth:"No intrinsic worth is recorded in the package.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:155.00, high:213.37, down:-27.4, m10:192.03, m20:170.70, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"Evercore target $210, consensus $184, Goldman $135 neutral. Next earnings March 3, 2027." },
+  NVDA: { status:"Watchlist only. Stood down Nov 6 on the hot payrolls print.",
+    thesis:"Not taken Nov 6. At $187.92, just under the $188.50 brief entry, up 3.5 percent. Slots 1, 2, and 3 are already the same chip bounce in three tickers. Four would be one idea wearing four hats. NVDA stays a watch.",
+    verdict:"Stood down. No trade.",
+    kill:"Loses $181.60, the Thursday close, or the hot payrolls stand-down. That was the Nov 6 brief kill.",
+    capital:"No capital is committed to this name. The Nov 6 brief slot was stood down on the hot payrolls print.",
+    fill:null, stop:181.60, targets:[196], trigger:null, hardKill:null,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:193.025, high:243.37, down:-20.7, m10:219.03, m20:194.70, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"Nov 6 brief slot 1 was long NVDA at $188.50 to $196. It stood down at the open on the hot print." },
+  DIA: { status:"Watchlist only. The Nov 6 short was not triggered.",
+    thesis:"Short at $510 was the Nov 6 brief slot 5. DIA read $514.74, above its $514.27 close, so the short never triggered. The Dow fell 518 at the open on the hot print, and the short still did not trigger.",
+    verdict:"Not triggered. A line on the wall until $510 breaks.",
+    kill:"Reclaims $514.27, the Thursday close.",
+    capital:"No capital is committed to this name. The Nov 6 short at $510 never triggered.",
+    fill:null, stop:514.27, targets:[505], trigger:null, hardKill:null,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:513.31, high:546.75, down:-6.1, m10:492.07, m20:437.40, band:"under 10% down", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"Nov 5 the DIA long was killed at $528, signal only. Nov 4 DIA rose 0.6 percent, signal only." },
+  SPY: { status:"Watchlist only. No trade packaged.",
+    thesis:"No thesis recorded. SPY is the market itself, on the list as the benchmark, not as a trade.",
+    verdict:"No trade packaged.",
+    kill:"No kill recorded. A package would set one first.",
+    capital:"No capital is committed to this name. No package sets a size.",
+    fill:null, stop:null, targets:[], trigger:null, hardKill:null,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:740.165, high:781.62, down:-5.3, m10:703.46, m20:625.30, band:"under 10% down", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"Nov 4 the SPY long signal rose 0.2 percent, signal only. Thursday Nov 5 the S and P fell 4.36 percent to 7,353.79 in the rout." },
+  ANET: { status:"Watchlist only. Stopped out Nov 4 at the $184 kill, signal only.",
+    thesis:"Q3 revenue $3.66B vs $3.33B consensus, Q4 guide $3.9 to 4.0B vs $3.57B. The beat came Nov 4. The trade still stopped out at its kill. A beat does not save a trade that breaks its kill.",
+    verdict:"Killed Nov 4. Signal only, no position was opened.",
+    kill:"Close below $170.50. The $184 kill fired Nov 4.",
+    capital:"No capital is committed to this name. The Nov 4 signal stopped out at its kill, signal only.",
+    fill:null, stop:175.89, targets:[184.86], trigger:null, hardKill:null,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:171.76, high:217.41, down:-21.0, m10:195.67, m20:173.93, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"Nov 4 outcome: kill hit, down 2.0 percent, minus 1.0R, signal only." },
+  APP: { status:"Watchlist only. No trade packaged.",
+    thesis:"AppLovin rose 22.8 percent Wednesday Nov 4 on results and guidance, per the Nov 5 brief. No package and no trade followed.",
+    verdict:"No trade packaged.",
+    kill:"No kill recorded. A package would set one first.",
+    capital:"No capital is committed to this name. No package sets a size.",
+    fill:null, stop:null, targets:[], trigger:null, hardKill:null,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:369.294, high:738.01, down:-50.0, m10:664.21, m20:590.41, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"No package is recorded for APP. The move is in the record; the trade is not." },
+  IREN: { status:"Watchlist only. Open question, not a slot.",
+    thesis:"Neocloud name. Tighter AI and data center scrutiny hit neoclouds Nov 4, with IREN down pre-market. Earnings were due after the close Nov 5. No outcome is recorded in the graph.",
+    verdict:"No trade packaged. The graph asks whether neoclouds are tracked as a group, or only when one earns a slot on its own numbers. That question is still open.",
+    kill:"No kill recorded. A package would set one first.",
+    capital:"No capital is committed to this name. No package sets a size.",
+    fill:null, stop:null, targets:[], trigger:null, hardKill:null,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:21.485, high:70.707, down:-69.6, m10:63.64, m20:56.57, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"Nov 5 brief listed IREN among earnings after the close: SOUN, IONQ, DKNG, IREN, ABNB. No outcome is recorded." },
+  AVGO: { status:"Watchlist only. No trade packaged.",
+    thesis:"Chips. In the Nov 6 pre-market bounce, AVGO was up 5.1 percent with the chip rebound. No package followed.",
+    verdict:"No trade packaged.",
+    kill:"No kill recorded. A package would set one first.",
+    capital:"No capital is committed to this name. No package sets a size.",
+    fill:null, stop:null, targets:[], trigger:null, hardKill:null,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:304.00, high:495.00, down:-38.6, m10:445.50, m20:396.00, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"No package is recorded for AVGO. The bounce is in the record; the trade is not." },
+  MRVL: { status:"Watchlist only. No trade packaged.",
+    thesis:"Chips. In the Nov 6 pre-market bounce, MRVL was up 8.2 percent with the chip rebound. No package followed.",
+    verdict:"No trade packaged.",
+    kill:"No kill recorded. A package would set one first.",
+    capital:"No capital is committed to this name. No package sets a size.",
+    fill:null, stop:null, targets:[], trigger:null, hardKill:null,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:144.43, high:329.88, down:-56.2, m10:296.89, m20:263.90, band:"20%+ crash", source:"Yahoo chart meta, Nov 6, 2026 (screen-2026-11-06.json)" },
+    notes:"No package is recorded for MRVL. The bounce is in the record; the trade is not." },
+  GOOGL: { status:"Watchlist only. No trade packaged.",
+    thesis:"Mega-cap, real earnings, multiple back to earth. Pulled into the OpOne list Nov 6 at $286.24, down 29.9 percent, PE 14.8 on Robinhood fundamentals.",
+    verdict:"No trade packaged.",
+    kill:"Hard kill below $270.70, a break below the 52-week low. Only 5.4 percent away, a real line.",
+    capital:"No capital is committed to this name. No package sets a size.",
+    fill:null, stop:null, targets:[], trigger:null, hardKill:270.70,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:286.24, high:null, down:-29.9, m10:null, m20:null, band:"20%+ crash", source:"Robinhood fundamentals, Nov 6, 2026 (watchlist-consolidated-2026-11-06.md). 52-week high and DCA markers not recorded as numbers." },
+    notes:"No package is recorded for GOOGL. The pull is in the record; the trade is not." },
+  "BRK.B": { status:"Watchlist only. No trade packaged.",
+    thesis:"The compounding core. Near its high, which is the point: it is the anchor, not a trade. Pulled into the OpOne list Nov 6 at $571.61, down 2.5 percent, PE 14.4 on Robinhood fundamentals.",
+    verdict:"No trade packaged.",
+    kill:"Hard kill below $464.01, a break below the 52-week low.",
+    capital:"No capital is committed to this name. No package sets a size.",
+    fill:null, stop:null, targets:[], trigger:null, hardKill:464.01,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:571.61, high:null, down:-2.5, m10:null, m20:null, band:"under 10% down", source:"Robinhood fundamentals, Nov 6, 2026 (watchlist-consolidated-2026-11-06.md). 52-week high and DCA markers not recorded as numbers." },
+    notes:"No package is recorded for BRK.B. The pull is in the record; the trade is not." },
+  VST: { status:"Watchlist only. No trade packaged.",
+    thesis:"Power for the AI buildout, earnings real. Pulled into the OpOne list Nov 6 at $124.94, down 36.5 percent, PE 19.1. The AI infra list had one name with a multiple worth owning, and this is it.",
+    verdict:"No trade packaged.",
+    kill:"Hard kill below $110.89, a break below the 52-week low. 11.2 percent away.",
+    capital:"No capital is committed to this name. No package sets a size.",
+    fill:null, stop:null, targets:[], trigger:null, hardKill:110.89,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:124.94, high:null, down:-36.5, m10:null, m20:null, band:"20%+ crash", source:"Robinhood fundamentals, Nov 6, 2026 (watchlist-consolidated-2026-11-06.md). 52-week high and DCA markers not recorded as numbers." },
+    notes:"No package is recorded for VST. The pull is in the record; the trade is not." },
+  FRO: { status:"Watchlist only. No trade packaged.",
+    thesis:"Oil shipping, the cheapest PE on the whole board. Pulled into the OpOne list Nov 6 at $45.80, down 23.3 percent, PE 6.7. One oil name instead of eight oil vehicles.",
+    verdict:"No trade packaged.",
+    kill:"Hard kill below $20.47, a break below the 52-week low.",
+    capital:"No capital is committed to this name. No package sets a size.",
+    fill:null, stop:null, targets:[], trigger:null, hardKill:20.47,
+    worth:"No intrinsic worth is recorded.",
+    business:[ {step:"Management", text:NR_NOT_CHECKED},
+      {step:"Employees", text:NR_NOT_CHECKED},
+      {step:"Cash and R and D", text:NR_NOT_CHECKED},
+      {step:"Shareholder returns", text:NR_NOT_CHECKED} ],
+    crash:{ price:45.80, high:null, down:-23.3, m10:null, m20:null, band:"20%+ crash", source:"Robinhood fundamentals, Nov 6, 2026 (watchlist-consolidated-2026-11-06.md). 52-week high and DCA markers not recorded as numbers." },
+    notes:"No package is recorded for FRO. The pull is in the record; the trade is not." }
+};
+var INSIGHTS = [
+  { date:"2026-11-06", tag:"Payrolls", title:"Hot payrolls stood the chip legs down at the open",
+    body:"October payrolls came in at +165,000 against about 65,000 expected, unemployment 4.1 percent, wages +0.4 percent. The 10-year yield rose to about 4.87 to 4.89 percent and December hike odds moved to about 77 to 80 percent. The NVDA and AMD long legs stood down at the open on the print.",
+    evidence:"Discord #opone-capital brief 2026-11-06; Reuters/BLS. Graph: news:2026-11-06-payrolls-hot.",
+    lesson:"Chasing a gap into a hawkish print is how you buy the top. The stand-down was right at the open. It does not stay stood down all day when the bounce proves itself." },
+  { date:"2026-11-06", tag:"Policy", title:"Thursday was a policy scare, not an earnings scare",
+    body:"The Democratic midterm sweep raised fears of slower AI data-center buildouts. The Nasdaq fell 5.5 percent, its worst day since April 2025, and the PHLX Semiconductor Index fell 12.25 percent. Friday opened split: chips rebounded, the Dow fell 518.",
+    evidence:"Midday packages 2026-11-06. Graph: news:2026-11-06-chip-rebound, theme:ai_regulation.",
+    lesson:"Know what kind of rout it is before you buy it. A policy scare reprices a theme. An earnings scare reprices a company. The trade is different either way." },
+  { date:"2026-11-06", tag:"MU", title:"Micron is the cheapest earnings on the crash board",
+    body:"Fiscal Q4 revenue $54.23B, up 379 percent. Q1 fiscal 2027 guide: revenue $61.5B, non-GAAP EPS $38.15. At the Thursday close it traded at 3.7 times estimated fiscal 2027 earnings. Take-or-pay deals cover more than 35 percent of forecast revenue through 2030, with about $32B in cash deposits.",
+    evidence:"Midday packages 2026-11-06. Graph: news:2026-11-06-mu-valuation.",
+    lesson:"A record quarter does not make a price cheap, but a 3.7 multiple with contracted revenue does make a bounce worth taking with a kill underneath it." },
+  { date:"2026-11-06", tag:"AMD", title:"AMD grew 45 percent and still fails the margin of safety",
+    body:"Q3 revenue $13,377m, up 45 percent. Data Center $8,546m, up 97 percent. Net income $2,428m, up 95 percent. Worth is $384 at 40 times and $480 at 50 times the $9.60 run-rate EPS. Price $457.05. A 20 percent margin of safety would need worth of at least $571.",
+    evidence:"AMD 10-Q filed Nov 4, 2026, accession 0000002488-26-000191. Graph: news:2026-11-06-amd-10q.",
+    lesson:"The business can be strong and the trade still be a bounce, because the price already carries the growth. The margin of safety is the test, not the headline." },
+  { date:"2026-11-06", tag:"QCOM", title:"Qualcomm's profit jump is a tax benefit, not earnings",
+    body:"FY2026 GAAP net income of $13,628m, up 146 percent, is almost entirely a $5.7bn one-off income tax benefit. Non-GAAP net income fell 15 percent to $11,311m. Buybacks plus dividends of $11,671m ran about $3,020m ahead of free cash flow of $8,651m.",
+    evidence:"Qualcomm 10-K filed Nov 4, 2026, accession 0000804328-26-000128. Graph: news:2026-11-06-qcom-10k.",
+    lesson:"A low multiple is not a margin of safety when the earnings behind it are falling. Read the clean numbers, not the headline." },
+  { date:"2026-11-06", tag:"DUOL", title:"A breakout that fails to hold is information",
+    body:"Duolingo Q3 revenue $309M, up 14 percent. Daily active users up 29 percent to 64.9M. The stock jumped 37 percent intraday November 4 and closed at $161.27. It is now below that close. The pullback watch at $160 was set when the stock was gapping. A touch of $160 is no longer the trigger. A reclaim is.",
+    evidence:"Midday packages 2026-11-06. Graph: news:2026-11-06-duol-q3.",
+    lesson:"You do not buy the level a breakout failed at. You buy the reclaim." },
+  { date:"2026-11-06", tag:"Gold", title:"Gold held its entry against a stronger dollar",
+    body:"Hot payrolls pushed the dollar index up 0.63 percent to 102.12 and hike odds to about 77 to 80 percent. Gold still held above its $4,040 entry. Spot was about $4,072 at midday. Target $4,090, stop $4,000.",
+    evidence:"Midday packages 2026-11-06. Graph: trade:2026-11-06-4, trade:2026-11-06-10.",
+    lesson:"The stop is what lets you hold a winner through a hot print. Without it, every headline is a decision. With it, only the level is." },
+  { date:"2026-11-05", tag:"Kills", title:"Three kills fired on Nov 5, and all three worked",
+    body:"DIA killed at $528. QCOM killed at $152.50. AMD killed at $468. Each was a signal only, no position was opened, and each kill kept a losing idea from becoming a losing trade.",
+    evidence:"Graph outcomes: outcome:2026-11-05-dia, outcome:2026-11-05-qcom, outcome:2026-11-05-amd. Feed: yahoo_snapshot.",
+    lesson:"A kill that fires is not a loss. It is the rule working. The loss is the trade you hold through the level." },
+  { date:"2026-11-04", tag:"ANET", title:"A beat does not save a trade that breaks its kill",
+    body:"ANET Q3 revenue $3.66B beat the $3.33B consensus, and Q4 guide of $3.9 to 4.0B beat $3.57B. The Nov 4 signal still stopped out at its $184 kill, down 2.0 percent, signal only.",
+    evidence:"Discord #opone-capital brief 2026-11-04. Graph: news:2026-11-04-anet-earnings, outcome:2026-11-04-anet.",
+    lesson:"Earnings and price are two different trades. The beat belongs to the company. The kill belongs to the trade." },
+  { date:"2026-11-05", tag:"Asia", title:"Kospi halted twice in two days",
+    body:"Kospi fell 4.8 percent November 5 with a sidecar halt, then halted again after falling 8.55 percent on November 6. The chip-heavy Korean market led the Asia move both days.",
+    evidence:"Discord #opone-capital briefs 2026-11-05 and 2026-11-06. Graph intake: intake:2026-11-05-asia-split, intake:2026-11-06-asia-falling.",
+    lesson:"Asia opens before the US does. When the chip-heavy market halts twice, that is a leading indicator until it proves otherwise. The question is still open." }
+];
+var OPENQ = [
+  { q:"DUOL: watchlist slot if it touches $160 with a kill under it, or pipeline only?",
+    a:"The Nov 6 midday package proposes the answer: a slot with a kill, only on a reclaim above $161.27. That is Bobby's read, not Milly's answer. The question stays open until Milly confirms it." },
+  { q:"QCOM: bounce continuation candidate now, or dead after the Nov 5 kill at $152.50?",
+    a:"The Nov 6 package says bounce only, live, with the kill at $152.50. That is Bobby's read, not Milly's answer. The question stays open until Milly confirms it." },
+  { q:"Kospi: should Asia and Korea be a leading indicator each morning, or just context?",
+    a:"Kospi fell 4.8 percent Nov 5 and halted again after 8.55 percent Nov 6. No answer is recorded." },
+  { q:"IREN and neoclouds: track as a group, or only when one earns a slot on its own numbers?",
+    a:"IREN fell with the neoclouds Nov 4. Earnings were due after the close Nov 5, with no outcome recorded. No answer is recorded." }
+];
+
+/* ---- Newsroom state and chart ---- */
+var nrState = { sym:"MU", range:"3mo", data:null, lastGood:null, failed:false, selIdx:-1, showSma:true };
+function nrSymName(sym){ var f=null; NR_SYMBOLS.forEach(function(s){ if(s.sym===sym) f=s; }); return f; }
+function nrLevels(sym){
+  var fa = NR_FA[sym]; if(!fa) return [];
+  var lv=[];
+  if(fa.fill!=null) lv.push({ v:fa.fill, label:"FILL "+fmt(fa.fill), color:"#eceef1" });
+  if(fa.trigger!=null) lv.push({ v:fa.trigger, label:"TRIGGER "+fmt(fa.trigger), color:"#eceef1" });
+  if(fa.stop!=null) lv.push({ v:fa.stop, label:"STOP "+fmt(fa.stop), color:"#e5534b" });
+  (fa.targets||[]).forEach(function(t,i){ lv.push({ v:t, label:((fa.targets.length>1)?"T"+(i+1)+" ":"TARGET ")+fmt(t,(t%1===0?0:2)), color:"#3fb96f" }); });
+  if(fa.hardKill!=null && fa.stop==null) lv.push({ v:fa.hardKill, label:"HARD KILL "+fmt(fa.hardKill), color:"#e5534b" });
+  return lv;
+}
+function fmtDay(ts){
+  try{
+    var d=new Date(ts*1000);
+    return new Intl.DateTimeFormat("en-US",{timeZone:"America/Chicago",month:"short",day:"numeric",year:"numeric"}).format(d);
+  }catch(e){ return ""; }
+}
+function nrSetMeta(msg, isBad){
+  var m=document.getElementById("nrMeta");
+  m.innerHTML = isBad ? '<span class="bad">'+esc(msg)+'</span>' : esc(msg);
+}
+function nrUpdateMeta(){
+  var d=nrState.data;
+  if(!d){ nrSetMeta("Chart unavailable. No chart has loaded yet.", true); return; }
+  var asOf = (typeof fmtAsOf==="function") ? (fmtAsOf(d.as_of)||d.as_of) : d.as_of;
+  var base = "Source: "+d.source+". Candles: "+d.candles.length+", "+d.range+" daily. As of "+asOf+". SMA 20, SMA 50, RSI 14 computed server side.";
+  if(nrState.failed){ nrSetMeta("Chart unavailable. Showing the last good chart, as of "+asOf+". "+base, true); }
+  else nrSetMeta(base, false);
+}
+function nrDrawEmpty(msg){
+  var cv=document.getElementById("nrCanvas");
+  var dpr=window.devicePixelRatio||1;
+  var w=cv.clientWidth||800, h=300;
+  cv.width=w*dpr; cv.height=h*dpr;
+  var ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#6b7280"; ctx.font="14px JetBrains Mono, monospace"; ctx.textAlign="center";
+  ctx.fillText(msg||"Chart unavailable.", w/2, h/2);
+}
+function nrDraw(){
+  var d=nrState.data;
+  if(!d || !d.candles.length){ nrDrawEmpty(); return; }
+  var cv=document.getElementById("nrCanvas");
+  var dpr=window.devicePixelRatio||1;
+  var W=cv.clientWidth||800, H=300;
+  cv.width=W*dpr; cv.height=H*dpr;
+  var ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  var padL=8, padR=58, padT=12, padB=26;
+  var plotW=W-padL-padR, plotH=210, volH=34, volTop=padT+plotH+8;
+  var cs=d.candles, n=cs.length;
+  var lo=Infinity, hi=-Infinity;
+  cs.forEach(function(c){ if(c.l<lo) lo=c.l; if(c.h>hi) hi=c.h; });
+  var levels=nrLevels(nrState.sym);
+  levels.forEach(function(l){ if(l.v<lo) lo=l.v; if(l.v>hi) hi=l.v; });
+  var pad=(hi-lo)*0.04||1; lo-=pad; hi+=pad;
+  function X(i){ return padL + (i+0.5)*(plotW/n); }
+  function Y(v){ return padT + (1-(v-lo)/(hi-lo))*plotH; }
+  // grid
+  ctx.strokeStyle="#23262d"; ctx.fillStyle="#6b7280"; ctx.font="10px JetBrains Mono, monospace"; ctx.textAlign="left";
+  for(var g=0; g<=4; g++){
+    var gv=lo+(hi-lo)*g/4, gy=Y(gv);
+    ctx.beginPath(); ctx.moveTo(padL,gy); ctx.lineTo(W-padR,gy); ctx.stroke();
+    ctx.fillText("$"+fmt(gv), W-padR+6, gy+3);
+  }
+  // level lines
+  levels.forEach(function(l){
+    var y=Y(l.v);
+    ctx.save(); ctx.setLineDash([5,4]); ctx.strokeStyle=l.color; ctx.globalAlpha=0.85;
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(W-padR,y); ctx.stroke(); ctx.restore();
+    ctx.fillStyle=l.color; ctx.font="9.5px JetBrains Mono, monospace";
+    ctx.fillText(l.label, padL+4, y-4);
+  });
+  // volume bars
+  var vmax=0; cs.forEach(function(c){ if(c.v>vmax) vmax=c.v; });
+  var bw=Math.max(1,(plotW/n)*0.62);
+  cs.forEach(function(c,i){
+    var up=c.c>=c.o;
+    ctx.fillStyle=up?"rgba(63,185,111,0.45)":"rgba(229,83,75,0.45)";
+    var vh=vmax? (c.v/vmax)*volH : 0;
+    ctx.fillRect(X(i)-bw/2, volTop+volH-vh, bw, vh);
+  });
+  // candles
+  cs.forEach(function(c,i){
+    var up=c.c>=c.o;
+    var col=up?"#3fb96f":"#e5534b";
+    var x=X(i);
+    ctx.strokeStyle=col; ctx.fillStyle=col;
+    ctx.beginPath(); ctx.moveTo(x,Y(c.h)); ctx.lineTo(x,Y(c.l)); ctx.stroke();
+    var yo=Y(Math.max(c.o,c.c)), yc=Y(Math.min(c.o,c.c));
+    ctx.fillRect(x-bw/2, yo, bw, Math.max(1, yc-yo));
+  });
+  // SMA lines
+  if(nrState.showSma){
+    [["sma20","#9aa1ab"],["sma50","#6b7280"]].forEach(function(pair){
+      var arr=d[pair[0]]; if(!arr) return;
+      ctx.strokeStyle=pair[1]; ctx.lineWidth=1.4; ctx.beginPath();
+      var started=false;
+      arr.forEach(function(v,i){
+        if(v==null) return;
+        if(!started){ ctx.moveTo(X(i),Y(v)); started=true; } else ctx.lineTo(X(i),Y(v));
+      });
+      ctx.stroke(); ctx.lineWidth=1;
+    });
+  }
+  // selected candle
+  if(nrState.selIdx>=0 && nrState.selIdx<n){
+    var sx=X(nrState.selIdx);
+    ctx.save(); ctx.strokeStyle="#eceef1"; ctx.globalAlpha=0.5;
+    ctx.beginPath(); ctx.moveTo(sx,padT); ctx.lineTo(sx,padT+plotH); ctx.stroke(); ctx.restore();
+  }
+  // x labels
+  ctx.fillStyle="#6b7280"; ctx.font="10px JetBrains Mono, monospace"; ctx.textAlign="center";
+  var step=Math.max(1,Math.floor(n/5));
+  for(var i=0;i<n;i+=step){ ctx.fillText(fmtDay(cs[i].t), X(i), H-8); }
+  ctx.fillText(fmtDay(cs[n-1].t), X(n-1), H-8);
+}
+function nrShowCandle(i){
+  var d=nrState.data; if(!d) return;
+  var cs=d.candles;
+  if(i<0||i>=cs.length) return;
+  nrState.selIdx=i;
+  var c=cs[i];
+  var chg = i>0 ? ((c.c-cs[i-1].c)/cs[i-1].c*100) : null;
+  var line="<b>"+esc(fmtDay(c.t))+"</b> open $"+fmt(c.o)+" high $"+fmt(c.h)+" low $"+fmt(c.l)+" close $"+fmt(c.c)+" volume "+c.v.toLocaleString("en-US");
+  if(chg!=null) line+=" change vs prior close "+(chg>=0?"+":"")+fmt(chg,1)+"%";
+  document.getElementById("nrCandle").innerHTML=line;
+  nrDraw();
+}
+function nrFetch(){
+  var sym=nrState.sym, range=nrState.range;
+  nrSetMeta("Chart loading.", false);
+  fetch("/api/chart?symbol="+encodeURIComponent(sym)+"&range="+range+"&interval=1d",{cache:"no-store",headers:{"Accept":"application/json"}})
+    .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
+    .then(function(d){
+      if(!d || !Array.isArray(d.candles) || !d.candles.length) throw new Error("bad shape");
+      nrState.data=d; nrState.lastGood=d; nrState.failed=false; nrState.selIdx=d.candles.length-1;
+      nrDraw(); nrShowCandle(nrState.selIdx); renderTA(); nrUpdateMeta();
+    })
+    .catch(function(){
+      nrState.failed=true;
+      if(nrState.lastGood){
+        nrState.data=nrState.lastGood;
+        nrDraw(); nrShowCandle(nrState.selIdx>=0?nrState.selIdx:nrState.data.candles.length-1); renderTA(); nrUpdateMeta();
+      } else {
+        nrState.data=null;
+        nrDrawEmpty(); renderTA(); nrUpdateMeta();
+        document.getElementById("nrCandle").textContent="Tap a candle to read its open, high, low, close, and volume.";
+      }
+    });
+}
+function nrLastVal(arr){
+  if(!arr) return null;
+  for(var i=arr.length-1;i>=0;i--){ if(arr[i]!=null) return arr[i]; }
+  return null;
+}
+function renderTA(){
+  var box=document.getElementById("nrTA");
+  var d=nrState.data, sym=nrState.sym, fa=NR_FA[sym];
+  var head='<h3>Technical analysis</h3><div class="sub">'+esc(sym)+'.</div>';
+  if(!d){
+    box.innerHTML=head+'<div class="nr-rows"><div class="nr-row"><div class="k">Read</div><div class="v">Technical read unavailable. The chart failed to load, so no read is computed from candles. No stale read is shown.</div></div></div>';
+    return;
+  }
+  var cs=d.candles, n=cs.length;
+  var last=cs[n-1].c;
+  var s20=nrLastVal(d.sma20), s50=nrLastVal(d.sma50), rsi=nrLastVal(d.rsi14);
+  var asOf=(typeof fmtAsOf==="function") ? (fmtAsOf(d.as_of)||d.as_of) : d.as_of;
+  var src='Source: Yahoo v8 chart, '+d.range+' daily candles, as of '+asOf+'.'+(nrState.failed?' Last good chart.':'');
+  var trend, trendTxt;
+  if(s50!=null){
+    if(last>s50){ trend="Uptrend"; trendTxt="Price sits above its 50-day average. The longer read is up."; }
+    else { trend="Downtrend"; trendTxt="Price sits below its 50-day average. The longer read is down."; }
+  } else if(s20!=null){
+    trend = last>s20 ? "Uptrend, short read" : "Downtrend, short read";
+    trendTxt="Not enough candles in this window for a 50-day read. The 20-day average is the read. Price sits "+(last>s20?"above":"below")+" it.";
+  } else { trend="No read"; trendTxt="Not enough candles in this window for an average read."; }
+  var crossTxt;
+  if(s20!=null && s50!=null){
+    crossTxt="SMA 20 $"+fmt(s20)+" vs SMA 50 $"+fmt(s50)+". The 20-day average sits "+(s20>s50?"above":"below")+" the 50-day average. Short term momentum is "+(s20>s50?"with":"against")+" the longer trend.";
+  } else if(s20!=null){
+    crossTxt="SMA 20 $"+fmt(s20)+". No 50-day average in this window, so no cross read.";
+  } else { crossTxt="No averages in this window."; }
+  var rsiTxt;
+  if(rsi!=null){
+    var read = rsi>=70 ? "overbought" : (rsi<=30 ? "oversold" : "neutral");
+    rsiTxt="RSI 14 is "+fmt(rsi,1)+", "+read+". Overbought is 70 and above. Oversold is 30 and below.";
+  } else { rsiTxt="RSI 14 is not available in this window. It needs 14 closes."; }
+  var win=cs.slice(Math.max(0,n-20));
+  var sup=Math.min.apply(null, win.map(function(c){return c.l;}));
+  var res=Math.max.apply(null, win.map(function(c){return c.h;}));
+  var vols=win.map(function(c){return c.v;});
+  var avgVol=vols.reduce(function(a,b){return a+b;},0)/vols.length;
+  var lastVol=cs[n-1].v;
+  var volTxt = avgVol>0
+    ? "Last candle volume "+lastVol.toLocaleString("en-US")+" vs the 20-candle average "+Math.round(avgVol).toLocaleString("en-US")+", "+(lastVol>=avgVol?fmt((lastVol/avgVol-1)*100,0)+"% above":""+fmt((1-lastVol/avgVol)*100,0)+"% below")+" average."
+    : "Volume is not recorded for the last candle.";
+  var inv;
+  if(fa && fa.kill && fa.kill.indexOf("No kill")!==0){
+    inv="What would change the read: "+fa.kill;
+    if(fa.stop!=null) inv+=" The stop sits at $"+fmt(fa.stop)+".";
+    if(fa.targets && fa.targets.length) inv+=" The targets are "+fa.targets.map(function(t){return "$"+fmt(t,(t%1===0?0:2));}).join(" then ")+".";
+  } else {
+    inv="What would change the read: no trade is packaged for this symbol, so there is no kill to watch. A package would set the invalidation first.";
+  }
+  box.innerHTML=head
+    +'<div class="nr-rows">'
+    +'<div class="nr-row"><div class="k">Trend</div><div class="v"><b>'+esc(trend)+'</b> '+esc(trendTxt)+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k">SMA 20 vs 50</div><div class="v">'+esc(crossTxt)+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k">RSI 14</div><div class="v">'+esc(rsiTxt)+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k">Support</div><div class="v"><b>$'+fmt(sup)+'</b> Lowest low of the last 20 candles in this window.<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k">Resistance</div><div class="v"><b>$'+fmt(res)+'</b> Highest high of the last 20 candles in this window.<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k">Volume</div><div class="v">'+esc(volTxt)+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'</div>'
+    +'<div class="nr-verdict"><div class="k">What would change the read</div><div class="v">'+esc(inv)+'</div></div>';
+}
+function renderFA(){
+  var box=document.getElementById("nrFA");
+  var sym=nrState.sym, fa=NR_FA[sym];
+  var head='<h3>Fundamental analysis</h3><div class="sub">'+esc(sym)+'. From the recorded Nov 6 packages and graph facts.</div>';
+  if(!fa){
+    box.innerHTML=head+'<div class="nr-rows"><div class="nr-row"><div class="k">Record</div><div class="v">No fundamental record is held for this symbol.</div></div></div>';
+    return;
+  }
+  var lvTxt="";
+  if(fa.fill!=null) lvTxt+="Fill $"+fmt(fa.fill)+". ";
+  if(fa.trigger!=null) lvTxt+="Trigger $"+fmt(fa.trigger)+". ";
+  if(fa.stop!=null) lvTxt+="Stop $"+fmt(fa.stop)+". ";
+  if(fa.targets && fa.targets.length) lvTxt+="Targets "+fa.targets.map(function(t){return "$"+fmt(t,(t%1===0?0:2));}).join(" then ")+". ";
+  if(fa.hardKill!=null) lvTxt+="Hard kill below $"+fmt(fa.hardKill)+".";
+  if(!lvTxt) lvTxt="No levels recorded.";
+  var c=fa.crash;
+  var crashTxt;
+  if(c){
+    crashTxt="Price $"+fmt(c.price)+" at the Nov 6 screen. Down "+fmt(c.down,1)+" percent from the 52-week high"+(c.high!=null?" of $"+fmt(c.high):"")+". Band: "+c.band+".";
+    if(c.m10!=null && c.m20!=null) crashTxt+=" DCA markers: minus 10 percent is $"+fmt(c.m10)+", minus 20 percent is $"+fmt(c.m20)+".";
+    else crashTxt+=" DCA markers not recorded as numbers.";
+    crashTxt+='<span class="src">Source: '+c.source+'</span>';
+  } else { crashTxt="No crash screen recorded."; }
+  var checkHtml=fa.business.map(function(b){
+    return '<div class="step"><div class="sk">'+esc(b.step)+'</div><div class="sv">'+esc(b.text)+'</div></div>';
+  }).join("");
+  box.innerHTML=head
+    +'<div class="nr-rows">'
+    +'<div class="nr-row"><div class="k">Status</div><div class="v">'+esc(fa.status)+'</div></div>'
+    +'<div class="nr-row"><div class="k">Thesis</div><div class="v">'+esc(fa.thesis)+'<span class="src">Source: Nov 6, 2026 packages and briefs.</span></div></div>'
+    +'<div class="nr-row"><div class="k">Intrinsic worth</div><div class="v">'+esc(fa.worth)+'<span class="src">Source: Nov 6, 2026 packages. Worth figures are Bobby\u2019s calculation, not a filing figure.</span></div></div>'
+    +'<div class="nr-row"><div class="k">Levels</div><div class="v">'+esc(lvTxt)+'</div></div>'
+    +'<div class="nr-row"><div class="k">Capital read</div><div class="v">'+esc(fa.capital||"No capital read recorded.")+'<span class="src">Source: Nov 6, 2026 packages and the fill record.</span></div></div>'
+    +'<div class="nr-row"><div class="k">Crash screen</div><div class="v">'+crashTxt+'</div></div>'
+    +'</div>'
+    +'<div class="nr-verdict"><div class="k">Verdict</div><div class="v">'+esc(fa.verdict)+'</div></div>'
+    +'<div class="nr-verdict"><div class="k">Kill criterion</div><div class="v">'+esc(fa.kill)+'</div></div>'
+    +'<div class="cond-head" style="margin-top:16px"><h3 style="font-size:15px">Business check, in Milly\u2019s order</h3></div>'
+    +'<div class="nr-check">'+checkHtml+'</div>'
+    +(fa.notes?'<div class="nr-rows"><div class="nr-row"><div class="k">Notes</div><div class="v">'+esc(fa.notes)+'</div></div></div>':'');
+}
+function renderInsights(){
+  var w=document.getElementById("insList"); w.innerHTML="";
+  INSIGHTS.forEach(function(it){
+    var d=document.createElement("div"); d.className="ins-item";
+    d.innerHTML='<div class="ins-date">'+esc(it.date)+'<br/>'+esc(it.tag)+'</div><div><p class="ins-h">'+esc(it.title)+'</p><p class="ins-b">'+esc(it.body)+'</p><div class="ins-lesson"><span class="k">Lesson</span>'+esc(it.lesson)+'</div><div class="ins-ev">'+esc(it.evidence)+'</div></div>';
+    w.appendChild(d);
+  });
+  var oq=document.getElementById("openQList"); oq.innerHTML="";
+  OPENQ.forEach(function(it){
+    var d=document.createElement("div"); d.className="openq";
+    d.innerHTML='<div class="q">'+esc(it.q)+'</div><div class="a">'+esc(it.a)+'</div><span class="st">Open question</span>';
+    oq.appendChild(d);
+  });
+}
+function nrRenderPicker(){
+  var p=document.getElementById("nrPicker"); p.innerHTML="";
+  var groups=["Live positions","Conditionals","Watchlist"];
+  groups.forEach(function(g){
+    var gd=document.createElement("div"); gd.className="nr-group";
+    var lab=document.createElement("span"); lab.className="glab"; lab.textContent=g; gd.appendChild(lab);
+    NR_SYMBOLS.forEach(function(s){
+      if(s.group!==g) return;
+      var b=document.createElement("button"); b.type="button"; b.className="symbtn"+(s.sym===nrState.sym?" on":"");
+      b.textContent=s.sym; b.setAttribute("data-sym",s.sym);
+      b.addEventListener("click",function(){ selectSymbol(s.sym); });
+      gd.appendChild(b);
+    });
+    p.appendChild(gd);
+  });
+}
+function selectSymbol(sym){
+  if(!nrSymName(sym)) return;
+  nrState.sym=sym; nrState.selIdx=-1;
+  var meta=nrSymName(sym);
+  document.getElementById("nrSym").textContent=sym;
+  document.getElementById("nrName").textContent=meta.name;
+  document.querySelectorAll("#nrPicker .symbtn").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-sym")===sym); });
+  document.getElementById("nrAskBtn").textContent="Ask the graph about "+sym;
+  var q="What is the "+sym+" thesis and what kills it?";
+  var inp=document.getElementById("askInput"); if(inp) inp.value=q;
+  document.getElementById("nrAskNote").textContent="Loaded in Ask below.";
+  renderFA();
+  nrFetch();
+}
+document.querySelectorAll(".nr-tf .fbtn").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll(".nr-tf .fbtn").forEach(function(x){x.classList.remove("on");});
+    b.classList.add("on"); nrState.range=b.getAttribute("data-range"); nrFetch();
+  });
+});
+document.getElementById("nrSmaToggle").addEventListener("change",function(e){
+  nrState.showSma=e.target.checked; nrDraw();
+});
+document.getElementById("nrAskBtn").addEventListener("click",function(){
+  var sec=document.getElementById("askSection");
+  if(sec && sec.scrollIntoView) sec.scrollIntoView({behavior:"smooth"});
+  var inp=document.getElementById("askInput");
+  if(inp && inp.value) ask(inp.value);
+});
+document.getElementById("nrCanvas").addEventListener("click",function(e){
+  var d=nrState.data; if(!d) return;
+  var cv=document.getElementById("nrCanvas");
+  var rect=cv.getBoundingClientRect();
+  var x=e.clientX-rect.left;
+  var padL=8, padR=58, plotW=rect.width-padL-padR;
+  var i=Math.floor((x-padL)/(plotW/d.candles.length));
+  if(i<0) i=0; if(i>=d.candles.length) i=d.candles.length-1;
+  nrShowCandle(i);
+});
+var nrResizeT=null;
+window.addEventListener("resize",function(){
+  if(nrResizeT) clearTimeout(nrResizeT);
+  nrResizeT=setTimeout(function(){ nrDraw(); },150);
+});
+/* Feed the Ask panel with the newsroom fundamentals, so questions
+   about a thesis, a worth, or a kill get an answer from the record. */
+if(typeof CORPUS!=="undefined"){
+  ["MU","QCOM","AMD","DUOL","GLD"].forEach(function(sym){
+    var fa=NR_FA[sym];
+    CORPUS.push({ title:sym+" newsroom: thesis and worth", ids:["asset:"+sym,"newsroom:"+sym],
+      body:fa.verdict+" "+fa.worth+" Kill: "+fa.kill,
+      kill:fa.kill, text:(sym+" newsroom thesis worth margin of safety bounce kill "+fa.verdict+" "+fa.worth).toLowerCase() });
+  });
+  CORPUS.push({ title:"Watchlist symbols with no recorded business check", ids:["newsroom:watchlist"],
+    body:"NVDA, DIA, SPY, ANET, APP, IREN, AVGO, MRVL, GOOGL, BRK.B, VST, and FRO have no recorded business check or intrinsic worth in the Nov 6 packages. Their crash screen and any recorded trade status are on their Newsroom cards.",
+    kill:null, text:"watchlist business check worth not recorded nvda dia spy anet app iren avgo mrvl googl brk.b vst fro" });
+}
+nrRenderPicker(); renderInsights(); renderFA();
+document.getElementById("nrAskBtn").textContent="Ask the graph about MU";
+document.getElementById("nrAskNote").textContent="";
+nrFetch();
 </script>
 </body>
 </html>
