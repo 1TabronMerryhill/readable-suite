@@ -205,6 +205,8 @@
   .msg-a{justify-self:start;max-width:94%;width:100%}
   .msg-a .none{font-size:15px;font-weight:600}
   .ask-state{font-size:12px;color:var(--faint);margin:10px 0 2px}
+  .ask-drift{color:var(--accent)}
+  .ask-alert{color:var(--red);font-weight:700}
   .ref.cite{cursor:pointer;background:transparent;font-family:var(--mono)}
   .ref.cite:hover{color:var(--text);border-color:var(--muted)}
   .hit{border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin-top:9px;background:var(--bg2)}
@@ -1033,21 +1035,26 @@ function ask(q){
   var ctx=[];
   top.forEach(function(x){
     x.it.ids.forEach(function(id){
-      ctx.push({ id:id, type:id.split(":")[0], label:x.it.title, evidence:x.it.body+(x.it.kill?" Kill: "+x.it.kill:""), scope:"firm" });
+      ctx.push({ id:id, type:id.split(":")[0], label:x.it.title, evidence:x.it.body+(x.it.kill?" Kill: "+x.it.kill:""), scope:"owner" });
     });
   });
-  fetch("/api/graph-chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,context:ctx,scope:"firm"})})
+  fetch("/api/graph-chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,context:ctx,scope:"owner",caller:"ask_panel"})})
   .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, d:d}; }); })
   .then(function(res){
     var d=res.d||{};
+    var extra="";
+    if(d.drift_flagged && d.drift && d.drift.notice) extra+='<div class="ask-state ask-drift">'+esc(d.drift.notice)+'</div>';
+    if(d.attempt && d.attempt.alert) extra+='<div class="ask-state ask-alert">Alert: L'+d.attempt.level+' attempt ('+esc(d.attempt.reason)+'). '+(d.attempt.gate==="answer_blocked"?"The gate stopped it.":"Nothing was executed: the layer has no order path.")+'</div>';
     if(!res.ok || typeof d.answer!=="string"){
-      ad.innerHTML=localHitsHtml(top)+'<div class="ask-state">Groq voice unavailable, showing local retrieval.</div>';
+      ad.innerHTML=localHitsHtml(top)+'<div class="ask-state">Groq voice unavailable, showing local retrieval.</div>'+extra;
     } else if(d.state==="answered_from_graph"){
-      ad.innerHTML='<div class="ask-state">Answered from the graph. Checked in code before it was shown.</div><div class="hb" style="font-size:14.5px;line-height:1.65">'+linkifyCitations(d.answer)+'</div>'+citeButtonsHtml(d.cited||[]);
+      ad.innerHTML='<div class="ask-state">Answered from the graph. Checked in code before it was shown.</div><div class="hb" style="font-size:14.5px;line-height:1.65">'+linkifyCitations(d.answer)+'</div>'+citeButtonsHtml(d.cited||[])+extra;
+    } else if(d.state==="teaching_with_book"){
+      ad.innerHTML='<div class="ask-state">Teaching with your book. Examples are your real records, cited; general statements are general knowledge.</div><div class="hb" style="font-size:14.5px;line-height:1.65">'+linkifyCitations(d.answer)+'</div>'+citeButtonsHtml(d.cited||[])+extra;
     } else if(d.state==="teaching_general"){
-      ad.innerHTML='<div class="ask-state">Teaching answer, general knowledge. Not from the firm record.</div><div class="hb" style="font-size:14.5px;line-height:1.65">'+esc(d.answer)+'</div>';
+      ad.innerHTML='<div class="ask-state">Teaching answer, general knowledge. Not from the firm record.</div><div class="hb" style="font-size:14.5px;line-height:1.65">'+esc(d.answer)+'</div>'+extra;
     } else {
-      ad.innerHTML='<p class="none">The graph does not record that.</p><div class="ask-state">Could not answer from the record.</div>'+localHitsHtml(top);
+      ad.innerHTML='<p class="none">The graph does not record that.</p><div class="ask-state">Could not answer from the record.</div>'+localHitsHtml(top)+extra;
     }
     msgs.scrollTop=msgs.scrollHeight;
   })
