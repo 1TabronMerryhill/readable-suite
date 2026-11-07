@@ -223,6 +223,34 @@
   .nr-drawbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
   .nr-drawbar .fbtn.on{color:var(--accent);border-color:var(--accent)}
   .nr-drawnote{font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:8px}
+  /* teaching: every reading carries what it means and what it means for the asset */
+  .teach{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:9px;border-top:1px dashed var(--line2);padding-top:8px}
+  .teach .tm,.teach .ta{font-size:12.5px;line-height:1.6;color:var(--muted)}
+  .teach .tk{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-bottom:2px}
+  .teach .ta{color:var(--text)}
+  .learn-term{background:none;border:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted var(--muted);text-underline-offset:3px;text-align:left}
+  .learn-term:hover{color:var(--text)}
+  .nr-learn{margin-top:14px;border:1px solid var(--accent);border-radius:10px;background:var(--panel);padding:18px 20px}
+  .nr-learn h3{margin:0;font-size:16px}
+  .nr-learn .close{float:right;background:none;border:1px solid var(--line2);border-radius:6px;color:var(--muted);font-family:var(--mono);font-size:11px;padding:5px 9px;cursor:pointer}
+  .nr-learn .teach{border-top:none;padding-top:0;margin-top:10px}
+  .nr-learn .lesson{margin-top:12px;font-size:13.5px;line-height:1.6;color:var(--text)}
+  .nr-learn .lesson b{font-weight:700}
+  /* practice: random drills that make him use the tools */
+  .nr-practice{margin-top:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:20px}
+  .nr-practice h3{margin:0;font-size:16px}
+  .nr-practice .sub{font-size:12.5px;color:var(--faint);margin-top:4px;line-height:1.55}
+  .nr-practice .drill{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+  .nr-practice .drill .goal{font-size:15px;font-weight:700;line-height:1.5}
+  .nr-practice .drill .tool{font-family:var(--mono);font-size:11.5px;color:var(--accent);margin-top:6px}
+  .nr-practice .drill .tol{font-size:12px;color:var(--faint);margin-top:6px}
+  .nr-practice .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .nr-practice .result{margin-top:12px;font-size:13.5px;line-height:1.65;color:var(--muted)}
+  .nr-practice .result b{color:var(--text)}
+  .nr-practice .result.good{color:var(--green)}
+  .nr-practice .result.good b{color:var(--green)}
+  .nr-practice .progress{font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.7;margin-top:14px}
+  .nr-candle .cr{display:block;color:var(--text);margin-top:4px}
   .nr-canvas-wrap.draw canvas{touch-action:none}
   .nr-candle{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px;min-height:20px}
   .nr-candle b{color:var(--text);font-weight:600}
@@ -288,6 +316,7 @@
     .msg-q{max-width:95%}
     .nr-panels{grid-template-columns:1fr}
     .nr-row{grid-template-columns:1fr;gap:2px}
+    .teach{grid-template-columns:1fr}
     .ins-item{grid-template-columns:1fr}
     .nr-askrow{margin-left:0}
   }
@@ -413,6 +442,14 @@
     <div class="nr-panels">
       <div class="nr-card" id="nrTA"></div>
       <div class="nr-card" id="nrFA"></div>
+    </div>
+    <div class="nr-learn" id="nrLearn" hidden></div>
+    <div class="nr-practice" id="nrPractice">
+      <h3>Practice</h3>
+      <p class="sub">Random drills. Each one states an end result and the tool to use. You draw it on the chart, then the page checks your work against the chart. Tap any term in the panels above to learn what it means and what it means for this symbol.</p>
+      <div class="actions"><button class="fbtn" id="nrLessonBtn" type="button">Give me a lesson</button></div>
+      <div class="drill" id="nrDrill" hidden></div>
+      <div class="progress" id="nrPracticeProgress"></div>
     </div>
     <div class="cond-head">
       <h3>Research insights</h3>
@@ -1309,6 +1346,32 @@ var NR_FA = {
     crash:{ price:45.80, high:null, down:-23.3, m10:null, m20:null, band:"20%+ crash", source:"Robinhood fundamentals, Nov 6, 2026 (watchlist-consolidated-2026-11-06.md). 52-week high and DCA markers not recorded as numbers." },
     notes:"No package is recorded for FRO. The pull is in the record; the trade is not." }
 };
+var NR_LESSON = {
+  MU:"A record quarter does not make a price cheap, but a 3.7 multiple with contracted revenue does make a bounce worth taking with a kill underneath it.",
+  QCOM:"A low multiple is not a margin of safety when the earnings behind it are falling. Read the clean numbers, not the headline.",
+  GLD:"The stop is what lets you hold a winner through a hot print. Without it, every headline is a decision. With it, only the level is.",
+  AMD:"The business can be strong and the trade still be a bounce, because the price already carries the growth. The margin of safety is the test, not the headline.",
+  DUOL:"You do not buy the level a breakout failed at. You buy the reclaim.",
+  NVDA:"Four names on one theme is one idea wearing four hats. The watch stays a watch until the theme earns a fourth slot.",
+  DIA:"A level that never breaks is a line on the wall. The trade waits for the break, not for the headline.",
+  SPY:"The benchmark is not a trade. It is the bar the trades are measured against.",
+  ANET:"Earnings and price are two different trades. The beat belongs to the company. The kill belongs to the trade.",
+  APP:"A 50 percent fall is a flag, not a gem. The business check decides, and no check is recorded yet.",
+  IREN:"An open question is not a trade. The graph asks, Milly answers, then the trade follows.",
+  AVGO:"The bounce is in the record. The trade is not. No package, no trade.",
+  MRVL:"The bounce is in the record. The trade is not. No package, no trade.",
+  GOOGL:"The hard kill sits 5.4 percent below the price. That is a real line, and the trade is not packaged yet.",
+  "BRK.B":"The anchor is not a trade. It is the thing the firm measures the trades against.",
+  VST:"A multiple worth owning is a starting point, not a package. The trade still needs a kill under it.",
+  FRO:"The cheapest PE on the board is a flag, not a gem. The business check decides, and no check is recorded yet."
+};
+/* Intrinsic worth, restated for the teaching layer. The numbers come from
+   the Nov 6 packages. Symbols not listed here have no recorded worth. */
+var NR_WORTH_ASSET = {
+  MU:"For MU, no dollar worth is recorded. The package records a 3.7 multiple on estimated fiscal 2027 earnings, not a worth number, so no margin of safety can be stated.",
+  AMD:"For AMD, worth is $384 at 40 times and $480 at 50 times the $9.60 run-rate EPS. Price is $457.05. A 20 percent margin of safety would need worth of at least $571. There is none.",
+  QCOM:"For QCOM, worth is $158.10 at 15 times and $189.72 at 18 times FY2026 non-GAAP EPS of $10.54. On the Q1 FY2027 guide, worth falls to $135 to $162. Price is $160.85. No 20 percent margin of safety."
+};
 var INSIGHTS = [
   { date:"2026-11-06", tag:"Payrolls", title:"Hot payrolls stood the chip legs down at the open",
     body:"October payrolls came in at +165,000 against about 65,000 expected, unemployment 4.1 percent, wages +0.4 percent. The 10-year yield rose to about 4.87 to 4.89 percent and December hike odds moved to about 77 to 80 percent. The NVDA and AMD long legs stood down at the open on the print.",
@@ -1443,8 +1506,8 @@ function nrDraw(){
   function Y(v){ return g.Y(v); }
   // grid
   ctx.strokeStyle="#23262d"; ctx.fillStyle="#6b7280"; ctx.font="10px JetBrains Mono, monospace"; ctx.textAlign="left";
-  for(var g=0; g<=4; g++){
-    var gv=lo+(hi-lo)*g/4, gy=Y(gv);
+  for(var gi=0; gi<=4; gi++){
+    var gv=g.lo+(g.hi-g.lo)*gi/4, gy=Y(gv);
     ctx.beginPath(); ctx.moveTo(padL,gy); ctx.lineTo(W-padR,gy); ctx.stroke();
     ctx.fillText("$"+fmt(gv), W-padR+6, gy+3);
   }
@@ -1511,6 +1574,7 @@ function nrShowCandle(i){
   var chg = i>0 ? ((c.c-cs[i-1].c)/cs[i-1].c*100) : null;
   var line="<b>"+esc(fmtDay(c.t))+"</b> open $"+fmt(c.o)+" high $"+fmt(c.h)+" low $"+fmt(c.l)+" close $"+fmt(c.c)+" volume "+c.v.toLocaleString("en-US");
   if(chg!=null) line+=" change vs prior close "+(chg>=0?"+":"")+fmt(chg,1)+"%";
+  line+='<span class="cr">'+esc(nrCandleRead(i))+'</span>';
   document.getElementById("nrCandle").innerHTML=line;
   nrDraw();
 }
@@ -1522,6 +1586,7 @@ function nrFetch(){
     .then(function(d){
       if(!d || !Array.isArray(d.candles) || !d.candles.length) throw new Error("bad shape");
       nrState.data=d; nrState.lastGood=d; nrState.failed=false; nrState.selIdx=d.candles.length-1;
+      nrPracticeClear();
       nrDraw(); nrShowCandle(nrState.selIdx); renderTA(); nrUpdateMeta();
     })
     .catch(function(){
@@ -1540,6 +1605,221 @@ function nrLastVal(arr){
   if(!arr) return null;
   for(var i=arr.length-1;i>=0;i--){ if(arr[i]!=null) return arr[i]; }
   return null;
+}
+/* ---- Teaching layer: every reading carries what it means and what it
+   means for the asset in question. A generic definition without the
+   asset-specific implication does not ship. Asset text is computed from
+   the selected symbol's own numbers, never a generic sentence with the
+   ticker swapped in. Where the record has no basis, the text says the
+   record does not say yet. ---- */
+var NR_LEARN_MEANS = {
+  trend:"The trend is the direction price has been moving. The 50-day average is the longer read. Price above it means the longer read is up. Price below it means the longer read is down.",
+  sma:"A moving average is the average close over the last 20 or 50 days. The 20-day average is the short read. The 50-day average is the longer read. When the short average sits above the long one, short-term momentum is with the trend. When it sits below, short-term momentum is against it.",
+  rsi:"RSI measures how strong the recent closes have been, on a scale from 0 to 100. Above 70 is overbought. Below 30 is oversold. It says how stretched the move is. It does not say where price goes next.",
+  support:"Support is a price where buyers stepped in before. Here it is the lowest low of the last 20 candles. A close below it means the buyers who held that level are gone.",
+  resistance:"Resistance is a price where sellers stepped in before. Here it is the highest high of the last 20 candles. A close above it means the sellers who held that level are gone.",
+  volume:"Volume is how many shares changed hands. High volume on a move means more people agreed with it. Low volume means the move had few believers.",
+  fib:"Fibonacci levels mark where a price often pauses after a move. The levels are 23.6, 38.2, 50, 61.8, and 78.6 percent of the way back from a high to a low, or a low to a high. They are lines on the chart, not a promise.",
+  thesis:"The thesis is the reason to own it, in a few sentences: what the business does, and why the price is wrong.",
+  worth:"Intrinsic worth is what the business is worth on its earnings. The margin of safety is the gap between worth and price. The fund wants at least 20 percent. A smaller gap means the price already pays for the growth.",
+  levels:"Levels are the plan drawn on the chart: where you enter, where you stop, and where you take profit. A trade without levels is a guess.",
+  capital:"The capital read is what the fund puts at risk: the size committed, the most it can lose, and what each target pays. It also says when several slots are really one trade.",
+  crash:"The crash screen measures how far price has fallen from its 52-week high. A fall of 20 percent or more is a crash. The DCA markers are the minus 10 percent and minus 20 percent prices, where the fund adds in tranches, each tranche with its own kill.",
+  verdict:"The verdict is the package's call: bounce, hold, or no trade. It is the one line the rest of the panel has to support.",
+  kill:"The kill is the line that ends the trade. When price closes through it, the trade is over, no matter the news. A kill that fires is the rule working.",
+  candle:"A candle is one day of trading. The body is where the day opened and closed. The wicks are how far price traveled beyond the body. A long wick means price went there and came back."
+};
+var NR_BUSINESS_MEANS = {
+  "Management":"Management is step one of the business check: are the people running the business good. The record answers from the filings.",
+  "Employees":"Employees is step two: how management treats the people who work there, and whether they are happy. The record answers from the filings.",
+  "Cash and R and D":"Cash and R and D is step three: what the business does with its cash, and how much goes into research and development.",
+  "Shareholder returns":"Shareholder returns is step four, and it comes last. Returns before the first three are in order is a red flag, not a virtue.",
+  "Business check":"Gold is not a business. There is no management, no employees, and no R and D to check."
+};
+var NR_TEACH_TERMS = {
+  trend:"Trend", sma:"SMA 20 vs 50", rsi:"RSI 14", support:"Support", resistance:"Resistance",
+  volume:"Volume", fib:"Fibonacci levels", thesis:"Thesis", worth:"Intrinsic worth", levels:"Levels",
+  capital:"Capital read", crash:"Crash screen", verdict:"Verdict", kill:"Kill criterion", candle:"This candle"
+};
+function nrTeachCtx(){
+  var d=nrState.data, sym=nrState.sym, fa=NR_FA[sym];
+  var ctx={ sym:sym, fa:fa, last:null, s20:null, s50:null, rsi:null, sup:null, res:null,
+    avgVol:null, lastVol:null, cs:[], n:0, rangeLo:null, rangeHi:null };
+  if(!d || !d.candles.length) return ctx;
+  var cs=d.candles, n=cs.length;
+  ctx.cs=cs; ctx.n=n; ctx.last=cs[n-1].c; ctx.lastVol=cs[n-1].v;
+  ctx.s20=nrLastVal(d.sma20); ctx.s50=nrLastVal(d.sma50); ctx.rsi=nrLastVal(d.rsi14);
+  var win=cs.slice(Math.max(0,n-20));
+  ctx.sup=Math.min.apply(null, win.map(function(c){return c.l;}));
+  ctx.res=Math.max.apply(null, win.map(function(c){return c.h;}));
+  var vols=win.map(function(c){return c.v;});
+  ctx.avgVol=vols.reduce(function(a,b){return a+b;},0)/vols.length;
+  ctx.rangeLo=Math.min.apply(null, cs.map(function(c){return c.l;}));
+  ctx.rangeHi=Math.max.apply(null, cs.map(function(c){return c.h;}));
+  return ctx;
+}
+function nrTeach(key){
+  var ctx=nrTeachCtx(), sym=ctx.sym, fa=ctx.fa;
+  var notYet="The record does not say yet.";
+  var out={ key:key, term:NR_TEACH_TERMS[key]||key, means:"", asset:"", lesson:"" };
+  if(key.indexOf("business:")===0){
+    var step=key.slice(9);
+    out.term=step;
+    out.means=NR_BUSINESS_MEANS[step]||"This step of the business check comes from Milly's order: management, employees, cash to R and D, then shareholder returns.";
+    var rec=null;
+    if(fa){ fa.business.forEach(function(b){ if(b.step===step) rec=b.text; }); }
+    out.asset = (rec && rec!==NR_NOT_CHECKED) ? ("For "+sym+", "+rec) : ("The record does not say yet. No "+step.toLowerCase()+" read is recorded for "+sym+".");
+    out.lesson = NR_LESSON[sym] || notYet;
+    return out;
+  }
+  out.means = NR_LEARN_MEANS[key] || "";
+  var priceKeys=["trend","sma","rsi","support","resistance","volume","fib","thesis","levels","crash","kill"];
+  if(ctx.last==null && priceKeys.indexOf(key)>=0){
+    out.asset="The record does not say yet. The chart has not loaded, so no asset read can be computed.";
+    out.lesson = NR_LESSON[sym] || notYet;
+    return out;
+  }
+  var last=ctx.last, s20=ctx.s20, s50=ctx.s50, rsi=ctx.rsi;
+  var stopTxt = (fa && fa.stop!=null) ? " The stop at $"+fmt(fa.stop)+" still decides." : "";
+  if(key==="trend"){
+    if(s50!=null){
+      out.asset="For "+sym+", price $"+fmt(last)+" sits "+(last>s50?"above":"below")+" the 50-day average of $"+fmt(s50)+", so the longer read is "+(last>s50?"up":"down")+". The bounce is "+(last>s50?"with":"against")+" the trend."+stopTxt;
+    } else if(s20!=null){
+      out.asset="For "+sym+", this window has too few candles for a 50-day read. Price $"+fmt(last)+" sits "+(last>s20?"above":"below")+" the 20-day average of $"+fmt(s20)+", so the short read is "+(last>s20?"up":"down")+".";
+    } else out.asset=notYet+" This window has too few candles for an average read.";
+  } else if(key==="sma"){
+    if(s20!=null && s50!=null){
+      out.asset="For "+sym+", the 20-day average is $"+fmt(s20)+" and the 50-day is $"+fmt(s50)+". The short average sits "+(s20>s50?"above":"below")+" the long one, so short-term momentum is "+(s20>s50?"with":"against")+" the longer trend. A cross "+(s20>s50?"back below":"above")+" the 50-day would change that read.";
+    } else if(s20!=null){
+      out.asset="For "+sym+", the 20-day average is $"+fmt(s20)+". No 50-day average in this window, so there is no cross to read.";
+    } else out.asset=notYet+" This window has too few candles for an average read.";
+  } else if(key==="rsi"){
+    if(rsi!=null){
+      var read = rsi>=70 ? "overbought" : (rsi<=30 ? "oversold" : "neutral");
+      out.asset="For "+sym+", RSI 14 is "+fmt(rsi,1)+", "+read+". "+(rsi<=30?"Sellers have pushed it hard, but an oversold read is not a buy signal on its own.":rsi>=70?"Buyers have pushed it hard, but an overbought read is not a sell signal on its own.":"The move is not stretched either way.")+stopTxt;
+    } else out.asset=notYet+" RSI 14 needs 14 closes, and this window does not have them.";
+  } else if(key==="support"){
+    if(ctx.sup!=null){
+      out.asset="For "+sym+", support is $"+fmt(ctx.sup)+", the lowest low of the last 20 candles."+(fa && fa.stop!=null ? (fa.stop>ctx.sup ? " The stop at $"+fmt(fa.stop)+" sits just above it, so the stop fires before support breaks." : " The stop at $"+fmt(fa.stop)+" sits below it, so support breaks first and the stop follows.") : " No stop is recorded, so there is no line under the support yet.")+" A close below $"+fmt(ctx.sup)+" means the buyers who held the last 20 candles are gone.";
+    } else out.asset=notYet+" The chart has not loaded.";
+  } else if(key==="resistance"){
+    if(ctx.res!=null){
+      var t0=(fa && fa.targets && fa.targets.length)?fa.targets[0]:null;
+      out.asset="For "+sym+", resistance is $"+fmt(ctx.res)+", the highest high of the last 20 candles."+(t0!=null ? " The first target at $"+fmt(t0,(t0%1===0?0:2))+" sits "+(t0<ctx.res?"below":"above")+" it, so the trade "+(t0<ctx.res?"does not need resistance to break.":"needs resistance to break to pay.") : " No target is recorded.")+" A close above $"+fmt(ctx.res)+" means the sellers who held the last 20 candles are gone.";
+    } else out.asset=notYet+" The chart has not loaded.";
+  } else if(key==="volume"){
+    if(ctx.avgVol>0){
+      var pct=Math.round(Math.abs(ctx.lastVol/ctx.avgVol-1)*100);
+      out.asset="For "+sym+", the last candle traded "+ctx.lastVol.toLocaleString("en-US")+" shares against a 20-candle average of "+Math.round(ctx.avgVol).toLocaleString("en-US")+", "+pct+" percent "+(ctx.lastVol>=ctx.avgVol?"above":"below")+" average. "+(ctx.lastVol>=ctx.avgVol?"The move had real participation behind it.":"The move had few believers behind it.");
+    } else out.asset=notYet+" Volume is not recorded for the last candle.";
+  } else if(key==="fib"){
+    if(ctx.rangeLo!=null && ctx.rangeHi!=null){
+      var lo=ctx.rangeLo, hi=ctx.rangeHi;
+      out.asset="For "+sym+", the range on this chart runs from $"+fmt(lo)+" to $"+fmt(hi)+". The 61.8 percent retracement of that range sits at $"+fmt(lo+(hi-lo)*0.618)+", and the 50 percent level at $"+fmt(lo+(hi-lo)*0.5)+". A pause there would be the market resting after the move, not a signal on its own.";
+    } else out.asset=notYet+" The chart has not loaded.";
+  } else if(key==="thesis"){
+    if(fa){
+      out.asset="For "+sym+", price is $"+fmt(last)+". "+(fa.fill!=null?"The fill was $"+fmt(fa.fill)+". ":(fa.trigger!=null?"No fill yet. Entry only at $"+fmt(fa.trigger)+". ":"No fill. This is a watch, not a position. "))+"Verdict: "+fa.verdict;
+    } else out.asset=notYet+" No fundamental record is held for "+sym+".";
+  } else if(key==="worth"){
+    out.asset = NR_WORTH_ASSET[sym] || (notYet+" No intrinsic worth is recorded for "+sym+".");
+  } else if(key==="levels"){
+    if(fa){
+      var parts=[];
+      if(fa.fill!=null) parts.push("fill $"+fmt(fa.fill));
+      if(fa.trigger!=null) parts.push("trigger $"+fmt(fa.trigger));
+      if(fa.stop!=null) parts.push("stop $"+fmt(fa.stop));
+      if(fa.targets && fa.targets.length) parts.push("targets "+fa.targets.map(function(t){return "$"+fmt(t,(t%1===0?0:2));}).join(" then "));
+      if(fa.hardKill!=null) parts.push("hard kill below $"+fmt(fa.hardKill));
+      out.asset = parts.length ? ("For "+sym+", the plan is: "+parts.join(", ")+". Price is $"+fmt(last)+"."+(fa.stop!=null?" That puts price $"+fmt(Math.abs(last-fa.stop))+" "+(last>=fa.stop?"above":"below")+" the stop.":"")) : (notYet+" No levels are recorded for "+sym+".");
+    } else out.asset=notYet+" No fundamental record is held for "+sym+".";
+  } else if(key==="capital"){
+    out.asset = (fa && fa.capital) ? ("For "+sym+", "+fa.capital) : (notYet+" No capital read is recorded for "+sym+".");
+  } else if(key==="crash"){
+    if(fa && fa.crash){
+      var c=fa.crash;
+      out.asset="For "+sym+", price is down "+fmt(c.down,1)+" percent from the 52-week high"+(c.high!=null?" of $"+fmt(c.high):"")+".";
+      if(c.m10!=null && c.m20!=null){
+        out.asset+=" The minus 10 percent marker is $"+fmt(c.m10)+" and the minus 20 percent marker is $"+fmt(c.m20)+". Price $"+fmt(last)+" sits "+(last<c.m20?"below both markers, so the crash screen already fired. The markers are behind the price, not ahead of it.":last<c.m10?"below the minus 10 percent marker and above the minus 20 percent marker.":"above both markers.");
+      } else out.asset+=" DCA markers are not recorded as numbers for "+sym+".";
+      if(c.down>-10) out.asset+=" At "+fmt(Math.abs(c.down),1)+" percent down, this is not a crash. No DCA marker applies.";
+    } else out.asset=notYet+" No crash screen is recorded for "+sym+".";
+  } else if(key==="verdict"){
+    out.asset = fa ? ("For "+sym+", the verdict is: "+fa.verdict) : (notYet+" No fundamental record is held for "+sym+".");
+  } else if(key==="kill"){
+    if(fa && fa.kill && fa.kill.indexOf("No kill")!==0){
+      out.asset="For "+sym+", the kill is: "+fa.kill+(fa.stop!=null?" Price $"+fmt(last)+" sits $"+fmt(Math.abs(last-fa.stop))+" "+(last>=fa.stop?"above":"below")+" the stop at $"+fmt(fa.stop)+".":"");
+    } else out.asset=notYet+" No kill is recorded for "+sym+", so no trade can be packaged until one is set.";
+  } else if(key==="candle"){
+    out.asset=nrCandleRead(nrState.selIdx);
+  }
+  out.lesson = NR_LESSON[sym] || notYet;
+  return out;
+}
+function nrTeachHTML(key){
+  var t=nrTeach(key);
+  return '<div class="teach"><div class="tm"><span class="tk">What this means</span>'+esc(t.means)+'</div><div class="ta"><span class="tk">What it means for '+esc(nrState.sym)+'</span>'+esc(t.asset)+'</div></div>';
+}
+var nrLearnKey=null;
+function nrLearnOpen(key){
+  var box=document.getElementById("nrLearn");
+  if(nrLearnKey===key){ nrLearnKey=null; box.hidden=true; box.innerHTML=""; return; }
+  nrLearnKey=key;
+  var t=nrTeach(key);
+  box.innerHTML='<button class="close" id="nrLearnClose" type="button">Close</button>'
+    +'<h3>Learn: '+esc(t.term)+'</h3>'
+    +'<div class="teach"><div class="tm"><span class="tk">What this means</span>'+esc(t.means)+'</div><div class="ta"><span class="tk">What it means for '+esc(nrState.sym)+'</span>'+esc(t.asset)+'</div></div>'
+    +'<div class="lesson"><b>The lesson:</b> '+esc(t.lesson)+'</div>';
+  box.hidden=false;
+  document.getElementById("nrLearnClose").addEventListener("click",function(){ nrLearnKey=null; box.hidden=true; box.innerHTML=""; });
+}
+document.addEventListener("click",function(e){
+  var t=e.target && e.target.closest ? e.target.closest(".learn-term") : null;
+  if(!t) return;
+  nrLearnOpen(t.getAttribute("data-learn"));
+});
+/* One plain sentence on what a candle means for the asset, from that
+   candle's own numbers and the levels on the chart. If nothing notable
+   follows from the candle, it says so plainly. */
+function nrCandleRead(i){
+  var sym=nrState.sym, fa=NR_FA[sym];
+  var d=nrState.data;
+  if(!d || !d.candles.length || i<0 || i>=d.candles.length) return "The record does not say yet. No candle is selected.";
+  var cs=d.candles, c=cs[i];
+  var ctx=nrTeachCtx();
+  var body=Math.abs(c.c-c.o), range=c.h-c.l;
+  var upWick=c.h-Math.max(c.o,c.c), lowWick=Math.min(c.o,c.c)-c.l;
+  var chg = i>0 ? ((c.c-cs[i-1].c)/cs[i-1].c*100) : null;
+  var big = (chg!=null && Math.abs(chg)>=4);
+  var s50=ctx.s50;
+  var parts=[];
+  if(s50!=null){
+    var dir = c.c>s50 ? "above" : "below";
+    var base = "closed "+dir+" the 50-day average of $"+fmt(s50)+", so the longer read stays "+(c.c>s50?"up":"down");
+    if(big) base = "closed "+(chg>=0?"up":"down")+" "+fmt(Math.abs(chg),1)+" percent and still "+dir+" the 50-day average of $"+fmt(s50)+", so the longer read stays "+(c.c>s50?"up":"down");
+    parts.push(base);
+  } else if(big){
+    parts.push("closed "+(chg>=0?"up":"down")+" "+fmt(Math.abs(chg),1)+" percent, a big day");
+  }
+  if(ctx.sup!=null && lowWick>1.5*Math.max(body,1) && c.l<=ctx.sup*1.03){
+    parts.push("a long lower wick reached toward support $"+fmt(ctx.sup)+". Buyers stepped in at the low");
+  }
+  if(ctx.res!=null && upWick>1.5*Math.max(body,1) && c.h>=ctx.res*0.97){
+    parts.push("a long upper wick reached toward resistance $"+fmt(ctx.res)+". Sellers stepped in at the high");
+  }
+  if(ctx.sup!=null && c.c<ctx.sup) parts.push("closed below support $"+fmt(ctx.sup));
+  if(ctx.res!=null && c.c>ctx.res) parts.push("closed above resistance $"+fmt(ctx.res));
+  if(fa && fa.stop!=null && Math.abs(c.c-fa.stop)/fa.stop<0.03){
+    parts.push("closed within $"+fmt(Math.abs(c.c-fa.stop))+" of the stop at $"+fmt(fa.stop)+". The kill is near");
+  }
+  if(ctx.avgVol>0 && c.v>1.5*ctx.avgVol){
+    parts.push("volume ran "+Math.round((c.v/ctx.avgVol-1)*100)+" percent above the 20-candle average, so the move had real participation");
+  }
+  if(range>0 && body<0.1*range){
+    parts.push("open and close nearly the same. Neither side won the day");
+  }
+  if(!parts.length) return "For "+sym+", nothing notable in this candle on its own. The read comes from the levels, not this one candle.";
+  return "For "+sym+", this candle "+parts.slice(0,2).join(", and ")+".";
 }
 function renderTA(){
   var box=document.getElementById("nrTA");
@@ -1590,16 +1870,29 @@ function renderTA(){
   } else {
     inv="What would change the read: no trade is packaged for this symbol, so there is no kill to watch. A package would set the invalidation first.";
   }
+  var ctx=nrTeachCtx();
+  var fibTxt;
+  if(ctx.rangeLo!=null && ctx.rangeHi!=null){
+    fibTxt="61.8 percent of this chart's range sits at $"+fmt(ctx.rangeLo+(ctx.rangeHi-ctx.rangeLo)*0.618)+". 50 percent sits at $"+fmt(ctx.rangeLo+(ctx.rangeHi-ctx.rangeLo)*0.5)+". Range $"+fmt(ctx.rangeLo)+" to $"+fmt(ctx.rangeHi)+".";
+  } else fibTxt="No range to measure. The chart has not loaded.";
+  var tLesson;
+  if(s50!=null) tLesson="Price "+(last>s50?"above":"below")+" the 50-day average means the longer read is "+(last>s50?"up":"down")+".";
+  else if(s20!=null) tLesson="Price "+(last>s20?"above":"below")+" the 20-day average means the short read is "+(last>s20?"up":"down")+".";
+  else tLesson="This window has too few candles for an average read.";
+  if(fa && fa.stop!=null) tLesson+=" The stop at $"+fmt(fa.stop)+" is the line that decides.";
+  else tLesson+=" No kill is recorded, so the read has no line to defend it.";
   box.innerHTML=head
     +'<div class="nr-rows">'
-    +'<div class="nr-row"><div class="k">Trend</div><div class="v"><b>'+esc(trend)+'</b> '+esc(trendTxt)+'<span class="src">'+esc(src)+'</span></div></div>'
-    +'<div class="nr-row"><div class="k">SMA 20 vs 50</div><div class="v">'+esc(crossTxt)+'<span class="src">'+esc(src)+'</span></div></div>'
-    +'<div class="nr-row"><div class="k">RSI 14</div><div class="v">'+esc(rsiTxt)+'<span class="src">'+esc(src)+'</span></div></div>'
-    +'<div class="nr-row"><div class="k">Support</div><div class="v"><b>$'+fmt(sup)+'</b> Lowest low of the last 20 candles in this window.<span class="src">'+esc(src)+'</span></div></div>'
-    +'<div class="nr-row"><div class="k">Resistance</div><div class="v"><b>$'+fmt(res)+'</b> Highest high of the last 20 candles in this window.<span class="src">'+esc(src)+'</span></div></div>'
-    +'<div class="nr-row"><div class="k">Volume</div><div class="v">'+esc(volTxt)+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="trend">Trend</button></div><div class="v"><b>'+esc(trend)+'</b> '+esc(trendTxt)+nrTeachHTML("trend")+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="sma">SMA 20 vs 50</button></div><div class="v">'+esc(crossTxt)+nrTeachHTML("sma")+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="rsi">RSI 14</button></div><div class="v">'+esc(rsiTxt)+nrTeachHTML("rsi")+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="support">Support</button></div><div class="v"><b>$'+fmt(sup)+'</b> Lowest low of the last 20 candles in this window.'+nrTeachHTML("support")+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="resistance">Resistance</button></div><div class="v"><b>$'+fmt(res)+'</b> Highest high of the last 20 candles in this window.'+nrTeachHTML("resistance")+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="volume">Volume</button></div><div class="v">'+esc(volTxt)+nrTeachHTML("volume")+'<span class="src">'+esc(src)+'</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="fib">Fibonacci levels</button></div><div class="v">'+esc(fibTxt)+nrTeachHTML("fib")+'<span class="src">'+esc(src)+'</span></div></div>'
     +'</div>'
-    +'<div class="nr-verdict"><div class="k">What would change the read</div><div class="v">'+esc(inv)+'</div></div>';
+    +'<div class="nr-verdict"><div class="k">What would change the read</div><div class="v">'+esc(inv)+'</div></div>'
+    +'<div class="nr-verdict"><div class="k">The lesson</div><div class="v">The lesson: '+esc(tLesson)+'</div></div>';
 }
 function renderFA(){
   var box=document.getElementById("nrFA");
@@ -1625,19 +1918,22 @@ function renderFA(){
     crashTxt+='<span class="src">Source: '+c.source+'</span>';
   } else { crashTxt="No crash screen recorded."; }
   var checkHtml=fa.business.map(function(b){
-    return '<div class="step"><div class="sk">'+esc(b.step)+'</div><div class="sv">'+esc(b.text)+'</div></div>';
+    var bk="business:"+b.step;
+    return '<div class="step"><div class="sk"><button type="button" class="learn-term" data-learn="'+esc(bk)+'">'+esc(b.step)+'</button></div><div class="sv">'+esc(b.text)+nrTeachHTML(bk)+'</div></div>';
   }).join("");
+  var faLesson = NR_LESSON[sym] || "The record does not say yet.";
   box.innerHTML=head
     +'<div class="nr-rows">'
     +'<div class="nr-row"><div class="k">Status</div><div class="v">'+esc(fa.status)+'</div></div>'
-    +'<div class="nr-row"><div class="k">Thesis</div><div class="v">'+esc(fa.thesis)+'<span class="src">Source: Nov 6, 2026 packages and briefs.</span></div></div>'
-    +'<div class="nr-row"><div class="k">Intrinsic worth</div><div class="v">'+esc(fa.worth)+'<span class="src">Source: Nov 6, 2026 packages. Worth figures are Bobby\u2019s calculation, not a filing figure.</span></div></div>'
-    +'<div class="nr-row"><div class="k">Levels</div><div class="v">'+esc(lvTxt)+'</div></div>'
-    +'<div class="nr-row"><div class="k">Capital read</div><div class="v">'+esc(fa.capital||"No capital read recorded.")+'<span class="src">Source: Nov 6, 2026 packages and the fill record.</span></div></div>'
-    +'<div class="nr-row"><div class="k">Crash screen</div><div class="v">'+crashTxt+'</div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="thesis">Thesis</button></div><div class="v">'+esc(fa.thesis)+nrTeachHTML("thesis")+'<span class="src">Source: Nov 6, 2026 packages and briefs.</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="worth">Intrinsic worth</button></div><div class="v">'+esc(fa.worth)+nrTeachHTML("worth")+'<span class="src">Source: Nov 6, 2026 packages. Worth figures are Bobby\u2019s calculation, not a filing figure.</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="levels">Levels</button></div><div class="v">'+esc(lvTxt)+nrTeachHTML("levels")+'</div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="capital">Capital read</button></div><div class="v">'+esc(fa.capital||"No capital read recorded.")+nrTeachHTML("capital")+'<span class="src">Source: Nov 6, 2026 packages and the fill record.</span></div></div>'
+    +'<div class="nr-row"><div class="k"><button type="button" class="learn-term" data-learn="crash">Crash screen</button></div><div class="v">'+crashTxt+nrTeachHTML("crash")+'</div></div>'
     +'</div>'
-    +'<div class="nr-verdict"><div class="k">Verdict</div><div class="v">'+esc(fa.verdict)+'</div></div>'
-    +'<div class="nr-verdict"><div class="k">Kill criterion</div><div class="v">'+esc(fa.kill)+'</div></div>'
+    +'<div class="nr-verdict"><div class="k"><button type="button" class="learn-term" data-learn="verdict">Verdict</button></div><div class="v">'+esc(fa.verdict)+nrTeachHTML("verdict")+'</div></div>'
+    +'<div class="nr-verdict"><div class="k"><button type="button" class="learn-term" data-learn="kill">Kill criterion</button></div><div class="v">'+esc(fa.kill)+nrTeachHTML("kill")+'</div></div>'
+    +'<div class="nr-verdict"><div class="k">The lesson</div><div class="v">The lesson: '+esc(faLesson)+'</div></div>'
     +'<div class="cond-head" style="margin-top:16px"><h3 style="font-size:15px">Business check, in Milly\u2019s order</h3></div>'
     +'<div class="nr-check">'+checkHtml+'</div>'
     +(fa.notes?'<div class="nr-rows"><div class="nr-row"><div class="k">Notes</div><div class="v">'+esc(fa.notes)+'</div></div></div>':'');
@@ -2010,6 +2306,255 @@ function nrDrawEndDrag(){
 nrCanvasEl.addEventListener("pointerup", nrDrawEndDrag);
 nrCanvasEl.addEventListener("pointercancel", function(){ nrDrawState.drag=null; nrDraw(); });
 nrDrawLoad(nrState.sym);
+/* ---- Practice mode: random drills that make him use the tools ---- */
+/* A drill states one end result and the tool to use. Its target is
+   computed from the same candles and TA the page already has, so no
+   drill exists whose answer the data cannot support. The checker
+   compares his drawing to the target with a stated tolerance and
+   tells him plainly what was right and what was off, in the asset's
+   own numbers. No score grades his trading, only whether the tool
+   work matched the chart. Completed drills save to localStorage per
+   device, alongside the drawings. */
+var NR_PRACTICE_KEY="opone-desk-practice";
+var nrPractice={ active:null, lastKey:null, store:{completed:{}, tools:{}, total:0} };
+function nrPracticeLoad(){ try{ var s=JSON.parse(window.localStorage.getItem(NR_PRACTICE_KEY)); if(s && typeof s==="object"){ nrPractice.store.completed=s.completed||{}; nrPractice.store.tools=s.tools||{}; nrPractice.store.total=s.total||0; } }catch(e){} }
+function nrPracticeSave(){ try{ window.localStorage.setItem(NR_PRACTICE_KEY, JSON.stringify(nrPractice.store)); }catch(e){} }
+/* Swing points. A swing low is the lowest low of its 5-candle
+   neighborhood; a swing high is the highest high. Pure math on
+   candles, exercised by the harness. */
+function nrSwings(cs){
+  var lows=[], highs=[];
+  for(var i=2;i<cs.length-2;i++){
+    var l=cs[i].l;
+    if(l<=cs[i-1].l && l<=cs[i+1].l && l<=cs[i-2].l && l<=cs[i+2].l && (l<cs[i-1].l || l<cs[i+1].l)) lows.push({i:i, p:l, t:cs[i].t});
+    var h=cs[i].h;
+    if(h>=cs[i-1].h && h>=cs[i+1].h && h>=cs[i-2].h && h>=cs[i+2].h && (h>cs[i-1].h || h>cs[i+1].h)) highs.push({i:i, p:h, t:cs[i].t});
+  }
+  return {lows:lows, highs:highs};
+}
+/* The tightest 5-candle window in the last 20 candles: the
+   consolidation. Pure math on candles, exercised by the harness. */
+function nrTightWindow(cs){
+  var n=cs.length, start=Math.max(0,n-20), best=null;
+  for(var s=start;s+4<n;s++){
+    var lo=Infinity, hi=-Infinity;
+    for(var i=s;i<s+5;i++){ if(cs[i].l<lo) lo=cs[i].l; if(cs[i].h>hi) hi=cs[i].h; }
+    var r=hi-lo;
+    if(!best || r<best.range) best={s:s, e:s+4, lo:lo, hi:hi, range:r};
+  }
+  return best;
+}
+/* Build the drill deck from the current chart data. Pure given the
+   candles, the averages, and the FA record. Each drill carries its
+   target, its tolerance, and the two-part teaching text. */
+function nrBuildDrills(cs, sma20, sma50, rsi14, fa, sym){
+  var n=cs.length;
+  if(n<10) return [];
+  var last=cs[n-1].c;
+  var lo=Math.min.apply(null, cs.map(function(c){return c.l;}));
+  var hi=Math.max.apply(null, cs.map(function(c){return c.h;}));
+  var tolP=Math.max(last*0.01, (hi-lo)*0.01);
+  var tolI=2;
+  var win=cs.slice(Math.max(0,n-20));
+  var sup=Math.min.apply(null, win.map(function(c){return c.l;}));
+  var res=Math.max.apply(null, win.map(function(c){return c.h;}));
+  var sw=nrSwings(cs);
+  var lows=sw.lows.filter(function(p){return p.i>=n-30;});
+  var highs=sw.highs.filter(function(p){return p.i>=n-30;});
+  var deck=[];
+  function day(ts){ return fmtDay(ts); }
+  if(lows.length>=2){
+    var a=lows[lows.length-2], b=lows[lows.length-1];
+    deck.push({ key:"trend-lows", tool:"trend", toolLabel:"Trend line",
+      goal:"Draw a trend line connecting the two most recent swing lows.",
+      means:"A trend line connects the lows where buyers stepped in. It shows the line buyers have defended. Two points make the line. A third touch confirms it.",
+      asset:"For "+sym+", the two most recent swing lows are $"+fmt(a.p)+" on "+day(a.t)+" and $"+fmt(b.p)+" on "+day(b.t)+". Connect them and the line shows where buyers stepped in last.",
+      lesson:"You drew the line buyers defended. A trend line is only as good as its touches. Watch whether the next low holds it.",
+      tol:"Check: each end within $"+fmt(tolP)+" and "+tolI+" candles of the true swing low.",
+      tolP:tolP, tolI:tolI, target:{a:a, b:b} });
+  }
+  if(highs.length>=2){
+    var ha=highs[highs.length-2], hb=highs[highs.length-1];
+    deck.push({ key:"trend-highs", tool:"trend", toolLabel:"Trend line",
+      goal:"Draw a trend line connecting the two most recent swing highs.",
+      means:"A trend line connects the highs where sellers stepped in. It shows the line sellers have defended. Two points make the line. A third touch confirms it.",
+      asset:"For "+sym+", the two most recent swing highs are $"+fmt(ha.p)+" on "+day(ha.t)+" and $"+fmt(hb.p)+" on "+day(hb.t)+". Connect them and the line shows where sellers stepped in last.",
+      lesson:"You drew the line sellers defended. A trend line is only as good as its touches. Watch whether the next high holds it.",
+      tol:"Check: each end within $"+fmt(tolP)+" and "+tolI+" candles of the true swing high.",
+      tolP:tolP, tolI:tolI, target:{a:ha, b:hb} });
+  }
+  deck.push({ key:"support", tool:"hline", toolLabel:"Horizontal line",
+    goal:"Mark the support level with a horizontal line.",
+    means:"Support is the price where buyers stepped in before. A horizontal line marks it so you can see at a glance whether price holds it or breaks it.",
+    asset:"For "+sym+", support is $"+fmt(sup)+", the lowest low of the last 20 candles."+(fa && fa.stop!=null ? " The stop at $"+fmt(fa.stop)+" sits just above it." : ""),
+    lesson:"You marked the line buyers held. If price closes below it, the buyers who held the last 20 candles are gone.",
+    tol:"Check: your line within $"+fmt(tolP)+" of the true support.",
+    tolP:tolP, tolI:tolI, target:{price:sup} });
+  deck.push({ key:"resistance", tool:"hline", toolLabel:"Horizontal line",
+    goal:"Mark the resistance level with a horizontal line.",
+    means:"Resistance is the price where sellers stepped in before. A horizontal line marks it so you can see at a glance whether price holds it or breaks it.",
+    asset:"For "+sym+", resistance is $"+fmt(res)+", the highest high of the last 20 candles."+(fa && fa.targets && fa.targets.length ? " The first target at $"+fmt(fa.targets[0],(fa.targets[0]%1===0?0:2))+" sits "+(fa.targets[0]<res?"below":"above")+" it." : ""),
+    lesson:"You marked the line sellers held. If price closes above it, the sellers who held the last 20 candles are gone.",
+    tol:"Check: your line within $"+fmt(tolP)+" of the true resistance.",
+    tolP:tolP, tolI:tolI, target:{price:res} });
+  var rhi=null, rlo=null;
+  win.forEach(function(c,i){ var idx=n-win.length+i; if(rhi==null||c.h>rhi.p) rhi={i:idx,p:c.h,t:c.t}; if(rlo==null||c.l<rlo.p) rlo={i:idx,p:c.l,t:c.t}; });
+  if(rhi && rlo && rhi.i!==rlo.i){
+    deck.push({ key:"fib", tool:"fib", toolLabel:"Fibonacci retracement",
+      goal:"Draw the Fibonacci retracement from the recent high to the recent low.",
+      means:"A Fibonacci retracement marks where price often pauses after a move: 23.6, 38.2, 50, 61.8, and 78.6 percent of the way back. Two taps set the range. The levels are lines, not a promise.",
+      asset:"For "+sym+", the recent high is $"+fmt(rhi.p)+" on "+day(rhi.t)+" and the recent low is $"+fmt(rlo.p)+" on "+day(rlo.t)+". The 61.8 percent level sits at $"+fmt(rlo.p+(rhi.p-rlo.p)*0.618)+".",
+      lesson:"You drew the range the market just traveled. A pause at the 61.8 percent level is the market resting, not a signal on its own.",
+      tol:"Check: each end within $"+fmt(tolP)+" and "+tolI+" candles of the true high and low.",
+      tolP:tolP, tolI:tolI, target:{a:rhi, b:rlo} });
+  }
+  var tw=nrTightWindow(cs);
+  if(tw){
+    deck.push({ key:"rect", tool:"rect", toolLabel:"Rectangle",
+      goal:"Draw a rectangle around the tightest 5-candle consolidation in the last 20 candles.",
+      means:"A rectangle marks a consolidation: a stretch where price went sideways and neither side won. Breaks out of the box are the trade.",
+      asset:"For "+sym+", the tightest 5 candles run "+day(cs[tw.s].t)+" to "+day(cs[tw.e].t)+", between $"+fmt(tw.lo)+" and $"+fmt(tw.hi)+", a range of $"+fmt(tw.range)+". That is the box.",
+      lesson:"You boxed the quiet stretch. A box that tight means neither side won. The break out of it is the trade.",
+      tol:"Check: each corner within $"+fmt(tolP)+" and "+tolI+" candles of the true box.",
+      tolP:tolP, tolI:tolI, target:{s:tw.s, e:tw.e, lo:tw.lo, hi:tw.hi, sDay:day(cs[tw.s].t), eDay:day(cs[tw.e].t)} });
+  }
+  var lastC=cs[n-1], prevC=cs[n-2];
+  var chg=(lastC.c-prevC.c)/prevC.c*100;
+  var up=lastC.c>=lastC.o;
+  var avgVol=win.map(function(c){return c.v;}).reduce(function(a,b){return a+b;},0)/win.length;
+  var feat = Math.abs(chg)>=4 ? "a big day" : (lastC.v>1.5*avgVol ? "heavy volume" : (Math.abs(lastC.c-lastC.o)<0.1*(lastC.h-lastC.l) ? "a day neither side won" : "an ordinary day"));
+  var dirWords = up ? ["up","rose","gained","climbed","higher"] : ["down","fell","dropped","lower"];
+  deck.push({ key:"text-candle", tool:"text", toolLabel:"Text note",
+    goal:"Place a text note naming what the last candle did.",
+    means:"A text note is your own read, written on the chart. Name what the candle did in plain words: up or down, and what stood out.",
+    asset:"For "+sym+", the last candle closed "+(up?"up":"down")+" "+fmt(Math.abs(chg),1)+" percent at $"+fmt(lastC.c)+", "+feat+". Write that in your own words.",
+    lesson:"You named the candle in plain words. A read you can write is a read you can hold.",
+    tol:"Check: your note sits within 3 candles of the last candle and names the direction.",
+    tolP:tolP, tolI:3, target:{idx:n-1, dir:up?"up":"down", words:dirWords, chg:chg} });
+  return deck;
+}
+/* Check a drill against the drawings on the chart. Pure given the
+   drill and the drawing list. Returns {ok, right, off}: what was
+   right and what was off, in the asset's numbers. */
+function nrCheckDrill(drill, drawings){
+  var tolP=drill.tolP, tolI=drill.tolI;
+  function nearP(a,b){ return Math.abs(a-b)<=tolP; }
+  function nearI(a,b){ return Math.abs(a-b)<=tolI; }
+  function anchorNear(a,b){ return a && b && nearP(a.p,b.p) && nearI(a.i,b.i); }
+  function endpointsNear(dr, a, b){
+    return (anchorNear(dr.a,a) && anchorNear(dr.b,b)) || (anchorNear(dr.a,b) && anchorNear(dr.b,a));
+  }
+  if(drill.key==="support" || drill.key==="resistance"){
+    var level=drill.target.price;
+    var cands=drawings.filter(function(d){ return d.tool==="hline" || d.tool==="hray"; });
+    if(!cands.length) return {ok:false, right:"No horizontal line on the chart yet.", off:"Draw one first, then check."};
+    var best=cands[cands.length-1];
+    if(nearP(best.a.p, level)) return {ok:true, right:"Your line sits at $"+fmt(best.a.p)+". The true level is $"+fmt(level)+".", off:""};
+    return {ok:false, right:"Your line sits at $"+fmt(best.a.p)+".", off:"The true level is $"+fmt(level)+", $"+fmt(Math.abs(best.a.p-level))+" "+(best.a.p>level?"below":"above")+" your line. Move it to the "+(drill.key==="support"?"lowest low":"highest high")+" of the last 20 candles."};
+  }
+  if(drill.key==="trend-lows" || drill.key==="trend-highs"){
+    var t=drill.target;
+    var cands=drawings.filter(function(d){ return d.tool==="trend" && d.a && d.b; });
+    if(!cands.length) return {ok:false, right:"No trend line on the chart yet.", off:"Draw one first, then check."};
+    var best=cands[cands.length-1];
+    if(endpointsNear(best, t.a, t.b)) return {ok:true, right:"Both ends sit on the swing points: $"+fmt(t.a.p)+" and $"+fmt(t.b.p)+".", off:""};
+    var aOk=anchorNear(best.a,t.a)||anchorNear(best.a,t.b);
+    var bOk=anchorNear(best.b,t.a)||anchorNear(best.b,t.b);
+    return {ok:false, right:(aOk||bOk)?"One end is on a swing point.":"Neither end is on a swing point.", off:"The true swing points are $"+fmt(t.a.p)+" and $"+fmt(t.b.p)+". Your ends sit at $"+fmt(best.a.p)+" and $"+fmt(best.b.p)+"."};
+  }
+  if(drill.key==="fib"){
+    var t=drill.target;
+    var cands=drawings.filter(function(d){ return d.tool==="fib" && d.a && d.b; });
+    if(!cands.length) return {ok:false, right:"No Fibonacci retracement on the chart yet.", off:"Draw one first, then check."};
+    var best=cands[cands.length-1];
+    if(endpointsNear(best, t.a, t.b)) return {ok:true, right:"Both ends sit on the recent high $"+fmt(t.a.p)+" and the recent low $"+fmt(t.b.p)+".", off:""};
+    return {ok:false, right:"The retracement is drawn, but its ends are off.", off:"The true high is $"+fmt(t.a.p)+" and the true low is $"+fmt(t.b.p)+". Your ends sit at $"+fmt(best.a.p)+" and $"+fmt(best.b.p)+"."};
+  }
+  if(drill.key==="rect"){
+    var t=drill.target;
+    var cands=drawings.filter(function(d){ return d.tool==="rect" && d.a && d.b; });
+    if(!cands.length) return {ok:false, right:"No rectangle on the chart yet.", off:"Draw one first, then check."};
+    var best=cands[cands.length-1];
+    var x0=Math.min(best.a.i,best.b.i), x1=Math.max(best.a.i,best.b.i);
+    var y0=Math.min(best.a.p,best.b.p), y1=Math.max(best.a.p,best.b.p);
+    if(nearI(x0,t.s) && nearI(x1,t.e) && nearP(y0,t.lo) && nearP(y1,t.hi))
+      return {ok:true, right:"Your box runs "+t.sDay+" to "+t.eDay+", between $"+fmt(t.lo)+" and $"+fmt(t.hi)+".", off:""};
+    return {ok:false, right:"The rectangle is drawn, but its corners are off.", off:"The true box runs "+t.sDay+" to "+t.eDay+", between $"+fmt(t.lo)+" and $"+fmt(t.hi)+". Your box runs between $"+fmt(y0)+" and $"+fmt(y1)+"."};
+  }
+  if(drill.key==="text-candle"){
+    var t=drill.target;
+    var cands=drawings.filter(function(d){ return d.tool==="text" && d.a; });
+    if(!cands.length) return {ok:false, right:"No text note on the chart yet.", off:"Place one first, then check."};
+    var near=cands.filter(function(d){ return Math.abs(d.a.i-t.idx)<=tolI; });
+    if(!near.length) return {ok:false, right:"A note is on the chart, but not near the last candle.", off:"Place the note on or beside the last candle, within "+tolI+" candles."};
+    var txt=(near[near.length-1].text||"").toLowerCase();
+    var hit=t.words.some(function(w){ return txt.indexOf(w)>=0; });
+    if(hit) return {ok:true, right:"Your note names the direction: the last candle closed "+t.dir+" "+fmt(Math.abs(t.chg),1)+" percent.", off:""};
+    return {ok:false, right:"Your note sits on the last candle.", off:"It does not name the direction. The last candle closed "+t.dir+" "+fmt(Math.abs(t.chg),1)+" percent. Write that in your own words."};
+  }
+  return {ok:false, right:"", off:"This drill cannot be checked."};
+}
+function nrPracticeRenderProgress(){
+  var el=document.getElementById("nrPracticeProgress");
+  var s=nrPractice.store;
+  var tools=Object.keys(s.tools||{});
+  el.textContent = s.total>0
+    ? "Completed on this device: "+s.total+" drill"+(s.total===1?"":"s")+". Tools practiced: "+tools.map(function(t){return t+" ("+s.tools[t]+")";}).join(", ")+"."
+    : "No drills completed yet on this device.";
+}
+function nrPracticeShow(drill){
+  nrPractice.active=drill;
+  var box=document.getElementById("nrDrill");
+  box.hidden=false;
+  box.innerHTML='<div class="goal">'+esc(drill.goal)+'</div>'
+    +'<div class="tool">Tool: '+esc(drill.toolLabel)+'</div>'
+    +'<div class="teach"><div class="tm"><span class="tk">What this tool means</span>'+esc(drill.means)+'</div><div class="ta"><span class="tk">What it means for '+esc(nrState.sym)+'</span>'+esc(drill.asset)+'</div></div>'
+    +'<div class="tol">'+esc(drill.tol)+'</div>'
+    +'<div class="actions"><button class="fbtn" id="nrCheckBtn" type="button">Check my work</button><button class="fbtn" id="nrNewBtn" type="button">New lesson</button></div>'
+    +'<div class="result" id="nrDrillResult"></div>';
+  document.getElementById("nrCheckBtn").addEventListener("click",nrPracticeCheck);
+  document.getElementById("nrNewBtn").addEventListener("click",nrPracticeNew);
+  nrSetDrawTool(drill.tool);
+}
+function nrPracticeNew(){
+  var d=nrState.data;
+  var box=document.getElementById("nrDrill");
+  if(!d){ box.hidden=false; box.innerHTML='<div class="goal">The chart has not loaded yet.</div><div class="result">No drill can be built from data that is not there. Wait for the chart, then try again.</div>'; return; }
+  var deck=nrBuildDrills(d.candles, d.sma20, d.sma50, d.rsi14, NR_FA[nrState.sym], nrState.sym);
+  if(!deck.length){ box.hidden=false; box.innerHTML='<div class="goal">No drill can be built from this chart.</div><div class="result">The window has too few candles to set a target. Try a longer timeframe.</div>'; return; }
+  var pool=deck.filter(function(x){ return x.key!==nrPractice.lastKey; });
+  if(!pool.length) pool=deck;
+  var pick=pool[Math.floor(Math.random()*pool.length)];
+  nrPractice.lastKey=pick.key;
+  nrPracticeShow(pick);
+}
+function nrPracticeCheck(){
+  var drill=nrPractice.active;
+  var res=document.getElementById("nrDrillResult");
+  if(!drill || !res) return;
+  var r=nrCheckDrill(drill, nrDrawList());
+  if(r.ok){
+    var s=nrPractice.store;
+    s.completed[drill.key]=(s.completed[drill.key]||0)+1;
+    s.tools[drill.tool]=(s.tools[drill.tool]||0)+1;
+    s.total++;
+    nrPracticeSave();
+    nrPracticeRenderProgress();
+    res.className="result good";
+    res.innerHTML="<b>You got it.</b> "+esc(r.right)+" The lesson: "+esc(drill.lesson);
+    nrPractice.active=null;
+  } else {
+    res.className="result";
+    res.innerHTML="<b>Not yet.</b> "+esc(r.right)+" "+esc(r.off)+" Try again.";
+  }
+}
+function nrPracticeClear(){
+  nrPractice.active=null;
+  var box=document.getElementById("nrDrill");
+  if(box){ box.hidden=true; box.innerHTML=""; }
+}
+document.getElementById("nrLessonBtn").addEventListener("click",nrPracticeNew);
+nrPracticeLoad(); nrPracticeRenderProgress();
 /* Feed the Ask panel with the newsroom fundamentals, so questions
    about a thesis, a worth, or a kill get an answer from the record. */
 if(typeof CORPUS!=="undefined"){
