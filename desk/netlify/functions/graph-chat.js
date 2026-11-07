@@ -160,14 +160,19 @@ found.forEach(function (m) { ids[m.slice(1, -1)] = true;});
 return Object.keys(ids);
 }
 
-// ---- Trade talk: a trade mention needs a kill criterion ----
+// ---- Trade talk: a recommendation, not a definition ----
+// "A call is the right to buy 100 shares" defines the instrument; "Buy MU
+// now" recommends a trade. The detector flags directives and named-asset
+// actions only, so a teaching answer can define an option without tripping
+// it. "You can buy" is instructional, not a call, and is left alone.
 function hasTradeTalk(answer) {
 var sentences = String(answer || "").split(/(?<=[.!?])\s+/);
 for (var i = 0; i < sentences.length; i++) {
 var s = sentences[i];
 if (/\b(go long|go short|long the|short the)\b/i.test(s) && TICKER_RE.test(s)) return true;
-if (/\b(buy|sell|enter|take|open)\b/i.test(s) &&
-(TICKER_RE.test(s) || /\b(trade|position|shares|calls?|puts?|contract)\b/i.test(s))) return true;
+if (/\b(buy|sell|enter|take|open)\b/i.test(s) && TICKER_RE.test(s)) return true;
+if (/^\s*(buy|sell|open|take|enter)\b/i.test(s)) return true;
+if (/\byou should\s+(buy|sell|open|take|enter|go)\b/i.test(s)) return true;
 }
 return false;
 }
