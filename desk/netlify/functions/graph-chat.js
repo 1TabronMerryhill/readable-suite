@@ -33,7 +33,7 @@ const TICKERS = [
 
 const RECORD_WORDS = /\b(position|portfolio|book|fill|stop|target|kill|thesis|price|trade|pnl|p&l|cash|equity|holdings|bought|sold|shares|contract|premium)\b/i;
 const TEACH_START = /^(what is|what are|what does|explain|define|describe|how does|how do|why does)\b/i;
-const TICKER_RE = new RegExp("\\b(" + TICKERS.map(function (t) { return t.replace(".", "\\.");}).join("|") + ")\\b", "i");
+const TICKER_RE = new RegExp("\\b(" + TICKERS.map(function (t) { return t.replace(".", "\\.");}).join("|") + ")\\b");
 
 const SYSTEM_PROMPT_RECORD = [
 "You are the voice of OpOne Capital's knowledge graph.",
