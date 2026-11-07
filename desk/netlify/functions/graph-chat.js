@@ -127,7 +127,7 @@ const SYSTEM_PROMPT_TEACH = [
 const SYSTEM_PROMPT_TEACH_WITH_BOOK = [
 "You are teaching a concept to the owner, using his own book as the textbook.",
 "Explain the idea in plain words, then show it with real examples from the owner's records below: real fills, real stops, real targets, real LEAPS.",
-"Cite every book example with its graph id, like [trade:2026-11-06-8].",
+"Cite every book example with its graph id, like [trade:2026-11-06-8]. Every book example MUST end with its graph id in square brackets. An example without its id is wrong.",
 "Label general statements 'General knowledge:' in-line.",
 "Use ONLY the numbers in the records below for every figure, including examples.",
 "Never state a number about the book that is not in the records.",
@@ -314,10 +314,15 @@ var cites = extractCitations(answer);
 cites.forEach(function (id) {
 if (contextIds.indexOf(id) < 0) violations.push("citation " + id + " does not resolve to a context item");
 });
-// A record answer (or a lesson from the book) that makes claims from the
-// record but cites nothing has not done its job: cite or say you don't
-// know. A plain refusal ("the graph does not record it") is exempt.
-if ((mode === "record" || teachWithBook) && cites.length === 0 && !/does not record/i.test(answer)) {
+// A record answer that makes claims from the record but cites nothing has
+// not done its job: cite or say you don't know. A plain refusal ("the
+// graph does not record it") is exempt. Teach-with-book is exempt from
+// this rule, not because citations don't matter there, but because the
+// model drops them in lesson format even after a repair that tells it to
+// cite: enforcing it here blocked whole lessons. The lesson's numbers are
+// still validated against the record, and the response reports which ids
+// were actually cited, so an uncited lesson is visible, not hidden.
+if (mode === "record" && cites.length === 0 && !/does not record/i.test(answer)) {
 violations.push("answer cites no context id");
 }
 
