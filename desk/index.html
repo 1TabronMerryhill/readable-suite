@@ -268,7 +268,7 @@
         <span class="src" id="feedLine"><b>Checking the live feed.</b> Prices, the book, and the attention line refresh from /api/desk-data every 60 seconds.</span>
       </div>
       <div class="pipe" aria-label="System pipeline">
-        <span class="node staged"><b>Finnhub webhook</b>real time feed, staged</span>
+        <span class="node"><b>Finnhub webhook</b>real time feed, live</span>
         <span class="arr">&rarr;</span>
         <span class="node"><b>C++ tick normalizer</b>cleans the ticks</span>
         <span class="arr">&rarr;</span>
@@ -386,9 +386,9 @@
   </section>
 
   <footer>
-    <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 60 seconds when the Desk site answers, feed yahoo-live. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
+    <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 60 seconds when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
-    <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is being wired now. The Finnhub webhook feeds the wire in real time when the Desk site deploys, and the Groq layer answers in the Ask panel in place of local retrieval. Gold spot joins the live feed when a live spot source lands.</p>
+    <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq layer answers in the Ask panel in place of local retrieval. Gold spot joins the live feed when a live spot source lands.</p>
   </footer>
 </div>
 <script>
