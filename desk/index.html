@@ -204,6 +204,9 @@
   .msg-q{justify-self:end;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:10px 14px;font-size:14.5px;max-width:85%;line-height:1.5}
   .msg-a{justify-self:start;max-width:94%;width:100%}
   .msg-a .none{font-size:15px;font-weight:600}
+  .ask-state{font-size:12px;color:var(--faint);margin:10px 0 2px}
+  .ref.cite{cursor:pointer;background:transparent;font-family:var(--mono)}
+  .ref.cite:hover{color:var(--text);border-color:var(--muted)}
   .hit{border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin-top:9px;background:var(--bg2)}
   .hit .ht{font-size:14.5px;font-weight:700;line-height:1.45}
   .hit .hb{font-size:13.5px;color:var(--muted);line-height:1.65;margin-top:4px}
@@ -580,7 +583,7 @@
     <div class="ask-box">
       <div class="ask-head">
         <span class="t">Talk to the memory</span>
-        <span class="honest">Local retrieval from the graph snapshot. The Groq voice plugs in when the Desk site deploys.</span>
+        <span class="honest">Groq voice live. Answers are checked against the graph in code before they are shown.</span>
       </div>
       <div class="chips" id="chipRow"></div>
       <div class="msgs" id="msgs">
@@ -598,7 +601,7 @@
   <footer>
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 60 seconds when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
-    <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq layer answers in the Ask panel in place of local retrieval. Gold spot joins the live feed when a live spot source lands.</p>
+    <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
   </footer>
 </div>
 <script>
@@ -984,6 +987,34 @@ function scoreItem(item,q,toks){
   if(/buy|sell|trade|enter|take/.test(ql) && item.kill) s+=2;
   return s;
 }
+function localHitsHtml(top){
+  if(!top.length) return '<p class="none">The graph does not record that.</p>';
+  var html='<div style="font-size:13px;color:var(--muted)">From the graph snapshot, '+top.length+' matching record'+(top.length>1?"s":"")+':</div>';
+  top.forEach(function(x){
+    html+='<div class="hit"><div class="ht">'+esc(x.it.title)+'</div><div class="hb">'+esc(x.it.body)+'</div>'
+      +'<div class="ids">'+x.it.ids.map(function(id){return '<button type="button" class="ref cite" data-node="'+esc(id)+'">'+esc(id)+'</button>';}).join("")+'</div>'
+      +(x.it.kill?'<div class="kill"><span class="k">Kill criterion</span>'+esc(x.it.kill)+'</div>':'')
+      +'</div>';
+  });
+  return html;
+}
+function citeButtonsHtml(ids){
+  if(!ids||!ids.length) return "";
+  return '<div class="ids">'+ids.map(function(id){return '<button type="button" class="ref cite" data-node="'+esc(id)+'">'+esc(id)+'</button>';}).join("")+'</div>';
+}
+function linkifyCitations(text){
+  var h=esc(text);
+  h=h.replace(/\[([a-z_]+:[^\]\s]+)\]/g,'<button type="button" class="ref cite" data-node="$1">$1</button>');
+  h=h.replace(/【([a-z_]+:[^\]】\s]+)】/g,'<button type="button" class="ref cite" data-node="$1">$1</button>');
+  return h;
+}
+document.getElementById("msgs").addEventListener("click",function(e){
+  var b=e.target && e.target.closest ? e.target.closest(".cite") : null;
+  if(!b) return;
+  var id=b.getAttribute("data-node");
+  deskShowTab("graph");
+  if(id && typeof selectNode==="function" && typeof nodeById!=="undefined" && nodeById[id]) selectNode(id);
+});
 function ask(q){
   q=(q||"").trim(); if(!q) return;
   var msgs=document.getElementById("msgs");
@@ -991,23 +1022,39 @@ function ask(q){
   var qd=document.createElement("div"); qd.className="msg-q"; qd.textContent=q; msgs.appendChild(qd);
   var toks=q.toLowerCase().replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(function(t){return t.length>1 && !STOPW[t];});
   var scored=CORPUS.map(function(it){ return {it:it,s:scoreItem(it,q,toks)}; }).filter(function(x){return x.s>=4;}).sort(function(a,b){return b.s-a.s;});
+  var top=scored.slice(0,4);
   var ad=document.createElement("div"); ad.className="msg-a";
-  if(!scored.length){
-    ad.innerHTML='<p class="none">The graph does not record that.</p>';
-  } else {
-    var top=scored.slice(0,4);
-    var html='<div style="font-size:13px;color:var(--muted)">From the graph snapshot, '+top.length+' matching record'+(top.length>1?"s":"")+':</div>';
-    top.forEach(function(x){
-      html+='<div class="hit"><div class="ht">'+esc(x.it.title)+'</div><div class="hb">'+esc(x.it.body)+'</div>'
-        +'<div class="ids">'+x.it.ids.map(function(id){return '<span class="ref">'+esc(id)+'</span>';}).join("")+'</div>'
-        +(x.it.kill?'<div class="kill"><span class="k">Kill criterion</span>'+esc(x.it.kill)+'</div>':'')
-        +'</div>';
-    });
-    ad.innerHTML=html;
-  }
+  ad.innerHTML='<p class="none">Asking the graph voice…</p>';
   msgs.appendChild(ad);
   msgs.scrollTop=msgs.scrollHeight;
   document.getElementById("askInput").value="";
+  // Context for the layer: one item per id from the local retrieval above.
+  // The server checks the answer in code before serving it.
+  var ctx=[];
+  top.forEach(function(x){
+    x.it.ids.forEach(function(id){
+      ctx.push({ id:id, type:id.split(":")[0], label:x.it.title, evidence:x.it.body+(x.it.kill?" Kill: "+x.it.kill:""), scope:"firm" });
+    });
+  });
+  fetch("/api/graph-chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,context:ctx,scope:"firm"})})
+  .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, d:d}; }); })
+  .then(function(res){
+    var d=res.d||{};
+    if(!res.ok || typeof d.answer!=="string"){
+      ad.innerHTML=localHitsHtml(top)+'<div class="ask-state">Groq voice unavailable, showing local retrieval.</div>';
+    } else if(d.state==="answered_from_graph"){
+      ad.innerHTML='<div class="ask-state">Answered from the graph. Checked in code before it was shown.</div><div class="hb" style="font-size:14.5px;line-height:1.65">'+linkifyCitations(d.answer)+'</div>'+citeButtonsHtml(d.cited||[]);
+    } else if(d.state==="teaching_general"){
+      ad.innerHTML='<div class="ask-state">Teaching answer, general knowledge. Not from the firm record.</div><div class="hb" style="font-size:14.5px;line-height:1.65">'+esc(d.answer)+'</div>';
+    } else {
+      ad.innerHTML='<p class="none">The graph does not record that.</p><div class="ask-state">Could not answer from the record.</div>'+localHitsHtml(top);
+    }
+    msgs.scrollTop=msgs.scrollHeight;
+  })
+  .catch(function(){
+    ad.innerHTML=localHitsHtml(top)+'<div class="ask-state">Groq voice unavailable, showing local retrieval.</div>';
+    msgs.scrollTop=msgs.scrollHeight;
+  });
 }
 document.getElementById("askForm").addEventListener("submit",function(e){ e.preventDefault(); ask(document.getElementById("askInput").value); });
 </script>
