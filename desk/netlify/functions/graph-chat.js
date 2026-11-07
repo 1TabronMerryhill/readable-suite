@@ -282,14 +282,29 @@ return out;
 // now" recommends a trade. The detector flags directives and named-asset
 // actions only, so a teaching answer can define an option without tripping
 // it. "You can buy" is instructional, not a call, and is left alone.
+// A verb followed by a hyphen or dash is part of a compound word
+// (take-or-pay), not a trade action. Groq writes non-breaking hyphens, so
+// the guard checks the next character code, never a literal: 45 is "-",
+// 0x2010-0x2015 are the unicode hyphen/dash range.
+function followedByDash(s, idx) {
+var c = s.charCodeAt(idx);
+return c === 45 || (c >= 0x2010 && c <= 0x2015);
+}
+function verbAt(s, re) {
+var m;
+while ((m = re.exec(s)) !== null) {
+if (!followedByDash(s, m.index + m[0].length)) return true;
+}
+return false;
+}
 function hasTradeTalk(answer) {
 var sentences = String(answer || "").split(/(?<=[.!?])\s+/);
 for (var i = 0; i < sentences.length; i++) {
 var s = sentences[i];
 if (/\b(go long|go short|long the|short the)\b/i.test(s) && TICKER_RE.test(s)) return true;
-if (/\b(buy|sell|enter|take|open)\b(?!-)/i.test(s) && TICKER_RE.test(s)) return true;
-if (/^\s*(buy|sell|open|take|enter)\b(?!-)/i.test(s)) return true;
-if (/\byou should\s+(buy|sell|open|take|enter|go)\b(?!-)/i.test(s)) return true;
+if (verbAt(s, /\b(buy|sell|enter|take|open)\b/gi) && TICKER_RE.test(s)) return true;
+if (verbAt(s, /^\s*(buy|sell|open|take|enter)\b/gi)) return true;
+if (verbAt(s, /\byou should\s+(buy|sell|open|take|enter|go)\b/gi)) return true;
 }
 return false;
 }
