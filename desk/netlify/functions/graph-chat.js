@@ -186,8 +186,8 @@ if (contextIds.indexOf(id) < 0) violations.push("citation " + id + " does not re
 if (hasTradeTalk(answer)) {
 if (mode === "record") {
 if (!/kill/i.test(contextText)) violations.push("trade talk without a kill criterion in the context");
-} else if (!/kill|stop/i.test(answer)) {
-violations.push("trade talk without a kill criterion stated");
+} else {
+violations.push("trade talk is not allowed in a teaching answer: remove the recommendation, do not add a kill criterion");
 }
 }
 
@@ -320,7 +320,9 @@ let repaired = false;
 // One repair attempt, naming the exact violation. Then the fallback.
 if (!validation.passed) {
 try {
-var repairContent = userContent + "\n\nYour last answer was: " + answer + "\n\nIt failed the layer checks: " + validation.violations.join("; ") + ". Answer again, using only the numbers in the graph context above, citing only ids from the context, and stating the kill criterion. If the context does not hold it, say so.";
+var repairContent = userContent + "\n\nYour last answer was: " + answer + "\n\nIt failed the layer checks: " + validation.violations.join("; ") + (mode === "teach"
+? ". Answer again as general teaching only: remove any trade recommendation, do not add a kill criterion, and never state a firm price, fill, position, or book figure."
+: ". Answer again, using only the numbers in the graph context above, citing only ids from the context, and stating the kill criterion. If the context does not hold it, say so.");
 answer = await callGroq(groqKey, systemPrompt, repairContent);
 repaired = true;
 validation = validateAnswer(answer, context, mode, question);
