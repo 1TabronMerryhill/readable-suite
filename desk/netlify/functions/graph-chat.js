@@ -287,9 +287,9 @@ var sentences = String(answer || "").split(/(?<=[.!?])\s+/);
 for (var i = 0; i < sentences.length; i++) {
 var s = sentences[i];
 if (/\b(go long|go short|long the|short the)\b/i.test(s) && TICKER_RE.test(s)) return true;
-if (/\b(buy|sell|enter|take|open)\b/i.test(s) && TICKER_RE.test(s)) return true;
-if (/^\s*(buy|sell|open|take|enter)\b/i.test(s)) return true;
-if (/\byou should\s+(buy|sell|open|take|enter|go)\b/i.test(s)) return true;
+if (/\b(buy|sell|enter|take|open)\b(?!-)/i.test(s) && TICKER_RE.test(s)) return true;
+if (/^\s*(buy|sell|open|take|enter)\b(?!-)/i.test(s)) return true;
+if (/\byou should\s+(buy|sell|open|take|enter|go)\b(?!-)/i.test(s)) return true;
 }
 return false;
 }
@@ -314,6 +314,12 @@ var cites = extractCitations(answer);
 cites.forEach(function (id) {
 if (contextIds.indexOf(id) < 0) violations.push("citation " + id + " does not resolve to a context item");
 });
+// A record answer (or a lesson from the book) that makes claims from the
+// record but cites nothing has not done its job: cite or say you don't
+// know. A plain refusal ("the graph does not record it") is exempt.
+if ((mode === "record" || teachWithBook) && cites.length === 0 && !/does not record/i.test(answer)) {
+violations.push("answer cites no context id");
+}
 
 if (hasTradeTalk(answer)) {
 if (mode === "record" || teachWithBook) {
