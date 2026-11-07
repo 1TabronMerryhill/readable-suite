@@ -42,3 +42,14 @@
   to = "/.netlify/functions/graph-chat"
   status = 200
   force = true
+
+# Newsroom chart. GET /api/chart?symbol=MU&range=3mo&interval=1d
+# returns OHLC candles plus volume from Yahoo v8 chart, with SMA 20,
+# SMA 50, and RSI 14 computed server side. No-store. On any quote
+# failure it returns 502 {error:"quote_failed"} and the page shows
+# "chart unavailable" instead of drawing fake candles.
+[[redirects]]
+  from = "/api/chart"
+  to = "/.netlify/functions/chart"
+  status = 200
+  force = true
