@@ -26,6 +26,7 @@
     --green-dim:#2a7d4b;
     --red:#e5534b;
     --red-dim:#8c3531;
+    --accent:#e8a33d;
     --mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --sans:"Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
@@ -219,6 +220,10 @@
   .nr-tf{display:flex;gap:8px;flex-wrap:wrap}
   .nr-canvas-wrap{margin-top:16px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);overflow:hidden}
   .nr-canvas-wrap canvas{display:block;width:100%;height:300px;cursor:crosshair}
+  .nr-drawbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .nr-drawbar .fbtn.on{color:var(--accent);border-color:var(--accent)}
+  .nr-drawnote{font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:8px}
+  .nr-canvas-wrap.draw canvas{touch-action:none}
   .nr-candle{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px;min-height:20px}
   .nr-candle b{color:var(--text);font-weight:600}
   .nr-meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:6px}
@@ -382,6 +387,21 @@
           <button class="fbtn" data-range="1y" type="button">1y</button>
         </div>
       </div>
+      <div class="nr-drawbar" role="toolbar" aria-label="Chart drawing tools" id="nrDrawBar">
+        <button class="fbtn on" data-drawtool="select" type="button">Select</button>
+        <button class="fbtn" data-drawtool="trend" type="button">Trend line</button>
+        <button class="fbtn" data-drawtool="hline" type="button">Horizontal line</button>
+        <button class="fbtn" data-drawtool="hray" type="button">Horizontal ray</button>
+        <button class="fbtn" data-drawtool="vline" type="button">Vertical line</button>
+        <button class="fbtn" data-drawtool="rect" type="button">Rectangle</button>
+        <button class="fbtn" data-drawtool="fib" type="button">Fibonacci retracement</button>
+        <button class="fbtn" data-drawtool="text" type="button">Text note</button>
+        <button class="fbtn" data-drawtool="brush" type="button">Freehand brush</button>
+        <button class="fbtn" data-drawtool="eraser" type="button">Eraser</button>
+        <button class="fbtn" data-drawact="undo" type="button">Undo</button>
+        <button class="fbtn" data-drawact="clear" type="button">Clear all</button>
+      </div>
+      <p class="nr-drawnote">Drawings live on this device only. They are saved per symbol in this browser.</p>
       <div class="nr-canvas-wrap"><canvas id="nrCanvas" height="300"></canvas></div>
       <div class="nr-candle" id="nrCandle">Tap a candle to read its open, high, low, close, and volume.</div>
       <div class="nr-meta" id="nrMeta">Chart loading.</div>
@@ -1383,25 +1403,44 @@ function nrDrawEmpty(msg){
   ctx.fillStyle="#6b7280"; ctx.font="14px JetBrains Mono, monospace"; ctx.textAlign="center";
   ctx.fillText(msg||"Chart unavailable.", w/2, h/2);
 }
-function nrDraw(){
+/* Shared chart geometry. nrDraw and the drawing layer both use it, so a
+   drawing anchored to a price and a candle time lands on the same pixel
+   the candle does. lo and hi come only from candles and plan levels,
+   never from a drawing, so a drawing cannot rescale the chart. */
+function nrGeom(){
   var d=nrState.data;
-  if(!d || !d.candles.length){ nrDrawEmpty(); return; }
+  if(!d || !d.candles.length) return null;
   var cv=document.getElementById("nrCanvas");
-  var dpr=window.devicePixelRatio||1;
   var W=cv.clientWidth||800, H=300;
-  cv.width=W*dpr; cv.height=H*dpr;
-  var ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.clearRect(0,0,W,H);
-  var padL=8, padR=58, padT=12, padB=26;
-  var plotW=W-padL-padR, plotH=210, volH=34, volTop=padT+plotH+8;
+  var padL=8, padR=58, padT=12;
+  var plotW=W-padL-padR, plotH=210;
   var cs=d.candles, n=cs.length;
   var lo=Infinity, hi=-Infinity;
   cs.forEach(function(c){ if(c.l<lo) lo=c.l; if(c.h>hi) hi=c.h; });
-  var levels=nrLevels(nrState.sym);
-  levels.forEach(function(l){ if(l.v<lo) lo=l.v; if(l.v>hi) hi=l.v; });
+  nrLevels(nrState.sym).forEach(function(l){ if(l.v<lo) lo=l.v; if(l.v>hi) hi=l.v; });
   var pad=(hi-lo)*0.04||1; lo-=pad; hi+=pad;
-  function X(i){ return padL + (i+0.5)*(plotW/n); }
-  function Y(v){ return padT + (1-(v-lo)/(hi-lo))*plotH; }
+  return { W:W, H:H, padL:padL, padR:padR, padT:padT, plotW:plotW, plotH:plotH, n:n, lo:lo, hi:hi,
+    X:function(i){ return padL + (i+0.5)*(plotW/n); },
+    Y:function(v){ return padT + (1-(v-lo)/(hi-lo))*plotH; },
+    idxFromX:function(x){ return (x-padL)/(plotW/n) - 0.5; },
+    priceFromY:function(y){ return lo + (1-(y-padT)/plotH)*(hi-lo); } };
+}
+function nrDraw(){
+  var d=nrState.data;
+  if(!d || !d.candles.length){ nrDrawEmpty(); return; }
+  var g=nrGeom();
+  var cv=document.getElementById("nrCanvas");
+  var dpr=window.devicePixelRatio||1;
+  var W=g.W, H=g.H;
+  cv.width=W*dpr; cv.height=H*dpr;
+  var ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  var padL=g.padL, padR=g.padR, padT=g.padT;
+  var plotW=g.plotW, plotH=g.plotH, volH=34, volTop=padT+plotH+8;
+  var cs=d.candles, n=cs.length;
+  var levels=nrLevels(nrState.sym);
+  function X(i){ return g.X(i); }
+  function Y(v){ return g.Y(v); }
   // grid
   ctx.strokeStyle="#23262d"; ctx.fillStyle="#6b7280"; ctx.font="10px JetBrains Mono, monospace"; ctx.textAlign="left";
   for(var g=0; g<=4; g++){
@@ -1455,6 +1494,8 @@ function nrDraw(){
     ctx.save(); ctx.strokeStyle="#eceef1"; ctx.globalAlpha=0.5;
     ctx.beginPath(); ctx.moveTo(sx,padT); ctx.lineTo(sx,padT+plotH); ctx.stroke(); ctx.restore();
   }
+  // member drawings, on top of the firm's levels
+  nrDrawDrawings(ctx, g);
   // x labels
   ctx.fillStyle="#6b7280"; ctx.font="10px JetBrains Mono, monospace"; ctx.textAlign="center";
   var step=Math.max(1,Math.floor(n/5));
@@ -1634,6 +1675,7 @@ function nrRenderPicker(){
 function selectSymbol(sym){
   if(!nrSymName(sym)) return;
   nrState.sym=sym; nrState.selIdx=-1;
+  nrDrawLoad(sym);
   var meta=nrSymName(sym);
   document.getElementById("nrSym").textContent=sym;
   document.getElementById("nrName").textContent=meta.name;
@@ -1661,6 +1703,7 @@ document.getElementById("nrAskBtn").addEventListener("click",function(){
   if(inp && inp.value) ask(inp.value);
 });
 document.getElementById("nrCanvas").addEventListener("click",function(e){
+  if(nrDrawState.tool!=="select" || nrDrawState.justDrew){ nrDrawState.justDrew=false; return; }
   var d=nrState.data; if(!d) return;
   var cv=document.getElementById("nrCanvas");
   var rect=cv.getBoundingClientRect();
@@ -1675,6 +1718,298 @@ window.addEventListener("resize",function(){
   if(nrResizeT) clearTimeout(nrResizeT);
   nrResizeT=setTimeout(function(){ nrDraw(); },150);
 });
+/* ---- Newsroom drawing layer: TradingView-style tools on the chart ---- */
+/* A drawing anchors to price and candle time. Each anchor stores the
+   candle index, the candle timestamp, and the price. Rendering finds
+   the candle by timestamp first, so a drawing survives a timeframe
+   switch, and falls back to the stored index when that timestamp is
+   not in the current candle set. Drawings never change the chart
+   scale: lo and hi come only from candles and plan levels. Drawings
+   save to localStorage per symbol, on this device only. There is no
+   server store yet, so a drawing does not follow Milly to another
+   device. */
+var NR_FIB=[0,0.236,0.382,0.5,0.618,0.786,1];
+var NR_DRAW_COLOR="#e8a33d";
+var nrDrawState={ tool:"select", drawings:{}, drag:null, justDrew:false };
+function nrDrawId(){ return "d"+Date.now().toString(36)+Math.floor(Math.random()*1000000).toString(36); }
+function nrDrawKey(sym){ return "opone-desk-drawings-"+sym; }
+function nrDrawList(){ return nrDrawState.drawings[nrState.sym]||[]; }
+function nrDrawLoad(sym){
+  try{
+    var raw=window.localStorage.getItem(nrDrawKey(sym));
+    var arr=raw?JSON.parse(raw):[];
+    nrDrawState.drawings[sym]=Array.isArray(arr)?arr:[];
+  }catch(e){ nrDrawState.drawings[sym]=[]; }
+}
+function nrDrawSave(sym){
+  try{ window.localStorage.setItem(nrDrawKey(sym), JSON.stringify(nrDrawState.drawings[sym]||[])); }catch(e){}
+}
+/* Fibonacci levels from two prices. Pure math, exercised by the harness. */
+function nrFibLevels(p1, p2){
+  var out=[];
+  NR_FIB.forEach(function(r){ out.push({ r:r, price:p1+(p2-p1)*r }); });
+  return out;
+}
+/* Resolve an anchor to a fractional candle index in the current data.
+   Timestamp first, with linear interpolation between neighbors, so a
+   drawing keeps its date across timeframe switches. Clamped to the
+   plot edges when the date is off the chart. Index fallback when no
+   timestamp was stored. Pure math apart from nrState, exercised by
+   the harness. */
+function nrAnchorIdx(a){
+  var cs=nrState.data ? nrState.data.candles : [];
+  if(a.t!=null && cs.length){
+    if(a.t<=cs[0].t) return -0.5;
+    if(a.t>=cs[cs.length-1].t) return cs.length-0.5;
+    for(var i=0;i<cs.length;i++){ if(cs[i].t===a.t) return i; }
+    for(var j=1;j<cs.length;j++){
+      if(cs[j].t>a.t){
+        var f=(a.t-cs[j-1].t)/(cs[j].t-cs[j-1].t);
+        return (j-1)+f;
+      }
+    }
+  }
+  return a.i;
+}
+/* Pointer position to an anchor: nearest candle index and timestamp,
+   price clamped to the visible range. */
+function nrPointToAnchor(g, x, y){
+  var ci=g.idxFromX(x);
+  var ri=Math.round(Math.max(-0.5, Math.min(g.n-0.5, ci)));
+  if(ri<0) ri=0; if(ri>=g.n) ri=g.n-1;
+  var cs=nrState.data.candles;
+  return { i:ri, t:cs[ri]?cs[ri].t:null, p:Math.max(g.lo, Math.min(g.hi, g.priceFromY(y))) };
+}
+function nrDistToSeg(px,py,x1,y1,x2,y2){
+  var dx=x2-x1, dy=y2-y1;
+  var len2=dx*dx+dy*dy;
+  var t=len2?((px-x1)*dx+(py-y1)*dy)/len2:0;
+  t=Math.max(0,Math.min(1,t));
+  var cx=x1+t*dx, cy=y1+t*dy;
+  return Math.sqrt((px-cx)*(px-cx)+(py-cy)*(py-cy));
+}
+function nrDrawHit(dr, x, y, g){
+  var TH=10;
+  function ax(a){ return g.X(nrAnchorIdx(a)); }
+  if(dr.tool==="trend"){
+    return nrDistToSeg(x,y,ax(dr.a),g.Y(dr.a.p),ax(dr.b),g.Y(dr.b.p))<=TH;
+  }
+  if(dr.tool==="hline"){
+    return Math.abs(y-g.Y(dr.a.p))<=TH;
+  }
+  if(dr.tool==="hray"){
+    return Math.abs(y-g.Y(dr.a.p))<=TH && x>=ax(dr.a)-TH;
+  }
+  if(dr.tool==="vline"){
+    return Math.abs(x-ax(dr.a))<=TH;
+  }
+  if(dr.tool==="rect"){
+    var x0=ax(dr.a), x1=ax(dr.b), y0=g.Y(dr.a.p), y1=g.Y(dr.b.p);
+    var l=Math.min(x0,x1)-2, r=Math.max(x0,x1)+2, t=Math.min(y0,y1)-2, b=Math.max(y0,y1)+2;
+    return x>=l && x<=r && y>=t && y<=b;
+  }
+  if(dr.tool==="fib"){
+    var fx0=ax(dr.a), fx1=ax(dr.b);
+    var fl=Math.min(fx0,fx1)-TH, fr=Math.max(fx0,fx1)+TH;
+    if(x<fl || x>fr) return false;
+    var lv=nrFibLevels(dr.a.p, dr.b.p);
+    for(var i=0;i<lv.length;i++){ if(Math.abs(y-g.Y(lv[i].price))<=TH) return true; }
+    return false;
+  }
+  if(dr.tool==="text"){
+    var dx=x-ax(dr.a), dy=y-g.Y(dr.a.p);
+    return Math.sqrt(dx*dx+dy*dy)<=16;
+  }
+  if(dr.tool==="brush"){
+    for(var i=1;i<dr.pts.length;i++){
+      if(nrDistToSeg(x,y,ax(dr.pts[i-1]),g.Y(dr.pts[i-1].p),ax(dr.pts[i]),g.Y(dr.pts[i].p))<=TH) return true;
+    }
+    return false;
+  }
+  return false;
+}
+function nrDrawErase(x, y, g){
+  var list=nrDrawList();
+  for(var i=list.length-1;i>=0;i--){
+    if(nrDrawHit(list[i], x, y, g)){
+      list.splice(i,1);
+      nrDrawSave(nrState.sym);
+      nrDrawState.justDrew=true;
+      nrDraw();
+      return;
+    }
+  }
+}
+function nrDrawStroke(ctx, g, dr, preview){
+  ctx.save();
+  ctx.strokeStyle=NR_DRAW_COLOR;
+  ctx.fillStyle=NR_DRAW_COLOR;
+  ctx.lineWidth=preview?1.4:1.6;
+  if(preview){ ctx.globalAlpha=0.6; ctx.setLineDash([4,3]); }
+  function ax(a){ return g.X(nrAnchorIdx(a)); }
+  if(dr.tool==="trend" && dr.b){
+    ctx.beginPath(); ctx.moveTo(ax(dr.a), g.Y(dr.a.p)); ctx.lineTo(ax(dr.b), g.Y(dr.b.p)); ctx.stroke();
+  } else if(dr.tool==="hline"){
+    var hy=g.Y(dr.a.p);
+    ctx.beginPath(); ctx.moveTo(g.padL, hy); ctx.lineTo(g.W-g.padR, hy); ctx.stroke();
+  } else if(dr.tool==="hray"){
+    var ry=g.Y(dr.a.p);
+    ctx.beginPath(); ctx.moveTo(ax(dr.a), ry); ctx.lineTo(g.W-g.padR, ry); ctx.stroke();
+  } else if(dr.tool==="vline"){
+    var vx=ax(dr.a);
+    ctx.beginPath(); ctx.moveTo(vx, g.padT); ctx.lineTo(vx, g.padT+g.plotH); ctx.stroke();
+  } else if(dr.tool==="rect" && dr.b){
+    var x0=ax(dr.a), x1=ax(dr.b), y0=g.Y(dr.a.p), y1=g.Y(dr.b.p);
+    var rx=Math.min(x0,x1), ry2=Math.min(y0,y1), rw=Math.abs(x1-x0), rh=Math.abs(y1-y0);
+    ctx.globalAlpha=preview?0.08:0.12; ctx.setLineDash([]);
+    ctx.fillRect(rx, ry2, rw, rh);
+    ctx.globalAlpha=preview?0.6:1; if(preview) ctx.setLineDash([4,3]);
+    ctx.strokeRect(rx, ry2, rw, rh);
+  } else if(dr.tool==="fib" && dr.b){
+    var fx0=ax(dr.a), fx1=ax(dr.b);
+    var fl=Math.min(fx0,fx1), fr=Math.max(fx0,fx1);
+    ctx.font="9.5px JetBrains Mono, monospace"; ctx.textAlign="left";
+    nrFibLevels(dr.a.p, dr.b.p).forEach(function(lv){
+      var ly=g.Y(lv.price);
+      ctx.save();
+      ctx.lineWidth=(lv.r===0||lv.r===1)?1.6:1;
+      ctx.beginPath(); ctx.moveTo(fl, ly); ctx.lineTo(fr, ly); ctx.stroke();
+      ctx.restore();
+      var pct=(lv.r*100).toFixed(1).replace(/\.0$/,"");
+      ctx.fillText(pct+"%  $"+fmt(lv.price), fl+4, ly-3);
+    });
+  } else if(dr.tool==="text"){
+    var tx=ax(dr.a), ty=g.Y(dr.a.p);
+    ctx.beginPath(); ctx.arc(tx, ty, 3, 0, Math.PI*2); ctx.fill();
+    ctx.font="11.5px JetBrains Mono, monospace"; ctx.textAlign="left";
+    ctx.fillStyle="#eceef1";
+    ctx.fillText(dr.text, tx+8, ty+4);
+  } else if(dr.tool==="brush" && dr.pts && dr.pts.length>1){
+    ctx.beginPath();
+    ctx.moveTo(ax(dr.pts[0]), g.Y(dr.pts[0].p));
+    for(var i=1;i<dr.pts.length;i++){ ctx.lineTo(ax(dr.pts[i]), g.Y(dr.pts[i].p)); }
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+function nrDrawDrawings(ctx, g){
+  var list=nrDrawList();
+  list.forEach(function(dr){ nrDrawStroke(ctx, g, dr, false); });
+  var st=nrDrawState.drag;
+  if(st){
+    var pv=null;
+    if(st.tool==="brush"){ pv={ tool:"brush", pts:st.pts }; }
+    else if(st.tool==="hline"||st.tool==="hray"||st.tool==="vline"){ pv={ tool:st.tool, a:st.cur }; }
+    else if(st.a && st.cur){ pv={ tool:st.tool, a:st.a, b:st.cur }; }
+    if(pv) nrDrawStroke(ctx, g, pv, true);
+  }
+}
+function nrSetDrawTool(tool){
+  nrDrawState.tool=tool; nrDrawState.drag=null; nrDrawState.justDrew=false;
+  document.querySelectorAll("#nrDrawBar [data-drawtool]").forEach(function(b){
+    b.classList.toggle("on", b.getAttribute("data-drawtool")===tool);
+  });
+  var wrap=document.getElementById("nrCanvas").parentElement;
+  if(tool==="select"){ wrap.classList.remove("draw"); }
+  else { wrap.classList.add("draw"); }
+  if(nrState.data) nrDraw();
+}
+function nrDrawUndo(){
+  var l=nrDrawList();
+  if(l.length){ l.pop(); nrDrawSave(nrState.sym); nrDraw(); }
+}
+function nrDrawClearAll(){
+  var l=nrDrawList();
+  if(!l.length) return;
+  if(window.confirm("Clear all drawings for "+nrState.sym+"?")){
+    nrDrawState.drawings[nrState.sym]=[];
+    nrDrawSave(nrState.sym);
+    nrDraw();
+  }
+}
+document.querySelectorAll("#nrDrawBar [data-drawtool]").forEach(function(b){
+  b.addEventListener("click",function(){ nrSetDrawTool(b.getAttribute("data-drawtool")); });
+});
+document.querySelectorAll("#nrDrawBar [data-drawact]").forEach(function(b){
+  b.addEventListener("click",function(){
+    if(b.getAttribute("data-drawact")==="undo") nrDrawUndo();
+    else nrDrawClearAll();
+  });
+});
+var nrCanvasEl=document.getElementById("nrCanvas");
+function nrCanvasPos(e){
+  var r=nrCanvasEl.getBoundingClientRect();
+  return { x:e.clientX-r.left, y:e.clientY-r.top };
+}
+nrCanvasEl.addEventListener("pointerdown",function(e){
+  if(!nrState.data) return;
+  var tool=nrDrawState.tool;
+  if(tool==="select") return;
+  var g=nrGeom(); if(!g) return;
+  e.preventDefault();
+  try{ nrCanvasEl.setPointerCapture(e.pointerId); }catch(err){}
+  var pos=nrCanvasPos(e);
+  if(tool==="eraser"){ nrDrawErase(pos.x, pos.y, g); return; }
+  if(tool==="text"){
+    var ta=nrPointToAnchor(g, pos.x, pos.y);
+    var txt=window.prompt("Note text:");
+    if(txt!=null && txt.trim()!==""){
+      nrDrawList().push({ id:nrDrawId(), tool:"text", a:ta, text:txt.trim() });
+      nrDrawSave(nrState.sym);
+      nrDrawState.justDrew=true;
+      nrDraw();
+    }
+    return;
+  }
+  var an=nrPointToAnchor(g, pos.x, pos.y);
+  nrDrawState.drag={ tool:tool, a:an, cur:an, pts:(tool==="brush")?[an]:null };
+});
+nrCanvasEl.addEventListener("pointermove",function(e){
+  var st=nrDrawState;
+  if(!st.drag || !nrState.data) return;
+  var g=nrGeom(); if(!g) return;
+  e.preventDefault();
+  var pos=nrCanvasPos(e);
+  if(st.drag.tool==="brush"){
+    var p=nrPointToAnchor(g, pos.x, pos.y);
+    var last=st.drag.pts[st.drag.pts.length-1];
+    if(Math.abs(p.i-last.i)>=0.25 || Math.abs(p.p-last.p)>(g.hi-g.lo)*0.004){
+      st.drag.pts.push(p);
+    }
+  } else {
+    st.drag.cur=nrPointToAnchor(g, pos.x, pos.y);
+  }
+  nrDraw();
+});
+function nrDrawEndDrag(){
+  var st=nrDrawState;
+  if(!st.drag) return;
+  var drag=st.drag; st.drag=null;
+  var g=nrGeom();
+  if(drag.tool==="brush"){
+    if(drag.pts && drag.pts.length>1){
+      nrDrawList().push({ id:nrDrawId(), tool:"brush", pts:drag.pts });
+      nrDrawSave(nrState.sym);
+    }
+  } else if(g){
+    if(drag.tool==="hline" || drag.tool==="hray" || drag.tool==="vline"){
+      nrDrawList().push({ id:nrDrawId(), tool:drag.tool, a:drag.cur });
+      nrDrawSave(nrState.sym);
+    } else if(drag.a && drag.cur){
+      var di=Math.abs(drag.cur.i-drag.a.i);
+      var dp=Math.abs(drag.cur.p-drag.a.p);
+      if(di>=0.5 || dp>(g.hi-g.lo)*0.005){
+        nrDrawList().push({ id:nrDrawId(), tool:drag.tool, a:drag.a, b:drag.cur });
+        nrDrawSave(nrState.sym);
+      }
+    }
+  }
+  st.justDrew=true;
+  nrDraw();
+}
+nrCanvasEl.addEventListener("pointerup", nrDrawEndDrag);
+nrCanvasEl.addEventListener("pointercancel", function(){ nrDrawState.drag=null; nrDraw(); });
+nrDrawLoad(nrState.sym);
 /* Feed the Ask panel with the newsroom fundamentals, so questions
    about a thesis, a worth, or a kill get an answer from the record. */
 if(typeof CORPUS!=="undefined"){
