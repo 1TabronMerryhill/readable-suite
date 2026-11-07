@@ -117,7 +117,8 @@ exports.handler = async (event) => {
     : "";
 
   // Citations are the graph ids the answer actually references.
-  const cited = [...new Set((answer.match(/\[[a-z_]+:[^\]]+\]/g) || []).map((m) => m.slice(1, -1)))]
+  // Groq sometimes cites with full-width brackets, so match both forms.
+  const cited = [...new Set((answer.match(/[【\[][a-z_]+:[^\]】]+[】\]]/g) || []).map((m) => m.slice(1, -1)))]
     .filter((id) => context.some((c) => c.id === id));
 
   return {
