@@ -46,6 +46,25 @@
 
   /* section scaffolding */
   section{padding:34px 0 6px}
+  .desk-sec[hidden]{display:none}
+  /* tab bar: one screen, seven tabs. The bar is the navigation now.
+     It sticks to the top once the header scrolls away, and scrolls
+     sideways on a phone so every tab stays thumb-reachable. */
+  .tabbar{position:sticky;top:0;z-index:30;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 2px;scrollbar-width:none}
+  .tabbar::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;border:1px solid var(--line2);background:transparent;color:#c8cdd6;font:600 13px/1 var(--mono);padding:9px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .tab .tn{color:var(--faint);font-size:11px;margin-right:4px}
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#111}
+  .tab.on .tn{color:#111}
+  .loop-line{margin:10px 2px 0;color:var(--muted);font-size:12px}
+  .loop-line b{color:var(--text)}
+  .tab-skill{margin:12px 0 0;color:var(--muted);font-size:13px}
+  .tab-skill b{color:var(--text)}
+  .tab-next{display:block;width:100%;text-align:left;margin:26px 0 0;padding:14px 16px;border:1px solid var(--line2);background:#14161a;color:var(--text);font:600 14px/1.5 var(--mono);cursor:pointer;border-radius:10px}
+  .tab-next:hover{border-color:var(--accent)}
+  .tab-next .nx{color:var(--accent)}
+  .nr-drill-banner{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--accent);background:#1a1408;color:var(--text);padding:10px 12px;border-radius:10px;margin-bottom:12px;font-size:13px}
+  .nr-drill-banner[hidden]{display:none}
   .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:16px;flex-wrap:wrap}
   .sec-num{font-family:var(--mono);font-size:12px;color:var(--faint)}
   .sec-title{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:0}
@@ -341,8 +360,19 @@
     </div>
   </div>
 
+  <nav class="tabbar" id="tabBar" role="tablist" aria-label="Desk sections">
+    <button class="tab on" data-tab="glance" role="tab" aria-selected="true" type="button"><span class="tn">01</span>Glance</button>
+    <button class="tab" data-tab="positions" role="tab" aria-selected="false" type="button"><span class="tn">02</span>Positions</button>
+    <button class="tab" data-tab="newsroom" role="tab" aria-selected="false" type="button"><span class="tn">03</span>Newsroom</button>
+    <button class="tab" data-tab="practice" role="tab" aria-selected="false" type="button">Practice</button>
+    <button class="tab" data-tab="wire" role="tab" aria-selected="false" type="button"><span class="tn">04</span>Wire</button>
+    <button class="tab" data-tab="graph" role="tab" aria-selected="false" type="button"><span class="tn">06</span>Graph</button>
+    <button class="tab" data-tab="ask" role="tab" aria-selected="false" type="button"><span class="tn">07</span>Ask</button>
+  </nav>
+  <p class="loop-line" id="loopLine"></p>
+
   <!-- 01 GLANCE -->
-  <section class="glance" aria-label="The firm at a glance">
+  <section class="glance desk-sec" id="sec-glance" data-tab="glance" aria-label="The firm at a glance">
     <div class="glance-grid">
       <div class="stat"><div class="k">Real book</div><div class="v" id="gTotal">$78.08</div><div class="s">Total value, live book</div></div>
       <div class="stat"><div class="k">Cash</div><div class="v" id="gCash">$31.25</div><div class="s">Ready to deploy</div></div>
@@ -353,6 +383,7 @@
       <span class="k">Needs you</span>
       <span class="t" id="attentionText">Gold is $6 from its $4,090 target. Nothing else needs you.</span>
     </div>
+    <p class="tab-skill"><b>Glance trains the eye for what matters.</b></p>
     <p class="paperline" id="paperLine">Paper book <b>$105.44</b>, all cash, flat. <b>0 open, 0 closed.</b> Prices as of <b>1:22 PM CT Nov 6, 2026 (Robinhood live)</b>; gold <b>1:16 PM CT Yahoo snapshot</b>.</p>
 
     <div class="feed" aria-label="Feed and system status">
@@ -379,15 +410,17 @@
         <span class="refreshmeta" id="refreshMeta">First check running.</span>
       </div>
     </div>
+    <button class="tab-next" data-next="newsroom" type="button"><span class="nx">Next: Newsroom.</span> Learn the read behind what needs you.</button>
   </section>
 
   <!-- 02 POSITIONS -->
-  <section aria-label="Positions">
+  <section aria-label="Positions" id="sec-positions" data-tab="positions" class="desk-sec">
     <div class="sec-head">
       <span class="sec-num">02</span>
       <h2 class="sec-title">Positions</h2>
       <p class="sec-note">Three live. Every card draws its own price line with entry, stop, target, and kill on it. Last prices refresh every 60 seconds when the live feed answers. No trade sits on this desk without a kill criterion on its card.</p>
     </div>
+    <p class="tab-skill"><b>Positions trains the plan.</b></p>
     <div class="pos-grid" id="posGrid"></div>
 
     <div class="cond-head">
@@ -396,16 +429,19 @@
     </div>
     <div class="cond-grid" id="condGrid"></div>
     <p class="paperline" style="margin-top:14px">Card values are priced off the lasts above, so they can sit a cent or two off the book. <b>Book totals in the glance come from the same feed as the cards when live, and from the snapshot when it is not.</b></p>
+    <button class="tab-next" data-next="graph" type="button"><span class="nx">Next: Graph.</span> See why the plan is what it is.</button>
   </section>
 
   <!-- 03 NEWSROOM -->
-  <section aria-label="Newsroom">
+  <section aria-label="Newsroom" id="sec-newsroom" data-tab="newsroom" class="desk-sec">
     <div class="sec-head">
       <span class="sec-num">03</span>
       <h2 class="sec-title">Newsroom</h2>
       <p class="sec-note">The fund's lens: how the fund reads a market, a business, and capital. One symbol at a time. Every number says where it came from. The firm's live book stays in Positions above. A member sees the lens, not the firm's book.</p>
     </div>
+    <p class="tab-skill"><b>Newsroom trains the read.</b></p>
     <div class="nr-picker" id="nrPicker" role="group" aria-label="Symbol picker"></div>
+    <div class="nr-drill-banner" id="nrDrillBanner" hidden><span id="nrDrillBannerText"></span><button class="fbtn" id="nrDrillBackBtn" type="button">Back to Practice</button></div>
     <div class="nr-chart-card">
       <div class="nr-chart-head">
         <div><div class="sym" id="nrSym">MU</div><div class="co" id="nrName">Micron Technology</div></div>
@@ -444,13 +480,6 @@
       <div class="nr-card" id="nrFA"></div>
     </div>
     <div class="nr-learn" id="nrLearn" hidden></div>
-    <div class="nr-practice" id="nrPractice">
-      <h3>Practice</h3>
-      <p class="sub">Random drills. Each one states an end result and the tool to use. You draw it on the chart, then the page checks your work against the chart. Tap any term in the panels above to learn what it means and what it means for this symbol.</p>
-      <div class="actions"><button class="fbtn" id="nrLessonBtn" type="button">Give me a lesson</button></div>
-      <div class="drill" id="nrDrill" hidden></div>
-      <div class="progress" id="nrPracticeProgress"></div>
-    </div>
     <div class="cond-head">
       <h3>Research insights</h3>
       <p>Dated entries from the graph facts and the Nov 6 briefs and packages. Nothing dated Nov 6 is presented as today's news.</p>
@@ -461,20 +490,38 @@
       <p>Connector candidates from the graph. Questions, not conclusions. They stay open until Milly answers them.</p>
     </div>
     <div class="patterns" id="openQList"></div>
+    <button class="tab-next" data-next="practice" type="button"><span class="nx">Next: Practice.</span> Drill the read you just learned.</button>
+  </section>
+
+  <!-- PRACTICE -->
+  <section aria-label="Practice" id="sec-practice" data-tab="practice" class="desk-sec">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Practice</h2>
+      <p class="sec-note">Random drills from the Newsroom chart. Each one states an end result and the tool to use. Draw it on the chart in the Newsroom tab, then come back here and check your work.</p>
+    </div>
+    <p class="tab-skill"><b>Practice trains the hand.</b></p>
+    <div class="nr-practice" id="nrPractice">
+      <div class="actions"><button class="fbtn" id="nrLessonBtn" type="button">Give me a lesson</button></div>
+      <div class="drill" id="nrDrill" hidden></div>
+      <div class="progress" id="nrPracticeProgress"></div>
+    </div>
+    <button class="tab-next" data-next="positions" type="button"><span class="nx">Next: Positions.</span> See the plan behind the drill.</button>
   </section>
 
   <!-- 04 WIRE -->
-  <section aria-label="The wire">
+  <section aria-label="The wire" id="sec-wire" data-tab="wire" class="desk-sec">
     <div class="sec-head">
       <span class="sec-num">04</span>
       <h2 class="sec-title">The Wire</h2>
       <p class="sec-note">What came in today, what the desk made of it, and the graph references each item carries.</p>
     </div>
+    <p class="tab-skill">Wire is intake, not a step. It feeds the loop.</p>
     <div class="wire-list" id="wireList"></div>
   </section>
 
   <!-- 05 BRIEF -->
-  <section aria-label="The brief">
+  <section aria-label="The brief" id="sec-brief" data-tab="wire" class="desk-sec">
     <div class="sec-head">
       <span class="sec-num">05</span>
       <h2 class="sec-title">The Brief</h2>
@@ -482,15 +529,17 @@
     </div>
     <p class="brief-overall">Thursday rout was a policy scare. Friday opened split: chips rebounded, Dow fell. Payrolls hot, 10-year near 4.9 percent, Dec hike odds near 80 percent. Tuesday CPI is the next gate.</p>
     <div class="slots" id="slotList"></div>
+    <button class="tab-next" data-next="glance" type="button"><span class="nx">Next: Glance.</span> Start the loop at step 1.</button>
   </section>
 
   <!-- 06 GRAPH -->
-  <section aria-label="The knowledge graph">
+  <section aria-label="The knowledge graph" id="sec-graph" data-tab="graph" class="desk-sec">
     <div class="sec-head">
       <span class="sec-num">06</span>
       <h2 class="sec-title">The Graph, Alive</h2>
       <p class="sec-note">The live subset of the firm knowledge graph. News mentions themes. Trades decide assets. Tap any node to read it and see what it connects to.</p>
     </div>
+    <p class="tab-skill"><b>Graph trains the memory.</b></p>
     <div class="graph-stats">
       <div class="gstat"><div class="v">118</div><div class="k">Nodes in the full graph</div></div>
       <div class="gstat"><div class="v">117</div><div class="k">Edges in the full graph</div></div>
@@ -517,15 +566,17 @@
       <p>Counted, not believed. A pattern needs 10 live scored outcomes before the desk treats it as live. None has. Patterns are never drawn as edges.</p>
     </div>
     <div class="patterns" id="patList"></div>
+    <button class="tab-next" data-next="ask" type="button"><span class="nx">Next: Ask.</span> Ask the graph what you still want to know.</button>
   </section>
 
   <!-- 07 ASK -->
-  <section aria-label="Ask the graph" id="askSection">
+  <section aria-label="Ask the graph" id="askSection" data-tab="ask" class="desk-sec">
     <div class="sec-head">
       <span class="sec-num">07</span>
       <h2 class="sec-title">Ask the Graph</h2>
       <p class="sec-note">Ask in plain words. The answer comes from the graph snapshot on this page, and every answer shows the ids it came from.</p>
     </div>
+    <p class="tab-skill"><b>Ask trains the question.</b></p>
     <div class="ask-box">
       <div class="ask-head">
         <span class="t">Talk to the memory</span>
@@ -541,6 +592,7 @@
         <button type="submit">Ask</button>
       </form>
     </div>
+    <button class="tab-next" data-next="glance" type="button"><span class="nx">Next: Glance.</span> Start the loop again with fresh eyes.</button>
   </section>
 
   <footer>
@@ -1993,6 +2045,7 @@ document.getElementById("nrSmaToggle").addEventListener("change",function(e){
   nrState.showSma=e.target.checked; nrDraw();
 });
 document.getElementById("nrAskBtn").addEventListener("click",function(){
+  deskShowTab("ask");
   var sec=document.getElementById("askSection");
   if(sec && sec.scrollIntoView) sec.scrollIntoView({behavior:"smooth"});
   var inp=document.getElementById("askInput");
@@ -2420,7 +2473,8 @@ function nrBuildDrills(cs, sma20, sma50, rsi14, fa, sym){
   }
   var lastC=cs[n-1], prevC=cs[n-2];
   var chg=(lastC.c-prevC.c)/prevC.c*100;
-  var up=lastC.c>=lastC.o;
+  var up=chg>=0; /* Direction is change vs prior close, the same
+    measure the candle read uses, so the drill and the read agree. */
   var avgVol=win.map(function(c){return c.v;}).reduce(function(a,b){return a+b;},0)/win.length;
   var feat = Math.abs(chg)>=4 ? "a big day" : (lastC.v>1.5*avgVol ? "heavy volume" : (Math.abs(lastC.c-lastC.o)<0.1*(lastC.h-lastC.l) ? "a day neither side won" : "an ordinary day"));
   var dirWords = up ? ["up","rose","gained","climbed","higher"] : ["down","fell","dropped","lower"];
@@ -2510,11 +2564,14 @@ function nrPracticeShow(drill){
     +'<div class="tool">Tool: '+esc(drill.toolLabel)+'</div>'
     +'<div class="teach"><div class="tm"><span class="tk">What this tool means</span>'+esc(drill.means)+'</div><div class="ta"><span class="tk">What it means for '+esc(nrState.sym)+'</span>'+esc(drill.asset)+'</div></div>'
     +'<div class="tol">'+esc(drill.tol)+'</div>'
-    +'<div class="actions"><button class="fbtn" id="nrCheckBtn" type="button">Check my work</button><button class="fbtn" id="nrNewBtn" type="button">New lesson</button></div>'
+    +'<div class="actions"><button class="fbtn" id="nrCheckBtn" type="button">Check my work</button><button class="fbtn" id="nrChartBtn" type="button">Go to the chart</button><button class="fbtn" id="nrNewBtn" type="button">New lesson</button></div>'
     +'<div class="result" id="nrDrillResult"></div>';
   document.getElementById("nrCheckBtn").addEventListener("click",nrPracticeCheck);
+  document.getElementById("nrChartBtn").addEventListener("click",function(){ deskShowTab("newsroom"); });
   document.getElementById("nrNewBtn").addEventListener("click",nrPracticeNew);
   nrSetDrawTool(drill.tool);
+  var ban=document.getElementById("nrDrillBanner");
+  if(ban){ document.getElementById("nrDrillBannerText").textContent="Drill: "+drill.goal+" Draw on the chart, then return to Practice to check."; ban.hidden=false; }
 }
 function nrPracticeNew(){
   var d=nrState.data;
@@ -2543,6 +2600,7 @@ function nrPracticeCheck(){
     res.className="result good";
     res.innerHTML="<b>You got it.</b> "+esc(r.right)+" The lesson: "+esc(drill.lesson);
     nrPractice.active=null;
+    var ban=document.getElementById("nrDrillBanner"); if(ban) ban.hidden=true;
   } else {
     res.className="result";
     res.innerHTML="<b>Not yet.</b> "+esc(r.right)+" "+esc(r.off)+" Try again.";
@@ -2552,6 +2610,7 @@ function nrPracticeClear(){
   nrPractice.active=null;
   var box=document.getElementById("nrDrill");
   if(box){ box.hidden=true; box.innerHTML=""; }
+  var ban=document.getElementById("nrDrillBanner"); if(ban) ban.hidden=true;
 }
 document.getElementById("nrLessonBtn").addEventListener("click",nrPracticeNew);
 nrPracticeLoad(); nrPracticeRenderProgress();
@@ -2568,7 +2627,54 @@ if(typeof CORPUS!=="undefined"){
     body:"NVDA, DIA, SPY, ANET, APP, IREN, AVGO, MRVL, GOOGL, BRK.B, VST, and FRO have no recorded business check or intrinsic worth in the Nov 6 packages. Their crash screen and any recorded trade status are on their Newsroom cards.",
     kill:null, text:"watchlist business check worth not recorded nvda dia spy anet app iren avgo mrvl googl brk.b vst fro" });
 }
-nrRenderPicker(); renderInsights(); renderFA();
+/* ---- Tabs: one screen, seven tabs. The loop is the workflow ---- */
+/* Tab order follows the sections. Loop order is Glance, Newsroom,
+   Practice, Positions, Graph, Ask, and back to Glance. Wire is
+   intake, not a step. The hash is #tab=<id> so a tab is
+   deep-linkable and the back button works. */
+var DESK_TABS=[
+  {id:"glance", label:"Glance", step:"see what needs you", loop:1, next:"newsroom", nextWhy:"learn the read behind what needs you"},
+  {id:"positions", label:"Positions", step:"see the plan", loop:4, next:"graph", nextWhy:"see why the plan is what it is"},
+  {id:"newsroom", label:"Newsroom", step:"learn the read", loop:2, next:"practice", nextWhy:"drill the read you just learned"},
+  {id:"practice", label:"Practice", step:"drill the read", loop:3, next:"positions", nextWhy:"see the plan behind the drill"},
+  {id:"wire", label:"Wire", step:"", loop:null, next:"glance", nextWhy:"start the loop at step 1"},
+  {id:"graph", label:"Graph", step:"see why", loop:5, next:"ask", nextWhy:"ask the graph what you still want to know"},
+  {id:"ask", label:"Ask", step:"ask the graph", loop:6, next:"glance", nextWhy:"start the loop again with fresh eyes"}
+];
+var deskActiveTab=null;
+function deskTabById(id){ for(var i=0;i<DESK_TABS.length;i++) if(DESK_TABS[i].id===id) return DESK_TABS[i]; return null; }
+function deskShowTab(id, fromHash){
+  var t=deskTabById(id); if(!t) return;
+  if(deskActiveTab===id) return;
+  deskActiveTab=id;
+  var secs=document.querySelectorAll(".desk-sec");
+  for(var i=0;i<secs.length;i++) secs[i].hidden = secs[i].getAttribute("data-tab")!==id;
+  var btns=document.querySelectorAll("#tabBar .tab");
+  for(var j=0;j<btns.length;j++){ var on=btns[j].getAttribute("data-tab")===id; btns[j].classList.toggle("on",on); btns[j].setAttribute("aria-selected",on?"true":"false"); }
+  var line=document.getElementById("loopLine");
+  if(t.loop) line.innerHTML="Step <b>"+t.loop+" of 6</b>: <b>"+esc(t.label)+"</b>, "+esc(t.step)+". The loop repeats daily.";
+  else line.innerHTML="Wire is outside the loop. The loop repeats daily, starting at Glance.";
+  if(!fromHash && location.hash!=="#tab="+id){ try{ location.hash="tab="+id; }catch(e){} }
+  if((id==="newsroom"||id==="practice") && typeof nrDraw==="function" && nrState.data) nrDraw();
+  window.scrollTo(0,0);
+}
+function deskInitTabs(){
+  var m=(location.hash||"").match(/^#tab=([a-z]+)$/);
+  var start=m && deskTabById(m[1]) ? m[1] : "glance";
+  deskActiveTab=null;
+  deskShowTab(start, true);
+  var btns=document.querySelectorAll("#tabBar .tab");
+  for(var i=0;i<btns.length;i++) btns[i].addEventListener("click", function(){ deskShowTab(this.getAttribute("data-tab")); });
+  var nxt=document.querySelectorAll(".tab-next");
+  for(var j=0;j<nxt.length;j++) nxt[j].addEventListener("click", function(){ deskShowTab(this.getAttribute("data-next")); });
+  var back=document.getElementById("nrDrillBackBtn");
+  if(back) back.addEventListener("click", function(){ deskShowTab("practice"); });
+  window.addEventListener("hashchange", function(){
+    var mm=(location.hash||"").match(/^#tab=([a-z]+)$/);
+    if(mm) deskShowTab(mm[1], true);
+  });
+}
+nrRenderPicker(); renderInsights(); renderFA(); deskInitTabs();
 document.getElementById("nrAskBtn").textContent="Ask the graph about MU";
 document.getElementById("nrAskNote").textContent="";
 nrFetch();
