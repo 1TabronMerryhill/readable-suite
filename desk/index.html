@@ -471,7 +471,7 @@
         <button class="fbtn" data-drawact="undo" type="button">Undo</button>
         <button class="fbtn" data-drawact="clear" type="button">Clear all</button>
       </div>
-      <p class="nr-drawnote">Drawings live on this device only. They are saved per symbol in this browser.</p>
+      <p class="nr-drawnote" id="nrDrawNote">Drawings are shared on the firm server: Milly's lines are amber, Bobby's are blue. This device keeps an offline copy.</p>
       <div class="nr-canvas-wrap"><canvas id="nrCanvas" height="300"></canvas></div>
       <div class="nr-candle" id="nrCandle">Tap a candle to read its open, high, low, close, and volume.</div>
       <div class="nr-meta" id="nrMeta">Chart loading.</div>
@@ -2078,6 +2078,7 @@ function selectSymbol(sym){
   if(!nrSymName(sym)) return;
   nrState.sym=sym; nrState.selIdx=-1;
   nrDrawLoad(sym);
+  nrSyncSymbol(sym);
   var meta=nrSymName(sym);
   document.getElementById("nrSym").textContent=sym;
   document.getElementById("nrName").textContent=meta.name;
@@ -2128,11 +2129,14 @@ window.addEventListener("resize",function(){
    switch, and falls back to the stored index when that timestamp is
    not in the current candle set. Drawings never change the chart
    scale: lo and hi come only from candles and plan levels. Drawings
-   save to localStorage per symbol, on this device only. There is no
-   server store yet, so a drawing does not follow Milly to another
-   device. */
+   live in the shared store on the firm server (Railway bus, reached
+   through /api/drawings) and sync every few seconds, so a line drawn
+   on one device appears on the other. localStorage keeps an offline
+   copy per symbol and is the fallback when the store is unreachable. */
 var NR_FIB=[0,0.236,0.382,0.5,0.618,0.786,1];
 var NR_DRAW_COLOR="#e8a33d";
+var NR_BOBBY_COLOR="#5ac8fa";
+var NR_AUTHOR="Milly";
 var nrDrawState={ tool:"select", drawings:{}, drag:null, justDrew:false };
 function nrDrawId(){ return "d"+Date.now().toString(36)+Math.floor(Math.random()*1000000).toString(36); }
 function nrDrawKey(sym){ return "opone-desk-drawings-"+sym; }
@@ -2146,6 +2150,112 @@ function nrDrawLoad(sym){
 }
 function nrDrawSave(sym){
   try{ window.localStorage.setItem(nrDrawKey(sym), JSON.stringify(nrDrawState.drawings[sym]||[])); }catch(e){}
+}
+/* ---- Shared store sync (Railway bus via /api/drawings) ----
+   The server is the source of truth; localStorage is the offline
+   cache. Merge rule (spec): per drawing id, last writer wins by the
+   server-stamped updated_at. Mutations push per drawing: an add is
+   an upsert, an erase or undo is a delete, a clear deletes each of
+   Milly's lines (Bobby's are never cleared from here). A poll every
+   5 seconds while the Newsroom tab is active merges the other side's
+   work. The drag preview lives outside the drawings list, so a poll
+   landing mid-stroke never clobbers the stroke in progress. */
+var nrSync={ known:{}, started:false };
+function nrSyncNote(ok){
+  var el=document.getElementById("nrDrawNote");
+  if(!el) return;
+  el.textContent= ok
+    ? "Drawings are shared on the firm server: Milly's lines are amber, Bobby's are blue. This device keeps an offline copy."
+    : "Shared store unreachable right now. Drawings are saving on this device only and will sync when it is back.";
+}
+function nrSyncFetch(sym){
+  return fetch("/api/drawings?symbol="+encodeURIComponent(sym), { headers:{ "Accept":"application/json" } })
+    .then(function(r){ if(!r.ok) throw new Error("drawings "+r.status); return r.json(); });
+}
+function nrSyncMerge(sym, remote){
+  remote=Array.isArray(remote)?remote:[];
+  var local=nrDrawState.drawings[sym]||[];
+  var known=nrSync.known[sym]||{};
+  var remoteById={};
+  remote.forEach(function(d){ remoteById[d.id]=d; });
+  var merged=[], localOnly=[], changed=false;
+  var localIds={};
+  local.forEach(function(d){
+    localIds[d.id]=true;
+    var r=remoteById[d.id];
+    if(r){
+      if((r.updated_at||"")>(d.updated_at||"")){ merged.push(r); changed=true; }
+      else merged.push(d);
+    } else if(known[d.id]){
+      changed=true; /* the server had it and it is gone: deleted on the other side */
+    } else {
+      merged.push(d); localOnly.push(d);
+    }
+  });
+  remote.forEach(function(d){ if(!localIds[d.id]){ merged.push(d); changed=true; } });
+  var newKnown={};
+  remote.forEach(function(d){ newKnown[d.id]=true; });
+  nrSync.known[sym]=newKnown;
+  if(changed){
+    nrDrawState.drawings[sym]=merged;
+    nrDrawSave(sym);
+    if(sym===nrState.sym && nrState.data) nrDraw();
+  }
+  /* Anything the server has never seen (offline work, or the first
+     sync migrating this device's localStorage) goes up now. */
+  localOnly.forEach(function(d){ nrSyncUpsert(d, sym); });
+}
+function nrSyncUpsert(dr, sym){
+  if(!dr || !dr.id) return;
+  sym=sym||nrState.sym;
+  var full={};
+  for(var k in dr){ full[k]=dr[k]; }
+  full.symbol=sym;
+  if(!full.author) full.author=NR_AUTHOR;
+  fetch("/api/drawings", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ drawing: full }) })
+    .then(function(r){ if(!r.ok) throw new Error("upsert "+r.status); return r.json(); })
+    .then(function(out){
+      nrSyncNote(true);
+      if(out && Array.isArray(out.drawings)){
+        var known=nrSync.known[sym]=nrSync.known[sym]||{};
+        var list=nrDrawState.drawings[sym]||[];
+        out.drawings.forEach(function(rd){
+          known[rd.id]=true;
+          for(var i=0;i<list.length;i++){ if(list[i].id===rd.id) list[i]=rd; }
+        });
+        nrDrawSave(sym);
+        if(sym===nrState.sym && nrState.data) nrDraw();
+      }
+    })
+    .catch(function(){ nrSyncNote(false); });
+}
+function nrSyncDelete(sym, id){
+  fetch("/api/drawings?symbol="+encodeURIComponent(sym)+"&id="+encodeURIComponent(id), { method:"DELETE" })
+    .then(function(r){
+      if(r.ok || r.status===404){
+        nrSyncNote(true);
+        if(nrSync.known[sym]) delete nrSync.known[sym][id];
+      }
+    })
+    .catch(function(){ nrSyncNote(false); });
+}
+function nrSyncSymbol(sym){
+  nrSyncFetch(sym).then(function(out){
+    nrSyncNote(true);
+    nrSyncMerge(sym, (out && out.drawings)||[]);
+  }).catch(function(){ nrSyncNote(false); });
+}
+function nrSyncPoll(){
+  if(document.hidden) return;
+  var tab=document.querySelector('#tabBar .tab[data-tab="newsroom"]');
+  if(tab && !tab.classList.contains("on")) return;
+  nrSyncSymbol(nrState.sym);
+}
+function nrSyncStart(){
+  if(nrSync.started) return;
+  nrSync.started=true;
+  nrSyncSymbol(nrState.sym);
+  setInterval(nrSyncPoll, 5000);
 }
 /* Fibonacci levels from two prices. Pure math, exercised by the harness. */
 function nrFibLevels(p1, p2){
@@ -2235,18 +2345,23 @@ function nrDrawErase(x, y, g){
   var list=nrDrawList();
   for(var i=list.length-1;i>=0;i--){
     if(nrDrawHit(list[i], x, y, g)){
-      list.splice(i,1);
+      var gone=list.splice(i,1)[0];
       nrDrawSave(nrState.sym);
+      nrSyncDelete(nrState.sym, gone.id);
       nrDrawState.justDrew=true;
       nrDraw();
       return;
     }
   }
 }
+function nrDrawLabel(dr){
+  return (dr.author==="Bobby" ? "Bobby · " : "") + (dr.label || "");
+}
 function nrDrawStroke(ctx, g, dr, preview){
   ctx.save();
-  ctx.strokeStyle=NR_DRAW_COLOR;
-  ctx.fillStyle=NR_DRAW_COLOR;
+  var col=(dr.author==="Bobby")?NR_BOBBY_COLOR:NR_DRAW_COLOR;
+  ctx.strokeStyle=col;
+  ctx.fillStyle=col;
   ctx.lineWidth=preview?1.4:1.6;
   if(preview){ ctx.globalAlpha=0.6; ctx.setLineDash([4,3]); }
   function ax(a){ return g.X(nrAnchorIdx(a)); }
@@ -2255,9 +2370,11 @@ function nrDrawStroke(ctx, g, dr, preview){
   } else if(dr.tool==="hline"){
     var hy=g.Y(dr.a.p);
     ctx.beginPath(); ctx.moveTo(g.padL, hy); ctx.lineTo(g.W-g.padR, hy); ctx.stroke();
+    if(dr.label){ ctx.font="10.5px JetBrains Mono, monospace"; ctx.textAlign="left"; ctx.fillText(nrDrawLabel(dr), g.padL+6, hy-6); }
   } else if(dr.tool==="hray"){
     var ry=g.Y(dr.a.p);
     ctx.beginPath(); ctx.moveTo(ax(dr.a), ry); ctx.lineTo(g.W-g.padR, ry); ctx.stroke();
+    if(dr.label){ ctx.font="10.5px JetBrains Mono, monospace"; ctx.textAlign="left"; ctx.fillText(nrDrawLabel(dr), ax(dr.a)+6, ry-6); }
   } else if(dr.tool==="vline"){
     var vx=ax(dr.a);
     ctx.beginPath(); ctx.moveTo(vx, g.padT); ctx.lineTo(vx, g.padT+g.plotH); ctx.stroke();
@@ -2318,15 +2435,27 @@ function nrSetDrawTool(tool){
   if(nrState.data) nrDraw();
 }
 function nrDrawUndo(){
+  /* Undo removes Milly's own most recent drawing, never Bobby's. */
   var l=nrDrawList();
-  if(l.length){ l.pop(); nrDrawSave(nrState.sym); nrDraw(); }
+  for(var i=l.length-1;i>=0;i--){
+    if((l[i].author||"Milly")==="Milly"){
+      var gone=l.splice(i,1)[0];
+      nrDrawSave(nrState.sym);
+      nrSyncDelete(nrState.sym, gone.id);
+      nrDraw();
+      return;
+    }
+  }
 }
 function nrDrawClearAll(){
+  /* Clear removes Milly's drawings only. Bobby's lines stay. */
   var l=nrDrawList();
-  if(!l.length) return;
-  if(window.confirm("Clear all drawings for "+nrState.sym+"?")){
-    nrDrawState.drawings[nrState.sym]=[];
+  var mine=l.filter(function(d){ return (d.author||"Milly")==="Milly"; });
+  if(!mine.length) return;
+  if(window.confirm("Clear all of your drawings for "+nrState.sym+"? Bobby's lines stay.")){
+    nrDrawState.drawings[nrState.sym]=l.filter(function(d){ return (d.author||"Milly")!=="Milly"; });
     nrDrawSave(nrState.sym);
+    mine.forEach(function(d){ nrSyncDelete(nrState.sym, d.id); });
     nrDraw();
   }
 }
@@ -2357,8 +2486,10 @@ nrCanvasEl.addEventListener("pointerdown",function(e){
     var ta=nrPointToAnchor(g, pos.x, pos.y);
     var txt=window.prompt("Note text:");
     if(txt!=null && txt.trim()!==""){
-      nrDrawList().push({ id:nrDrawId(), tool:"text", a:ta, text:txt.trim() });
+      var nd={ id:nrDrawId(), tool:"text", a:ta, text:txt.trim(), author:NR_AUTHOR };
+      nrDrawList().push(nd);
       nrDrawSave(nrState.sym);
+      nrSyncUpsert(nd);
       nrDrawState.justDrew=true;
       nrDraw();
     }
@@ -2391,19 +2522,25 @@ function nrDrawEndDrag(){
   var g=nrGeom();
   if(drag.tool==="brush"){
     if(drag.pts && drag.pts.length>1){
-      nrDrawList().push({ id:nrDrawId(), tool:"brush", pts:drag.pts });
+      var nb={ id:nrDrawId(), tool:"brush", pts:drag.pts, author:NR_AUTHOR };
+      nrDrawList().push(nb);
       nrDrawSave(nrState.sym);
+      nrSyncUpsert(nb);
     }
   } else if(g){
     if(drag.tool==="hline" || drag.tool==="hray" || drag.tool==="vline"){
-      nrDrawList().push({ id:nrDrawId(), tool:drag.tool, a:drag.cur });
+      var ns={ id:nrDrawId(), tool:drag.tool, a:drag.cur, author:NR_AUTHOR };
+      nrDrawList().push(ns);
       nrDrawSave(nrState.sym);
+      nrSyncUpsert(ns);
     } else if(drag.a && drag.cur){
       var di=Math.abs(drag.cur.i-drag.a.i);
       var dp=Math.abs(drag.cur.p-drag.a.p);
       if(di>=0.5 || dp>(g.hi-g.lo)*0.005){
-        nrDrawList().push({ id:nrDrawId(), tool:drag.tool, a:drag.a, b:drag.cur });
+        var nt={ id:nrDrawId(), tool:drag.tool, a:drag.a, b:drag.cur, author:NR_AUTHOR };
+        nrDrawList().push(nt);
         nrDrawSave(nrState.sym);
+        nrSyncUpsert(nt);
       }
     }
   }
@@ -2413,6 +2550,7 @@ function nrDrawEndDrag(){
 nrCanvasEl.addEventListener("pointerup", nrDrawEndDrag);
 nrCanvasEl.addEventListener("pointercancel", function(){ nrDrawState.drag=null; nrDraw(); });
 nrDrawLoad(nrState.sym);
+nrSyncStart();
 /* ---- Practice mode: random drills that make him use the tools ---- */
 /* A drill states one end result and the tool to use. Its target is
    computed from the same candles and TA the page already has, so no
