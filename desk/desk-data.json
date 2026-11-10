@@ -1,13 +1,13 @@
 {
- "generated": "2026-11-10T01:56:47.838380-06:00",
+ "generated": "2026-11-10T09:01:30.001632-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
-   "total": 238.73,
-   "cash": 75.3,
+   "total": 169.69,
+   "cash": 146.26,
    "equity": 23.43,
-   "options_at_cost": 140.0,
-   "positions": 3
+   "options_at_cost": 0,
+   "positions": 2
   },
   "paper": {
    "total": 105.44,
@@ -45,20 +45,7 @@
    "filled_at": "2026-11-06T19:24:47.78Z"
   }
  ],
- "options": [
-  {
-   "symbol": "IWM",
-   "instrument": "IWM 2026-11-13 $285 call",
-   "qty": 1,
-   "premium": 1.4,
-   "at_cost": 140.0,
-   "stop": 0.7,
-   "target": 2.8,
-   "kill": "IWM loses $279",
-   "order_id": "6af21ab8-34b2-432d-89fb-0d431bb73ec3",
-   "filled_at": "2026-11-09"
-  }
- ],
+ "options": [],
  "conditionals": [],
  "gold": {
   "spot": 4090,
