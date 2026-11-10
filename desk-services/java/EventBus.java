@@ -15,7 +15,17 @@
 //      GET /health    -> {"status":"ok","accepted":N,"rejected":M}
 //      GET /snapshot  -> latest quote.tick per symbol as JSON
 //      POST /ingest   -> accept one bus event (Bearer token required)
+//      GET /drawings?symbol=X -> shared chart drawings for one symbol
+//      POST /drawings -> upsert one drawing, replace one symbol's list,
+//                        or clear one symbol (Bearer token required)
+//      DELETE /drawings?symbol=X&id=Y -> remove one drawing (Bearer token)
 //      GET /          -> short help text
+//
+// Drawings are the shared chart editor state (Milly and Bobby draw on
+// the same chart). They persist to drawings.json beside the event log,
+// on the same volume, and are loaded at startup and written through on
+// every change, so a restart never loses a line. A drawing is analysis,
+// never an order.
 //
 // Host and port come from the environment, so the bus runs on Railway:
 //   HOST env, default 127.0.0.1 (start.sh sets 0.0.0.0 on Railway)
@@ -64,6 +74,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -94,6 +106,12 @@ public class EventBus {
 
     static volatile BufferedWriter logWriter;
     static volatile Path logPath;
+
+    // Shared chart drawings, keyed by symbol. Guarded by DRAW_LOCK.
+    // Persisted to drawings.json beside the event log (same volume).
+    static final Object DRAW_LOCK = new Object();
+    static final Map<String, List<Object>> drawings = new LinkedHashMap<>();
+    static volatile Path drawingsPath;
 
     // Bearer token for /ingest and /snapshot. Empty means unset: /ingest
     // stays disabled and /snapshot is open. Set BUS_TOKEN on Railway.
@@ -168,6 +186,8 @@ public class EventBus {
             accepted.set(existing);
         }
         logWriter = new BufferedWriter(new FileWriter(logPath.toFile(), true));
+        drawingsPath = logPath.toAbsolutePath().resolveSibling("drawings.json");
+        loadDrawings();
 
         HttpServer server = HttpServer.create(new InetSocketAddress(host, port), 0);
         server.createContext("/", EventBus::handleRoot);
@@ -175,6 +195,7 @@ public class EventBus {
         server.createContext("/events", EventBus::handleEvents);
         server.createContext("/ingest", EventBus::handleIngest);
         server.createContext("/snapshot", EventBus::handleSnapshot);
+        server.createContext("/drawings", EventBus::handleDrawings);
         server.setExecutor(Executors.newCachedThreadPool());
         server.start();
         System.err.println("EventBus listening on " + host + ":" + port
@@ -294,7 +315,10 @@ public class EventBus {
             + "GET /events    - SSE stream of the event log, then live events.\n"
             + "GET /health    - JSON status with accepted and rejected counts.\n"
             + "GET /snapshot  - latest quote.tick per symbol as JSON.\n"
-            + "POST /ingest   - accept one bus event (Bearer token required).\n";
+            + "POST /ingest   - accept one bus event (Bearer token required).\n"
+            + "GET /drawings?symbol=X - shared chart drawings for a symbol.\n"
+            + "POST /drawings - upsert, replace, or clear drawings (Bearer token required).\n"
+            + "DELETE /drawings?symbol=X&id=Y - remove one drawing (Bearer token required).\n";
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
         ex.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
         ex.sendResponseHeaders(200, bytes.length);
@@ -478,6 +502,263 @@ public class EventBus {
             // A corrupt log line never matches.
         }
         return false;
+    }
+
+    // ---- Shared chart drawings -------------------------------------
+    // One list per symbol, held in drawings.json beside the event log.
+    // Loaded at startup; every mutation writes the whole file through
+    // (temp file, then atomic move) before the response goes out, so
+    // the volume always holds the latest state and a restart loses
+    // nothing. The server stamps updated_at, so last writer wins by
+    // that stamp when clients merge.
+
+    static void loadDrawings() {
+        synchronized (DRAW_LOCK) {
+            drawings.clear();
+            try {
+                if (drawingsPath != null && Files.exists(drawingsPath)) {
+                    String text = new String(Files.readAllBytes(drawingsPath),
+                        StandardCharsets.UTF_8);
+                    Object parsed = Json.parse(text);
+                    if (parsed instanceof Map) {
+                        Object syms = ((Map<?, ?>) parsed).get("symbols");
+                        if (syms instanceof Map) {
+                            for (Map.Entry<?, ?> e : ((Map<?, ?>) syms).entrySet()) {
+                                if (e.getKey() instanceof String && e.getValue() instanceof List) {
+                                    drawings.put((String) e.getKey(),
+                                        new ArrayList<Object>((java.util.Collection<?>) e.getValue()));
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("WARNING: drawings not loaded: " + e.getMessage());
+            }
+            int total = 0;
+            for (List<Object> l : drawings.values()) {
+                total += l.size();
+            }
+            System.err.println("drawings loaded: " + total + " across "
+                + drawings.size() + " symbols from " + drawingsPath);
+        }
+    }
+
+    // Caller must hold DRAW_LOCK.
+    static void saveDrawingsLocked() {
+        try {
+            Map<String, Object> root = new LinkedHashMap<>();
+            root.put("symbols", new LinkedHashMap<>(drawings));
+            Path tmp = drawingsPath.resolveSibling("drawings.json.tmp");
+            Files.write(tmp, Json.stringify(root).getBytes(StandardCharsets.UTF_8));
+            try {
+                Files.move(tmp, drawingsPath, StandardCopyOption.ATOMIC_MOVE,
+                    StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException atomicFail) {
+                Files.move(tmp, drawingsPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR writing drawings: " + e.getMessage());
+        }
+    }
+
+    static Map<String, String> queryParams(HttpExchange ex) {
+        Map<String, String> out = new LinkedHashMap<>();
+        String query = ex.getRequestURI().getRawQuery();
+        if (query != null) {
+            for (String pair : query.split("&")) {
+                int eq = pair.indexOf('=');
+                if (eq > 0) {
+                    out.put(java.net.URLDecoder.decode(pair.substring(0, eq), StandardCharsets.UTF_8),
+                            java.net.URLDecoder.decode(pair.substring(eq + 1), StandardCharsets.UTF_8));
+                }
+            }
+        }
+        return out;
+    }
+
+    static String strField(Map<?, ?> m, String key) {
+        Object v = m.get(key);
+        return v instanceof String ? (String) v : null;
+    }
+
+    // GET    /drawings?symbol=X   -> that symbol's drawings
+    // POST   /drawings            -> {"drawing":{...}} upsert one
+    //                                {"symbol":X,"drawings":[...]} replace list
+    //                                {"symbol":X,"clear":true} clear list
+    // DELETE /drawings?symbol=X&id=Y -> remove one
+    // Same Bearer rule as the bus: writes are disabled when no token is
+    // configured; reads require the token whenever one is configured.
+    static void handleDrawings(HttpExchange ex) throws IOException {
+        String method = ex.getRequestMethod();
+        if ("GET".equalsIgnoreCase(method)) {
+            if (busToken != null && !busToken.isEmpty() && !authorized(ex)) {
+                sendJson(ex, 401, "{\"error\":\"unauthorized\"}");
+                return;
+            }
+            String symbol = queryParams(ex).get("symbol");
+            synchronized (DRAW_LOCK) {
+                Map<String, Object> out = new LinkedHashMap<>();
+                out.put("status", "ok");
+                if (symbol != null && !symbol.isEmpty()) {
+                    out.put("symbol", symbol);
+                    List<Object> list = drawings.get(symbol);
+                    out.put("drawings", list == null ? new ArrayList<Object>() : new ArrayList<>(list));
+                } else {
+                    out.put("symbols", new LinkedHashMap<>(drawings));
+                }
+                sendJson(ex, 200, Json.stringify(out));
+            }
+            return;
+        }
+        if (!"POST".equalsIgnoreCase(method) && !"DELETE".equalsIgnoreCase(method)) {
+            ex.sendResponseHeaders(405, -1);
+            return;
+        }
+        if (busToken == null || busToken.isEmpty()) {
+            sendJson(ex, 404, "{\"error\":\"drawings writes disabled\"}");
+            return;
+        }
+        if (!authorized(ex)) {
+            sendJson(ex, 401, "{\"error\":\"unauthorized\"}");
+            return;
+        }
+        if ("DELETE".equalsIgnoreCase(method)) {
+            Map<String, String> q = queryParams(ex);
+            String symbol = q.get("symbol");
+            String id = q.get("id");
+            if (symbol == null || id == null) {
+                sendJson(ex, 400, "{\"error\":\"symbol and id required\"}");
+                return;
+            }
+            synchronized (DRAW_LOCK) {
+                List<Object> list = drawings.get(symbol);
+                boolean removed = false;
+                if (list != null) {
+                    for (int i = list.size() - 1; i >= 0; i--) {
+                        Object d = list.get(i);
+                        if (d instanceof Map && id.equals(strField((Map<?, ?>) d, "id"))) {
+                            list.remove(i);
+                            removed = true;
+                        }
+                    }
+                }
+                if (!removed) {
+                    sendJson(ex, 404, "{\"error\":\"not found\"}");
+                    return;
+                }
+                saveDrawingsLocked();
+                Map<String, Object> out = new LinkedHashMap<>();
+                out.put("status", "deleted");
+                out.put("symbol", symbol);
+                out.put("drawings", list == null ? new ArrayList<Object>() : new ArrayList<>(list));
+                sendJson(ex, 200, Json.stringify(out));
+            }
+            return;
+        }
+        // POST
+        byte[] bodyBytes = ex.getRequestBody().readAllBytes();
+        if (bodyBytes.length > 512 * 1024) {
+            sendJson(ex, 400, "{\"error\":\"drawings payload too large\"}");
+            return;
+        }
+        Object parsed;
+        try {
+            parsed = Json.parse(new String(bodyBytes, StandardCharsets.UTF_8));
+        } catch (Json.ParseException e) {
+            sendJson(ex, 400, "{\"error\":\"not json\"}");
+            return;
+        }
+        if (!(parsed instanceof Map)) {
+            sendJson(ex, 400, "{\"error\":\"top level is not an object\"}");
+            return;
+        }
+        @SuppressWarnings("unchecked")
+        Map<String, Object> body = (Map<String, Object>) parsed;
+        String now = Instant.now().toString();
+        synchronized (DRAW_LOCK) {
+            String symbol;
+            Object single = body.get("drawing");
+            Object replace = body.get("drawings");
+            if (single instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> d = new LinkedHashMap<>((Map<String, Object>) single);
+                String id = strField(d, "id");
+                symbol = strField(d, "symbol");
+                if (id == null || symbol == null || strField(d, "tool") == null) {
+                    sendJson(ex, 400, "{\"error\":\"drawing needs id, symbol, tool\"}");
+                    return;
+                }
+                List<Object> list = drawings.computeIfAbsent(symbol, k -> new ArrayList<>());
+                int idx = -1;
+                for (int i = 0; i < list.size(); i++) {
+                    Object old = list.get(i);
+                    if (old instanceof Map && id.equals(strField((Map<?, ?>) old, "id"))) {
+                        idx = i;
+                        if (!d.containsKey("created_at")) {
+                            Object ca = ((Map<?, ?>) old).get("created_at");
+                            if (ca != null) {
+                                d.put("created_at", ca);
+                            }
+                        }
+                        break;
+                    }
+                }
+                if (!d.containsKey("created_at")) {
+                    d.put("created_at", now);
+                }
+                d.put("updated_at", now);
+                if (idx >= 0) {
+                    list.set(idx, d);
+                } else {
+                    if (list.size() >= 500) {
+                        sendJson(ex, 400, "{\"error\":\"too many drawings for symbol\"}");
+                        return;
+                    }
+                    list.add(d);
+                }
+            } else if (replace instanceof List && strField(body, "symbol") != null) {
+                symbol = strField(body, "symbol");
+                List<Object> list = new ArrayList<>();
+                for (Object el : (List<?>) replace) {
+                    if (!(el instanceof Map)) {
+                        sendJson(ex, 400, "{\"error\":\"drawings must be objects\"}");
+                        return;
+                    }
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> d = new LinkedHashMap<>((Map<String, Object>) el);
+                    if (strField(d, "id") == null) {
+                        sendJson(ex, 400, "{\"error\":\"drawing needs id\"}");
+                        return;
+                    }
+                    if (!d.containsKey("created_at")) {
+                        d.put("created_at", now);
+                    }
+                    if (!d.containsKey("updated_at")) {
+                        d.put("updated_at", now);
+                    }
+                    list.add(d);
+                    if (list.size() > 500) {
+                        sendJson(ex, 400, "{\"error\":\"too many drawings for symbol\"}");
+                        return;
+                    }
+                }
+                drawings.put(symbol, list);
+            } else if (Boolean.TRUE.equals(body.get("clear")) && strField(body, "symbol") != null) {
+                symbol = strField(body, "symbol");
+                drawings.put(symbol, new ArrayList<>());
+            } else {
+                sendJson(ex, 400, "{\"error\":\"expected drawing, drawings+symbol, or clear+symbol\"}");
+                return;
+            }
+            saveDrawingsLocked();
+            Map<String, Object> out = new LinkedHashMap<>();
+            out.put("status", "saved");
+            out.put("symbol", symbol);
+            List<Object> cur = drawings.get(symbol);
+            out.put("drawings", cur == null ? new ArrayList<Object>() : new ArrayList<>(cur));
+            sendJson(ex, 200, Json.stringify(out));
+        }
     }
 
     // Minimal JSON parser and serializer. Standard library only.
