@@ -33,7 +33,7 @@ const BOOK = {
       "fill": 691.7347,
       "stop": 656.39,
       "target": 740,
-      "target2": null,
+      "target2": 780,
       "kill": "break below 656.39; weekly close below 600 kills the longer thesis",
       "order_id": "6aee297b-80a8-43e4-822c-893ce54dc96c",
       "filled_at": "2026-11-06T19:24:43.559Z"
@@ -43,7 +43,7 @@ const BOOK = {
       "qty": 0.046983,
       "fill": 166.23,
       "stop": 156.75,
-      "target": 172,
+      "target": 180,
       "target2": null,
       "kill": "152.50 or Apple modem headline",
       "order_id": "6aee297f-a42b-40d3-bf15-cbbe2ba573e5",
