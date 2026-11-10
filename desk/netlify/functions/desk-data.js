@@ -24,8 +24,8 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 154.62,
-  "cash_as_of": "2026-11-10T09:07:00-06:00",
+  "cash": 154.61,
+  "cash_as_of": "2026-11-10T15:15:00-06:00",
   "fills": [
     {
       "symbol": "MU",
