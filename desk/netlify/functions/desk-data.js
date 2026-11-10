@@ -24,16 +24,16 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 146.26,
-  "cash_as_of": "2026-11-10T09:00:08-06:00",
+  "cash": 154.62,
+  "cash_as_of": "2026-11-10T09:07:00-06:00",
   "fills": [
     {
       "symbol": "MU",
-      "qty": 0.02258,
+      "qty": 0.01129,
       "fill": 691.7347,
       "stop": 656.39,
-      "target": 740,
-      "target2": 780,
+      "target": 780,
+      "target2": null,
       "kill": "break below 656.39; weekly close below 600 kills the longer thesis",
       "order_id": "6aee297b-80a8-43e4-822c-893ce54dc96c",
       "filled_at": "2026-11-06T19:24:43.559Z"
