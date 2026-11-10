@@ -73,6 +73,271 @@ const BOOK = {
 };
 // === END BOOK SYNC ===
 
+// === RECORD SYNC (generated; do not hand-edit) ===
+const RECORD = {
+  "as_of": "2026-11-10",
+  "scoreboard": {
+    "exits": 4,
+    "wins": 3,
+    "losses": 1,
+    "win_rate_pct": 75.0,
+    "wins_total_usd": 1.21,
+    "losses_total_usd": -69.08,
+    "net_realized_usd": -67.87,
+    "process_followed_record": "3 wins, 0 losses",
+    "process_skipped_record": "0 wins, 1 loss"
+  },
+  "rows": [
+    {
+      "date_closed": "2026-11-09",
+      "symbol": "GLD",
+      "instrument": "GLD shares",
+      "exit_event": "Full exit at target $376.39 zone (sold $377.56)",
+      "capital_committed": 15.62,
+      "realized_usd": 0.2,
+      "process_followed": true,
+      "lesson": "L-007",
+      "realized_pct": 1.28,
+      "illustrative_at_1m_usd": 12800
+    },
+    {
+      "date_closed": "2026-11-09",
+      "symbol": "QCOM",
+      "instrument": "QCOM shares (half)",
+      "exit_event": "Trim half at target 1 (sold $176.12)",
+      "capital_committed": 7.81,
+      "realized_usd": 0.46,
+      "process_followed": true,
+      "lesson": "L-007",
+      "realized_pct": 5.89,
+      "illustrative_at_1m_usd": 58900
+    },
+    {
+      "date_closed": "2026-11-10",
+      "symbol": "MU",
+      "instrument": "MU shares (half)",
+      "exit_event": "Trim half at target 1 $740 (sold $740.37)",
+      "capital_committed": 7.81,
+      "realized_usd": 0.55,
+      "process_followed": true,
+      "lesson": "L-007",
+      "realized_pct": 7.04,
+      "illustrative_at_1m_usd": 70400
+    },
+    {
+      "date_closed": "2026-11-10",
+      "symbol": "IWM",
+      "instrument": "IWM Nov 13 2026 $285 call",
+      "exit_event": "Sold at the stop on Milly's word (filled $0.71)",
+      "capital_committed": 140.04,
+      "realized_usd": -69.08,
+      "process_followed": false,
+      "lesson": "L-001",
+      "realized_pct": -49.33,
+      "illustrative_at_1m_usd": -493300
+    }
+  ],
+  "lessons": [
+    {
+      "id": "L-001",
+      "date": "2026-11-10",
+      "title": "No trade without the full process",
+      "status": "in_force",
+      "the_rule": "THE PROCESS RUNS ON EVERY TRADE, no exceptions, index/ETF plays included (basket version). No package, no trigger.",
+      "what_happened": "The IWM Nov 13 $285 call was bought Nov 9 on levels and a cross-checked outside chart, with no basket/fundamental work. The Fed setup (Waller's 50bp tripwire at core +0.3%) and the Russell's floating-rate exposure were pulled only after the position was dying. Hot CPI Nov 10 repriced December to a near-certain hike; the call was sold at its stop for -$69.08, the firm's only losing exit.",
+      "drift_watch": {
+        "watching_for": "Any order placed, real or paper, without a full package and a completed lessons check first.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-10"
+      }
+    },
+    {
+      "id": "L-002",
+      "date": "2026-11-10",
+      "title": "The scan is the whole market",
+      "status": "in_force",
+      "the_rule": "Opportunity scans run across the entire listed universe; the watchlist is a pond. Finalists come from the merged pool.",
+      "what_happened": "The Nov 10 hunt was first scoped to the 19-name watchlist. Milly caught it: 19 names out of ~11,800 listed is a pond, not the market. The whole-market scanner (market_scan.py) then ranked 1,170 passes in 97 seconds and took a finalist slot from the watchlist (TSM over GOOGL).",
+      "drift_watch": {
+        "watching_for": "Any opportunity hunt scoped to the watchlist instead of the whole-market scan.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-10"
+      }
+    },
+    {
+      "id": "L-003",
+      "date": "2026-11-10",
+      "title": "A feed that does not deliver gets replaced, not waited on",
+      "status": "in_force",
+      "the_rule": "Bobby owns the data pull. Working sources only: Yahoo pulls run the book and the scans; Finnhub streams stay benched until a fix is proven by ticks landing.",
+      "what_happened": "Discord was supposed to feed fundamental data and did not; the Finnhub streaming pipe never landed a tick in 7+ days (bus accepted stuck at 3 through a redeploy and a retest). Waiting cost the firm its early-warning on the CPI trade.",
+      "drift_watch": {
+        "watching_for": "Any decision that relies on a feed with no proven delivery (the Discord pipe, the Finnhub stream) instead of a working source.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-10"
+      }
+    },
+    {
+      "id": "L-004",
+      "date": "2026-11-09",
+      "title": "Load the day's levels before the open",
+      "status": "in_force",
+      "the_rule": "today-slots.json is written before 08:30 CT every trading day; a signal whose window passes unloaded is recorded as a missed trade, never a non-event.",
+      "what_happened": "Nov 9: AMD ran through its $460 entry and $488.78 target before the day's slots were loaded at 09:45 CT. The signal was right and unusable. Nov 10 repeated the miss until the armed NVDA package forced the slots file current.",
+      "drift_watch": {
+        "watching_for": "Any trading day where today-slots.json is written after 08:30 CT, or a signal window passes unloaded.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-10"
+      }
+    },
+    {
+      "id": "L-005",
+      "date": "2026-11-10",
+      "title": "A stop that waits is a stop that bleeds; the alert and the ask are one message",
+      "status": "in_force",
+      "the_rule": "On a stopped options position, the alert to Milly carries the sell recommendation and asks for the word in the same message, immediately. Options exits remain Milly's word; the asking never lags the crossing.",
+      "what_happened": "The IWM premium crossed its $0.70 stop at 08:33 CT; the exit word came at 08:59. Mid-wait the mark touched $0.50; the fill came at $0.71 on a bounce. The wait cost nothing this time by luck, and luck is not a control.",
+      "drift_watch": {
+        "watching_for": "Any stop crossing on an options position where the alert and the ask are not one immediate message.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-10"
+      }
+    },
+    {
+      "id": "L-006",
+      "date": "2026-11-10",
+      "title": "Verify the write before the book is called true",
+      "status": "in_force",
+      "the_rule": "No book state is reported from a write; it is reported from a read-back of the live record. Every sync ends with an endpoint-vs-ledger check.",
+      "what_happened": "sync_book.py appended the IWM sell as a second open option; the Desk showed options_at_cost $211 and a $380.69 book \u2014 false on its face. Caught only by reading the live endpoint back against the ledger. Patched to net options by instrument_id; verified $169.69 after.",
+      "drift_watch": {
+        "watching_for": "Any book state reported to Milly without a read-back verification against the live record.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-10"
+      }
+    },
+    {
+      "id": "L-007",
+      "date": "2026-11-10",
+      "title": "Planned exits are undefeated (the wins are data too)",
+      "status": "in_force",
+      "the_rule": "Size and conviction follow process fidelity. A trade with a full package, a plan, and pre-worded exits is the firm's default shape; anything else is the exception and must argue for itself.",
+      "what_happened": "Every exit that ran a pre-written plan hit: GLD sold at target (+$0.20), QCOM trim at target 1 (+$0.46, rest riding to $180), MU trim at $740 (+$0.55, rest riding to $780). 3-for-3. The single loss is the single trade that skipped the process.",
+      "drift_watch": {
+        "watching_for": "Any exit executed without its pre-written plan (target, trim, or stop set before entry).",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-10"
+      }
+    },
+    {
+      "id": "L-008",
+      "date": "2026-11-10",
+      "title": "",
+      "status": "",
+      "the_rule": "",
+      "what_happened": "",
+      "drift_watch": {
+        "watching_for": "A package whose driver section names only macro/sector causes while the name is moving >2 pts against its complex on the day, or any package built without a same-day name-specific news sweep.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-10"
+      }
+    },
+    {
+      "id": "L-009",
+      "date": "2026-11-10",
+      "title": "Scan the stakeholders raw, and say it raw",
+      "status": "in_force",
+      "the_rule": "EVERY package includes a raw stakeholder scan before it is final: CEO, executives, board, founders, major holders, top customers and suppliers, regulators \u2014 scandals, affairs and personal conduct, investigations, lawsuits, enforcement, departures, anything that can raise or sink the price. Findings are stated in plain language, exactly as they are. No euphemisms. If the scan finds nothing, the package says so and names what was searched.",
+      "what_happened": "The NVDA package was built filings-first with no stakeholder news scan. The single biggest driver of the drop was never pulled: CEO Jensen Huang's affair with Alice Huang, the Megaspeed executive accused of passing information to Beijing \u2014 board independent investigation opened Nov 8, chip-smuggling probe moved to the DOJ, at least $7.5B of chips allegedly shipped through Chinese firms. It accounted for roughly 11-12 of NVDA's 18.6% five-session fall. The package instead attributed the move to sector capex and rates. When the attribution addendum did find it, Bobby reported it softened ('close relationship', 'governance event') and Milly had to correct him twice ('the truth is the CEO is in a scandal', then 'he was having an affair with the spy and you aren't saying the truth').",
+      "drift_watch": {
+        "watching_for": "Any package finalized without a stakeholder-scan section, or any report that softens a stakeholder scandal into corporate euphemism.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-10"
+      }
+    }
+  ],
+  "drift": {
+    "definition": "Drift is any action that deviates from a rule or lesson in force. Every event is logged with the rule it broke, what it cost, and how it was corrected. Axiom IV: the audit loop never opens.",
+    "baseline_note": "The five founding events below predate the written rules; the lessons were written FROM them. Drift proper is measured from Nov 10, 2026 onward, with the rules in force.",
+    "scorecard": {
+      "from": "2026-11-10",
+      "drift_events_since_rules_in_force": 0,
+      "metrics_tracked": [
+        "package compliance: % of trades with full process + lessons check",
+        "slots discipline: % of trading days with today-slots.json written before 08:30 CT",
+        "exit discipline: % of exits executed per their pre-written plan",
+        "reporting integrity: book states reported only after read-back verification"
+      ],
+      "events_since_rules": 1
+    },
+    "events": [
+      {
+        "date": "2026-11-09",
+        "type": "founding",
+        "rule_broken": "(unwritten) full process on every trade",
+        "lesson_created": "L-001",
+        "what": "IWM $285 call bought on levels without the basket/fundamental process.",
+        "cost_usd": -69.08,
+        "corrected": "Process written into BRIEF.md; package template now opens with a lessons check."
+      },
+      {
+        "date": "2026-11-09",
+        "type": "founding",
+        "rule_broken": "(unwritten) levels loaded before the open",
+        "lesson_created": "L-004",
+        "what": "AMD ran through entry and target before the day's slots were loaded at 09:45 CT. Signal right, unusable.",
+        "cost_usd": 0,
+        "corrected": "Slots written before 08:30 CT; a missed window is recorded as a missed trade."
+      },
+      {
+        "date": "2026-11-10",
+        "type": "founding",
+        "rule_broken": "(unwritten) scan is the whole market",
+        "lesson_created": "L-002",
+        "what": "The Nov 10 hunt was first scoped to the 19-name watchlist; Milly caught it. Whole-market scan then found 1,170 passes.",
+        "cost_usd": 0,
+        "corrected": "market_scan.py runs the full listed universe daily."
+      },
+      {
+        "date": "2026-11-10",
+        "type": "founding",
+        "rule_broken": "(unwritten) alert and ask are one message",
+        "lesson_created": "L-005",
+        "what": "IWM stop crossed 08:33 CT; exit word at 08:59. The wait cost nothing by luck (fill $0.71 vs $0.50 low).",
+        "cost_usd": 0,
+        "corrected": "Stopped-position alerts carry the sell recommendation and ask for the word in the same message."
+      },
+      {
+        "date": "2026-11-10",
+        "type": "founding",
+        "rule_broken": "(unwritten) verify the write",
+        "lesson_created": "L-006",
+        "what": "sync_book.py showed a false $380.69 book (options double-counted) until the live endpoint was read back against the ledger.",
+        "cost_usd": 0,
+        "corrected": "Options netting fixed; every sync ends with an endpoint-vs-ledger check."
+      },
+      {
+        "id": "drift-2026-11-10-nvda-attribution",
+        "date": "2026-11-10",
+        "rule_broken": "News rule: every opportunity carries its fundamental driver \u2014 the NVDA package driver section attributed the drawdown to the capex-financing gap and CPI repricing and missed the name-specific cause (board investigation announced Nov 8, weekend reporting) that was already public when the package was built.",
+        "cost": "$0 \u2014 no position filled; caught the same morning before any tranche printed.",
+        "correction": "Mandatory live-driver-attribution + data-gaps section added to trade-package.md (Milly order, Nov 10); addendum written into the NVDA package naming the investigation as the primary driver (~-11 to -12 pts NVDA-specific over 5 sessions) and the kill-set gap as load-bearing.",
+        "class": "post-rules drift (news rule predates Nov 10); counted on the scorecard."
+      }
+    ]
+  }
+};
+// === END RECORD SYNC ===
+
 const SYMBOLS = BOOK.symbols;
 
 async function yahooPrice(sym) {
@@ -191,6 +456,7 @@ exports.handler = async () => {
     options: BOOK.options,
     conditionals: BOOK.conditionals.map((c) => ({ ...c, last: prices[c.symbol] })),
     gold: { ...BOOK.gold },
+    record: RECORD,
     quotes_as_of: quotesAsOf + "; gold record as of " + BOOK.gold.as_of,
   }) };
 };
