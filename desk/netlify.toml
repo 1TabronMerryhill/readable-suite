@@ -53,3 +53,12 @@
   to = "/.netlify/functions/chart"
   status = 200
   force = true
+
+# Shared drawing editor. Drawings live on the Railway bus (persisted
+# on its volume); this function holds the BUS_TOKEN server side and
+# forwards GET, POST, and DELETE so the browser never sees the token.
+[[redirects]]
+  from = "/api/drawings"
+  to = "/.netlify/functions/drawings"
+  status = 200
+  force = true
