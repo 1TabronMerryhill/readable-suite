@@ -1,10 +1,10 @@
 {
- "generated": "2026-11-10T14:07:15.448140-06:00",
+ "generated": "2026-11-10T15:14:01.766425-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
-   "total": 170.24,
-   "cash": 154.62,
+   "total": 170.23,
+   "cash": 154.61,
    "equity": 15.62,
    "options_at_cost": 0,
    "positions": 2
