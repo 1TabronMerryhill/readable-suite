@@ -1,11 +1,11 @@
 {
- "generated": "2026-11-10T09:01:30.001632-06:00",
+ "generated": "2026-11-10T09:07:56.559587-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
-   "total": 169.69,
-   "cash": 146.26,
-   "equity": 23.43,
+   "total": 170.24,
+   "cash": 154.62,
+   "equity": 15.62,
    "options_at_cost": 0,
    "positions": 2
   },
@@ -20,13 +20,13 @@
  "positions": [
   {
    "symbol": "MU",
-   "qty": 0.02258,
+   "qty": 0.01129,
    "fill": 691.7347,
    "last": 691.7347,
    "pnl": 0.0,
    "stop": 656.39,
-   "target": 740,
-   "target2": 780,
+   "target": 780,
+   "target2": null,
    "kill": "break below 656.39; weekly close below 600 kills the longer thesis",
    "order_id": "6aee297b-80a8-43e4-822c-893ce54dc96c",
    "filled_at": "2026-11-06T19:24:43.559Z"
