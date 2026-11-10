@@ -71,7 +71,7 @@ def ws_connect(url):
     parsed = urllib.parse.urlsplit(url)
     key = base64.b64encode(os.urandom(16)).decode("ascii")
     request = (
-        f"GET {parsed.path}?{parsed.query} HTTP/1.1\r\n"
+        f"GET {parsed.path or '/'}?{parsed.query} HTTP/1.1\r\n"
         f"Host: {parsed.hostname}\r\n"
         "Upgrade: websocket\r\n"
         "Connection: Upgrade\r\n"
@@ -113,12 +113,13 @@ def ws_connect(url):
         raw = socket.create_connection((parsed.hostname, PORT), timeout=15)
     ctx = ssl.create_default_context()
     sock = ctx.wrap_socket(raw, server_hostname=parsed.hostname)
+    sock.settimeout(20)
     sock.sendall(request.encode("ascii"))
     resp = b""
     while b"\r\n\r\n" not in resp:
         chunk = sock.recv(4096)
         if not chunk:
-            raise RuntimeError("handshake closed by server (auth likely failed)")
+            raise RuntimeError("handshake closed by server (edge dropped the request; not an auth verdict)")
         resp += chunk
     head = resp.split(b"\r\n", 1)[0].decode("iso-8859-1", errors="replace")
     if "101" not in head:
