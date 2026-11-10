@@ -24,8 +24,8 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 75.3,
-  "cash_as_of": "2026-11-09T13:11:00-06:00",
+  "cash": 146.26,
+  "cash_as_of": "2026-11-10T09:00:08-06:00",
   "fills": [
     {
       "symbol": "MU",
@@ -50,20 +50,7 @@ const BOOK = {
       "filled_at": "2026-11-06T19:24:47.78Z"
     }
   ],
-  "options": [
-    {
-      "symbol": "IWM",
-      "instrument": "IWM 2026-11-13 $285 call",
-      "qty": 1,
-      "premium": 1.4,
-      "at_cost": 140.0,
-      "stop": 0.7,
-      "target": 2.8,
-      "kill": "IWM loses $279",
-      "order_id": "6af21ab8-34b2-432d-89fb-0d431bb73ec3",
-      "filled_at": "2026-11-09"
-    }
-  ],
+  "options": [],
   "conditionals": [],
   "gold": {
     "spot": 4090,
@@ -80,7 +67,6 @@ const BOOK = {
     "closed": 0
   },
   "symbols": [
-    "IWM",
     "MU",
     "QCOM"
   ]
