@@ -24,8 +24,8 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 163.41,
-  "cash_as_of": "2026-11-11T11:23:00-06:00",
+  "cash": 293.41,
+  "cash_as_of": "2026-11-11T15:15:00-06:00",
   "fills": [
     {
       "symbol": "GOOGL",
@@ -313,7 +313,7 @@ const RECORD = {
         "watching_for": "Any order placed, real or paper, without a full package and a completed lessons check first.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-10"
+        "last_checked": "2026-11-11"
       }
     },
     {
@@ -327,7 +327,7 @@ const RECORD = {
         "watching_for": "Any opportunity hunt scoped to the watchlist instead of the whole-market scan.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-10"
+        "last_checked": "2026-11-11"
       }
     },
     {
@@ -341,7 +341,7 @@ const RECORD = {
         "watching_for": "Any decision that relies on a feed with no proven delivery (the Discord pipe, the Finnhub stream) instead of a working source.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-10"
+        "last_checked": "2026-11-11"
       }
     },
     {
@@ -355,7 +355,7 @@ const RECORD = {
         "watching_for": "Any trading day where today-slots.json is written after 08:30 CT, or a signal window passes unloaded.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-10"
+        "last_checked": "2026-11-11"
       }
     },
     {
@@ -369,7 +369,7 @@ const RECORD = {
         "watching_for": "Any stop crossing on an options position where the alert and the ask are not one immediate message.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-10"
+        "last_checked": "2026-11-11"
       }
     },
     {
@@ -383,7 +383,7 @@ const RECORD = {
         "watching_for": "Any book state reported to Milly without a read-back verification against the live record.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-10"
+        "last_checked": "2026-11-11"
       }
     },
     {
@@ -397,7 +397,7 @@ const RECORD = {
         "watching_for": "Any exit executed without its pre-written plan (target, trim, or stop set before entry).",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-10"
+        "last_checked": "2026-11-11"
       }
     },
     {
@@ -411,7 +411,7 @@ const RECORD = {
         "watching_for": "A package whose driver section names only macro/sector causes while the name is moving >2 pts against its complex on the day, or any package built without a same-day name-specific news sweep.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-10"
+        "last_checked": "2026-11-11"
       }
     },
     {
@@ -425,7 +425,7 @@ const RECORD = {
         "watching_for": "Any package finalized without a stakeholder-scan section, or any report that softens a stakeholder scandal into corporate euphemism.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-10"
+        "last_checked": "2026-11-11"
       }
     },
     {
@@ -564,10 +564,10 @@ const INDEX = {
       "source": "Book sync Nov 10, 2026 15:15 CT (memory/2026-11-10.md): cash $154.61 verified live, total $170.99, MU half + QCOM half open"
     },
     {
-      "book_value": 302.03,
+      "book_value": 302.0,
       "date": "2026-11-11",
-      "index": 73.57,
-      "source": "Robinhood MCP get_portfolio live read Nov 11, 2026 ~12:45 CT (memory/2026-11-11.md correction): cash $293.41, equity $8.62, total $302.03, after the $130 Instant Deposit"
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-11: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
