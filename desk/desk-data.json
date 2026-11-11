@@ -1,13 +1,13 @@
 {
- "generated": "2026-11-10T15:14:01.766425-06:00",
+ "generated": "2026-11-11T09:02:03.956510-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
-   "total": 170.23,
-   "cash": 154.61,
-   "equity": 15.62,
+   "total": 171.3,
+   "cash": 163.49,
+   "equity": 7.81,
    "options_at_cost": 0,
-   "positions": 2
+   "positions": 1
   },
   "paper": {
    "total": 105.44,
@@ -18,19 +18,6 @@
  },
  "attention": "Book synced from the ledger by sync_book.py. Nothing else needs you.",
  "positions": [
-  {
-   "symbol": "MU",
-   "qty": 0.01129,
-   "fill": 691.7347,
-   "last": 691.7347,
-   "pnl": 0.0,
-   "stop": 656.39,
-   "target": 780,
-   "target2": null,
-   "kill": "break below 656.39; weekly close below 600 kills the longer thesis",
-   "order_id": "6aee297b-80a8-43e4-822c-893ce54dc96c",
-   "filled_at": "2026-11-06T19:24:43.559Z"
-  },
   {
    "symbol": "QCOM",
    "qty": 0.046983,
@@ -57,16 +44,16 @@
  },
  "quotes_as_of": "static snapshot at fill prices; live prices come from /api/desk-data",
  "record": {
-  "as_of": "2026-11-10",
+  "as_of": "2026-11-11",
   "scoreboard": {
-   "exits": 4,
-   "wins": 3,
+   "exits": 5,
+   "wins": 4,
    "losses": 1,
-   "win_rate_pct": 75.0,
-   "wins_total_usd": 1.21,
+   "win_rate_pct": 80.0,
+   "wins_total_usd": 2.28,
    "losses_total_usd": -69.08,
-   "net_realized_usd": -67.87,
-   "process_followed_record": "3 wins, 0 losses",
+   "net_realized_usd": -66.8,
+   "process_followed_record": "4 wins, 0 losses",
    "process_skipped_record": "0 wins, 1 loss"
   },
   "rows": [
@@ -117,6 +104,18 @@
     "lesson": "L-001",
     "realized_pct": -49.33,
     "illustrative_at_1m_usd": -493300
+   },
+   {
+    "date_closed": "2026-11-11",
+    "symbol": "MU",
+    "instrument": "MU common stock (remaining half, 0.01129 sh)",
+    "exit_event": "Sold at target 2 ($780) under the Nov 9 trim plan, on Milly's call word (filled $786.6229)",
+    "capital_committed": 7.81,
+    "realized_usd": 1.07,
+    "process_followed": true,
+    "lesson": "L-011",
+    "realized_pct": 13.72,
+    "illustrative_at_1m_usd": 137178
    }
   ],
   "lessons": [
@@ -245,6 +244,34 @@
      "status": "holding",
      "last_checked": "2026-11-10"
     }
+   },
+   {
+    "id": "L-010",
+    "date": "2026-11-11",
+    "title": "A qualifying setup never sits silent",
+    "status": "in_force",
+    "the_rule": "When a name meets the metrics laid out in BRIEF.md, Bobby BUILDS the package without being asked and SURFACES it to Milly the same day with a recommendation. When a package's entry condition and its own margin math disagree \u2014 price already inside the margin of safety while the trigger waits lower \u2014 Bobby flags the disagreement to Milly for a ruling the same day. He does not let a qualifying setup sit silent, and he does not silently override a written trigger either: initiative in building and surfacing, Milly's word in changing or executing.",
+    "what_happened": "ANET passed the full business check on Nov 10 (the only clean sweep of the triage four), worth ~$213, and closed Nov 10 at $185.02 \u2014 already ~13% under worth. Its armed-conditional package requires a flush to the $170.40 zone that closes back above it. That print never came, and Bobby never surfaced the disagreement inside his own package: the margin math said the discount was already meaningful at $185 while the trigger demanded a further ~8% fall. Whether the trigger was too strict was Milly's decision, and it was never put in front of him; the setup sat silent until Milly found it himself on Nov 11 by asking whether an options play existed. Milly's words: 'if you saw this why didn't you say anything... that's opportunity for revenue growth you're not doing anything... you were acting like you're scared to pull the trigger.' Compounding failure: when first asked, Bobby spoke as if no package existed; the package had existed since Nov 10.",
+    "drift_watch": {
+     "watching_for": "Any completed business check or qualifying setup that goes a full session without a same-day surface to Milly, or any entry-condition vs margin-math disagreement left unflagged.",
+     "relapses_since_lesson": 0,
+     "status": "holding",
+     "last_checked": "2026-11-11"
+    }
+   },
+   {
+    "id": "L-011",
+    "date": "2026-11-11",
+    "title": "A pre-worded plan exit is an order, not a note",
+    "status": "in_force",
+    "the_rule": "Execution authority is read from the plan document and the levels file, never from a summary list. When a levels-watch entry is marked pre-worded under a plan Milly approved, the exit executes on the cross and is reported with the fill. If two records disagree about authority, Bobby surfaces the disagreement BEFORE the level prints, never after. A target cross on a pre-worded leg is an execution event, not a discussion item (extends L-007: planned exits are undefeated).",
+    "what_happened": "The Nov 9 trim plan Milly worded covered MU in two legs: half at $740, the rest at $780. Leg one executed Nov 10 at $740.3701. On Nov 11 MU crossed $780 at 08:53 CT ($782.21), and Bobby's morning messages told Milly there was no standing execution word for the $780 leg, because the BRIEF's named-authorization list carried only the $740 trim by name. The plan itself, and levels-watch.json's mu-t2 entry marked '(pre-worded)', said otherwise. The exit sat unexecuted ~65 minutes until Milly corrected Bobby twice on a live call and said 'Sell it'; filled 09:58 CT at $786.6229 (order 6af48291). The delay cost nothing because price rose through the wait. That is luck, not process. Same failure family as L-010: the record said one thing, Bobby reported another, and Milly had to find it himself.",
+    "drift_watch": {
+     "watching_for": "Any plan-covered level (target, stop, trim) reported to Milly as 'needs your word' when the plan already worded it, or any cross on a pre-worded leg not executed and reported in the same watch cycle.",
+     "relapses_since_lesson": 0,
+     "status": "holding",
+     "last_checked": "2026-11-11"
+    }
    }
   ],
   "drift": {
@@ -252,7 +279,7 @@
    "baseline_note": "The five founding events below predate the written rules; the lessons were written FROM them. Drift proper is measured from Nov 10, 2026 onward, with the rules in force.",
    "scorecard": {
     "from": "2026-11-10",
-    "drift_events_since_rules_in_force": 0,
+    "drift_events_since_rules_in_force": 1,
     "metrics_tracked": [
      "package compliance: % of trades with full process + lessons check",
      "slots discipline: % of trading days with today-slots.json written before 08:30 CT",
@@ -314,6 +341,14 @@
      "cost": "$0 \u2014 no position filled; caught the same morning before any tranche printed.",
      "correction": "Mandatory live-driver-attribution + data-gaps section added to trade-package.md (Milly order, Nov 10); addendum written into the NVDA package naming the investigation as the primary driver (~-11 to -12 pts NVDA-specific over 5 sessions) and the kill-set gap as load-bearing.",
      "class": "post-rules drift (news rule predates Nov 10); counted on the scorecard."
+    },
+    {
+     "id": "drift-2026-11-11-mu-t2-word",
+     "date": "2026-11-11",
+     "rule_broken": "L-007 (planned exits are undefeated) and the verify-from-the-record rule: Bobby reported 'no standing execution word' for MU target 2 from the BRIEF's summary authorization list while the Nov 9 plan and levels-watch.json on disk said the $780 exit was pre-worded.",
+     "cost": "$0 realized (the fill came $6.62 above target because price rose during the ~65-minute delay). Real cost: Milly's time, two corrections on a live call, and the downside risk carried while an approved exit sat unexecuted.",
+     "correction": "Lesson L-011 logged the same morning. BRIEF standing-authorization line reconciled with levels-watch.json. Fill, track record, and ledger updated the same morning.",
+     "class": "reporting_and_execution_delay"
     }
    ]
   }
