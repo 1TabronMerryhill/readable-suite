@@ -24,8 +24,8 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 163.49,
-  "cash_as_of": "2026-11-11T09:01:00-06:00",
+  "cash": 154.9,
+  "cash_as_of": "2026-11-11T11:04:00-06:00",
   "fills": [
     {
       "symbol": "QCOM",
@@ -37,6 +37,61 @@ const BOOK = {
       "kill": "152.50 or Apple modem headline",
       "order_id": "6aee297f-a42b-40d3-bf15-cbbe2ba573e5",
       "filled_at": "2026-11-06T19:24:47.78Z"
+    },
+    {
+      "symbol": "GOOGL",
+      "qty": 0.007323,
+      "fill": 293.5821,
+      "stop": null,
+      "target": null,
+      "target2": null,
+      "kill": null,
+      "order_id": "6af49fbd-f7f1-4dde-8f09-9c0cbd4b89d9",
+      "filled_at": ""
+    },
+    {
+      "symbol": "ABBV",
+      "qty": 0.007386,
+      "fill": 291.0737,
+      "stop": null,
+      "target": null,
+      "target2": null,
+      "kill": null,
+      "order_id": "6af49fc2-9e0e-4103-8a46-aba7c6c8383a",
+      "filled_at": ""
+    },
+    {
+      "symbol": "BAC",
+      "qty": 0.042398,
+      "fill": 50.7099,
+      "stop": null,
+      "target": null,
+      "target2": null,
+      "kill": null,
+      "order_id": "6af49fc7-de1e-4eb1-b29b-8787290bbd0e",
+      "filled_at": ""
+    },
+    {
+      "symbol": "CVX",
+      "qty": 0.005039,
+      "fill": 212.3045,
+      "stop": null,
+      "target": null,
+      "target2": null,
+      "kill": null,
+      "order_id": "6af49fcc-0351-44d3-b43a-e257885b14a1",
+      "filled_at": ""
+    },
+    {
+      "symbol": "SPY",
+      "qty": 0.001406,
+      "fill": 760.4899,
+      "stop": null,
+      "target": null,
+      "target2": null,
+      "kill": null,
+      "order_id": "6af49fd3-91a7-4c4b-9102-0a3d03b9b77a",
+      "filled_at": ""
     }
   ],
   "options": [],
@@ -56,7 +111,12 @@ const BOOK = {
     "closed": 0
   },
   "symbols": [
-    "QCOM"
+    "ABBV",
+    "BAC",
+    "CVX",
+    "GOOGL",
+    "QCOM",
+    "SPY"
   ]
 };
 // === END BOOK SYNC ===
