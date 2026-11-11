@@ -414,7 +414,7 @@
     <div class="feed" aria-label="Feed and system status">
       <div class="row1">
         <span class="k">Feed</span>
-        <span class="src" id="feedLine"><b>Checking the live feed.</b> Prices, the book, and the attention line refresh from /api/desk-data every 60 seconds.</span>
+        <span class="src" id="feedLine"><b>Checking the live feed.</b> Prices, the book, and the attention line refresh from /api/desk-data every 20 seconds in market hours.</span>
       </div>
       <div class="pipe" aria-label="System pipeline">
         <span class="node"><b>Finnhub webhook</b>real time feed, live</span>
@@ -429,7 +429,7 @@
         <span class="arr">&rarr;</span>
         <span class="node"><b>This page</b>the visible surface</span>
       </div>
-      <p class="fine">The brief, the Wire, and the graph map come from the daily graph snapshot. They change daily, not by the minute. Gold spot stays on the Nov 6, 2026, 1:16 PM CT Yahoo snapshot until a live spot source lands. The GLD price itself is live when the feed answers. If the feed fails, this page shows the Nov 6, 2026, 1:50 PM CT snapshot and labels itself SNAPSHOT. It never shows stale prices as live. JSON is the data contract between every layer. No key lives in this page. The Groq answering layer is a staged function that replaces local retrieval in the Ask panel later, with no layout change.</p>
+      <p class="fine">The brief, the Wire, and the graph map come from the daily graph snapshot. They change daily, not by the minute. Gold spot stays on the Nov 6, 2026, 1:16 PM CT Yahoo snapshot until a live spot source lands. The GLD position closed Nov 9, 2026; gold renders from the feed's gold block as a closed position, never as a live GLD price. If the feed fails, this page shows the Nov 6, 2026, 1:50 PM CT snapshot and labels itself SNAPSHOT. It never shows stale prices as live. JSON is the data contract between every layer. No key lives in this page. The Groq answering layer is a staged function that replaces local retrieval in the Ask panel later, with no layout change.</p>
       <div class="refreshrow">
         <button class="fbtn" id="refreshBtn" type="button">Refresh now</button>
         <span class="refreshmeta" id="refreshMeta">First check running.</span>
@@ -443,9 +443,10 @@
     <div class="sec-head">
       <span class="sec-num">02</span>
       <h2 class="sec-title">Positions</h2>
-      <p class="sec-note">Three live. Every card draws its own price line with entry, stop, target, and kill on it. Last prices refresh every 60 seconds when the live feed answers. No trade sits on this desk without a kill criterion on its card.</p>
+      <p class="sec-note">Every card draws its own price line with entry, stop, target, and kill on it. Last prices refresh every 20 seconds in market hours when the live feed answers. No trade sits on this desk without a kill criterion on its card.</p>
     </div>
     <p class="tab-skill"><b>Positions trains the plan.</b></p>
+    <p class="refreshmeta" id="posUpdated"></p>
     <div class="pos-grid" id="posGrid"></div>
 
     <div class="cond-head">
@@ -633,7 +634,7 @@
   </section>
 
   <footer>
-    <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 60 seconds when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
+    <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
   </footer>
@@ -650,13 +651,14 @@ var POSITIONS = [
     order_id:"6aee297f-a42b-40d3-bf15-cbbe2ba573e5", filled:"Nov 6, 2026, 1:24 PM CT",
     scaleMin:144, scaleMax:188,
     marks:[ {v:152.50,l:"KILL 152.50",c:"stop"}, {v:156.75,l:"STOP 156.75",c:"stop"}, {v:165.68,l:"LAST 165.68",c:"last"}, {v:166.23,l:"FILL 166.23",c:"fill"}, {v:172,l:"T1 172",c:"tgt"}, {v:180,l:"T2 180",c:"tgt"} ] },
-  { symbol:"GLD", name:"SPDR Gold Shares", qty:0.0419, fill:372.79, last:372.81, pnl:0.00,
-    stop:368.16, targets:[376.39], kill:"Daily close below spot $3,970.",
-    order_id:"6aee2984-f2e0-474f-9720-70b9fb7e0d14", filled:"Nov 6, 2026, 1:24 PM CT",
-    scaleMin:362, scaleMax:382,
-    marks:[ {v:368.16,l:"STOP 368.16",c:"stop"}, {v:372.79,l:"FILL 372.79",c:"fill"}, {v:372.81,l:"LAST 372.81",c:"last"}, {v:376.39,l:"TARGET 376.39",c:"tgt"} ],
-    gold:{ spot:4084.10, entry:4040, target:4090, stop:4000 } }
 ];
+/* Gold state. The GLD position closed Nov 9, 2026, so GLD is NOT a live
+   position and never gets a position card with a per-share price. Gold
+   renders from this object, and from /api/desk-data's gold object when
+   live. Values mirror GOLD_CLOSED in sync_book.py. */
+var GOLD = { spot:4090, entry:4040, target:4090, stop:4000,
+  kill:"Position closed Nov 9, 2026 at target. No open gold position.",
+  as_of:"closed Nov 9, 2026: GLD sold at $377.56, realized +$0.20" };
 var CONDITIONALS = [
   { symbol:"AMD", name:"Advanced Micro Devices", last:445.57, condition:"Pullback to $436.50 only", stop:404.40, targets:[460,476],
     kill:"Close below $404.40.", scaleMin:390, scaleMax:490,
@@ -752,6 +754,15 @@ function renderPositions(){
       + '<div class="orderline">Order '+p.order_id+'<br/>$15.62 deployed in this slot</div>';
     g.appendChild(card);
   });
+  if(typeof GOLD!=="undefined" && GOLD){
+    var gc=document.createElement("article"); gc.className="card";
+    var gdist=(GOLD.target-GOLD.spot);
+    gc.innerHTML =
+      '<div class="card-top"><div><div class="sym">GLD</div><div class="co">SPDR Gold Shares</div></div><span class="tag">Closed</span></div>'
+      + '<div class="goldstrip" style="border-top:none;margin-top:0;padding-top:0"><div class="k">Gold spot underneath GLD</div><div class="v">Spot <b>$'+fmt(GOLD.spot)+'</b>. Entry <b>$'+fmt(GOLD.entry,0)+'</b>. Target <b>$'+fmt(GOLD.target,0)+'</b>, so <b>$'+fmt(gdist)+'</b> to go. Stop <b>$'+fmt(GOLD.stop,0)+'</b>.</div></div>'
+      + (GOLD.as_of ? '<div class="killbox"><div class="k">Status</div><div class="v">'+esc(GOLD.as_of)+'</div></div>' : '');
+    g.appendChild(gc);
+  }
   var cg=document.getElementById("condGrid");
   cg.innerHTML="";
   CONDITIONALS.forEach(function(p){
@@ -1441,12 +1452,13 @@ function renderRecord(){
 function setBadge(){
   var b=document.getElementById("liveBadge"), t=document.getElementById("liveBadgeText"), a=document.getElementById("liveAsOf");
   var f=document.getElementById("feedLine"), rm=document.getElementById("refreshMeta");
+  var pu=document.getElementById("posUpdated");
   if(!liveState.checked){
     b.className="livebadge"; t.textContent="CHECKING LIVE FEED";
   } else if(liveState.live){
     b.className="livebadge live"; t.textContent="LIVE";
-    a.innerHTML="Prices as of <b>"+esc(liveState.lastOkAsOf||"")+"</b> · feed <b>"+esc(liveState.feed)+"</b> · refreshes every 60 seconds";
-    f.innerHTML="<b>Live.</b> Prices, the book, and the attention line refresh from /api/desk-data every 60 seconds. Last update "+esc(liveState.lastOkAsOf||"")+".";
+    a.innerHTML="Prices as of <b>"+esc(liveState.lastOkAsOf||"")+"</b> · feed <b>"+esc(liveState.feed)+"</b> · refreshes every 20 seconds in market hours";
+    f.innerHTML="<b>Live.</b> Prices, the book, and the attention line refresh from /api/desk-data every 20 seconds in market hours (60 seconds outside). Last update "+esc(liveState.lastOkAsOf||"")+((liveState.lastOkTime)?", at "+esc(liveState.lastOkTime)+" CT":"")+".";
   } else {
     b.className="livebadge snap"; t.textContent="SNAPSHOT";
     a.innerHTML="Snapshot <b>Fri "+SNAPSHOT_ASOF+"</b>. Live data is unreachable.";
@@ -1454,6 +1466,7 @@ function setBadge(){
     f.innerHTML="<b>Snapshot, not live.</b>"+extra+" Showing the embedded Nov 6, 2026 snapshot ("+SNAPSHOT_ASOF+"). The page keeps checking every 60 seconds and switches to live on its own when the feed answers.";
   }
   if(rm){ rm.textContent = liveState.lastCheck ? ("Last checked "+liveState.lastCheck+" CT · next check in "+liveState.nextIn+"s") : "First check running."; }
+  if(pu){ pu.textContent = liveState.live ? ("Prices updated "+(liveState.lastOkTime||liveState.lastOkAsOf||"")+" CT") : (liveState.checked ? "Live feed unreachable. Showing the snapshot; prices below are not current." : "Checking the live feed."); }
 }
 function updateCorpusPositions(){
   if(typeof CORPUS==="undefined") return;
@@ -1477,7 +1490,7 @@ function updateCorpusPositions(){
   });
 }
 function applyLive(data){
-  if(!data || !data.book || !data.book.real || !Array.isArray(data.positions) || !data.positions.length) throw new Error("bad shape");
+  if(!data || !data.book || !data.book.real || !Array.isArray(data.positions)) throw new Error("bad shape");
   var real=data.book.real;
   BOOK.total=numOr(real.total,BOOK.total);
   BOOK.cash=numOr(real.cash,BOOK.cash);
@@ -1490,6 +1503,11 @@ function applyLive(data){
   }
   if(typeof data.attention==="string" && data.attention) BOOK.attention=data.attention;
   BOOK.symbols=data.positions.map(function(p){ return p.symbol; }).join(", ");
+  /* The live book is the truth: a position the feed no longer lists is
+     closed, and its card comes off the desk at this refresh instead of
+     sitting on its last embedded price forever. */
+  var liveSyms={}; data.positions.forEach(function(lp){ liveSyms[lp.symbol]=true; });
+  for(var pi=POSITIONS.length-1; pi>=0; pi--){ if(!liveSyms[POSITIONS[pi].symbol]) POSITIONS.splice(pi,1); }
   data.positions.forEach(function(lp){
     var p=null; POSITIONS.forEach(function(x){ if(x.symbol===lp.symbol) p=x; });
     if(!p) return;
@@ -1505,10 +1523,20 @@ function applyLive(data){
     }
     if(p.last>p.scaleMax) p.scaleMax=Math.ceil(p.last*1.04);
     if(p.last<p.scaleMin) p.scaleMin=Math.floor(p.last*0.96);
-    if(p.symbol==="GLD" && data.gold && p.gold){
-      p.gold={ spot:numOr(data.gold.spot,p.gold.spot), entry:numOr(data.gold.entry,p.gold.entry), target:numOr(data.gold.target,p.gold.target), stop:numOr(data.gold.stop,p.gold.stop) };
-    }
   });
+  /* Gold comes from the feed's gold object directly. It used to merge
+     only while looping a GLD position; GLD closed Nov 9, 2026 and left
+     the positions list, so that merge never ran and the card froze on
+     the Nov 6 embedded price. */
+  if(data.gold){
+    if(typeof GOLD==="undefined" || !GOLD) GOLD={};
+    GOLD.spot=numOr(data.gold.spot,GOLD.spot);
+    GOLD.entry=numOr(data.gold.entry,GOLD.entry);
+    GOLD.target=numOr(data.gold.target,GOLD.target);
+    GOLD.stop=numOr(data.gold.stop,GOLD.stop);
+    if(typeof data.gold.kill==="string" && data.gold.kill) GOLD.kill=data.gold.kill;
+    if(typeof data.gold.as_of==="string" && data.gold.as_of) GOLD.as_of=data.gold.as_of;
+  }
   if(Array.isArray(data.conditionals)){
     data.conditionals.forEach(function(lc){
       var c=null; CONDITIONALS.forEach(function(x){ if(x.symbol===lc.symbol) c=x; });
@@ -1523,11 +1551,12 @@ function applyLive(data){
   liveState.checked=true; liveState.live=true; liveState.fails=0;
   liveState.feed=(typeof data.feed==="string" && data.feed) ? data.feed : "yahoo-live";
   liveState.lastOkAsOf=fmtAsOf(data.generated) || (typeof data.quotes_as_of==="string" ? data.quotes_as_of : null) || liveState.lastOkAsOf || "just now";
+  try{ liveState.lastOkTime=new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true}); }catch(e){ liveState.lastOkTime=null; }
   if(data.record) RECORD=data.record;
   renderGlance(); renderPositions(); renderRecord(); updateCorpusPositions(); setBadge();
 }
 function fetchLive(){
-  liveState.nextIn=60;
+  liveState.nextIn=Math.round(pollDelay()/1000);
   try{ liveState.lastCheck=new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true}); }catch(e){ liveState.lastCheck=null; }
   setBadge();
   fetch(LIVE_URL,{cache:"no-store",headers:{"Accept":"application/json"}}).then(function(r){
@@ -1542,7 +1571,23 @@ function fetchLive(){
 }
 document.getElementById("refreshBtn").addEventListener("click",function(){ fetchLive(); });
 renderGlance(); renderRecord(); setBadge(); fetchLive();
-setInterval(fetchLive,60000);
+function marketOpenCT(){
+  try{
+    var parts=new Intl.DateTimeFormat("en-US",{timeZone:"America/Chicago",weekday:"short",hour:"numeric",minute:"numeric",hour12:false}).formatToParts(new Date());
+    var m={}; parts.forEach(function(p){ m[p.type]=p.value; });
+    if(m.weekday==="Sat" || m.weekday==="Sun") return false;
+    var mins=parseInt(m.hour,10)*60+parseInt(m.minute,10);
+    return mins>=510 && mins<900;
+  }catch(e){ return false; }
+}
+function pollDelay(){ return marketOpenCT() ? 20000 : 60000; }
+function scheduleNext(){ setTimeout(function(){ fetchLive(); scheduleNext(); }, pollDelay()); }
+scheduleNext();
+/* A phone suspends timers while the page sits in the background, so the
+   render it froze on is what greets you when you come back. Refetch the
+   moment the page is looked at again instead of waiting out the timer. */
+document.addEventListener("visibilitychange",function(){ if(!document.hidden) fetchLive(); });
+window.addEventListener("focus",function(){ fetchLive(); });
 setInterval(function(){
   if(liveState.nextIn>0) liveState.nextIn--;
   var rm=document.getElementById("refreshMeta");
