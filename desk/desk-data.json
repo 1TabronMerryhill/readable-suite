@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-11T12:16:57.850909-06:00",
+ "generated": "2026-11-11T14:12:19.605320-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -520,5 +520,64 @@
     }
    ]
   }
+ },
+ "index": {
+  "inception": "2026-11-06",
+  "base": 100.0,
+  "units": 4.105513,
+  "total_contributions": 368.11,
+  "points": [
+   {
+    "book_value": 78.11,
+    "date": "2026-11-06",
+    "index": 100.0,
+    "source": "ledger.json Nov 6, 2026 fills: $46.86 deployed (MU/QCOM/GLD $15.62 each) + $31.25 cash = $78.11 inception funding (BRIEF.md)"
+   },
+   {
+    "book_value": 239.91,
+    "date": "2026-11-09",
+    "index": 102.6,
+    "source": "Live Desk verification Nov 9, 2026 (read filed in memory/2026-11-10.md): total $239.91, cash $75.30 after the $160 deposit and the IWM call fill"
+   },
+   {
+    "book_value": 170.99,
+    "date": "2026-11-10",
+    "index": 73.13,
+    "source": "Book sync Nov 10, 2026 15:15 CT (memory/2026-11-10.md): cash $154.61 verified live, total $170.99, MU half + QCOM half open"
+   },
+   {
+    "book_value": 302.03,
+    "date": "2026-11-11",
+    "index": 73.57,
+    "source": "Robinhood MCP get_portfolio live read Nov 11, 2026 ~12:45 CT (memory/2026-11-11.md correction): cash $293.41, equity $8.62, total $302.03, after the $130 Instant Deposit"
+   }
+  ],
+  "deposits": [
+   {
+    "amount": 78.11,
+    "date": "2026-11-06",
+    "index_at_issue": 100.0,
+    "pre_book_value": 0.0,
+    "source": "Inception funding, Nov 6, 2026 (BRIEF.md / ledger.json)",
+    "units_issued": 0.7811
+   },
+   {
+    "amount": 160.0,
+    "date": "2026-11-09",
+    "index_at_issue": 102.75,
+    "pre_book_value": 80.26,
+    "source": "Deposit Nov 9, 2026 13:07 CT; pre-deposit book $80.26 from the Robinhood live book status ~10:05 CT that day (memory/2026-11-09.md); cash + buying power $215.34 verified live after it landed",
+    "units_issued": 1.557139
+   },
+   {
+    "amount": 130.0,
+    "date": "2026-11-11",
+    "index_at_issue": 73.56,
+    "pre_book_value": 172.0,
+    "source": "Instant Deposit Nov 11, 2026 (Robinhood email 18:15 UTC; settles Nov 18); pre-deposit book $172.00 = cash $163.41 + equity $8.59, live read 11:23 CT (ledger.json cash_verified)",
+    "units_issued": 1.767274
+   }
+  ],
+  "method": "Unitized NAV, base 100 at inception. Deposits buy units at the prevailing index level, so contributions never move the index; only trading profit and loss and position marks do. Points are verified snapshots from the firm's record; a date with no verified snapshot is omitted."
  }
 }
