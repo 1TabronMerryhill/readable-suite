@@ -83,6 +83,20 @@
   .paperline{margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--faint);line-height:1.7}
   .paperline b{color:var(--muted);font-weight:500}
 
+  /* OpOne Index (added Nov 11, 2026, owner's word): the firm's own
+     chart. Colors come from the active mood variables only, so all six
+     lighting moods, Daylight included, carry it with no extra rules. */
+  .opone-index{margin-top:22px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:18px 20px 14px}
+  .opone-index .oi-head{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;justify-content:space-between}
+  .opone-index .oi-head .k{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .opone-index .oi-latest{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+  .opone-index .oi-latest b{color:var(--text);font-weight:600}
+  .opone-index .oi-note{font-size:13.5px;color:var(--muted);margin:8px 0 4px;line-height:1.55;max-width:720px}
+  .opone-index .oi-chart{margin-top:8px}
+  .opone-index .oi-chart svg{display:block;width:100%;height:auto}
+  .opone-index .oi-table{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--faint);line-height:1.8;overflow-x:auto;white-space:nowrap}
+  .opone-index .oi-table b{color:var(--muted);font-weight:500}
+
   /* feed strip */
   .feed{margin-top:22px;border:1px solid var(--line);border-radius:10px;background:var(--bg2);padding:16px 20px}
   .feed .row1{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline}
@@ -513,6 +527,16 @@
     </div>
     <p class="tab-skill"><b>Glance trains the eye for what matters.</b></p>
     <p class="paperline" id="paperLine">Paper book <b>$105.44</b>, all cash, flat. <b>0 open, 0 closed.</b> Prices as of <b>1:22 PM CT Nov 6, 2026 (Robinhood live)</b>; gold <b>1:16 PM CT Yahoo snapshot</b>.</p>
+
+    <div class="opone-index" aria-label="OpOne Index">
+      <div class="oi-head">
+        <span class="k">OpOne Index</span>
+        <span class="oi-latest" id="oiLatest"></span>
+      </div>
+      <p class="oi-note">The index is unitized: deposits buy units at the prevailing index level, so contributions never move the index; only trading profit and loss and position marks move it. Points are verified snapshots from the firm's record. A date with no verified snapshot is omitted, never filled in.</p>
+      <div class="oi-chart" id="oiChart"></div>
+      <div class="oi-table" id="oiTable"></div>
+    </div>
 
     <div class="feed" aria-label="Feed and system status">
       <div class="row1">
@@ -1698,6 +1722,67 @@ var RECORD = {
   }
 };
 /* === END RECORD SYNC === */
+/* === INDEX SYNC (generated; do not hand-edit) === */
+var INDEX = {
+  "inception": "2026-11-06",
+  "base": 100.0,
+  "units": 4.105513,
+  "total_contributions": 368.11,
+  "points": [
+    {
+      "book_value": 78.11,
+      "date": "2026-11-06",
+      "index": 100.0,
+      "source": "ledger.json Nov 6, 2026 fills: $46.86 deployed (MU/QCOM/GLD $15.62 each) + $31.25 cash = $78.11 inception funding (BRIEF.md)"
+    },
+    {
+      "book_value": 239.91,
+      "date": "2026-11-09",
+      "index": 102.6,
+      "source": "Live Desk verification Nov 9, 2026 (read filed in memory/2026-11-10.md): total $239.91, cash $75.30 after the $160 deposit and the IWM call fill"
+    },
+    {
+      "book_value": 170.99,
+      "date": "2026-11-10",
+      "index": 73.13,
+      "source": "Book sync Nov 10, 2026 15:15 CT (memory/2026-11-10.md): cash $154.61 verified live, total $170.99, MU half + QCOM half open"
+    },
+    {
+      "book_value": 302.03,
+      "date": "2026-11-11",
+      "index": 73.57,
+      "source": "Robinhood MCP get_portfolio live read Nov 11, 2026 ~12:45 CT (memory/2026-11-11.md correction): cash $293.41, equity $8.62, total $302.03, after the $130 Instant Deposit"
+    }
+  ],
+  "deposits": [
+    {
+      "amount": 78.11,
+      "date": "2026-11-06",
+      "index_at_issue": 100.0,
+      "pre_book_value": 0.0,
+      "source": "Inception funding, Nov 6, 2026 (BRIEF.md / ledger.json)",
+      "units_issued": 0.7811
+    },
+    {
+      "amount": 160.0,
+      "date": "2026-11-09",
+      "index_at_issue": 102.75,
+      "pre_book_value": 80.26,
+      "source": "Deposit Nov 9, 2026 13:07 CT; pre-deposit book $80.26 from the Robinhood live book status ~10:05 CT that day (memory/2026-11-09.md); cash + buying power $215.34 verified live after it landed",
+      "units_issued": 1.557139
+    },
+    {
+      "amount": 130.0,
+      "date": "2026-11-11",
+      "index_at_issue": 73.56,
+      "pre_book_value": 172.0,
+      "source": "Instant Deposit Nov 11, 2026 (Robinhood email 18:15 UTC; settles Nov 18); pre-deposit book $172.00 = cash $163.41 + equity $8.59, live read 11:23 CT (ledger.json cash_verified)",
+      "units_issued": 1.767274
+    }
+  ],
+  "method": "Unitized NAV, base 100 at inception. Deposits buy units at the prevailing index level, so contributions never move the index; only trading profit and loss and position marks do. Points are verified snapshots from the firm's record; a date with no verified snapshot is omitted."
+};
+/* === END INDEX SYNC === */
 function numOr(v,fallback){ return (typeof v==="number" && isFinite(v)) ? v : fallback; }
 function fmtAsOf(iso){
   try{
@@ -1720,6 +1805,63 @@ function renderGlance(){
     pl.innerHTML="Paper book <b>$"+fmt(BOOK.paperTotal)+"</b>, all cash, flat. <b>"+BOOK.paperOpen+" open, "+BOOK.paperClosed+" closed.</b> Prices as of <b>"+esc(liveState.lastOkAsOf||"")+"</b> (feed <b>"+esc(liveState.feed)+"</b>). Gold spot stays on the <b>1:16 PM CT Nov 6 Yahoo snapshot</b>.";
   } else {
     pl.innerHTML="Paper book <b>$"+fmt(BOOK.paperTotal)+"</b>, all cash, flat. <b>"+BOOK.paperOpen+" open, "+BOOK.paperClosed+" closed.</b> Prices as of <b>1:22 PM CT Nov 6, 2026 (Robinhood live)</b>; gold <b>1:16 PM CT Yahoo snapshot</b>.";
+  }
+}
+/* ---- OpOne Index chart: inline SVG drawn from INDEX (the sync block
+   above, or the live feed's index object). Two series on two scales:
+   the unitized index level (left axis, base 100 at inception) and the
+   book value in dollars (right axis). Colors are the active mood's
+   variables, so the chart follows the lighting like everything else. */
+function renderIndex(){
+  var el=document.getElementById("oiChart"); if(!el) return;
+  var tbl=document.getElementById("oiTable");
+  var latest=document.getElementById("oiLatest");
+  var pts=(typeof INDEX!=="undefined" && INDEX && Array.isArray(INDEX.points)) ? INDEX.points : [];
+  if(!pts.length){ el.innerHTML="<p class='oi-note'>No verified index points yet.</p>"; if(tbl) tbl.innerHTML=""; if(latest) latest.innerHTML=""; return; }
+  function dlbl(ds,yr){ try{ var d=new Date(ds+"T12:00:00"); var o={month:"short",day:"numeric"}; if(yr) o.year="numeric"; return d.toLocaleDateString("en-US",o); }catch(e){ return ds; } }
+  var last=pts[pts.length-1];
+  if(latest) latest.innerHTML="Index <b>"+fmt(last.index)+"</b> · Book value <b>$"+fmt(last.book_value)+"</b> · "+esc(dlbl(last.date,true));
+  var W=720,H=264,L=54,R=58,T=22,B=36,iw=W-L-R,ih=H-T-B;
+  var t0=new Date(pts[0].date+"T12:00:00").getTime(), t1=new Date(last.date+"T12:00:00").getTime();
+  if(!(t1>t0)) t1=t0+86400000;
+  var iv=pts.map(function(p){return p.index;}), bv=pts.map(function(p){return p.book_value;});
+  iv.push(100);
+  function rng(a){ var lo=Math.min.apply(null,a), hi=Math.max.apply(null,a); if(hi<=lo){ hi=lo+1; } var pad=(hi-lo)*0.12; return [lo-pad, hi+pad]; }
+  var ri=rng(iv), rb=rng(bv);
+  function X(ds){ return L+((new Date(ds+"T12:00:00").getTime()-t0)/(t1-t0))*iw; }
+  function YI(v){ return T+ih-((v-ri[0])/(ri[1]-ri[0]))*ih; }
+  function YB(v){ return T+ih-((v-rb[0])/(rb[1]-rb[0]))*ih; }
+  var s="<svg viewBox='0 0 "+W+" "+H+"' role='img' aria-label='OpOne Index chart: index level and book value since inception, "+esc(dlbl(pts[0].date,true))+"'>";
+  var i, v;
+  for(i=0;i<=2;i++){
+    v=ri[0]+(ri[1]-ri[0])*i/2; var y=YI(v);
+    s+="<line x1='"+L+"' y1='"+y+"' x2='"+(L+iw)+"' y2='"+y+"' style='stroke:var(--line)' stroke-width='1'/>"
+      +"<text x='"+(L-6)+"' y='"+(y+4)+"' text-anchor='end' style='font-family:var(--mono);font-size:11px' fill='var(--faint)'>"+fmt(v)+"</text>";
+    v=rb[0]+(rb[1]-rb[0])*i/2; y=YB(v);
+    s+="<text x='"+(L+iw+6)+"' y='"+(y+4)+"' style='font-family:var(--mono);font-size:11px' fill='var(--faint)'>$"+fmt(v)+"</text>";
+  }
+  s+="<text x='"+L+"' y='"+(T-8)+"' style='font-family:var(--mono);font-size:11px;letter-spacing:.1em' fill='var(--accent)'>INDEX (BASE 100)</text>"
+    +"<text x='"+(L+iw)+"' y='"+(T-8)+"' text-anchor='end' style='font-family:var(--mono);font-size:11px;letter-spacing:.1em' fill='var(--green)'>BOOK VALUE</text>";
+  var x0=X(pts[0].date);
+  s+="<line x1='"+x0+"' y1='"+T+"' x2='"+x0+"' y2='"+(T+ih)+"' style='stroke:var(--line2)' stroke-width='1' stroke-dasharray='4 4'/>"
+    +"<text x='"+(x0+6)+"' y='"+(T+12)+"' style='font-family:var(--mono);font-size:11px' fill='var(--muted)'>Inception "+esc(dlbl(pts[0].date,true))+"</text>";
+  function line(ptsArr,yFn,color){
+    var p=ptsArr.map(function(p){ return X(p.date).toFixed(1)+","+yFn(p).toFixed(1); }).join(" ");
+    return "<polyline points='"+p+"' fill='none' style='stroke:"+color+"' stroke-width='2'/>";
+  }
+  s+=line(pts, function(p){ return YI(p.index); }, "var(--accent)");
+  s+=line(pts, function(p){ return YB(p.book_value); }, "var(--green)");
+  pts.forEach(function(p){
+    s+="<circle cx='"+X(p.date)+"' cy='"+YI(p.index)+"' r='3.5' style='fill:var(--accent)'/>"
+      +"<circle cx='"+X(p.date)+"' cy='"+YB(p.book_value)+"' r='3.5' style='fill:var(--green)'/>"
+      +"<text x='"+X(p.date)+"' y='"+(H-20)+"' text-anchor='middle' style='font-family:var(--mono);font-size:11px' fill='var(--faint)'>"+esc(dlbl(p.date))+"</text>"
+      +"<text x='"+X(p.date)+"' y='"+(H-6)+"' text-anchor='middle' style='font-family:var(--mono);font-size:11px' fill='var(--faint)'>"+esc(p.date.slice(0,4))+"</text>";
+  });
+  s+="</svg>";
+  el.innerHTML=s;
+  if(tbl){
+    var rows=pts.map(function(p){ return "<b>"+esc(dlbl(p.date,true))+"</b> book $"+fmt(p.book_value)+" · index "+fmt(p.index); });
+    tbl.innerHTML="Verified snapshots · "+rows.join(" &nbsp;·&nbsp; ");
   }
 }
 function recMoney(n){ if(typeof n!=="number" || !isFinite(n)) return "—"; return (n<0?"-$":"$")+fmt(Math.abs(n)); }
@@ -1872,8 +2014,9 @@ function applyLive(data){
   liveState.lastOkAsOf=fmtAsOf(data.generated) || (typeof data.quotes_as_of==="string" ? data.quotes_as_of : null) || liveState.lastOkAsOf || "just now";
   try{ liveState.lastOkTime=new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true}); }catch(e){ liveState.lastOkTime=null; }
   if(data.record) RECORD=data.record;
+  if(data.index) INDEX=data.index;
   if(Array.isArray(data.closed)) CLOSED=data.closed;
-  renderGlance(); renderPositions(); renderRecord(); renderClosed(); updateCorpusPositions(); setBadge();
+  renderGlance(); renderPositions(); renderRecord(); renderClosed(); renderIndex(); updateCorpusPositions(); setBadge();
 }
 function fetchLive(){
   liveState.nextIn=Math.round(pollDelay()/1000);
@@ -1890,7 +2033,7 @@ function fetchLive(){
   });
 }
 document.getElementById("refreshBtn").addEventListener("click",function(){ fetchLive(); });
-renderGlance(); renderRecord(); setBadge(); fetchLive();
+renderGlance(); renderRecord(); renderIndex(); setBadge(); fetchLive();
 function marketOpenCT(){
   try{
     var parts=new Intl.DateTimeFormat("en-US",{timeZone:"America/Chicago",weekday:"short",hour:"numeric",minute:"numeric",hour12:false}).formatToParts(new Date());
