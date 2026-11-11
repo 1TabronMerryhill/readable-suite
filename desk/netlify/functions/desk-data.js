@@ -24,20 +24,9 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 154.9,
-  "cash_as_of": "2026-11-11T11:04:00-06:00",
+  "cash": 163.41,
+  "cash_as_of": "2026-11-11T11:23:00-06:00",
   "fills": [
-    {
-      "symbol": "QCOM",
-      "qty": 0.046983,
-      "fill": 166.23,
-      "stop": 156.75,
-      "target": 180,
-      "target2": null,
-      "kill": "152.50 or Apple modem headline",
-      "order_id": "6aee297f-a42b-40d3-bf15-cbbe2ba573e5",
-      "filled_at": "2026-11-06T19:24:47.78Z"
-    },
     {
       "symbol": "GOOGL",
       "qty": 0.007323,
@@ -115,7 +104,6 @@ const BOOK = {
     "BAC",
     "CVX",
     "GOOGL",
-    "QCOM",
     "SPY"
   ]
 };
@@ -125,14 +113,14 @@ const BOOK = {
 const RECORD = {
   "as_of": "2026-11-11",
   "scoreboard": {
-    "exits": 5,
-    "wins": 4,
+    "exits": 6,
+    "wins": 5,
     "losses": 1,
-    "win_rate_pct": 80.0,
-    "wins_total_usd": 2.28,
+    "win_rate_pct": 83.3,
+    "wins_total_usd": 2.98,
     "losses_total_usd": -69.08,
-    "net_realized_usd": -66.8,
-    "process_followed_record": "4 wins, 0 losses",
+    "net_realized_usd": -66.1,
+    "process_followed_record": "5 wins, 0 losses",
     "process_skipped_record": "0 wins, 1 loss"
   },
   "rows": [
@@ -195,6 +183,18 @@ const RECORD = {
       "lesson": "L-011",
       "realized_pct": 13.72,
       "illustrative_at_1m_usd": 137178
+    },
+    {
+      "date_closed": "2026-11-11",
+      "symbol": "QCOM",
+      "instrument": "QCOM common stock (remaining half, 0.046983 sh)",
+      "exit_event": "Sold at target 2 ($180) under the pre-worded plan / standing authorization (filled $181.1201)",
+      "capital_committed": 7.81,
+      "realized_usd": 0.7,
+      "process_followed": true,
+      "lesson": "L-007",
+      "realized_pct": 8.96,
+      "illustrative_at_1m_usd": 89575
     }
   ],
   "lessons": [
