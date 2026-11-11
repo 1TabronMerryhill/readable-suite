@@ -129,6 +129,10 @@
   .cond-head p{margin:0;font-size:13px;color:var(--muted)}
   .cond-trigger{font-size:16px;font-weight:700;margin-top:14px;line-height:1.45}
   .orderline{margin-top:auto;padding-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.6;word-break:break-all}
+  .pos-toggle{display:flex;gap:6px;margin:2px 0 16px}
+  .closedbox{margin-top:14px;border:1px solid var(--line2);border-radius:7px;padding:11px 13px}
+  .closedbox .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+  .closedbox .v{font-size:14px;font-weight:600;line-height:1.5;margin-top:3px}
 
   /* wire */
   .wire-list{border-top:1px solid var(--line)}
@@ -447,6 +451,11 @@
     </div>
     <p class="tab-skill"><b>Positions trains the plan.</b></p>
     <p class="refreshmeta" id="posUpdated"></p>
+    <div class="pos-toggle" role="tablist" aria-label="Positions views">
+      <button class="fbtn on" id="posViewOpenBtn" type="button" role="tab" aria-selected="true">Open</button>
+      <button class="fbtn" id="posViewClosedBtn" type="button" role="tab" aria-selected="false">Closed</button>
+    </div>
+    <div id="posOpenWrap">
     <div class="pos-grid" id="posGrid"></div>
 
     <div class="cond-head">
@@ -455,6 +464,11 @@
     </div>
     <div class="cond-grid" id="condGrid"></div>
     <p class="paperline" style="margin-top:14px">Card values are priced off the lasts above, so they can sit a cent or two off the book. <b>Book totals in the glance come from the same feed as the cards when live, and from the snapshot when it is not.</b></p>
+    </div>
+    <div id="posClosedWrap" hidden>
+      <div class="pos-grid" id="closedGrid"></div>
+      <p class="paperline" style="margin-top:14px">Every closed real position from the firm's record, newest exit first: what went in, what came out, and why it closed. Realized P&amp;L is actual dollars on the capital committed to that exit.</p>
+    </div>
     <button class="tab-next" data-next="graph" type="button"><span class="nx">Next: Graph.</span> See why the plan is what it is.</button>
   </section>
 
@@ -659,6 +673,112 @@ var POSITIONS = [
 var GOLD = { spot:4090, entry:4040, target:4090, stop:4000,
   kill:"Position closed Nov 9, 2026 at target. No open gold position.",
   as_of:"closed Nov 9, 2026: GLD sold at $377.56, realized +$0.20" };
+/* === CLOSED SYNC (generated; do not hand-edit) === */
+var CLOSED = [
+  {
+    "symbol": "QCOM",
+    "instrument": "QCOM common stock (remaining half, 0.046983 sh)",
+    "qty": 0.046983,
+    "entry_date": "2026-11-06",
+    "entry_price": 166.23,
+    "exit_date": "2026-11-11",
+    "exit_price": 181.1201,
+    "capital_committed": 7.81,
+    "realized_usd": 0.7,
+    "realized_pct": 8.96,
+    "exit_event": "Sold at target 2 ($180) under the pre-worded plan / standing authorization (filled $181.1201)",
+    "lesson": "L-007",
+    "process_followed": true,
+    "entry_order_id": "6aee297f-a42b-40d3-bf15-cbbe2ba573e5",
+    "exit_order_id": "6af4a457-b19d-424e-9188-0814ac008bd7"
+  },
+  {
+    "symbol": "MU",
+    "instrument": "MU common stock (remaining half, 0.01129 sh)",
+    "qty": 0.01129,
+    "entry_date": "2026-11-06",
+    "entry_price": 691.7347,
+    "exit_date": "2026-11-11",
+    "exit_price": 786.6229,
+    "capital_committed": 7.81,
+    "realized_usd": 1.07,
+    "realized_pct": 13.72,
+    "exit_event": "Sold at target 2 ($780) under the Nov 9 trim plan, on Milly's call word (filled $786.6229)",
+    "lesson": "L-011",
+    "process_followed": true,
+    "entry_order_id": "6aee297b-80a8-43e4-822c-893ce54dc96c",
+    "exit_order_id": "6af48291-2bd6-43cb-b42b-33b516ebbd71"
+  },
+  {
+    "symbol": "MU",
+    "instrument": "MU shares (half)",
+    "qty": 0.01129,
+    "entry_date": "2026-11-06",
+    "entry_price": 691.7347,
+    "exit_date": "2026-11-10",
+    "exit_price": 740.3701,
+    "capital_committed": 7.81,
+    "realized_usd": 0.55,
+    "realized_pct": 7.04,
+    "exit_event": "Trim half at target 1 $740 (sold $740.37)",
+    "lesson": "L-007",
+    "process_followed": true,
+    "entry_order_id": "6aee297b-80a8-43e4-822c-893ce54dc96c",
+    "exit_order_id": "6af3331f-32fe-4a10-8cd4-ea8c70145710"
+  },
+  {
+    "symbol": "IWM",
+    "instrument": "IWM Nov 13 2026 $285 call",
+    "qty": 1,
+    "entry_date": "2026-11-09",
+    "entry_price": 1.4,
+    "exit_date": "2026-11-10",
+    "exit_price": 0.71,
+    "capital_committed": 140.04,
+    "realized_usd": -69.08,
+    "realized_pct": -49.33,
+    "exit_event": "Sold at the stop on Milly's word (filled $0.71)",
+    "lesson": "L-001",
+    "process_followed": false,
+    "entry_order_id": "6af21ab8-34b2-432d-89fb-0d431bb73ec3",
+    "exit_order_id": "6af33178-546f-453d-999d-d5f8a09a2008"
+  },
+  {
+    "symbol": "GLD",
+    "instrument": "GLD shares",
+    "qty": 0.0419,
+    "entry_date": "2026-11-06",
+    "entry_price": 372.7899,
+    "exit_date": "2026-11-09",
+    "exit_price": 377.5601,
+    "capital_committed": 15.62,
+    "realized_usd": 0.2,
+    "realized_pct": 1.28,
+    "exit_event": "Full exit at target $376.39 zone (sold $377.56)",
+    "lesson": "L-007",
+    "process_followed": true,
+    "entry_order_id": "6aee2984-f2e0-474f-9720-70b9fb7e0d14",
+    "exit_order_id": "6af1ee57-4d67-4d29-95a0-9a763ee735b3"
+  },
+  {
+    "symbol": "QCOM",
+    "instrument": "QCOM shares (half)",
+    "qty": 0.046983,
+    "entry_date": "2026-11-06",
+    "entry_price": 166.23,
+    "exit_date": "2026-11-09",
+    "exit_price": 176.1201,
+    "capital_committed": 7.81,
+    "realized_usd": 0.46,
+    "realized_pct": 5.89,
+    "exit_event": "Trim half at target 1 (sold $176.12)",
+    "lesson": "L-007",
+    "process_followed": true,
+    "entry_order_id": "6aee297f-a42b-40d3-bf15-cbbe2ba573e5",
+    "exit_order_id": "6af1ee53-042d-4b08-b582-3234d1ce4066"
+  }
+];
+/* === END CLOSED SYNC === */
 var CONDITIONALS = [
   { symbol:"AMD", name:"Advanced Micro Devices", last:445.57, condition:"Pullback to $436.50 only", stop:404.40, targets:[460,476],
     kill:"Close below $404.40.", scaleMin:390, scaleMax:490,
@@ -802,7 +922,47 @@ function renderWire(){
     pl.appendChild(d);
   });
 }
-renderPositions(); renderWire();
+function renderClosed(){
+  var g=document.getElementById("closedGrid");
+  if(!g) return;
+  g.innerHTML="";
+  if(!CLOSED || !CLOSED.length){
+    g.innerHTML='<p class="paperline">No closed positions yet.</p>';
+    return;
+  }
+  CLOSED.forEach(function(c){
+    var ru = typeof c.realized_usd==="number" ? c.realized_usd : 0;
+    var cls = ru>0 ? "up" : (ru<0 ? "down" : "flat");
+    var pnlTxt = (ru>0?"+":(ru<0?"-":"")) + "$"+fmt(Math.abs(ru));
+    var pctTxt = (typeof c.realized_pct==="number") ? ((c.realized_pct>0?"+":"")+fmt(c.realized_pct)+"%") : "—";
+    var card=document.createElement("article"); card.className="card";
+    card.innerHTML =
+      '<div class="card-top"><div><div class="sym">'+esc(c.symbol)+'</div><div class="co">'+esc(c.instrument||"")+'</div></div><span class="tag">Closed</span></div>'
+      + '<div class="price-row"><div><div class="lbl">Realized P&amp;L</div><div class="pnl '+cls+'" style="font-size:20px">'+pnlTxt+'</div></div><div><div class="lbl">Return</div><div class="pnl '+cls+'" style="font-size:20px">'+pctTxt+'</div></div><div><div class="lbl">Capital</div><div class="last" style="font-size:19px">$'+fmt(c.capital_committed)+'</div></div></div>'
+      + '<div class="levels">'
+      + '<div class="lv"><div class="k">Entry</div><div class="v">$'+fmt(c.entry_price)+' <small>x '+c.qty+'</small></div></div>'
+      + '<div class="lv"><div class="k">Entered</div><div class="v" style="font-size:13.5px">'+esc(c.entry_date||"")+'</div></div>'
+      + '<div class="lv"><div class="k">Exit</div><div class="v">$'+fmt(c.exit_price)+'</div></div>'
+      + '<div class="lv"><div class="k">Exited</div><div class="v" style="font-size:13.5px">'+esc(c.exit_date||"")+'</div></div>'
+      + '</div>'
+      + (c.exit_event ? '<div class="closedbox"><div class="k">How it closed</div><div class="v">'+esc(c.exit_event)+'</div></div>' : '')
+      + '<div class="orderline">In '+esc(c.entry_order_id||"")+'<br/>Out '+esc(c.exit_order_id||"")+(c.lesson ? '<br/>Lesson '+esc(c.lesson) : '')+'</div>';
+    g.appendChild(card);
+  });
+}
+function setPosView(which){
+  var open = which!=="closed";
+  var ow=document.getElementById("posOpenWrap"), cw=document.getElementById("posClosedWrap");
+  var ob=document.getElementById("posViewOpenBtn"), cb=document.getElementById("posViewClosedBtn");
+  if(ow) ow.hidden=!open;
+  if(cw) cw.hidden=open;
+  if(ob){ ob.classList.toggle("on",open); ob.setAttribute("aria-selected",open?"true":"false"); }
+  if(cb){ cb.classList.toggle("on",!open); cb.setAttribute("aria-selected",!open?"true":"false"); }
+  if(!open) renderClosed();
+}
+document.getElementById("posViewOpenBtn").addEventListener("click",function(){ setPosView("open"); });
+document.getElementById("posViewClosedBtn").addEventListener("click",function(){ setPosView("closed"); });
+renderPositions(); renderWire(); renderClosed();
 </script>
 <script>
 var NODES = [
@@ -1613,7 +1773,8 @@ function applyLive(data){
   liveState.lastOkAsOf=fmtAsOf(data.generated) || (typeof data.quotes_as_of==="string" ? data.quotes_as_of : null) || liveState.lastOkAsOf || "just now";
   try{ liveState.lastOkTime=new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true}); }catch(e){ liveState.lastOkTime=null; }
   if(data.record) RECORD=data.record;
-  renderGlance(); renderPositions(); renderRecord(); updateCorpusPositions(); setBadge();
+  if(Array.isArray(data.closed)) CLOSED=data.closed;
+  renderGlance(); renderPositions(); renderRecord(); renderClosed(); updateCorpusPositions(); setBadge();
 }
 function fetchLive(){
   liveState.nextIn=Math.round(pollDelay()/1000);
