@@ -396,6 +396,28 @@
   body[data-mood="steel"]{ --glow-a:120,165,220; --glow-b:60,80,120;  --accent:#a8c4e0; }
   body[data-mood="ember"]{ --glow-a:224,110,60;  --glow-b:90,40,30;   --accent:#e07840; }
   body[data-mood="down"] { --glow-a:150,160,190; --glow-b:40,44,60;   --accent:#c9cfda; --glow-strength:.18; }
+  /* Warmest (added Nov 11, 2026, owner's word): the room itself warms up.
+     Deep amber-brown walls, warm-tinted panels, warm high-contrast text —
+     candlelit / Night-Shift warmth, easy on the eyes. Not glow on black. */
+  body[data-mood="warmest"]{
+    --bg:#201409; --bg2:#291a0e; --panel:#2e1f11; --panel2:#382613;
+    --line:#4a351d; --line2:#5f4526;
+    --text:#f5ecdd; --muted:#c9b294; --faint:#97805f;
+    --accent:#f0bc66;
+    --glow-a:240,178,90; --glow-b:200,120,60; --glow-strength:.7;
+  }
+  /* Daylight (added Nov 11, 2026, owner's word): a true light mode.
+     Warm off-white room, light panels, dark text, gold accent kept.
+     Component overrides for hard-coded darks live at the end of this block. */
+  body[data-mood="day"]{
+    --bg:#f4f1ea; --bg2:#efe9dd; --panel:#fffdf8; --panel2:#f7f2e7;
+    --line:#ddd3bf; --line2:#c9bb9e;
+    --text:#211d16; --muted:#5d564a; --faint:#8a8172;
+    --green:#2a7d4b; --green-dim:#2a7d4b; --red:#c93a33; --red-dim:#c08a86;
+    --accent:#b97f22;
+    --glow-a:232,178,90; --glow-b:150,170,200;
+    color-scheme:light;
+  }
   /* the room: fixed ambient light pools behind everything */
   body::before{
     content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
@@ -428,6 +450,26 @@
     background:rgba(var(--glow-a), .14);box-shadow:0 0 12px rgba(var(--glow-a), .25)}
   #desk-light input[type="range"]{width:172px;accent-color:rgb(var(--glow-a));cursor:pointer;margin:0}
   @media (max-width:640px){ #desk-light input[type="range"]{width:132px} }
+  /* === Warmest + Daylight component tuning (Nov 11, 2026) ===
+     Scoped to the two new moods only; the original four are untouched. */
+  body[data-mood="warmest"] .tabbar{background:rgba(32,20,9,.88)}
+  body[data-mood="day"] .tabbar{background:rgba(247,244,238,.88)}
+  body[data-mood="day"] #desk-light{background:rgba(255,253,248,.94);box-shadow:0 10px 30px rgba(90,70,30,.18)}
+  body[data-mood="day"] .card,body[data-mood="day"] .stat,body[data-mood="day"] .gstat,
+  body[data-mood="day"] .feed,body[data-mood="day"] .ask-box,body[data-mood="day"] .graph-box,
+  body[data-mood="day"] .graph-detail,body[data-mood="day"] .nr-card,body[data-mood="day"] .nr-chart-card,
+  body[data-mood="day"] .nr-learn,body[data-mood="day"] .nr-practice,body[data-mood="day"] .openq,
+  body[data-mood="day"] .pat,body[data-mood="day"] .hit,body[data-mood="day"] .attention,
+  body[data-mood="day"] .edge-list,body[data-mood="day"] .rec-tile{
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.65), 0 10px 26px rgba(96,74,32,.13);
+  }
+  body[data-mood="day"] .tab{color:#454c58}
+  body[data-mood="day"] .tab-next{background:var(--panel2)}
+  body[data-mood="day"] .nr-drill-banner{background:#fdf3dd}
+  body[data-mood="day"] .gedge{stroke:#a7adb8}
+  body[data-mood="day"] .ask-form button{background:#22262e;color:#f7f4ec}
+  body[data-mood="day"] .rec-tile .v.up,body[data-mood="day"] table.rec-table .up{color:#2a7d4b}
+  body[data-mood="day"] .rec-tile .v.down,body[data-mood="day"] table.rec-table .down{color:#c93a33}
 </style>
 </head>
 <body>
@@ -3547,7 +3589,7 @@ nrFetch();
    Reads and writes nothing but its own localStorage preference. */
 (function(){
   try{
-    var MOODS=[["warm","After-hours warm"],["steel","Cool steel"],["ember","Ember"],["down","Lights down"]];
+    var MOODS=[["warm","After-hours warm"],["steel","Cool steel"],["ember","Ember"],["down","Lights down"],["warmest","Warmest"],["day","Daylight"]];
     var saved=null;
     try{ saved=JSON.parse(localStorage.getItem("opone-desk-light")||"null"); }catch(e){}
     var mood=(saved&&saved.mood)||"warm", glow=(saved&&typeof saved.glow==="number")?saved.glow:55;
