@@ -372,6 +372,63 @@
   .rec-h{font-size:16px;font-weight:700;margin:22px 0 2px}
   .rec-note{font-size:13px;color:var(--muted);line-height:1.6}
 </style>
+<style>
+  /* === AMBIENT RESKIN (Nov 11, 2026) ===
+     Presentational layer only, added on Milly's word ("Do it now... none of
+     the information should leave. It should only get better."). Matches the
+     OpOne homepage / member-desk artifacts: concrete-gray base (Taylor
+     restraint), warm golden light pools (Axe richness), glow driven by CSS
+     variables with switchable moods. No data, markup, or behavior changes:
+     every rule below is an override or an addition. */
+  :root{
+    --bg:#0a0b0e;
+    --bg2:#101216;
+    --panel:#171a20;
+    --panel2:#1c202a;
+    --line:#262b35;
+    --line2:#343b49;
+    --accent:#e8b25a;
+    --glow-a:232,178,90;   /* warm pool */
+    --glow-b:84,110,160;   /* cool fill */
+    --glow-strength:.55;
+  }
+  body[data-mood="warm"] { --glow-a:232,178,90;  --glow-b:84,110,160;  --accent:#e8b25a; }
+  body[data-mood="steel"]{ --glow-a:120,165,220; --glow-b:60,80,120;  --accent:#a8c4e0; }
+  body[data-mood="ember"]{ --glow-a:224,110,60;  --glow-b:90,40,30;   --accent:#e07840; }
+  body[data-mood="down"] { --glow-a:150,160,190; --glow-b:40,44,60;   --accent:#c9cfda; --glow-strength:.18; }
+  /* the room: fixed ambient light pools behind everything */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(1100px 480px at 18% -6%, rgba(var(--glow-a), calc(var(--glow-strength) * .34)), transparent 62%),
+      radial-gradient(900px 520px at 88% 0%,  rgba(var(--glow-b), calc(var(--glow-strength) * .30)), transparent 60%),
+      radial-gradient(1400px 700px at 50% 115%, rgba(var(--glow-a), calc(var(--glow-strength) * .12)), transparent 65%);
+  }
+  /* panels catch the light: a warm sheen at the top edge, a soft floor shadow */
+  .card,.stat,.gstat,.feed,.ask-box,.graph-box,.graph-detail,.nr-card,
+  .nr-chart-card,.nr-learn,.nr-practice,.openq,.pat,.hit,.attention,
+  .edge-list,.graph-detail,.rec-tile{
+    background-image:radial-gradient(460px 160px at 50% -70px, rgba(var(--glow-a), calc(var(--glow-strength) * .10)), transparent 70%);
+    box-shadow:inset 0 1px 0 rgba(var(--glow-a), .07), 0 12px 32px rgba(0,0,0,.38);
+  }
+  .tabbar{background:rgba(10,11,14,.88);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+  .tab.on{box-shadow:0 0 18px rgba(var(--glow-a), .38)}
+  .brand .desk{text-shadow:0 0 26px rgba(var(--glow-a), calc(var(--glow-strength) * .35))}
+  .livebadge.live .dot{background:rgb(var(--glow-a));box-shadow:0 0 10px rgba(var(--glow-a), .8)}
+  /* the lighting control itself */
+  #desk-light{position:fixed;right:14px;bottom:14px;z-index:90;display:flex;flex-direction:column;gap:7px;
+    background:rgba(16,18,22,.92);border:1px solid var(--line2);border-radius:10px;padding:9px 10px;
+    font-family:var(--mono);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  #desk-light .dl-k{font-size:9.5px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+  #desk-light .dl-row{display:flex;gap:5px;flex-wrap:wrap}
+  #desk-light button{font:600 10.5px/1 var(--mono);color:var(--muted);background:transparent;
+    border:1px solid var(--line2);border-radius:999px;padding:6px 9px;cursor:pointer}
+  #desk-light button[aria-pressed="true"]{color:var(--text);border-color:rgb(var(--glow-a));
+    background:rgba(var(--glow-a), .14);box-shadow:0 0 12px rgba(var(--glow-a), .25)}
+  #desk-light input[type="range"]{width:172px;accent-color:rgb(var(--glow-a));cursor:pointer;margin:0}
+  @media (max-width:640px){ #desk-light input[type="range"]{width:132px} }
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -3482,6 +3539,47 @@ nrRenderPicker(); renderInsights(); renderFA(); deskInitTabs();
 document.getElementById("nrAskBtn").textContent="Ask the graph about MU";
 document.getElementById("nrAskNote").textContent="";
 nrFetch();
+</script>
+<script>
+/* === AMBIENT LIGHTING CONTROL (Nov 11, 2026) ===
+   Presentational only: sets body[data-mood] and the --glow-strength CSS
+   variable, exactly like the OpOne homepage / member-desk artifacts.
+   Reads and writes nothing but its own localStorage preference. */
+(function(){
+  try{
+    var MOODS=[["warm","After-hours warm"],["steel","Cool steel"],["ember","Ember"],["down","Lights down"]];
+    var saved=null;
+    try{ saved=JSON.parse(localStorage.getItem("opone-desk-light")||"null"); }catch(e){}
+    var mood=(saved&&saved.mood)||"warm", glow=(saved&&typeof saved.glow==="number")?saved.glow:55;
+    function apply(){
+      document.body.setAttribute("data-mood", mood);
+      document.documentElement.style.setProperty("--glow-strength", (glow/100).toFixed(2));
+      var btns=box.querySelectorAll("button[data-mood]");
+      for(var i=0;i<btns.length;i++) btns[i].setAttribute("aria-pressed", btns[i].getAttribute("data-mood")===mood ? "true":"false");
+      try{ localStorage.setItem("opone-desk-light", JSON.stringify({mood:mood, glow:glow})); }catch(e){}
+    }
+    var box=document.createElement("div");
+    box.id="desk-light";
+    box.setAttribute("role","group");
+    box.setAttribute("aria-label","Desk lighting");
+    var k=document.createElement("span"); k.className="dl-k"; k.textContent="Lighting"; box.appendChild(k);
+    var row=document.createElement("div"); row.className="dl-row";
+    MOODS.forEach(function(m){
+      var b=document.createElement("button");
+      b.type="button"; b.textContent=m[1]; b.setAttribute("data-mood", m[0]); b.setAttribute("aria-pressed","false");
+      b.addEventListener("click", function(){ mood=m[0]; if(mood==="down"){ document.documentElement.style.setProperty("--glow-strength",".18"); } apply(); if(mood!=="down"){ document.documentElement.style.setProperty("--glow-strength",(glow/100).toFixed(2)); } });
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+    var slider=document.createElement("input");
+    slider.type="range"; slider.min="10"; slider.max="100"; slider.value=String(glow);
+    slider.setAttribute("aria-label","Glow intensity");
+    slider.addEventListener("input", function(){ glow=Number(slider.value); if(mood!=="down") document.documentElement.style.setProperty("--glow-strength",(glow/100).toFixed(2)); try{ localStorage.setItem("opone-desk-light", JSON.stringify({mood:mood, glow:glow})); }catch(e){} });
+    box.appendChild(slider);
+    document.body.appendChild(box);
+    apply();
+  }catch(e){ /* lighting is decoration; never break the Desk over it */ }
+})();
 </script>
 </body>
 </html>
