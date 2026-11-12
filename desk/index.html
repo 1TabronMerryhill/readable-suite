@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="desk-version" content="v1.0" />
-<meta name="desk-updated" content="2026-11-12T13:22:28-06:00" />
-<!-- desk-build v1.1 updated 2026-11-12T13:22:28-06:00 -->
+<meta name="desk-updated" content="2026-11-12T15:18:20-06:00" />
+<!-- desk-build v1.1 updated 2026-11-12T15:18:20-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -774,8 +774,8 @@
     </div>
     <p class="tab-skill"><b>Graph trains the memory.</b></p>
     <div class="graph-stats">
-      <div class="gstat"><div class="v" id="gsNodes">186</div><div class="k">Nodes in the full graph</div></div>
-      <div class="gstat"><div class="v" id="gsEdges">153</div><div class="k">Edges in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsNodes">191</div><div class="k">Nodes in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsEdges">158</div><div class="k">Edges in the full graph</div></div>
       <div class="gstat"><div class="v" id="gsLive">0</div><div class="k">Live patterns. None has earned it yet</div></div>
       <div class="gstat"><div class="v" id="gsConn">16</div><div class="k">Connector candidates waiting</div></div>
     </div>
@@ -844,7 +844,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.1 · Updated Nov 12, 2026, 1:22 PM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.1 · Updated Nov 12, 2026, 3:18 PM CT</span></p>
   </footer>
 </div>
 <script>
@@ -1117,7 +1117,7 @@ var DAY_TRADING = [
     "kill": "REAL MONEY day trade, pre-authorized by Milly on voice Nov 12 ~13:05 CT ('I'll take that' / 'not paper, real' / auto-purchase on trigger). Buy ~$60 at market on cross+hold above $136.65 day high (entry print >= $136.85), only before 14:15 CT. Pre-worded exits: stop cross below $133.35 = sell all; kill = loss of $131.30 open or break of $130.01 day low = sell all; target $143.30 = sell all; flat by 15:00 CT regardless. Package trade-package-2026-11-12-VST.md. Never converts to a hold (margin test fails at this price; hold passing price $128)."
   }
 ];
-var CASH_AS_OF = "2026-11-11T15:15:00-06:00";
+var CASH_AS_OF = "2026-11-12T15:18:20-06:00";
 /* === END POSITIONS SYNC === */
 /* Gold state. The GLD position closed Nov 9, 2026, so GLD is NOT a live
    position and never gets a position card with a per-share price. Gold
@@ -1252,6 +1252,30 @@ var WIRE = [
   },
   {
     "time": "2026-11-12",
+    "headline": "ANET long opened $193.15 inside its entry zone, crossed the $193 trigger, and hit the $206 target (Finnhub day high $207.17, close $206.63; stop $187.88 never approached, low $190.82). Signal only, no position opened. The slot was not surfaced as a live decision in the first minutes; that miss is L-012, logged today.",
+    "verdict": "Result: target_hit (signal_only, feed finnhub).",
+    "refs": [
+      "outcome:2026-11-12-anet-slot"
+    ]
+  },
+  {
+    "time": "2026-11-12",
+    "headline": "MU long triggered above the $763 entry (watch-state: triggered; Finnhub open $769.31). Target $811 not hit (high $799.70), stop $745 not hit (low $764.57); marked to the Nov 12 close $798.44. Signal only, no position.",
+    "verdict": "Result: triggered_marked_to_close (signal_only, feed finnhub).",
+    "refs": [
+      "outcome:2026-11-12-mu-slot"
+    ]
+  },
+  {
+    "time": "2026-11-12",
+    "headline": "BTC short triggered at the $73,500 entry (watch-state: triggered; intraday hunt had it most of the way to target at $71,744, 12:58 CT). Target $70,500 not hit (Finnhub BINANCE:BTCUSDT day low $71,255.02), stop $74,900 not hit (day high $74,811.45); marked to the post-close print $71,494.09, in the short's favor. Signal only, no position.",
+    "verdict": "Result: triggered_marked_to_close (signal_only, feed finnhub).",
+    "refs": [
+      "outcome:2026-11-12-btc-slot"
+    ]
+  },
+  {
+    "time": "2026-11-12",
     "headline": "ABT EDGAR dossier refreshed",
     "verdict": "EDGAR dossier on file. Sector: Pharmaceutical Preparations. Latest annual 10-K filed 2026-02-20; latest quarterly 10-Q filed 2026-11-04.",
     "refs": [
@@ -1280,30 +1304,6 @@ var WIRE = [
     "verdict": "Universe 11,805 quoted; 1,152 passed (gem 401, deep 389, crash 362). Top of the screen: TSM, META, XOM, CVX, UNH, GE, HD, HSBC.",
     "refs": [
       "scan:2026-11-11"
-    ]
-  },
-  {
-    "time": "2026-11-11",
-    "headline": "Sold remaining 0.01129 sh at $786.6229, target 2 was $780 (crossed 08:53 CT at $782.21). Realized +$1.07 vs $691.7347 entry on this half; total MU realized +$1.62. Position closed. Order 6af48291-2bd6-43cb-b42b-33b516ebbd71.",
-    "verdict": "Result: closed_target (real_fill, feed robinhood_mcp).",
-    "refs": [
-      "outcome:2026-11-11-mu-exit"
-    ]
-  },
-  {
-    "time": "2026-11-11",
-    "headline": "Sold remaining 0.046983 sh at $181.1201, target 2 was $180 (levels watch crossed 11:18 CT at $180.77). Realized +$0.70 vs $166.23 entry on this half; total QCOM realized +$1.16. Position closed. Order 6af4a457-b19d-424e-9188-0814ac008bd7.",
-    "verdict": "Result: closed_target (real_fill, feed robinhood_mcp).",
-    "refs": [
-      "outcome:2026-11-11-qcom-exit"
-    ]
-  },
-  {
-    "time": "2026-11-11",
-    "headline": "DCA program week 1: bought 0.007323 sh GOOGL at $293.5821 for $2.15 per dca-program.md standing instruction. Position open. Order 6af49fbd-f7f1-4dde-8f09-9c0cbd4b89d9.",
-    "verdict": "Result: filled_open (real_fill, feed robinhood_mcp).",
-    "refs": [
-      "outcome:2026-11-11-dca-googl-fill"
     ]
   },
   {
@@ -1371,8 +1371,8 @@ var BRIEF_META = {
 /* === GRAPHMETA SYNC (generated; do not hand-edit) === */
 var GRAPHMETA = {
   "generated": "2026-11-12",
-  "nodes": 186,
-  "edges": 153,
+  "nodes": 191,
+  "edges": 158,
   "live_patterns": 0,
   "pattern_candidates": 6,
   "connector_candidates": 16,
@@ -2845,6 +2845,20 @@ var RECORD = {
       "what_happened": "The Nov 12 ANET day-trade slot opened at $192, inside its entry zone, crossed the $193 trigger, and ran to the $206 target, printing $206.20. That was about a 14-point ride, roughly 7.4%. No paper position was opened. Bobby had framed the slot as conditional on a first-30-minute hold and did not press for Milly's trigger pull when the trigger crossed. Bobby first called it a signal that worked. Milly corrected that plainly: they opened at 192, that is a 14-point ride, how is that not a miss? He then named the principle: we absolutely need to take advantage of day trade slots, because that is also how we get cheaper money.",
       "drift_watch": {
         "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-12"
+      }
+    },
+    {
+      "id": "L-013",
+      "date": "2026-11-12",
+      "title": "Four prices on every name: disaster, load the boat, early entry, swing",
+      "status": "in_force",
+      "the_rule": "Every package carries four written prices: (1) disaster price, the fundamental floor built from trough numbers and the balance sheet, never a chart line and never a stop; (2) load the boat price, the zone near that floor where a liked name gets maximum size inside the guardrails; (3) early entry, where the first position starts; (4) swing trade price, the level the swing expression is built on. A package missing any of the four is incomplete and does not trade. Kills and belief-breakers stay separate: a broken story re-underwrites the floor, it does not turn the disaster price into an exit line.",
+      "what_happened": "On the Nov 12 afternoon voice call, after the VST close, Milly set the price architecture for the firm: for everything we are trading or thinking about trading, we have to know the disaster price. He defined it himself: the disaster price is how low the company can actually go. Load the boat is the companion rule: if a company we like goes into that disaster zone, we have to load the boat. Then the early entry, then the swing trade. Bobby's first spoken recap had wrongly glossed the disaster price as where we walk away; Milly's definition is the opposite anchor: the disaster price is the business's own floor, and the disaster zone is where liked names get bought heaviest.",
+      "drift_watch": {
+        "watching_for": "Any package, brief slot, or armed setup that reaches Milly without all four prices, or any report that treats the disaster price as a stop or walk-away line.",
         "relapses_since_lesson": 0,
         "status": "holding",
         "last_checked": "2026-11-12"
