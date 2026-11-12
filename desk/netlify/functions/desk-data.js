@@ -449,7 +449,7 @@ const RECORD = {
         "watching_for": "Any order placed, real or paper, without a full package and a completed lessons check first.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -463,7 +463,7 @@ const RECORD = {
         "watching_for": "Any opportunity hunt scoped to the watchlist instead of the whole-market scan.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -477,7 +477,7 @@ const RECORD = {
         "watching_for": "Any decision that relies on a feed with no proven delivery (the Discord pipe, the Finnhub stream) instead of a working source.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -491,7 +491,7 @@ const RECORD = {
         "watching_for": "Any trading day where today-slots.json is written after 08:30 CT, or a signal window passes unloaded.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -505,7 +505,7 @@ const RECORD = {
         "watching_for": "Any stop crossing on an options position where the alert and the ask are not one immediate message.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -519,7 +519,7 @@ const RECORD = {
         "watching_for": "Any book state reported to Milly without a read-back verification against the live record.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -533,7 +533,7 @@ const RECORD = {
         "watching_for": "Any exit executed without its pre-written plan (target, trim, or stop set before entry).",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -547,7 +547,7 @@ const RECORD = {
         "watching_for": "A package whose driver section names only macro/sector causes while the name is moving >2 pts against its complex on the day, or any package built without a same-day name-specific news sweep.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -561,7 +561,7 @@ const RECORD = {
         "watching_for": "Any package finalized without a stakeholder-scan section, or any report that softens a stakeholder scandal into corporate euphemism.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -575,7 +575,7 @@ const RECORD = {
         "watching_for": "Any completed business check or qualifying setup that goes a full session without a same-day surface to Milly, or any entry-condition vs margin-math disagreement left unflagged.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
@@ -589,7 +589,7 @@ const RECORD = {
         "watching_for": "Any plan-covered level (target, stop, trim) reported to Milly as 'needs your word' when the plan already worded it, or any cross on a pre-worded leg not executed and reported in the same watch cycle.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-11"
+        "last_checked": "2026-11-12"
       }
     },
     {
