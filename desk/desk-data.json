@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-12T15:33:53.109632-06:00",
+ "generated": "2026-11-12T15:47:38.944901-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -339,131 +339,131 @@
    "symbol": "VST",
    "name": "Vistra",
    "status": "day trade armed Nov 12 (window expired unfilled); hold verdict bounce-only",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 45,
+   "load_the_boat": 48,
    "early_entry": 128.0,
    "swing_trade": 136.85,
-   "basis": "trade-package-2026-11-12-VST.md: early entry is the package's $128 passing price (the 20% bar / hold line, sections 3 and 10); swing trade is the day-trade trigger, enter ~$136.85 on a cross and hold above $136.65 (section 1, Nov 12 amendment). Disaster and load the boat not yet built."
+   "basis": "trade-package-2026-11-12-VST.md: early entry is the package's $128 passing price (the 20% bar / hold line, sections 3 and 10); swing trade is the day-trade trigger, enter ~$136.85 on a cross and hold above $136.65 (section 1, Nov 12 amendment). Disaster and load the boat not yet built. Disaster $45 and load the boat $48 built Nov 12, 2026 (L-013): Trough Adjusted EBITDA $5.84B (FY2025) at a trough 6.0x EV multiple, minus ~$19.9B net debt, on ~339M shares = $44.66, rounded to $45; fleet sale value cross-checks above it. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "NVDA",
    "name": "NVIDIA",
    "status": "package DISARMED Nov 12, 2026 (escalation kill fired); levels on record, nothing fills",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 2.09,
+   "load_the_boat": 2.61,
    "early_entry": 164.32,
    "swing_trade": 181.6,
-   "basis": "trade-package-2026-11-10-NVDA.md: early entry is tranche 2, a flush to the $164.32 zone that closes back above it; swing trade is tranche 1, a daily close at or above $181.60. Disaster and load the boat not yet built (package predates L-013)."
+   "basis": "trade-package-2026-11-10-NVDA.md: early entry is tranche 2, a flush to the $164.32 zone that closes back above it; swing trade is tranche 1, a daily close at or above $181.60. Disaster and load the boat not yet built (package predates L-013). Disaster $2.09 and load the boat $2.61 built Nov 12, 2026 (L-013): FY2023 trough diluted EPS $0.174 x 12 = $2.09, above the trough FCF leg ($0.152 x 12 = $1.82) and the hard net-cash leg ($1.49/share); disaster is the earnings leg. Package DISARMED Nov 12 \u2014 rungs built for the record only, re-arms nothing. Package remains DISARMED; building the rungs re-arms nothing. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "ANET",
    "name": "Arista Networks",
    "status": "swing package; Trigger C starter pre-authorized (dip $181-$188, close back above $187.88)",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 11.37,
+   "load_the_boat": 14.21,
    "early_entry": 170.4,
    "swing_trade": 187.88,
-   "basis": "trade-package-2026-11-10-ANET.md plus the Nov 11 Trigger C authorization: early entry is Trigger A, a flush into $168-$172 with a daily close back above $170.40 (the 20% margin price); swing trade is the Trigger C confirm line $187.88 (50% retrace). Disaster and load the boat not yet built."
+   "basis": "trade-package-2026-11-10-ANET.md plus the Nov 11 Trigger C authorization: early entry is Trigger A, a flush into $168-$172 with a daily close back above $170.40 (the 20% margin price); swing trade is the Trigger C confirm line $187.88 (50% retrace). Disaster and load the boat not yet built. Disaster $11.37 and load the boat $14.21 built Nov 12, 2026 (L-013): Calendar 2020 (last down year) trough legs are $5.99 (EPS $0.499 x 12) and $6.79 (FCF $0.566 x 12), but the balance sheet supports more: zero debt and $14,359M cash + securities = $11.37/share net cash; disaster is the net-cash leg. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "META",
    "name": "Meta Platforms",
    "status": "package built, not armed (arming awaits Milly's word)",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 86.0,
+   "load_the_boat": 95.0,
    "early_entry": 536.0,
    "swing_trade": null,
-   "basis": "trade-package-2026-11-10-META.md: early entry is tranche 1, a daily close at or below $536 (the price at which the 20% margin of safety is met; tranche 2 sits in the $507-$520 flush zone). Swing trade price not separately stated. Disaster and load the boat not yet built."
+   "basis": "trade-package-2026-11-10-META.md: early entry is tranche 1, a daily close at or below $536 (the price at which the 20% margin of safety is met; tranche 2 sits in the $507-$520 flush zone). Swing trade price not separately stated. Disaster and load the boat not yet built. Disaster $86.0 and load the boat $95.0 built Nov 12, 2026 (L-013): Trough FY2022 FCF/share $7.14 (OCF $50.475B - capex $31.186B, on 2.702B diluted shares) x 12x disaster multiple = $86; the EPS leg ($8.59 x 12 = $103) sits above it, so the cash-supported FCF leg is the floor. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "UNH",
    "name": "UnitedHealth",
    "status": "package built, not armed (arming awaits Milly's word)",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 158.76,
+   "load_the_boat": 174.64,
    "early_entry": 369.3,
    "swing_trade": null,
-   "basis": "trade-package-2026-11-10-UNH.md: early entry is tranche 1, a daily close at or below $369.30 (the -20% marker starter; tranche 2 at $347.00 is the full 20%-margin price). Swing trade price not separately stated. Disaster and load the boat not yet built."
+   "basis": "trade-package-2026-11-10-UNH.md: early entry is tranche 1, a daily close at or below $369.30 (the -20% marker starter; tranche 2 at $347.00 is the full 20%-margin price). Swing trade price not separately stated. Disaster and load the boat not yet built. Disaster $158.76 and load the boat $174.64 built Nov 12, 2026 (L-013): Trough-year FY2025 GAAP diluted EPS $13.23 capitalized at a 12x trough multiple (below the package's 15x bear multiple and 17x normalized multiple, and its pre-crisis 18-22x range). Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "LLY",
    "name": "Eli Lilly",
    "status": "package built, not armed (arming awaits Milly's word)",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 172.13,
+   "load_the_boat": 189.34,
    "early_entry": 1000.0,
    "swing_trade": null,
-   "basis": "trade-package-2026-11-10-LLY.md: early entry is tranche 1, a daily close at or below $1,000 (top of the $916-$1,000 margin-of-safety zone, with the package's same-day re-check). Swing trade price not separately stated. Disaster and load the boat not yet built."
+   "basis": "trade-package-2026-11-10-LLY.md: early entry is tranche 1, a daily close at or below $1,000 (top of the $916-$1,000 margin-of-safety zone, with the package's same-day re-check). Swing trade price not separately stated. Disaster and load the boat not yet built. Disaster $172.13 and load the boat $189.34 built Nov 12, 2026 (L-013): Patent/growth-scare trough built as a stated 50% haircut to current FY2025 GAAP EPS $22.95 (trough EPS $11.48, essentially FY2024's actual $11.71), capitalized at a 15x trough multiple; historical small-company EPS not used. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "QQQ",
    "name": "Invesco QQQ",
    "status": "package built, not armed",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 165.0,
+   "load_the_boat": 182.0,
    "early_entry": 647.0,
    "swing_trade": 701.0,
-   "basis": "trade-package-2026-11-10-QQQ.md: early entry is tranche 2, a flush into the $640-$655 zone that closes back above $647; swing trade is tranche 1, a daily close at or above $701 that holds. Disaster and load the boat not yet built (the package's honest value price, low $520s, is a worth statement, not a disaster floor)."
+   "basis": "trade-package-2026-11-10-QQQ.md: early entry is tranche 2, a flush into the $640-$655 zone that closes back above $647; swing trade is tranche 1, a daily close at or above $701 that holds. Disaster and load the boat not yet built (the package's honest value price, low $520s, is a worth statement, not a disaster floor). Disaster $165.0 and load the boat $182.0 built Nov 12, 2026 (L-013): Index-level: trough Nasdaq-100 earnings per QQQ share for calendar 2022, $10.99 (QQQ Dec 30, 2022 close $260.67 / year-end 2022 trailing index P/E 23.72x), x 15x trough index multiple = $165. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "AVGO",
    "name": "Broadcom",
    "status": "package built; flagged for the Nov 13 slots file after the Nov 12 run",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 26.53,
+   "load_the_boat": 33.16,
    "early_entry": 320.0,
    "swing_trade": null,
-   "basis": "trade-package-2026-11-10-AVGO.md: early entry is the package's 20%-margin price on $400 worth, $320. Swing trade price not separately stated. Disaster and load the boat not yet built."
+   "basis": "trade-package-2026-11-10-AVGO.md: early entry is the package's 20%-margin price on $400 worth, $320. Swing trade price not separately stated. Disaster and load the boat not yet built. Disaster $26.53 and load the boat $33.16 built Nov 12, 2026 (L-013): Pre-AI trough FCF/share FY2019 $2.21 x 12 = $26.53 (FCF leg is primary: GAAP EPS is structurally depressed by acquisition amortization; EPS leg FY2020 $0.633 x 12 = $7.60 shown as cross-reference); balance sheet is net debt, so no asset floor supports the rung. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "GOOGL",
    "name": "Alphabet",
    "status": "DCA core (cadence buys under the adopted program)",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 68.0,
+   "load_the_boat": 75.0,
    "early_entry": 292.8,
    "swing_trade": null,
-   "basis": "trade-package-2026-11-11-GOOGL.md: early entry is the package's margin line, $292.80 at central worth (DCA buys run at or below it, section 1). The core expression is cadence, not a swing; swing trade price not stated. Disaster and load the boat not yet built."
+   "basis": "trade-package-2026-11-11-GOOGL.md: early entry is the package's margin line, $292.80 at central worth (DCA buys run at or below it, section 1). The core expression is cadence, not a swing; swing trade price not stated. Disaster and load the boat not yet built. Disaster $68.0 and load the boat $75.0 built Nov 12, 2026 (L-013): Trough FY2022 EPS $4.56 and trough FCF/share $4.56 (OCF $91.495B - capex $31.485B = FCF $60.010B, on 13.159B diluted shares) agree; x 15x disaster multiple (a discount to the 18.1x the market cleared at the Nov 3, 2022 low close of $82.64) = $68. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "ABBV",
    "name": "AbbVie",
    "status": "DCA core (cadence buys under the adopted program)",
-   "disaster": null,
-   "load_the_boat": null,
-   "early_entry": null,
+   "disaster": 100.0,
+   "load_the_boat": 110.0,
+   "early_entry": 274.0,
    "swing_trade": null,
-   "basis": "Ladder pending. trade-package-2026-11-11-ABBV.md runs cadence entries with acceleration markers only (the 20%-margin passing zone is $268-$279); no four prices stated under the L-013 definitions."
+   "basis": "Ladder pending. trade-package-2026-11-11-ABBV.md runs cadence entries with acceleration markers only (the 20%-margin passing zone is $268-$279); no four prices stated under the L-013 definitions. Disaster $100.0 and load the boat $110.0 built Nov 12, 2026 (L-013): Humira patent-cliff trough adjusted EPS $10.00 (FY2025) capitalized at a 10x trough multiple, confirmed by trough FCF/share of $10.05-$10.06 in FY2024-FY2025; disaster is a DCA BUY zone, never an exit trigger. Early entry filled at $274 from the package's own central passing line (section 6: \"The price that passes at central worth is ~$274 (0.80 x $342); the passing zone across the worth range is $268-279\"). Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "BAC",
    "name": "Bank of America",
    "status": "DCA core (cadence buys under the adopted program)",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 19,
+   "load_the_boat": 21,
    "early_entry": null,
    "swing_trade": null,
-   "basis": "Ladder pending. The Nov 11 BAC work is a stock check (worth ~$60, 15.3% margin at $50.82, short of the 20% bar) plus an options package; no four prices stated under the L-013 definitions."
+   "basis": "Ladder pending. The Nov 11 BAC work is a stock check (worth ~$60, 15.3% margin at $50.82, short of the 20% bar) plus an options package; no four prices stated under the L-013 definitions. Disaster $19 and load the boat $21 built Nov 12, 2026 (L-013): Primary method is tangible book (the classic bank floor): TBVPS $28.84 (June 2026) at a 0.65x disaster discount = $18.75, rounded to $19; trough EPS cross-check $1.87 (FY2020) x 10.0 = $18.70 agrees. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "CVX",
    "name": "Chevron",
    "status": "DCA core (cadence buys under the adopted program)",
-   "disaster": null,
-   "load_the_boat": null,
-   "early_entry": null,
+   "disaster": 62,
+   "load_the_boat": 68,
+   "early_entry": 156,
    "swing_trade": null,
-   "basis": "Ladder pending. trade-package-2026-11-11-CVX.md states passing prices ($156 central road, $180 generous road) as cadence weighting markers, not as a four-price ladder under the L-013 definitions."
+   "basis": "Ladder pending. trade-package-2026-11-11-CVX.md states passing prices ($156 central road, $180 generous road) as cadence weighting markers, not as a four-price ladder under the L-013 definitions. Disaster $62 and load the boat $68 built Nov 12, 2026 (L-013): Trough adjusted EPS $6.85 (FY2025, at ~$69 Brent) at a trough 9.0x multiple = $61.65, rounded to $62; trough tangible book ($66.12, FY2020) cross-checks just above it. Early entry filled at $156 from the package's own stated passing price (section 4: \"The 20% passing prices: $156 on central worth; $180 on the most generous ($225) road\"). Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "SPY",
    "name": "SPDR S&P 500 ETF",
    "status": "DCA core (index default sleeve for declined slots)",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 141.0,
+   "load_the_boat": 155.0,
    "early_entry": null,
    "swing_trade": null,
-   "basis": "Ladder pending. SPY is the program's designated default, held as the benchmark sleeve; no package ladder built."
+   "basis": "Ladder pending. SPY is the program's designated default, held as the benchmark sleeve; no package ladder built. Disaster $141.0 and load the boat $155.0 built Nov 12, 2026 (L-013): Index-level: trough S&P 500 as-reported EPS for calendar 2020, $94.13 per index point, x 15x trough index multiple = 1,412 index points, converted to SPY at index / 10.03 = $141. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   },
   {
    "symbol": "BE",
@@ -473,17 +473,17 @@
    "load_the_boat": null,
    "early_entry": null,
    "swing_trade": null,
-   "basis": "Ladder pending. The Nov 7 check carries worth $97.50-$130 and a kill below $167.52, but no four prices under the L-013 definitions; the connection loop's HOLD math (price at or below $94.79 for the 20% bar) is a margin line, not a ladder."
+   "basis": "Ladder pending. The Nov 7 check carries worth $97.50-$130 and a kill below $167.52, but no four prices under the L-013 definitions; the connection loop's HOLD math (price at or below $94.79 for the 20% bar) is a margin line, not a ladder. Four Prices build Nov 12, 2026 (L-013): disaster and load the boat left PENDING, not forced. No defensible floor: trough GAAP EPS is negative in every audited year through FY2025, the only positive FCF years produce ~$0.19/share, and net cash per share is about -$0.13 with book equity ~$2.60/share - neither the earnings leg nor the balance-sheet leg supports a 'how low it can go' price for a going concern. Not forced. Full reasoning in the package's Four Prices section."
   },
   {
    "symbol": "MRVL",
    "name": "Marvell Technology",
    "status": "paper LEAPS open (Jan 2028 $140 call); check verdict bounce-only",
-   "disaster": null,
-   "load_the_boat": null,
+   "disaster": 14.41,
+   "load_the_boat": 18.01,
    "early_entry": null,
    "swing_trade": null,
-   "basis": "Ladder pending. The Nov 7 check records no true-worth estimate and no four prices under the L-013 definitions."
+   "basis": "Ladder pending. The Nov 7 check records no true-worth estimate and no four prices under the L-013 definitions. Disaster $14.41 and load the boat $18.01 built Nov 12, 2026 (L-013): FY2024 trough FCF/share $1.20 x 12 = $14.41; the GAAP EPS leg is negative (-$1.08) and unusable, so the floor rests on trough cash generation. This is a trough floor, NOT a worth estimate \u2014 the Nov 7 check records no true-worth estimate for MRVL. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   }
  ],
  "cash_as_of": "2026-11-12T15:18:20-06:00",
