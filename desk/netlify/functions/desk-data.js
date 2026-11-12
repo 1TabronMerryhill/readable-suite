@@ -25,7 +25,7 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
   "cash": 293.41,
-  "cash_as_of": "2026-11-11T15:15:00-06:00",
+  "cash_as_of": "2026-11-12T15:18:20-06:00",
   "fills": [
     {
       "symbol": "GOOGL",
@@ -601,6 +601,20 @@ const RECORD = {
       "what_happened": "The Nov 12 ANET day-trade slot opened at $192, inside its entry zone, crossed the $193 trigger, and ran to the $206 target, printing $206.20. That was about a 14-point ride, roughly 7.4%. No paper position was opened. Bobby had framed the slot as conditional on a first-30-minute hold and did not press for Milly's trigger pull when the trigger crossed. Bobby first called it a signal that worked. Milly corrected that plainly: they opened at 192, that is a 14-point ride, how is that not a miss? He then named the principle: we absolutely need to take advantage of day trade slots, because that is also how we get cheaper money.",
       "drift_watch": {
         "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-12"
+      }
+    },
+    {
+      "id": "L-013",
+      "date": "2026-11-12",
+      "title": "Four prices on every name: disaster, load the boat, early entry, swing",
+      "status": "in_force",
+      "the_rule": "Every package carries four written prices: (1) disaster price, the fundamental floor built from trough numbers and the balance sheet, never a chart line and never a stop; (2) load the boat price, the zone near that floor where a liked name gets maximum size inside the guardrails; (3) early entry, where the first position starts; (4) swing trade price, the level the swing expression is built on. A package missing any of the four is incomplete and does not trade. Kills and belief-breakers stay separate: a broken story re-underwrites the floor, it does not turn the disaster price into an exit line.",
+      "what_happened": "On the Nov 12 afternoon voice call, after the VST close, Milly set the price architecture for the firm: for everything we are trading or thinking about trading, we have to know the disaster price. He defined it himself: the disaster price is how low the company can actually go. Load the boat is the companion rule: if a company we like goes into that disaster zone, we have to load the boat. Then the early entry, then the swing trade. Bobby's first spoken recap had wrongly glossed the disaster price as where we walk away; Milly's definition is the opposite anchor: the disaster price is the business's own floor, and the disaster zone is where liked names get bought heaviest.",
+      "drift_watch": {
+        "watching_for": "Any package, brief slot, or armed setup that reaches Milly without all four prices, or any report that treats the disaster price as a stop or walk-away line.",
         "relapses_since_lesson": 0,
         "status": "holding",
         "last_checked": "2026-11-12"
