@@ -29,6 +29,8 @@ const BOOK = {
   "fills": [
     {
       "symbol": "GOOGL",
+      "name": "Alphabet",
+      "bucket": "dca_core",
       "qty": 0.007323,
       "fill": 293.5821,
       "stop": null,
@@ -40,6 +42,8 @@ const BOOK = {
     },
     {
       "symbol": "ABBV",
+      "name": "AbbVie",
+      "bucket": "dca_core",
       "qty": 0.007386,
       "fill": 291.0737,
       "stop": null,
@@ -51,6 +55,8 @@ const BOOK = {
     },
     {
       "symbol": "BAC",
+      "name": "Bank of America",
+      "bucket": "dca_core",
       "qty": 0.042398,
       "fill": 50.7099,
       "stop": null,
@@ -62,6 +68,8 @@ const BOOK = {
     },
     {
       "symbol": "CVX",
+      "name": "Chevron",
+      "bucket": "dca_core",
       "qty": 0.005039,
       "fill": 212.3045,
       "stop": null,
@@ -73,6 +81,8 @@ const BOOK = {
     },
     {
       "symbol": "SPY",
+      "name": "SPDR S&P 500 ETF",
+      "bucket": "dca_core",
       "qty": 0.001406,
       "fill": 760.4899,
       "stop": null,
@@ -197,6 +207,132 @@ const BOOK = {
     "kill": "Position closed Nov 9, 2026 at target. No open gold position.",
     "as_of": "closed Nov 9, 2026: GLD sold at $377.56, realized +$0.20"
   },
+  "buckets": [
+    {
+      "id": "dca_core",
+      "label": "DCA Core",
+      "target_pct": 20,
+      "structure": "20% sleeve of the 60/20/20 structure. Weekly cadence buys under the adopted DCA program."
+    },
+    {
+      "id": "leaps_options",
+      "label": "LEAPS & Options",
+      "target_pct": 20,
+      "structure": "20% sleeve of the 60/20/20 structure. Real options count at cost; paper LEAPS are shown at their marks and never enter the book total."
+    },
+    {
+      "id": "day_trading",
+      "label": "Day Trading",
+      "target_pct": null,
+      "structure": "Intraday slots (L-012). Flat by 3:00 PM CT. An armed slot is not a position until it fills."
+    },
+    {
+      "id": "swing",
+      "label": "Swing",
+      "target_pct": null,
+      "structure": "Package-backed real positions held past the day. Each carries its stop, targets, and kill from its package."
+    },
+    {
+      "id": "cash_reserve",
+      "label": "Cash Reserve",
+      "target_pct": 60,
+      "structure": "60% reserve of the 60/20/20 structure. Verified cash from the last portfolio read."
+    }
+  ],
+  "leaps_paper": [
+    {
+      "symbol": "MU",
+      "name": "Micron Technology",
+      "bucket": "leaps_options",
+      "paper": true,
+      "kind": "leaps_call",
+      "strike": 700.0,
+      "expiry": "2028-01-21",
+      "qty_contracts": 1,
+      "entry_premium": 189.38,
+      "mark_current": 208.8,
+      "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+      "return_pct": 10.3,
+      "stop_premium": 94.69,
+      "target_premium_1": 248.32,
+      "target_premium_2": 378.76,
+      "kill": "MU break below 656.39, or weekly close below 600, or take-or-pay renegotiation headline",
+      "entry_date": "2026-11-07"
+    },
+    {
+      "symbol": "BE",
+      "name": "Bloom Energy",
+      "bucket": "leaps_options",
+      "paper": true,
+      "kind": "leaps_call",
+      "strike": 175.0,
+      "expiry": "2028-01-21",
+      "qty_contracts": 1,
+      "entry_premium": 64.53,
+      "mark_current": 72.25,
+      "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+      "return_pct": 12.0,
+      "stop_premium": 32.27,
+      "target_premium_1": 114.74,
+      "target_premium_2": 129.06,
+      "kill": "BE break below 167.52, or FY2026 guidance cut, or return to quarterly net loss, or Q4 OCF negative again",
+      "entry_date": "2026-11-07"
+    },
+    {
+      "symbol": "MRVL",
+      "name": "Marvell Technology",
+      "bucket": "leaps_options",
+      "paper": true,
+      "kind": "leaps_call",
+      "strike": 140.0,
+      "expiry": "2028-01-21",
+      "qty_contracts": 1,
+      "entry_premium": 43.65,
+      "mark_current": 53.55,
+      "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+      "return_pct": 22.7,
+      "stop_premium": 21.82,
+      "target_premium_1": 74.59,
+      "target_premium_2": 87.3,
+      "kill": "MRVL break below 133.55, or Lumentum deal break, or Q3 FY2027 guide cut",
+      "entry_date": "2026-11-07"
+    },
+    {
+      "symbol": "VST",
+      "name": "Vistra",
+      "bucket": "leaps_options",
+      "paper": true,
+      "kind": "leaps_call",
+      "strike": 125.0,
+      "expiry": "2028-01-21",
+      "qty_contracts": 1,
+      "entry_premium": 30.55,
+      "mark_current": 33.6,
+      "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+      "return_pct": 10.0,
+      "stop_premium": 15.28,
+      "target_premium_1": 52.66,
+      "target_premium_2": 61.1,
+      "kill": "VST break below 112.89, or FCFbG guide cut, or leverage event",
+      "entry_date": "2026-11-07"
+    }
+  ],
+  "day_trading": [
+    {
+      "symbol": "VST",
+      "name": "Vistra",
+      "bucket": "day_trading",
+      "armed": true,
+      "filled": false,
+      "date": "2026-11-12",
+      "status": "pre-authorized-real",
+      "entry": 136.85,
+      "stop": 133.35,
+      "target": 143.3,
+      "size": 60.0,
+      "kill": "REAL MONEY day trade, pre-authorized by Milly on voice Nov 12 ~13:05 CT ('I'll take that' / 'not paper, real' / auto-purchase on trigger). Buy ~$60 at market on cross+hold above $136.65 day high (entry print >= $136.85), only before 14:15 CT. Pre-worded exits: stop cross below $133.35 = sell all; kill = loss of $131.30 open or break of $130.01 day low = sell all; target $143.30 = sell all; flat by 15:00 CT regardless. Package trade-package-2026-11-12-VST.md. Never converts to a hold (margin test fails at this price; hold passing price $128)."
+    }
+  ],
   "paper": {
     "total": 105.44,
     "cash": 105.44,
@@ -215,7 +351,7 @@ const BOOK = {
 
 // === RECORD SYNC (generated; do not hand-edit) ===
 const RECORD = {
-  "as_of": "2026-11-11",
+  "as_of": "2026-11-12",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -455,6 +591,20 @@ const RECORD = {
         "status": "holding",
         "last_checked": "2026-11-11"
       }
+    },
+    {
+      "id": "L-012",
+      "date": "2026-11-12",
+      "title": "Day-trade slots are how we get cheaper money",
+      "status": "in_force",
+      "the_rule": "Day-trade slots are working capital, not decoration. When a slot opens inside its entry zone or crosses its written trigger, Bobby surfaces it immediately as a live decision and presses for Milly's trigger pull in the first minutes. He does not let a qualifying slot ride silently to its target and then call it validation. If Milly pre-authorizes a class of paper slots, Bobby executes that class exactly as written. The point of the slots is to compound small edges and recycle the proceeds into cheaper money for the firm.",
+      "what_happened": "The Nov 12 ANET day-trade slot opened at $192, inside its entry zone, crossed the $193 trigger, and ran to the $206 target, printing $206.20. That was about a 14-point ride, roughly 7.4%. No paper position was opened. Bobby had framed the slot as conditional on a first-30-minute hold and did not press for Milly's trigger pull when the trigger crossed. Bobby first called it a signal that worked. Milly corrected that plainly: they opened at 192, that is a 14-point ride, how is that not a miss? He then named the principle: we absolutely need to take advantage of day trade slots, because that is also how we get cheaper money.",
+      "drift_watch": {
+        "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-12"
+      }
     }
   ],
   "drift": {
@@ -568,6 +718,12 @@ const INDEX = {
       "date": "2026-11-11",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-11: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "book_value": 302.0,
+      "date": "2026-11-12",
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-12: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
@@ -679,7 +835,7 @@ exports.handler = async () => {
 
   const positions = BOOK.fills.map((f) => {
     const last = prices[f.symbol];
-    return { symbol: f.symbol, qty: f.qty, fill: f.fill, last,
+    return { symbol: f.symbol, name: f.name || f.symbol, bucket: f.bucket || "swing", qty: f.qty, fill: f.fill, last,
       pnl: round2((last - f.fill) * f.qty), stop: f.stop, target: f.target,
       target2: f.target2, kill: f.kill, order_id: f.order_id, filled_at: f.filled_at };
   });
@@ -719,6 +875,10 @@ exports.handler = async () => {
     options: BOOK.options,
     conditionals: BOOK.conditionals.map((c) => ({ ...c, last: prices[c.symbol] })),
     gold: { ...BOOK.gold },
+    buckets: BOOK.buckets || [],
+    leaps_paper: BOOK.leaps_paper || [],
+    day_trading: BOOK.day_trading || [],
+    cash_as_of: BOOK.cash_as_of || "",
     record: RECORD,
     index: INDEX,
     quotes_as_of: quotesAsOf + "; gold record as of " + BOOK.gold.as_of,
