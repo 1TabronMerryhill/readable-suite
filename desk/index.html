@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="desk-version" content="v1.0" />
-<meta name="desk-updated" content="2026-11-12T15:20:58-06:00" />
-<!-- desk-build v1.1 updated 2026-11-12T15:20:58-06:00 -->
+<meta name="desk-version" content="v1.2" />
+<meta name="desk-updated" content="2026-11-12T15:33:53-06:00" />
+<!-- desk-build v1.2 updated 2026-11-12T15:33:53-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -656,6 +656,12 @@
       <p>Not positions. No money is in these names. Each one arms only if its trigger prints.</p>
     </div>
     <div class="cond-grid" id="condGrid"></div>
+
+    <div class="cond-head">
+      <h3>Four Prices</h3>
+      <p>Every name we trade or are thinking about trading carries four prices (L-013). The disaster price is the business's own floor, built from trough numbers and the balance sheet; it is not a stop and not a walk-away line. When a name we like trades into its disaster zone, we load the boat. Above that sit the early entry and the swing trade price. A price that has not been built yet reads pending, and a package missing any of the four does not trade.</p>
+    </div>
+    <div class="cond-grid" id="ladderGrid"></div>
     <p class="paperline" style="margin-top:14px">Card values are priced off the lasts above, so they can sit a cent or two off the book. <b>Book totals in the glance come from the same feed as the cards when live, and from the snapshot when it is not.</b></p>
     </div>
     <div id="posClosedWrap" hidden>
@@ -844,7 +850,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.1 · Updated Nov 12, 2026, 3:20 PM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.2 · Updated Nov 12, 2026, 3:33 PM CT</span></p>
   </footer>
 </div>
 <script>
@@ -1115,6 +1121,158 @@ var DAY_TRADING = [
     "target": 143.3,
     "size": 60.0,
     "kill": "REAL MONEY day trade, pre-authorized by Milly on voice Nov 12 ~13:05 CT ('I'll take that' / 'not paper, real' / auto-purchase on trigger). Buy ~$60 at market on cross+hold above $136.65 day high (entry print >= $136.85), only before 14:15 CT. Pre-worded exits: stop cross below $133.35 = sell all; kill = loss of $131.30 open or break of $130.01 day low = sell all; target $143.30 = sell all; flat by 15:00 CT regardless. Package trade-package-2026-11-12-VST.md. Never converts to a hold (margin test fails at this price; hold passing price $128)."
+  }
+];
+var LADDERS = [
+  {
+    "symbol": "VST",
+    "name": "Vistra",
+    "status": "day trade armed Nov 12 (window expired unfilled); hold verdict bounce-only",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": 128.0,
+    "swing_trade": 136.85,
+    "basis": "trade-package-2026-11-12-VST.md: early entry is the package's $128 passing price (the 20% bar / hold line, sections 3 and 10); swing trade is the day-trade trigger, enter ~$136.85 on a cross and hold above $136.65 (section 1, Nov 12 amendment). Disaster and load the boat not yet built."
+  },
+  {
+    "symbol": "NVDA",
+    "name": "NVIDIA",
+    "status": "package DISARMED Nov 12, 2026 (escalation kill fired); levels on record, nothing fills",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": 164.32,
+    "swing_trade": 181.6,
+    "basis": "trade-package-2026-11-10-NVDA.md: early entry is tranche 2, a flush to the $164.32 zone that closes back above it; swing trade is tranche 1, a daily close at or above $181.60. Disaster and load the boat not yet built (package predates L-013)."
+  },
+  {
+    "symbol": "ANET",
+    "name": "Arista Networks",
+    "status": "swing package; Trigger C starter pre-authorized (dip $181-$188, close back above $187.88)",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": 170.4,
+    "swing_trade": 187.88,
+    "basis": "trade-package-2026-11-10-ANET.md plus the Nov 11 Trigger C authorization: early entry is Trigger A, a flush into $168-$172 with a daily close back above $170.40 (the 20% margin price); swing trade is the Trigger C confirm line $187.88 (50% retrace). Disaster and load the boat not yet built."
+  },
+  {
+    "symbol": "META",
+    "name": "Meta Platforms",
+    "status": "package built, not armed (arming awaits Milly's word)",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": 536.0,
+    "swing_trade": null,
+    "basis": "trade-package-2026-11-10-META.md: early entry is tranche 1, a daily close at or below $536 (the price at which the 20% margin of safety is met; tranche 2 sits in the $507-$520 flush zone). Swing trade price not separately stated. Disaster and load the boat not yet built."
+  },
+  {
+    "symbol": "UNH",
+    "name": "UnitedHealth",
+    "status": "package built, not armed (arming awaits Milly's word)",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": 369.3,
+    "swing_trade": null,
+    "basis": "trade-package-2026-11-10-UNH.md: early entry is tranche 1, a daily close at or below $369.30 (the -20% marker starter; tranche 2 at $347.00 is the full 20%-margin price). Swing trade price not separately stated. Disaster and load the boat not yet built."
+  },
+  {
+    "symbol": "LLY",
+    "name": "Eli Lilly",
+    "status": "package built, not armed (arming awaits Milly's word)",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": 1000.0,
+    "swing_trade": null,
+    "basis": "trade-package-2026-11-10-LLY.md: early entry is tranche 1, a daily close at or below $1,000 (top of the $916-$1,000 margin-of-safety zone, with the package's same-day re-check). Swing trade price not separately stated. Disaster and load the boat not yet built."
+  },
+  {
+    "symbol": "QQQ",
+    "name": "Invesco QQQ",
+    "status": "package built, not armed",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": 647.0,
+    "swing_trade": 701.0,
+    "basis": "trade-package-2026-11-10-QQQ.md: early entry is tranche 2, a flush into the $640-$655 zone that closes back above $647; swing trade is tranche 1, a daily close at or above $701 that holds. Disaster and load the boat not yet built (the package's honest value price, low $520s, is a worth statement, not a disaster floor)."
+  },
+  {
+    "symbol": "AVGO",
+    "name": "Broadcom",
+    "status": "package built; flagged for the Nov 13 slots file after the Nov 12 run",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": 320.0,
+    "swing_trade": null,
+    "basis": "trade-package-2026-11-10-AVGO.md: early entry is the package's 20%-margin price on $400 worth, $320. Swing trade price not separately stated. Disaster and load the boat not yet built."
+  },
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet",
+    "status": "DCA core (cadence buys under the adopted program)",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": 292.8,
+    "swing_trade": null,
+    "basis": "trade-package-2026-11-11-GOOGL.md: early entry is the package's margin line, $292.80 at central worth (DCA buys run at or below it, section 1). The core expression is cadence, not a swing; swing trade price not stated. Disaster and load the boat not yet built."
+  },
+  {
+    "symbol": "ABBV",
+    "name": "AbbVie",
+    "status": "DCA core (cadence buys under the adopted program)",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": null,
+    "swing_trade": null,
+    "basis": "Ladder pending. trade-package-2026-11-11-ABBV.md runs cadence entries with acceleration markers only (the 20%-margin passing zone is $268-$279); no four prices stated under the L-013 definitions."
+  },
+  {
+    "symbol": "BAC",
+    "name": "Bank of America",
+    "status": "DCA core (cadence buys under the adopted program)",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": null,
+    "swing_trade": null,
+    "basis": "Ladder pending. The Nov 11 BAC work is a stock check (worth ~$60, 15.3% margin at $50.82, short of the 20% bar) plus an options package; no four prices stated under the L-013 definitions."
+  },
+  {
+    "symbol": "CVX",
+    "name": "Chevron",
+    "status": "DCA core (cadence buys under the adopted program)",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": null,
+    "swing_trade": null,
+    "basis": "Ladder pending. trade-package-2026-11-11-CVX.md states passing prices ($156 central road, $180 generous road) as cadence weighting markers, not as a four-price ladder under the L-013 definitions."
+  },
+  {
+    "symbol": "SPY",
+    "name": "SPDR S&P 500 ETF",
+    "status": "DCA core (index default sleeve for declined slots)",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": null,
+    "swing_trade": null,
+    "basis": "Ladder pending. SPY is the program's designated default, held as the benchmark sleeve; no package ladder built."
+  },
+  {
+    "symbol": "BE",
+    "name": "Bloom Energy",
+    "status": "paper LEAPS open (Jan 2028 $175 call); check verdict gem",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": null,
+    "swing_trade": null,
+    "basis": "Ladder pending. The Nov 7 check carries worth $97.50-$130 and a kill below $167.52, but no four prices under the L-013 definitions; the connection loop's HOLD math (price at or below $94.79 for the 20% bar) is a margin line, not a ladder."
+  },
+  {
+    "symbol": "MRVL",
+    "name": "Marvell Technology",
+    "status": "paper LEAPS open (Jan 2028 $140 call); check verdict bounce-only",
+    "disaster": null,
+    "load_the_boat": null,
+    "early_entry": null,
+    "swing_trade": null,
+    "basis": "Ladder pending. The Nov 7 check records no true-worth estimate and no four prices under the L-013 definitions."
   }
 ];
 var CASH_AS_OF = "2026-11-12T15:18:20-06:00";
@@ -1604,6 +1762,32 @@ function renderPositions(){
       + '</div>'
       + '<div class="killbox"><div class="k">Kill criterion if armed</div><div class="v">'+esc(p.kill)+'</div></div>';
     cg.appendChild(card);
+  });
+  renderLadders();
+}
+function renderLadders(){
+  var lg=document.getElementById("ladderGrid");
+  if(!lg) return;
+  lg.innerHTML="";
+  if(typeof LADDERS==="undefined" || !LADDERS || !LADDERS.length){
+    lg.innerHTML='<p class="paperline">No four-price ladders on record yet.</p>';
+    return;
+  }
+  function lv(k,v){ return '<div class="lv"><div class="k">'+k+'</div><div class="v">'+(typeof v==="number" ? "$"+fmt(v) : "pending")+'</div></div>'; }
+  LADDERS.forEach(function(p){
+    var built=[p.disaster,p.load_the_boat,p.early_entry,p.swing_trade].filter(function(v){return typeof v==="number";}).length;
+    var card=document.createElement("article"); card.className="card cond";
+    card.innerHTML =
+      '<div class="card-top"><div><div class="sym">'+p.symbol+'</div><div class="co">'+esc(p.name||"")+'</div></div><span class="tag">'+(built===4 ? "Ladder complete" : "Ladder pending: "+built+" of 4 built")+'</span></div>'
+      + (p.status ? '<div class="cond-trigger">'+esc(p.status)+'</div>' : '')
+      + '<div class="levels">'
+      + lv("Disaster price", p.disaster)
+      + lv("Load the boat", p.load_the_boat)
+      + lv("Early entry", p.early_entry)
+      + lv("Swing trade", p.swing_trade)
+      + '</div>'
+      + (p.basis ? '<div class="killbox"><div class="k">Basis, from the package</div><div class="v">'+esc(p.basis)+'</div></div>' : '');
+    lg.appendChild(card);
   });
 }
 function renderWire(){
@@ -3240,6 +3424,7 @@ function applyLive(data){
   });
   if(Array.isArray(data.leaps_paper)) LEAPS_PAPER=data.leaps_paper;
   if(Array.isArray(data.day_trading)) DAY_TRADING=data.day_trading;
+  if(Array.isArray(data.ladders)) LADDERS=data.ladders;
   if(Array.isArray(data.buckets)) BUCKETS=data.buckets;
   if(Array.isArray(data.options)) LIVE_OPTIONS=data.options;
   if(typeof data.cash_as_of==="string") CASH_AS_OF=data.cash_as_of;
