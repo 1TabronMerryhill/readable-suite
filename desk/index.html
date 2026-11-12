@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="desk-version" content="v1.0" />
-<meta name="desk-updated" content="2026-11-11T15:16:57-06:00" />
-<!-- desk-build v1.0 updated 2026-11-11T15:16:57-06:00 -->
+<meta name="desk-updated" content="2026-11-12T13:22:28-06:00" />
+<!-- desk-build v1.1 updated 2026-11-12T13:22:28-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -147,6 +147,11 @@
   .cond-trigger{font-size:16px;font-weight:700;margin-top:14px;line-height:1.45}
   .orderline{margin-top:auto;padding-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.6;word-break:break-all}
   .pos-toggle{display:flex;gap:6px;margin:2px 0 16px}
+  .bucket{margin-top:24px}
+  .bucket-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .bucket-head h3{margin:0;font-size:17px;font-weight:700}
+  .bucket-total{font-family:var(--mono);font-size:12.5px;color:var(--muted);white-space:nowrap}
+  .bucket-note{font-size:13px;color:var(--muted);margin:8px 0 12px;line-height:1.55;max-width:860px}
   .closedbox{margin-top:14px;border:1px solid var(--line2);border-radius:7px;padding:11px 13px}
   .closedbox .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
   .closedbox .v{font-size:14px;font-weight:600;line-height:1.5;margin-top:3px}
@@ -560,7 +565,7 @@
     </div>
     <div class="topmeta">
       <span class="livebadge" id="liveBadge"><span class="dot"></span><span id="liveBadgeText">CHECKING LIVE FEED</span></span><br />
-      <span id="liveAsOf">Book snapshot <b>Fri Nov 6, 2026, 1:50 PM CT</b> until the feed answers</span><br />
+      <span id="liveAsOf">Book snapshot from the <b>last daily book sync</b> until the feed answers</span><br />
       Home <b>opone.tabronmerryhill.com</b>
     </div>
   </div>
@@ -580,14 +585,14 @@
   <!-- 01 GLANCE -->
   <section class="glance desk-sec" id="sec-glance" data-tab="glance" aria-label="The firm at a glance">
     <div class="glance-grid">
-      <div class="stat"><div class="k">Real book</div><div class="v" id="gTotal">$78.08</div><div class="s">Total value, live book</div></div>
-      <div class="stat"><div class="k">Cash</div><div class="v" id="gCash">$31.25</div><div class="s">Ready to deploy</div></div>
-      <div class="stat"><div class="k">In positions</div><div class="v" id="gEquity">$46.83</div><div class="s">Equity across the book</div></div>
-      <div class="stat"><div class="k">Open positions</div><div class="v" id="gCount">3</div><div class="s" id="gSymbols">MU, QCOM, GLD</div></div>
+      <div class="stat"><div class="k">Real book</div><div class="v" id="gTotal">$302.00</div><div class="s">Total value, live book</div></div>
+      <div class="stat"><div class="k">Cash</div><div class="v" id="gCash">$293.41</div><div class="s">Ready to deploy</div></div>
+      <div class="stat"><div class="k">In positions</div><div class="v" id="gEquity">$8.59</div><div class="s">Equity across the book</div></div>
+      <div class="stat"><div class="k">Open positions</div><div class="v" id="gCount">5</div><div class="s" id="gSymbols">ABBV, BAC, CVX, GOOGL, SPY</div></div>
     </div>
     <div class="attention">
       <span class="k">Needs you</span>
-      <span class="t" id="attentionText">Gold is $6 from its $4,090 target. Nothing else needs you.</span>
+      <span class="t" id="attentionText">Book synced from the ledger by sync_book.py. Nothing else needs you.</span>
     </div>
     <p class="tab-skill"><b>Glance trains the eye for what matters.</b></p>
     <p class="paperline" id="paperLine">Paper book <b>$105.44</b>, all cash, flat. <b>0 open, 0 closed.</b> Prices as of <b>1:22 PM CT Nov 6, 2026 (Robinhood live)</b>; gold <b>1:16 PM CT Yahoo snapshot</b>.</p>
@@ -620,7 +625,7 @@
         <span class="arr">&rarr;</span>
         <span class="node"><b>This page</b>the visible surface</span>
       </div>
-      <p class="fine">The brief, the Wire, and the graph map come from the daily graph snapshot. They change daily, not by the minute. Gold spot stays on the Nov 6, 2026, 1:16 PM CT Yahoo snapshot until a live spot source lands. The GLD position closed Nov 9, 2026; gold renders from the feed's gold block as a closed position, never as a live GLD price. If the feed fails, this page shows the Nov 6, 2026, 1:50 PM CT snapshot and labels itself SNAPSHOT. It never shows stale prices as live. JSON is the data contract between every layer. No key lives in this page. The Groq answering layer is a staged function that replaces local retrieval in the Ask panel later, with no layout change.</p>
+      <p class="fine">The brief, the Wire, and the graph map come from the daily graph snapshot. They change daily, not by the minute. Gold spot stays on the Nov 6, 2026, 1:16 PM CT Yahoo snapshot until a live spot source lands. The GLD position closed Nov 9, 2026; gold renders from the feed's gold block as a closed position, never as a live GLD price. If the feed fails, this page shows the snapshot from the last daily book sync and labels itself SNAPSHOT. It never shows stale prices as live. JSON is the data contract between every layer. No key lives in this page. The Groq answering layer is a staged function that replaces local retrieval in the Ask panel later, with no layout change.</p>
       <div class="refreshrow">
         <button class="fbtn" id="refreshBtn" type="button">Refresh now</button>
         <span class="refreshmeta" id="refreshMeta">First check running.</span>
@@ -643,7 +648,8 @@
       <button class="fbtn" id="posViewClosedBtn" type="button" role="tab" aria-selected="false">Closed</button>
     </div>
     <div id="posOpenWrap">
-    <div class="pos-grid" id="posGrid"></div>
+    <div id="posBuckets"></div>
+    <div class="pos-grid" id="goldGrid" style="margin-top:14px"></div>
 
     <div class="cond-head">
       <h3>Conditionals</h3>
@@ -709,7 +715,7 @@
     <div class="nr-learn" id="nrLearn" hidden></div>
     <div class="cond-head">
       <h3>Research insights</h3>
-      <p>Dated entries from the graph facts and the Nov 6 briefs and packages. Nothing dated Nov 6 is presented as today's news.</p>
+      <p>Dated entries from the graph facts, rebaked at every daily book sync. Each entry carries its own date; nothing old is presented as today's news.</p>
     </div>
     <div class="ins-list" id="insList"></div>
     <div class="cond-head">
@@ -752,9 +758,9 @@
     <div class="sec-head">
       <span class="sec-num">05</span>
       <h2 class="sec-title">The Brief</h2>
-      <p class="sec-note">Nov 6, 2026. The overall read first, then the five slots in order.</p>
+      <p class="sec-note" id="briefDateLine">2026-11-12. The overall read first, then the day's slots in order. Refreshed with the daily book sync.</p>
     </div>
-    <p class="brief-overall">Thursday rout was a policy scare. Friday opened split: chips rebounded, Dow fell. Payrolls hot, 10-year near 4.9 percent, Dec hike odds near 80 percent. Tuesday CPI is the next gate.</p>
+    <p class="brief-overall" id="briefOverall">OpOne daily brief Thu Nov 12, 2026 (06:00 CT), written before the 08:30 CT open per L-004. NVDA board/ouster reports (WSJ via Reuters) are the day's driver; CSCO + AMAT report after the close; jobless claims 07:30 CT; PPI Friday.</p>
     <div class="slots" id="slotList"></div>
     <button class="tab-next" data-next="glance" type="button"><span class="nx">Next: Glance.</span> Start the loop at step 1.</button>
   </section>
@@ -768,10 +774,10 @@
     </div>
     <p class="tab-skill"><b>Graph trains the memory.</b></p>
     <div class="graph-stats">
-      <div class="gstat"><div class="v">118</div><div class="k">Nodes in the full graph</div></div>
-      <div class="gstat"><div class="v">117</div><div class="k">Edges in the full graph</div></div>
-      <div class="gstat"><div class="v">0</div><div class="k">Live patterns. None has earned it yet</div></div>
-      <div class="gstat"><div class="v">16</div><div class="k">Connector candidates waiting</div></div>
+      <div class="gstat"><div class="v" id="gsNodes">186</div><div class="k">Nodes in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsEdges">153</div><div class="k">Edges in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsLive">0</div><div class="k">Live patterns. None has earned it yet</div></div>
+      <div class="gstat"><div class="v" id="gsConn">16</div><div class="k">Connector candidates waiting</div></div>
     </div>
     <div class="graph-filters" role="group" aria-label="Graph filter">
       <button class="fbtn on" data-filter="all" type="button">All edges</button>
@@ -782,7 +788,7 @@
       <div id="graphSvg"></div>
       <div class="graph-legend">
         <span>NEWS = news_event</span><span>THEME = theme</span><span>TRADE = trade</span><span>ASSET = asset</span>
-        <span>This map: 33 nodes, 20 edges (the live subset)</span>
+        <span id="graphSubsetLine">This map: 43 nodes, 30 edges (the live subset)</span>
       </div>
     </div>
     <div class="graph-detail" id="graphDetail"></div>
@@ -835,25 +841,284 @@
   </section>
 
   <footer>
-    <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated Nov 6, 2026 at 1:50 PM CT, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
+    <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.0 · Updated Nov 11, 2026, 3:16 PM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.1 · Updated Nov 12, 2026, 1:22 PM CT</span></p>
   </footer>
 </div>
 <script>
+/* === POSITIONS SYNC (generated; do not hand-edit) === */
 var POSITIONS = [
-  { symbol:"MU", name:"Micron Technology", qty:0.02258, fill:691.73, last:691.79, pnl:0.00,
-    stop:656.39, targets:[740,780], kill:"Break below $656.39. Weekly close below $600 kills the longer thesis.",
-    order_id:"6aee297b-80a8-43e4-822c-893ce54dc96c", filled:"Nov 6, 2026, 1:24 PM CT",
-    scaleMin:630, scaleMax:800,
-    marks:[ {v:656.39,l:"STOP 656.39",c:"stop"}, {v:691.73,l:"FILL 691.73",c:"fill"}, {v:691.79,l:"LAST 691.79",c:"last"}, {v:740,l:"T1 740",c:"tgt"}, {v:780,l:"T2 780",c:"tgt"} ] },
-  { symbol:"QCOM", name:"Qualcomm", qty:0.093966, fill:166.23, last:165.68, pnl:-0.05,
-    stop:156.75, targets:[172,180], kill:"$152.50, or an Apple modem headline.",
-    order_id:"6aee297f-a42b-40d3-bf15-cbbe2ba573e5", filled:"Nov 6, 2026, 1:24 PM CT",
-    scaleMin:144, scaleMax:188,
-    marks:[ {v:152.50,l:"KILL 152.50",c:"stop"}, {v:156.75,l:"STOP 156.75",c:"stop"}, {v:165.68,l:"LAST 165.68",c:"last"}, {v:166.23,l:"FILL 166.23",c:"fill"}, {v:172,l:"T1 172",c:"tgt"}, {v:180,l:"T2 180",c:"tgt"} ] },
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet",
+    "bucket": "dca_core",
+    "qty": 0.007323,
+    "fill": 293.5821,
+    "last": 293.5821,
+    "pnl": 0.0,
+    "stop": null,
+    "targets": [],
+    "kill": "DCA program protection, judged on official closes: dip-buying continues to -25% vs average cost; two closes at or below -25% rotate out at the next open; a close at or below -40% or a tripped belief-breaker exits at the next open.",
+    "order_id": "6af49fbd-f7f1-4dde-8f09-9c0cbd4b89d9",
+    "filled": "Nov 11, 2026",
+    "scaleMin": 287.71,
+    "scaleMax": 299.45,
+    "marks": [
+      {
+        "v": 293.5821,
+        "l": "FILL 293.58",
+        "c": "fill"
+      },
+      {
+        "v": 293.5821,
+        "l": "LAST 293.58",
+        "c": "last"
+      }
+    ]
+  },
+  {
+    "symbol": "ABBV",
+    "name": "AbbVie",
+    "bucket": "dca_core",
+    "qty": 0.007386,
+    "fill": 291.0737,
+    "last": 291.0737,
+    "pnl": 0.0,
+    "stop": null,
+    "targets": [],
+    "kill": "DCA program protection, judged on official closes: dip-buying continues to -25% vs average cost; two closes at or below -25% rotate out at the next open; a close at or below -40% or a tripped belief-breaker exits at the next open.",
+    "order_id": "6af49fc2-9e0e-4103-8a46-aba7c6c8383a",
+    "filled": "Nov 11, 2026",
+    "scaleMin": 285.25,
+    "scaleMax": 296.9,
+    "marks": [
+      {
+        "v": 291.0737,
+        "l": "FILL 291.07",
+        "c": "fill"
+      },
+      {
+        "v": 291.0737,
+        "l": "LAST 291.07",
+        "c": "last"
+      }
+    ]
+  },
+  {
+    "symbol": "BAC",
+    "name": "Bank of America",
+    "bucket": "dca_core",
+    "qty": 0.042398,
+    "fill": 50.7099,
+    "last": 50.7099,
+    "pnl": 0.0,
+    "stop": null,
+    "targets": [],
+    "kill": "DCA program protection, judged on official closes: dip-buying continues to -25% vs average cost; two closes at or below -25% rotate out at the next open; a close at or below -40% or a tripped belief-breaker exits at the next open.",
+    "order_id": "6af49fc7-de1e-4eb1-b29b-8787290bbd0e",
+    "filled": "Nov 11, 2026",
+    "scaleMin": 49.7,
+    "scaleMax": 51.72,
+    "marks": [
+      {
+        "v": 50.7099,
+        "l": "FILL 50.71",
+        "c": "fill"
+      },
+      {
+        "v": 50.7099,
+        "l": "LAST 50.71",
+        "c": "last"
+      }
+    ]
+  },
+  {
+    "symbol": "CVX",
+    "name": "Chevron",
+    "bucket": "dca_core",
+    "qty": 0.005039,
+    "fill": 212.3045,
+    "last": 212.3045,
+    "pnl": 0.0,
+    "stop": null,
+    "targets": [],
+    "kill": "DCA program protection, judged on official closes: dip-buying continues to -25% vs average cost; two closes at or below -25% rotate out at the next open; a close at or below -40% or a tripped belief-breaker exits at the next open.",
+    "order_id": "6af49fcc-0351-44d3-b43a-e257885b14a1",
+    "filled": "Nov 11, 2026",
+    "scaleMin": 208.06,
+    "scaleMax": 216.55,
+    "marks": [
+      {
+        "v": 212.3045,
+        "l": "FILL 212.30",
+        "c": "fill"
+      },
+      {
+        "v": 212.3045,
+        "l": "LAST 212.30",
+        "c": "last"
+      }
+    ]
+  },
+  {
+    "symbol": "SPY",
+    "name": "SPDR S&P 500 ETF",
+    "bucket": "dca_core",
+    "qty": 0.001406,
+    "fill": 760.4899,
+    "last": 760.4899,
+    "pnl": 0.0,
+    "stop": null,
+    "targets": [],
+    "kill": "DCA program protection, judged on official closes: dip-buying continues to -25% vs average cost; two closes at or below -25% rotate out at the next open; a close at or below -40% or a tripped belief-breaker exits at the next open.",
+    "order_id": "6af49fd3-91a7-4c4b-9102-0a3d03b9b77a",
+    "filled": "Nov 11, 2026",
+    "scaleMin": 745.28,
+    "scaleMax": 775.7,
+    "marks": [
+      {
+        "v": 760.4899,
+        "l": "FILL 760.49",
+        "c": "fill"
+      },
+      {
+        "v": 760.4899,
+        "l": "LAST 760.49",
+        "c": "last"
+      }
+    ]
+  }
 ];
+var BUCKETS = [
+  {
+    "id": "dca_core",
+    "label": "DCA Core",
+    "target_pct": 20,
+    "structure": "20% sleeve of the 60/20/20 structure. Weekly cadence buys under the adopted DCA program."
+  },
+  {
+    "id": "leaps_options",
+    "label": "LEAPS & Options",
+    "target_pct": 20,
+    "structure": "20% sleeve of the 60/20/20 structure. Real options count at cost; paper LEAPS are shown at their marks and never enter the book total."
+  },
+  {
+    "id": "day_trading",
+    "label": "Day Trading",
+    "target_pct": null,
+    "structure": "Intraday slots (L-012). Flat by 3:00 PM CT. An armed slot is not a position until it fills."
+  },
+  {
+    "id": "swing",
+    "label": "Swing",
+    "target_pct": null,
+    "structure": "Package-backed real positions held past the day. Each carries its stop, targets, and kill from its package."
+  },
+  {
+    "id": "cash_reserve",
+    "label": "Cash Reserve",
+    "target_pct": 60,
+    "structure": "60% reserve of the 60/20/20 structure. Verified cash from the last portfolio read."
+  }
+];
+var LEAPS_PAPER = [
+  {
+    "symbol": "MU",
+    "name": "Micron Technology",
+    "bucket": "leaps_options",
+    "paper": true,
+    "kind": "leaps_call",
+    "strike": 700.0,
+    "expiry": "2028-01-21",
+    "qty_contracts": 1,
+    "entry_premium": 189.38,
+    "mark_current": 208.8,
+    "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+    "return_pct": 10.3,
+    "stop_premium": 94.69,
+    "target_premium_1": 248.32,
+    "target_premium_2": 378.76,
+    "kill": "MU break below 656.39, or weekly close below 600, or take-or-pay renegotiation headline",
+    "entry_date": "2026-11-07"
+  },
+  {
+    "symbol": "BE",
+    "name": "Bloom Energy",
+    "bucket": "leaps_options",
+    "paper": true,
+    "kind": "leaps_call",
+    "strike": 175.0,
+    "expiry": "2028-01-21",
+    "qty_contracts": 1,
+    "entry_premium": 64.53,
+    "mark_current": 72.25,
+    "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+    "return_pct": 12.0,
+    "stop_premium": 32.27,
+    "target_premium_1": 114.74,
+    "target_premium_2": 129.06,
+    "kill": "BE break below 167.52, or FY2026 guidance cut, or return to quarterly net loss, or Q4 OCF negative again",
+    "entry_date": "2026-11-07"
+  },
+  {
+    "symbol": "MRVL",
+    "name": "Marvell Technology",
+    "bucket": "leaps_options",
+    "paper": true,
+    "kind": "leaps_call",
+    "strike": 140.0,
+    "expiry": "2028-01-21",
+    "qty_contracts": 1,
+    "entry_premium": 43.65,
+    "mark_current": 53.55,
+    "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+    "return_pct": 22.7,
+    "stop_premium": 21.82,
+    "target_premium_1": 74.59,
+    "target_premium_2": 87.3,
+    "kill": "MRVL break below 133.55, or Lumentum deal break, or Q3 FY2027 guide cut",
+    "entry_date": "2026-11-07"
+  },
+  {
+    "symbol": "VST",
+    "name": "Vistra",
+    "bucket": "leaps_options",
+    "paper": true,
+    "kind": "leaps_call",
+    "strike": 125.0,
+    "expiry": "2028-01-21",
+    "qty_contracts": 1,
+    "entry_premium": 30.55,
+    "mark_current": 33.6,
+    "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+    "return_pct": 10.0,
+    "stop_premium": 15.28,
+    "target_premium_1": 52.66,
+    "target_premium_2": 61.1,
+    "kill": "VST break below 112.89, or FCFbG guide cut, or leverage event",
+    "entry_date": "2026-11-07"
+  }
+];
+var DAY_TRADING = [
+  {
+    "symbol": "VST",
+    "name": "Vistra",
+    "bucket": "day_trading",
+    "armed": true,
+    "filled": false,
+    "date": "2026-11-12",
+    "status": "pre-authorized-real",
+    "entry": 136.85,
+    "stop": 133.35,
+    "target": 143.3,
+    "size": 60.0,
+    "kill": "REAL MONEY day trade, pre-authorized by Milly on voice Nov 12 ~13:05 CT ('I'll take that' / 'not paper, real' / auto-purchase on trigger). Buy ~$60 at market on cross+hold above $136.65 day high (entry print >= $136.85), only before 14:15 CT. Pre-worded exits: stop cross below $133.35 = sell all; kill = loss of $131.30 open or break of $130.01 day low = sell all; target $143.30 = sell all; flat by 15:00 CT regardless. Package trade-package-2026-11-12-VST.md. Never converts to a hold (margin test fails at this price; hold passing price $128)."
+  }
+];
+var CASH_AS_OF = "2026-11-11T15:15:00-06:00";
+/* === END POSITIONS SYNC === */
 /* Gold state. The GLD position closed Nov 9, 2026, so GLD is NOT a live
    position and never gets a position card with a per-share price. Gold
    renders from this object, and from /api/desk-data's gold object when
@@ -975,24 +1240,190 @@ var CONDITIONALS = [
     kill:"Close below $150.", scaleMin:140, scaleMax:192,
     marks:[ {v:150,l:"STOP 150",c:"stop"}, {v:158.31,l:"LAST 158.31",c:"last"}, {v:161.27,l:"TRIGGER 161.27",c:"fill"}, {v:175,l:"T1 175",c:"tgt"}, {v:184,l:"T2 184",c:"tgt"} ] }
 ];
+/* === WIRE SYNC (generated; do not hand-edit) === */
 var WIRE = [
-  { time:"07:30 CT", headline:"Payrolls hot: +165,000 vs about 65,000 expected; unemployment 4.1%.", verdict:"Hawkish. Stood down the NVDA and AMD long legs at the open.", refs:["theme:jobs_hot","theme:rates_hawkish"] },
-  { time:"11:34 CT", headline:"Chips rebound: SOXX +6.5% at the open; AMD +9.3%.", verdict:"Follow-through confirmed. AMD stays conditional on the pullback, no chasing.", refs:["theme:semis_contagion","asset:AMD"] },
-  { time:"11:34 CT", headline:"MU: fiscal Q4 revenue $54.23B, up 379%; Q1 FY27 guide $61.5B.", verdict:"Thesis intact. Watch the Taiwan plant halt and data-center capex.", refs:["asset:MU","theme:ai_capex"] },
-  { time:"Nov 3", headline:"DUOL Q3: revenue $309M, up 14%; DAU +29% to 64.9M; EPS $0.54 vs $0.57.", verdict:"Breakout failed to hold. Reclaim above $161.27 or no trade.", refs:["asset:DUOL","theme:earnings_power"] }
+  {
+    "time": "2026-11-12",
+    "headline": "Whole-market scan 2026-11-12: 1137 passed",
+    "verdict": "Universe 11,804 quoted; 1,137 passed (gem 399, deep 374, crash 364). Top of the screen: TSM, META, AMD, XOM, PLTR, UNH, GE, HD.",
+    "refs": [
+      "scan:2026-11-12"
+    ]
+  },
+  {
+    "time": "2026-11-12",
+    "headline": "ABT EDGAR dossier refreshed",
+    "verdict": "EDGAR dossier on file. Sector: Pharmaceutical Preparations. Latest annual 10-K filed 2026-02-20; latest quarterly 10-Q filed 2026-11-04.",
+    "refs": [
+      "dossier:ABT"
+    ]
+  },
+  {
+    "time": "2026-11-12",
+    "headline": "APH EDGAR dossier refreshed",
+    "verdict": "EDGAR dossier on file. Sector: Electronic Connectors. Latest annual 10-K filed 2026-02-11; latest quarterly 10-Q filed 2026-10-30.",
+    "refs": [
+      "dossier:APH"
+    ]
+  },
+  {
+    "time": "2026-11-12",
+    "headline": "AXP EDGAR dossier refreshed",
+    "verdict": "EDGAR dossier on file. Sector: Finance Services. Latest annual 10-K filed 2026-02-06; latest quarterly 10-Q filed 2026-10-23.",
+    "refs": [
+      "dossier:AXP"
+    ]
+  },
+  {
+    "time": "2026-11-11",
+    "headline": "Whole-market scan 2026-11-11: 1152 passed",
+    "verdict": "Universe 11,805 quoted; 1,152 passed (gem 401, deep 389, crash 362). Top of the screen: TSM, META, XOM, CVX, UNH, GE, HD, HSBC.",
+    "refs": [
+      "scan:2026-11-11"
+    ]
+  },
+  {
+    "time": "2026-11-11",
+    "headline": "Sold remaining 0.01129 sh at $786.6229, target 2 was $780 (crossed 08:53 CT at $782.21). Realized +$1.07 vs $691.7347 entry on this half; total MU realized +$1.62. Position closed. Order 6af48291-2bd6-43cb-b42b-33b516ebbd71.",
+    "verdict": "Result: closed_target (real_fill, feed robinhood_mcp).",
+    "refs": [
+      "outcome:2026-11-11-mu-exit"
+    ]
+  },
+  {
+    "time": "2026-11-11",
+    "headline": "Sold remaining 0.046983 sh at $181.1201, target 2 was $180 (levels watch crossed 11:18 CT at $180.77). Realized +$0.70 vs $166.23 entry on this half; total QCOM realized +$1.16. Position closed. Order 6af4a457-b19d-424e-9188-0814ac008bd7.",
+    "verdict": "Result: closed_target (real_fill, feed robinhood_mcp).",
+    "refs": [
+      "outcome:2026-11-11-qcom-exit"
+    ]
+  },
+  {
+    "time": "2026-11-11",
+    "headline": "DCA program week 1: bought 0.007323 sh GOOGL at $293.5821 for $2.15 per dca-program.md standing instruction. Position open. Order 6af49fbd-f7f1-4dde-8f09-9c0cbd4b89d9.",
+    "verdict": "Result: filled_open (real_fill, feed robinhood_mcp).",
+    "refs": [
+      "outcome:2026-11-11-dca-googl-fill"
+    ]
+  },
+  {
+    "time": "2026-11-10",
+    "headline": "Whole-market scan 2026-11-10: 1170 passed",
+    "verdict": "Universe 11,805 quoted; 1,170 passed (gem 417, deep 394, crash 359). Top of the screen: TSM, META, XOM, CVX, UNH, HD, GE, HSBC.",
+    "refs": [
+      "scan:2026-11-10"
+    ]
+  },
+  {
+    "time": "2026-11-06",
+    "headline": "October nonfarm payrolls +165k vs ~65k consensus, unemployment 4.1% vs 4.2%, wages +0.4% MoM",
+    "verdict": "On the record: Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS.",
+    "refs": [
+      "theme:jobs_hot",
+      "theme:rates_hawkish",
+      "news:2026-11-06-payrolls-hot"
+    ]
+  }
 ];
 var SLOTS = [
-  { slot:1, symbol:"MU", call:"long, LIVE", note:"Memory pricing power, take-or-pay over 35 percent of forecast revenue through 2030." },
-  { slot:2, symbol:"QCOM", call:"long continuation, LIVE", note:"Bounce only. Buybacks plus dividends ran ahead of free cash flow." },
-  { slot:3, symbol:"AMD", call:"long, CONDITIONAL pullback only to $436.50", note:"Bounce only. Worth $384 to $480 on run-rate earnings, no 20 percent margin of safety." },
-  { slot:4, symbol:"DUOL", call:"long, CONDITIONAL reclaim only above $161.27", note:"Q3 revenue $309M, up 14 percent. Breakout failed to hold." },
-  { slot:5, symbol:"GLD", call:"long, LIVE", note:"Gold entry $4,040 triggered. Target $4,090, stop $4,000." }
+  {
+    "slot": 1,
+    "symbol": "NVDA",
+    "call": "none_real / hold paper put, disarm-recommended",
+    "note": "none_real / hold paper put \u00b7 entry None \u00b7 target 164.32 \u00b7 stop 156.0. RECOMMEND DISARM of armed package pkg-2026-11-10-nvda ($31, both tranches) pending Milly's word: Reuters/WSJ Nov 11-12 report the board is preparing to oust CEO Jensen Huang after two extramarital affairs, incl. one with a suspected Chin..."
+  },
+  {
+    "slot": 2,
+    "symbol": "ANET",
+    "call": "long, conditional",
+    "note": "long \u00b7 entry 193.0 \u00b7 target 206.0 \u00b7 stop 187.88. No trade if ANET loses $192.35 (50-day) in the first 30 min or closes below $187.88. Trigger C standing authorization NOT complete: Nov 11 had no dip into 181-188 (low $193.88), so no auto-buy. Day trade only today; package Trigger A/B u..."
+  },
+  {
+    "slot": 3,
+    "symbol": "MU",
+    "call": "long, conditional",
+    "note": "long \u00b7 entry 763.0 \u00b7 target 811.0 \u00b7 stop 745.0. Exit under $745 intraday; no entry if MU cannot hold $763.05 (Nov 11 low) after the open. Day trade only, bounce only (no full check verdict for MU; never a hold). Paper LEAPS MU Jan28 700C HOLD: stop premium $94.69, kill weekly close be..."
+  },
+  {
+    "slot": 4,
+    "symbol": "BTC",
+    "call": "short, conditional",
+    "note": "short \u00b7 entry 73500 \u00b7 target 70500 \u00b7 stop 74900. Exit above $74,900; kill on a daily close above $75,877 (short-term holder cost basis). Paper spot only; MSCI removes Strategy (MSTR) from indexes after Nov 30 close is the fundamental headwind."
+  },
+  {
+    "slot": 5,
+    "symbol": "GOLD",
+    "call": "short, conditional",
+    "note": "short \u00b7 entry 3965 \u00b7 target 3880 \u00b7 stop 4040. Exit on a reclaim and hold above $4,040 (21-day avg zone). Spot paper only. Driver: 10Y at 4.99%, DXY ~102.9 (highest since Apr 2025), Dec hike priced ~91% for +25bp after hot Oct CPI."
+  },
+  {
+    "slot": 6,
+    "symbol": "VST",
+    "call": "long, pre-authorized-real",
+    "note": "long \u00b7 entry 136.85 \u00b7 target 143.3 \u00b7 stop 133.35. REAL MONEY day trade, pre-authorized by Milly on voice Nov 12 ~13:05 CT ('I'll take that' / 'not paper, real' / auto-purchase on trigger). Buy ~$60 at market on cross+hold above $136.65 day high (entry print >= $136.85), only before 14:1..."
+  }
 ];
+var BRIEF_META = {
+  "date": "2026-11-12",
+  "overall": "OpOne daily brief Thu Nov 12, 2026 (06:00 CT), written before the 08:30 CT open per L-004. NVDA board/ouster reports (WSJ via Reuters) are the day's driver; CSCO + AMAT report after the close; jobless claims 07:30 CT; PPI Friday."
+};
+/* === END WIRE SYNC === */
+/* === GRAPHMETA SYNC (generated; do not hand-edit) === */
+var GRAPHMETA = {
+  "generated": "2026-11-12",
+  "nodes": 186,
+  "edges": 153,
+  "live_patterns": 0,
+  "pattern_candidates": 6,
+  "connector_candidates": 16,
+  "subset_nodes": 43,
+  "subset_edges": 30
+};
 var PATTERNS = [
-  { theme:"ai_capex", n:1, wins:0, avg_r:-1.0, why:"1 scored signal outcome, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot." },
-  { theme:"ai_earnings_momentum", n:1, wins:0, avg_r:-1.0, why:"1 scored signal outcome, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot." },
-  { theme:"semis_contagion", n:3, wins:0, avg_r:-1.0, why:"3 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot." }
+  {
+    "theme": "ai_capex",
+    "n": 1,
+    "wins": 0,
+    "avg_r": -1.0,
+    "why": "1 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot."
+  },
+  {
+    "theme": "ai_earnings_momentum",
+    "n": 1,
+    "wins": 0,
+    "avg_r": -1.0,
+    "why": "1 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot."
+  },
+  {
+    "theme": "ai_regulation",
+    "n": 1,
+    "wins": 0,
+    "avg_r": -1.0,
+    "why": "1 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot."
+  },
+  {
+    "theme": "breadth_rotation",
+    "n": 1,
+    "wins": 0,
+    "avg_r": -1.0,
+    "why": "1 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot."
+  },
+  {
+    "theme": "rates_hawkish",
+    "n": 1,
+    "wins": 0,
+    "avg_r": -1.0,
+    "why": "1 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot."
+  },
+  {
+    "theme": "semis_contagion",
+    "n": 3,
+    "wins": 0,
+    "avg_r": -1.0,
+    "why": "3 scored signal outcomes, 0 wins, avg -1.0R. Signal only, no executed trades. Feed: yahoo_snapshot."
+  }
 ];
+/* === END GRAPHMETA SYNC === */
 
 function fmt(n,d){ return n.toLocaleString("en-US",{minimumFractionDigits:(d==null?2:d),maximumFractionDigits:(d==null?2:d)}); }
 function esc(s){ var d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
@@ -1017,11 +1448,11 @@ function scaleSVG(p){
 }
 function regenMarks(p){
   var m=[];
-  if(p.symbol==="QCOM") m.push({v:152.50,l:"KILL 152.50",c:"stop"});
-  m.push({v:p.stop,l:"STOP "+fmt(p.stop),c:"stop"});
+  if(p.symbol==="QCOM" && typeof p.stop==="number") m.push({v:152.50,l:"KILL 152.50",c:"stop"});
+  if(typeof p.stop==="number") m.push({v:p.stop,l:"STOP "+fmt(p.stop),c:"stop"});
   m.push({v:p.fill,l:"FILL "+fmt(p.fill),c:"fill"});
   m.push({v:p.last,l:"LAST "+fmt(p.last),c:"last"});
-  p.targets.forEach(function(t,i){ m.push({v:t,l:(p.targets.length>1? "T"+(i+1)+" " : "TARGET ")+fmt(t,(t%1===0?0:2)),c:"tgt"}); });
+  (p.targets||[]).forEach(function(t,i){ m.push({v:t,l:((p.targets.length>1)? "T"+(i+1)+" " : "TARGET ")+fmt(t,(t%1===0?0:2)),c:"tgt"}); });
   m.sort(function(a,b){ return a.v-b.v; });
   return m;
 }
@@ -1034,42 +1465,129 @@ function regenCondMarks(p){
   m.sort(function(a,b){ return a.v-b.v; });
   return m;
 }
+var LIVE_OPTIONS=[];
+var BUCKET_ORDER=["dca_core","leaps_options","day_trading","swing","cash_reserve"];
+function bucketMeta(id){
+  var m=null; (BUCKETS||[]).forEach(function(b){ if(b.id===id) m=b; });
+  return m||{id:id,label:id,target_pct:null,structure:""};
+}
+function posCard(p){
+  var val=p.qty*p.last;
+  var pnlCls=p.pnl>0 ? "up" : (p.pnl<0 ? "down" : "flat");
+  var pnlTxt=(p.pnl>0?"+":"")+"$"+fmt(p.pnl);
+  var card=document.createElement("article"); card.className="card";
+  var goldHtml="";
+  if(p.gold){
+    var dist=(p.gold.target-p.gold.spot);
+    goldHtml='<div class="goldstrip"><div class="k">Gold spot underneath GLD</div><div class="v">Spot <b>$'+fmt(p.gold.spot)+'</b>. Entry <b>$'+fmt(p.gold.entry,0)+'</b>. Target <b>$'+fmt(p.gold.target,0)+'</b>, so <b>$'+fmt(dist)+'</b> to go. Stop <b>$'+fmt(p.gold.stop,0)+'</b>.</div></div>';
+  }
+  var stopTxt=(typeof p.stop==="number") ? "$"+fmt(p.stop) : "Program rules";
+  var tgtTxt=(p.targets&&p.targets.length) ? p.targets.map(function(t){return "$"+fmt(t,(t%1===0?0:2));}).join(" then ") : "None set";
+  card.innerHTML=
+    '<div class="card-top"><div><div class="sym">'+esc(p.symbol)+'</div><div class="co">'+esc(p.name||"")+'</div></div><span class="tag live">Live position</span></div>'
+    +'<div class="price-row"><div><div class="lbl">Last</div><div class="last">$'+fmt(p.last)+'</div></div><div><div class="lbl">P&amp;L</div><div class="pnl '+pnlCls+'">'+pnlTxt+'</div></div><div><div class="lbl">Value</div><div class="last" style="font-size:19px">$'+fmt(val)+'</div></div></div>'
+    +'<div class="scale">'+scaleSVG({symbol:p.symbol,min:p.scaleMin,max:p.scaleMax,marks:regenMarks(p)})+'</div>'
+    +'<div class="levels">'
+    +'<div class="lv"><div class="k">Fill</div><div class="v">$'+fmt(p.fill)+' <small>x '+p.qty+'</small></div></div>'
+    +'<div class="lv"><div class="k">Filled</div><div class="v" style="font-size:13.5px">'+esc(p.filled||"")+'</div></div>'
+    +'<div class="lv"><div class="k">Stop</div><div class="v">'+stopTxt+'</div></div>'
+    +'<div class="lv"><div class="k">Targets</div><div class="v">'+tgtTxt+'</div></div>'
+    +'</div>'
+    +goldHtml
+    +'<div class="killbox"><div class="k">Kill criterion</div><div class="v">'+esc(p.kill||"No kill recorded.")+'</div></div>'
+    +'<div class="orderline">Order '+esc(p.order_id||"")+'<br/>$'+fmt(p.qty*p.fill)+' deployed in this slot</div>';
+  return card;
+}
 function renderPositions(){
-  var g=document.getElementById("posGrid");
-  g.innerHTML="";
-  POSITIONS.forEach(function(p){
-    var val = p.qty*p.last;
-    var pnlCls = p.pnl>0 ? "up" : (p.pnl<0 ? "down" : "flat");
-    var pnlTxt = (p.pnl>0?"+":"") + "$"+fmt(p.pnl);
-    var card=document.createElement("article"); card.className="card";
-    var goldHtml="";
-    if(p.gold){
-      var dist=(p.gold.target-p.gold.spot);
-      goldHtml='<div class="goldstrip"><div class="k">Gold spot underneath GLD</div><div class="v">Spot <b>$'+fmt(p.gold.spot)+'</b>. Entry <b>$'+fmt(p.gold.entry,0)+'</b>. Target <b>$'+fmt(p.gold.target,0)+'</b>, so <b>$'+fmt(dist)+'</b> to go. Stop <b>$'+fmt(p.gold.stop,0)+'</b>.</div></div>';
+  var wrap=document.getElementById("posBuckets");
+  if(wrap){
+    wrap.innerHTML="";
+    var bookTotal=(typeof BOOK!=="undefined" && BOOK && typeof BOOK.total==="number") ? BOOK.total : 0;
+    BUCKET_ORDER.forEach(function(bid){
+      var meta=bucketMeta(bid);
+      var items=POSITIONS.filter(function(p){ return (p.bucket||"swing")===bid; });
+      var sec=document.createElement("div"); sec.className="bucket";
+      var val=0, cards=[];
+      if(bid==="cash_reserve"){
+        val=(typeof BOOK!=="undefined" && BOOK && typeof BOOK.cash==="number") ? BOOK.cash : 0;
+        var cc=document.createElement("article"); cc.className="card";
+        cc.innerHTML='<div class="card-top"><div><div class="sym">CASH</div><div class="co">Cash reserve, ready to deploy</div></div><span class="tag live">Reserve</span></div>'
+          +'<div class="price-row"><div><div class="lbl">Cash</div><div class="last">$'+fmt(val)+'</div></div></div>'
+          +'<div class="orderline">Verified '+(CASH_AS_OF? esc(CASH_AS_OF) : "at the last book sync")+'</div>';
+        cards.push(cc);
+      } else {
+        items.forEach(function(p){ val+=p.qty*p.last; cards.push(posCard(p)); });
+        if(bid==="leaps_options"){
+          (LIVE_OPTIONS||[]).forEach(function(o){
+            val+=(typeof o.at_cost==="number")? o.at_cost : 0;
+            var oc=document.createElement("article"); oc.className="card";
+            oc.innerHTML='<div class="card-top"><div><div class="sym">'+esc(o.symbol||"")+'</div><div class="co">'+esc(o.instrument||"")+'</div></div><span class="tag live">Live option</span></div>'
+              +'<div class="price-row"><div><div class="lbl">Premium paid</div><div class="last">$'+fmt(o.premium||0)+'</div></div><div><div class="lbl">At cost</div><div class="last" style="font-size:19px">$'+fmt(o.at_cost||0)+'</div></div></div>'
+              +'<div class="levels"><div class="lv"><div class="k">Stop premium</div><div class="v">$'+fmt(o.stop||0)+'</div></div><div class="lv"><div class="k">Target premium</div><div class="v">$'+fmt(o.target||0)+'</div></div></div>'
+              +'<div class="killbox"><div class="k">Kill criterion</div><div class="v">'+esc(o.kill||"")+'</div></div>';
+            cards.push(oc);
+          });
+          var paperTotal=0;
+          (LEAPS_PAPER||[]).forEach(function(lp){
+            if(typeof lp.mark_current==="number" && typeof lp.qty_contracts==="number") paperTotal+=lp.mark_current*100*lp.qty_contracts;
+            var rp=(typeof lp.return_pct==="number")? lp.return_pct : 0;
+            var rCls=rp>0?"up":(rp<0?"down":"flat");
+            var pc=document.createElement("article"); pc.className="card";
+            pc.innerHTML='<div class="card-top"><div><div class="sym">'+esc(lp.symbol||"")+'</div><div class="co">'+esc(lp.name||"")+'</div></div><span class="tag">Paper LEAPS</span></div>'
+              +'<div class="cond-trigger">Jan 2028 $'+fmt(lp.strike,(lp.strike%1===0?0:2))+' call · '+(lp.qty_contracts||1)+' contract · paper</div>'
+              +'<div class="price-row"><div><div class="lbl">Entry premium</div><div class="last" style="font-size:19px">$'+fmt(lp.entry_premium||0)+'</div></div><div><div class="lbl">Mark</div><div class="last" style="font-size:19px">$'+fmt(lp.mark_current||0)+'</div></div><div><div class="lbl">Return</div><div class="pnl '+rCls+'" style="font-size:19px">'+(rp>0?"+":"")+fmt(rp,1)+'%</div></div></div>'
+              +'<div class="levels"><div class="lv"><div class="k">Stop premium</div><div class="v">$'+fmt(lp.stop_premium||0)+'</div></div><div class="lv"><div class="k">Targets</div><div class="v">$'+fmt(lp.target_premium_1||0)+' then $'+fmt(lp.target_premium_2||0)+'</div></div></div>'
+              +'<div class="killbox"><div class="k">Kill criterion</div><div class="v">'+esc(lp.kill||"")+'</div></div>'
+              +'<div class="orderline">Paper only. Mark '+(lp.mark_asof? esc(lp.mark_asof):"")+'. Expiry '+esc(lp.expiry||"")+'.</div>';
+            cards.push(pc);
+          });
+          if((LEAPS_PAPER||[]).length){
+            var pn=document.createElement("p"); pn.className="paperline";
+            pn.innerHTML="Paper LEAPS mark total <b>$"+fmt(paperTotal)+"</b> (premium per share x 100 x contracts). Paper only: it is shown for the strategy view and is <b>not</b> part of the book total above.";
+            sec.setAttribute("data-paper-note","1"); sec._paperNote=pn;
+          }
+        }
+        if(bid==="day_trading"){
+          (DAY_TRADING||[]).forEach(function(dt){
+            if(dt.filled) return;
+            var dc=document.createElement("article"); dc.className="card cond";
+            dc.innerHTML='<div class="card-top"><div><div class="sym">'+esc(dt.symbol||"")+'</div><div class="co">'+esc(dt.name||"")+'</div></div><span class="tag">Armed · real · not filled</span></div>'
+              +'<div class="cond-trigger">Trigger $'+fmt(dt.entry||0)+' · size $'+fmt(dt.size||0)+'</div>'
+              +'<div class="levels"><div class="lv"><div class="k">Stop</div><div class="v">$'+fmt(dt.stop||0)+'</div></div><div class="lv"><div class="k">Target</div><div class="v">$'+fmt(dt.target||0)+'</div></div></div>'
+              +'<div class="killbox"><div class="k">Plan and kills</div><div class="v">'+esc(dt.kill||"")+'</div></div>'
+              +'<div class="orderline">Armed '+esc(dt.date||"")+' under Milly\'s pre-authorization. Waiting for the trigger. Nothing bought.</div>';
+            cards.push(dc);
+          });
+        }
+      }
+      var shareTxt=bookTotal? " · "+fmt(val/bookTotal*100,1)+"% of book" : "";
+      var tgtTxt=(meta.target_pct!=null)? " Target share "+meta.target_pct+"%." : "";
+      sec.innerHTML='<div class="bucket-head"><h3>'+esc(meta.label)+'</h3><span class="bucket-total">$'+fmt(val)+shareTxt+'</span></div>'
+        +'<p class="bucket-note">'+esc(meta.structure||"")+tgtTxt+'</p>';
+      if(cards.length){
+        var grid=document.createElement("div"); grid.className="pos-grid";
+        cards.forEach(function(c){ grid.appendChild(c); });
+        sec.appendChild(grid);
+      } else {
+        var none=document.createElement("p"); none.className="paperline"; none.textContent="None open.";
+        sec.appendChild(none);
+      }
+      if(sec._paperNote) sec.appendChild(sec._paperNote);
+      wrap.appendChild(sec);
+    });
+  }
+  var gg=document.getElementById("goldGrid");
+  if(gg){
+    gg.innerHTML="";
+    if(typeof GOLD!=="undefined" && GOLD){
+      var gc=document.createElement("article"); gc.className="card";
+      var gdist=(GOLD.target-GOLD.spot);
+      gc.innerHTML=
+        '<div class="card-top"><div><div class="sym">GLD</div><div class="co">SPDR Gold Shares</div></div><span class="tag">Closed</span></div>'
+        +'<div class="goldstrip" style="border-top:none;margin-top:0;padding-top:0"><div class="k">Gold spot underneath GLD</div><div class="v">Spot <b>$'+fmt(GOLD.spot)+'</b>. Entry <b>$'+fmt(GOLD.entry,0)+'</b>. Target <b>$'+fmt(GOLD.target,0)+'</b>, so <b>$'+fmt(gdist)+'</b> to go. Stop <b>$'+fmt(GOLD.stop,0)+'</b>.</div></div>'
+        +(GOLD.as_of ? '<div class="killbox"><div class="k">Status</div><div class="v">'+esc(GOLD.as_of)+'</div></div>' : '');
+      gg.appendChild(gc);
     }
-    card.innerHTML =
-      '<div class="card-top"><div><div class="sym">'+p.symbol+'</div><div class="co">'+esc(p.name)+'</div></div><span class="tag live">Live position</span></div>'
-      + '<div class="price-row"><div><div class="lbl">Last</div><div class="last">$'+fmt(p.last)+'</div></div><div><div class="lbl">P&amp;L</div><div class="pnl '+pnlCls+'">'+pnlTxt+'</div></div><div><div class="lbl">Value</div><div class="last" style="font-size:19px">$'+fmt(val)+'</div></div></div>'
-      + '<div class="scale">'+scaleSVG({symbol:p.symbol,min:p.scaleMin,max:p.scaleMax,marks:regenMarks(p)})+'</div>'
-      + '<div class="levels">'
-      + '<div class="lv"><div class="k">Fill</div><div class="v">$'+fmt(p.fill)+' <small>x '+p.qty+'</small></div></div>'
-      + '<div class="lv"><div class="k">Filled</div><div class="v" style="font-size:13.5px">'+p.filled+'</div></div>'
-      + '<div class="lv"><div class="k">Stop</div><div class="v">$'+fmt(p.stop)+'</div></div>'
-      + '<div class="lv"><div class="k">Targets</div><div class="v">'+p.targets.map(function(t){return "$"+fmt(t, (t%1===0?0:2));}).join(" then ")+'</div></div>'
-      + '</div>'
-      + goldHtml
-      + '<div class="killbox"><div class="k">Kill criterion</div><div class="v">'+esc(p.kill)+'</div></div>'
-      + '<div class="orderline">Order '+p.order_id+'<br/>$15.62 deployed in this slot</div>';
-    g.appendChild(card);
-  });
-  if(typeof GOLD!=="undefined" && GOLD){
-    var gc=document.createElement("article"); gc.className="card";
-    var gdist=(GOLD.target-GOLD.spot);
-    gc.innerHTML =
-      '<div class="card-top"><div><div class="sym">GLD</div><div class="co">SPDR Gold Shares</div></div><span class="tag">Closed</span></div>'
-      + '<div class="goldstrip" style="border-top:none;margin-top:0;padding-top:0"><div class="k">Gold spot underneath GLD</div><div class="v">Spot <b>$'+fmt(GOLD.spot)+'</b>. Entry <b>$'+fmt(GOLD.entry,0)+'</b>. Target <b>$'+fmt(GOLD.target,0)+'</b>, so <b>$'+fmt(gdist)+'</b> to go. Stop <b>$'+fmt(GOLD.stop,0)+'</b>.</div></div>'
-      + (GOLD.as_of ? '<div class="killbox"><div class="k">Status</div><div class="v">'+esc(GOLD.as_of)+'</div></div>' : '');
-    g.appendChild(gc);
   }
   var cg=document.getElementById("condGrid");
   cg.innerHTML="";
@@ -1089,19 +1607,23 @@ function renderPositions(){
   });
 }
 function renderWire(){
-  var w=document.getElementById("wireList");
+  var w=document.getElementById("wireList"); w.innerHTML="";
   WIRE.forEach(function(it){
     var d=document.createElement("div"); d.className="wire-item";
     d.innerHTML='<div class="wire-time">'+esc(it.time)+'</div><div><p class="wire-h">'+esc(it.headline)+'</p><p class="wire-v"><b>Verdict.</b> '+esc(it.verdict)+'</p><div class="refs">'+it.refs.map(function(r){return '<span class="ref">'+esc(r)+'</span>';}).join("")+'</div></div>';
     w.appendChild(d);
   });
-  var sl=document.getElementById("slotList");
+  var sl=document.getElementById("slotList"); sl.innerHTML="";
   SLOTS.forEach(function(s){
     var d=document.createElement("div"); d.className="slot";
     d.innerHTML='<div class="n">SLOT '+s.slot+'</div><div><span class="s">'+s.symbol+'</span><span class="call">'+esc(s.call)+'</span></div><div class="note">'+esc(s.note)+'</div>';
     sl.appendChild(d);
   });
-  var pl=document.getElementById("patList");
+  if(typeof BRIEF_META!=="undefined" && BRIEF_META){
+    var bd=document.getElementById("briefDateLine"); if(bd && BRIEF_META.date) bd.textContent=BRIEF_META.date+". The overall read first, then the day's slots in order. Refreshed with the daily book sync.";
+    var bo=document.getElementById("briefOverall"); if(bo && BRIEF_META.overall) bo.textContent=BRIEF_META.overall;
+  }
+  var pl=document.getElementById("patList"); pl.innerHTML="";
   PATTERNS.forEach(function(pt){
     var d=document.createElement("div"); d.className="pat";
     d.innerHTML='<div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><span class="t">'+esc(pt.theme)+'</span><span class="st">Candidate</span></div>'
@@ -1153,63 +1675,671 @@ document.getElementById("posViewClosedBtn").addEventListener("click",function(){
 renderPositions(); renderWire(); renderClosed();
 </script>
 <script>
+/* === GRAPH SYNC (generated; do not hand-edit) === */
 var NODES = [
- {id:"asset:AMD",type:"asset",short:"AMD",label:"AMD",props:{}},
- {id:"asset:BTC",type:"asset",short:"BTC",label:"BTC",props:{}},
- {id:"asset:DIA",type:"asset",short:"DIA",label:"DIA",props:{}},
- {id:"asset:DUOL",type:"asset",short:"DUOL",label:"DUOL",props:{}},
- {id:"asset:GLD",type:"asset",short:"GLD",label:"GLD",props:{}},
- {id:"asset:MU",type:"asset",short:"MU",label:"MU",props:{}},
- {id:"asset:QCOM",type:"asset",short:"QCOM",label:"QCOM",props:{}},
- {id:"theme:dollar_strength",type:"theme",short:"dollar_strength",label:"dollar_strength",props:{}},
- {id:"theme:ai_capex",type:"theme",short:"ai_capex",label:"ai_capex",props:{}},
- {id:"theme:semis_contagion",type:"theme",short:"semis_contagion",label:"semis_contagion",props:{}},
- {id:"news:2026-11-06-payrolls-hot",type:"news_event",short:"Payrolls hot",label:"October nonfarm payrolls +165k vs about 65k consensus, unemployment 4.1% vs 4.2%, wages +0.4% MoM",props:{date:"2026-11-06",driver:"macro",source:"Discord #opone-capital brief 2026-11-06; Reuters/BLS"}},
- {id:"theme:jobs_hot",type:"theme",short:"jobs_hot",label:"jobs_hot",props:{}},
- {id:"theme:rates_hawkish",type:"theme",short:"rates_hawkish",label:"rates_hawkish",props:{}},
- {id:"news:2026-11-06-amd-10q",type:"news_event",short:"AMD 10-Q",label:"AMD Q3 2026 10-Q filed Nov 4, 2026: revenue $13,377m (+45%), Data Center $8,546m (+97%), net income $2,428m (+95%), Q4 guide about $17bn",props:{date:"2026-11-06",driver:"earnings",source:"AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026"}},
- {id:"theme:earnings_power",type:"theme",short:"earnings_power",label:"earnings_power",props:{}},
- {id:"news:2026-11-06-qcom-10k",type:"news_event",short:"QCOM 10-K",label:"Qualcomm FY2026 10-K filed Nov 4, 2026: revenue $43,120m (-3%), GAAP net income $13,628m (+146%) on $5.7bn one-off tax benefit, operating income down 30%, handsets -13%, automotive +52%",props:{date:"2026-11-06",driver:"earnings",source:"Qualcomm 10-K accession 0000804328-26-000128; 8-K Ex-99.1 Nov 4, 2026"}},
- {id:"news:2026-11-06-mu-valuation",type:"news_event",short:"MU valuation",label:"Micron at 3.7x FY2027 earnings; Q1 FY27 guide revenue $61.5B, non-GAAP EPS $38.15; take-or-pay covers over 35% of forecast revenue through 2030, about $32B deposits; buybacks resume Dec 9",props:{date:"2026-11-06",driver:"earnings",source:"Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026"}},
- {id:"news:2026-11-06-duol-q3",type:"news_event",short:"DUOL Q3",label:"Duolingo Q3 revenue $309M (+14%), DAU +29% to 64.9M, paid subs +14% to 13.1M, Q4 guide raised; shares closed $161.27 Nov 4 after +37% intraday, now below it",props:{date:"2026-11-06",driver:"earnings",source:"Midday packages 2026-11-06; Invezz/TipRanks Nov 6, 2026"}},
- {id:"news:2026-11-06-chip-rebound",type:"news_event",short:"Chip rebound",label:"Nasdaq +1.1 to 2% at the open on a chip rebound, SOXX +6.5%, after Thursday 5.5% rout; Dow -518 on hot payrolls pushing 10-yr yield to about 4.87%",props:{date:"2026-11-06",driver:"macro",source:"Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026"}},
- {id:"theme:ai_regulation",type:"theme",short:"ai_regulation",label:"ai_regulation",props:{}},
- {id:"theme:gold_safe_haven",type:"theme",short:"gold_safe_haven",label:"gold_safe_haven",props:{}},
- {id:"trade:2026-11-06-1",type:"trade",short:"Slot 1 NVDA",label:"2026-11-06 slot 1 long NVDA",props:{slot:1,direction:"long",entry:188.5,target:196,stop:181.6,kill:"loses 181.60 Thu close / hot payrolls stands it down",status:"stood_down_payrolls"}},
- {id:"trade:2026-11-06-2",type:"trade",short:"Slot 2 AMD",label:"2026-11-06 slot 2 long AMD",props:{slot:2,direction:"long",entry:436.5,target:460,stop:404.4,kill:"loses 404.40 Thu close / hot payrolls stands it down",status:"stood_down_payrolls"}},
- {id:"trade:2026-11-06-3",type:"trade",short:"Slot 3 BTC",label:"2026-11-06 slot 3 long BTC",props:{slot:3,direction:"long",entry:76150,target:79000,stop:75000,kill:"break below 75000",status:"signal_only"}},
- {id:"trade:2026-11-06-4",type:"trade",short:"Slot 4 GOLD",label:"2026-11-06 slot 4 long GOLD",props:{slot:4,direction:"long",entry:4040,target:4090,stop:4000,kill:"loses 4000 / dollar reclaim plus yields spiking",status:"signal_only"}},
- {id:"trade:2026-11-06-5",type:"trade",short:"Slot 5 DIA short",label:"2026-11-06 slot 5 short DIA",props:{slot:5,direction:"short",entry:510,target:505,stop:514.27,kill:"reclaims 514.27 Thu close",status:"signal_only"}},
- {id:"trade:2026-11-06-6",type:"trade",short:"Slot 6 AMD",label:"2026-11-06 slot 6 long AMD",props:{slot:6,direction:"long",entry:436.5,target:460,stop:404.4,kill:"loses 404.40 Thu close / payrolls stand-down not cleared",status:"signal_only"}},
- {id:"trade:2026-11-06-7",type:"trade",short:"Slot 7 QCOM",label:"2026-11-06 slot 7 long QCOM",props:{slot:7,direction:"long",entry:160.85,target:172,stop:152.5,kill:"loses 152.50 / Apple modem headline / handset guide cut",status:"signal_only"}},
- {id:"trade:2026-11-06-8",type:"trade",short:"Slot 1 MU live",label:"2026-11-06 slot 1 long MU",props:{slot:1,direction:"long",entry:685.34,target:740,stop:656.39,kill:"break below 656.39; weekly close below 600 kills the longer thesis",status:"filled_open"}},
- {id:"trade:2026-11-06-9",type:"trade",short:"Slot 2 QCOM live",label:"2026-11-06 slot 2 long QCOM",props:{slot:2,direction:"long",entry:163.75,target:172,stop:156.75,kill:"152.50 or Apple modem headline",status:"filled_open"}},
- {id:"trade:2026-11-06-10",type:"trade",short:"Slot 5 GLD live",label:"2026-11-06 slot 5 long GLD",props:{slot:5,direction:"long",entry:371.82,target:376.39,stop:368.16,kill:"daily close below spot 3970",status:"filled_open"}},
- {id:"trade:2026-11-06-11",type:"trade",short:"Slot 3 AMD cond.",label:"2026-11-06 slot 3 long AMD",props:{slot:3,direction:"long",entry:436.5,target:460,stop:404.4,kill:"close below 404.40",status:"conditional_pullback"}},
- {id:"trade:2026-11-06-12",type:"trade",short:"Slot 4 DUOL cond.",label:"2026-11-06 slot 4 long DUOL",props:{slot:4,direction:"long",entry:161.27,target:175,stop:150,kill:"close below 150",status:"conditional_reclaim"}}
+  {
+    "id": "asset:AMD",
+    "type": "asset",
+    "short": "AMD",
+    "label": "AMD",
+    "props": {}
+  },
+  {
+    "id": "asset:BE",
+    "type": "asset",
+    "short": "BE",
+    "label": "BE",
+    "props": {}
+  },
+  {
+    "id": "asset:BTC",
+    "type": "asset",
+    "short": "BTC",
+    "label": "BTC",
+    "props": {}
+  },
+  {
+    "id": "asset:DUOL",
+    "type": "asset",
+    "short": "DUOL",
+    "label": "DUOL",
+    "props": {}
+  },
+  {
+    "id": "asset:GOLD",
+    "type": "asset",
+    "short": "GOLD",
+    "label": "GOLD",
+    "props": {}
+  },
+  {
+    "id": "asset:IWM",
+    "type": "asset",
+    "short": "IWM",
+    "label": "IWM",
+    "props": {}
+  },
+  {
+    "id": "asset:MRVL",
+    "type": "asset",
+    "short": "MRVL",
+    "label": "MRVL",
+    "props": {}
+  },
+  {
+    "id": "asset:MU",
+    "type": "asset",
+    "short": "MU",
+    "label": "MU",
+    "props": {}
+  },
+  {
+    "id": "asset:NVDA",
+    "type": "asset",
+    "short": "NVDA",
+    "label": "NVDA",
+    "props": {}
+  },
+  {
+    "id": "asset:VST",
+    "type": "asset",
+    "short": "VST",
+    "label": "VST",
+    "props": {}
+  },
+  {
+    "id": "news:2026-11-04-anet-earnings",
+    "type": "news_event",
+    "short": "anet earnings",
+    "label": "ANET Q3 revenue $3.66B vs $3.33B consensus, Q4 guide $3.9-4.0B vs $3.57B",
+    "props": {
+      "date": "2026-11-04",
+      "driver": "earnings",
+      "source": "Discord #opone-capital brief 2026-11-04"
+    }
+  },
+  {
+    "id": "news:2026-11-04-midterms",
+    "type": "news_event",
+    "short": "midterms",
+    "label": "Democratic sweep of Congress in Nov 3 midterms",
+    "props": {
+      "date": "2026-11-04",
+      "driver": "policy",
+      "source": "Discord #opone-capital brief 2026-11-04, messages 1567580778856980571-1567580847773585522"
+    }
+  },
+  {
+    "id": "news:2026-11-05-qcom-earnings",
+    "type": "news_event",
+    "short": "qcom earnings",
+    "label": "QCOM fell 6%+ after hours Nov 4 on handset revenue -26% and light guidance; ARM down ~2%; SOX -3.1% Nov 4",
+    "props": {
+      "date": "2026-11-05",
+      "driver": "earnings",
+      "source": "Discord #opone-capital brief 2026-11-05, messages 1567871184853409818-1567871204168310865"
+    }
+  },
+  {
+    "id": "news:2026-11-06-amd-10q",
+    "type": "news_event",
+    "short": "amd 10q",
+    "label": "AMD Q3 2026 10-Q filed Nov 4, 2026: revenue $13,377m (+45%), Data Center $8,546m (+97%), net income $2,428m (+95%), Q4 guide ~$17bn",
+    "props": {
+      "date": "2026-11-06",
+      "driver": "earnings",
+      "source": "AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026"
+    }
+  },
+  {
+    "id": "news:2026-11-06-chip-rebound",
+    "type": "news_event",
+    "short": "chip rebound",
+    "label": "Nasdaq +1.1-2% at the open on a chip rebound, SOXX +6.5%, after Thursday's 5.5% rout; Dow -518 on hot payrolls pushing 10-yr yield to ~4.87%",
+    "props": {
+      "date": "2026-11-06",
+      "driver": "macro",
+      "source": "Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026"
+    }
+  },
+  {
+    "id": "news:2026-11-06-duol-q3",
+    "type": "news_event",
+    "short": "duol q3",
+    "label": "Duolingo Q3 revenue $309M (+14%), DAU +29% to 64.9M, paid subs +14% to 13.1M, Q4 guide raised; shares closed $161.27 Nov 4 after +37% intraday, now below it",
+    "props": {
+      "date": "2026-11-06",
+      "driver": "earnings",
+      "source": "Midday packages 2026-11-06; Invezz/TipRanks Nov 6, 2026"
+    }
+  },
+  {
+    "id": "news:2026-11-06-mu-valuation",
+    "type": "news_event",
+    "short": "mu valuation",
+    "label": "Micron at 3.7x FY2027 earnings; Q1 FY27 guide revenue $61.5B, non-GAAP EPS $38.15; take-or-pay covers >35% of forecast revenue through 2030, ~$32B deposits; buybacks resume Dec 9",
+    "props": {
+      "date": "2026-11-06",
+      "driver": "earnings",
+      "source": "Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026"
+    }
+  },
+  {
+    "id": "news:2026-11-06-payrolls-hot",
+    "type": "news_event",
+    "short": "payrolls hot",
+    "label": "October nonfarm payrolls +165k vs ~65k consensus, unemployment 4.1% vs 4.2%, wages +0.4% MoM",
+    "props": {
+      "date": "2026-11-06",
+      "driver": "macro",
+      "source": "Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS"
+    }
+  },
+  {
+    "id": "news:2026-11-06-qcom-10k",
+    "type": "news_event",
+    "short": "qcom 10k",
+    "label": "Qualcomm FY2026 10-K filed Nov 4, 2026: revenue $43,120m (-3%), GAAP net income $13,628m (+146%) on $5.7bn one-off tax benefit, operating income down 30%, handsets -13%, automotive +52%",
+    "props": {
+      "date": "2026-11-06",
+      "driver": "earnings",
+      "source": "Qualcomm 10-K accession 0000804328-26-000128; 8-K Ex-99.1 Nov 4, 2026"
+    }
+  },
+  {
+    "id": "theme:ai_capex",
+    "type": "theme",
+    "short": "ai_capex",
+    "label": "ai_capex",
+    "props": {}
+  },
+  {
+    "id": "theme:ai_earnings_momentum",
+    "type": "theme",
+    "short": "ai_earnings_momentum",
+    "label": "ai_earnings_momentum",
+    "props": {}
+  },
+  {
+    "id": "theme:ai_regulation",
+    "type": "theme",
+    "short": "ai_regulation",
+    "label": "ai_regulation",
+    "props": {}
+  },
+  {
+    "id": "theme:breadth_rotation",
+    "type": "theme",
+    "short": "breadth_rotation",
+    "label": "breadth_rotation",
+    "props": {}
+  },
+  {
+    "id": "theme:dollar_strength",
+    "type": "theme",
+    "short": "dollar_strength",
+    "label": "dollar_strength",
+    "props": {}
+  },
+  {
+    "id": "theme:earnings_beat",
+    "type": "theme",
+    "short": "earnings_beat",
+    "label": "earnings_beat",
+    "props": {}
+  },
+  {
+    "id": "theme:earnings_power",
+    "type": "theme",
+    "short": "earnings_power",
+    "label": "earnings_power",
+    "props": {}
+  },
+  {
+    "id": "theme:jobs_hot",
+    "type": "theme",
+    "short": "jobs_hot",
+    "label": "jobs_hot",
+    "props": {}
+  },
+  {
+    "id": "theme:rates_hawkish",
+    "type": "theme",
+    "short": "rates_hawkish",
+    "label": "rates_hawkish",
+    "props": {}
+  },
+  {
+    "id": "theme:semis_contagion",
+    "type": "theme",
+    "short": "semis_contagion",
+    "label": "semis_contagion",
+    "props": {}
+  },
+  {
+    "id": "trade:2026-11-06-1",
+    "type": "trade",
+    "short": "Slot 1",
+    "label": "2026-11-06 slot 1 long NVDA",
+    "props": {
+      "slot": 1,
+      "direction": "long",
+      "entry": 188.5,
+      "target": 196,
+      "stop": 181.6,
+      "kill": "loses 181.60 Thu close / hot payrolls stands it down",
+      "status": "stood_down_payrolls"
+    }
+  },
+  {
+    "id": "trade:2026-11-06-2",
+    "type": "trade",
+    "short": "Slot 2",
+    "label": "2026-11-06 slot 2 long AMD",
+    "props": {
+      "slot": 2,
+      "direction": "long",
+      "entry": 436.5,
+      "target": 460,
+      "stop": 404.4,
+      "kill": "loses 404.40 Thu close / hot payrolls stands it down",
+      "status": "stood_down_payrolls"
+    }
+  },
+  {
+    "id": "trade:2026-11-07-1",
+    "type": "trade",
+    "short": "Slot None",
+    "label": "2026-11-07 slot None long MU",
+    "props": {
+      "slot": null,
+      "direction": "long",
+      "entry": 189.38,
+      "target": 248.32,
+      "stop": 94.69,
+      "kill": "MU break below 656.39",
+      "status": "paper_open"
+    }
+  },
+  {
+    "id": "trade:2026-11-07-2",
+    "type": "trade",
+    "short": "Slot None",
+    "label": "2026-11-07 slot None long BE",
+    "props": {
+      "slot": null,
+      "direction": "long",
+      "entry": 64.53,
+      "target": 114.74,
+      "stop": 32.27,
+      "kill": "BE break below 167.52",
+      "status": "paper_open"
+    }
+  },
+  {
+    "id": "trade:2026-11-07-3",
+    "type": "trade",
+    "short": "Slot None",
+    "label": "2026-11-07 slot None long MRVL",
+    "props": {
+      "slot": null,
+      "direction": "long",
+      "entry": 43.65,
+      "target": 74.59,
+      "stop": 21.82,
+      "kill": "MRVL break below 133.55",
+      "status": "paper_open"
+    }
+  },
+  {
+    "id": "trade:2026-11-07-4",
+    "type": "trade",
+    "short": "Slot None",
+    "label": "2026-11-07 slot None long VST",
+    "props": {
+      "slot": null,
+      "direction": "long",
+      "entry": 30.55,
+      "target": 52.66,
+      "stop": 15.28,
+      "kill": "VST break below 112.89",
+      "status": "paper_open"
+    }
+  },
+  {
+    "id": "trade:2026-11-09-1",
+    "type": "trade",
+    "short": "Slot None",
+    "label": "2026-11-09 slot None short NVDA",
+    "props": {
+      "slot": null,
+      "direction": "short",
+      "entry": 4.8,
+      "target": 9.6,
+      "stop": 2.4,
+      "kill": "NVDA reclaims and holds above 181.60",
+      "status": "open_paper"
+    }
+  },
+  {
+    "id": "trade:2026-11-09-2",
+    "type": "trade",
+    "short": "Slot None",
+    "label": "2026-11-09 slot None long IWM",
+    "props": {
+      "slot": null,
+      "direction": "long",
+      "entry": 2.84,
+      "target": 5.68,
+      "stop": 1.42,
+      "kill": "IWM loses 279 breakout level",
+      "status": "open_paper"
+    }
+  },
+  {
+    "id": "trade:2026-11-09-3",
+    "type": "trade",
+    "short": "Slot None",
+    "label": "2026-11-09 slot None long IWM",
+    "props": {
+      "slot": null,
+      "direction": "long",
+      "entry": 1.4,
+      "target": 2.8,
+      "stop": 0.7,
+      "kill": "IWM loses 279 breakout level",
+      "status": "real_open"
+    }
+  },
+  {
+    "id": "trade:2026-11-09-4",
+    "type": "trade",
+    "short": "Slot 1",
+    "label": "2026-11-09 slot 1 long AMD",
+    "props": {
+      "slot": 1,
+      "direction": "long",
+      "entry": 460.0,
+      "target": 488.78,
+      "stop": 449.04,
+      "kill": "exit under $449.04 (Fri close); no entry if the open loses $460 and cannot reclaim it",
+      "status": "signal_only"
+    }
+  },
+  {
+    "id": "trade:2026-11-09-5",
+    "type": "trade",
+    "short": "Slot 2",
+    "label": "2026-11-09 slot 2 long NVDA",
+    "props": {
+      "slot": 2,
+      "direction": "long",
+      "entry": 181.6,
+      "target": 194.9,
+      "stop": 175.0,
+      "kill": "exit under $175; no reclaim above $181.60, no trade; day trade only, never a hold; earnings Nov 17 not carried",
+      "status": "signal_only"
+    }
+  },
+  {
+    "id": "trade:2026-11-09-6",
+    "type": "trade",
+    "short": "Slot 3",
+    "label": "2026-11-09 slot 3 long GOLD",
+    "props": {
+      "slot": 3,
+      "direction": "long",
+      "entry": 4124.0,
+      "target": 4200.0,
+      "stop": 4070.0,
+      "kill": "exit under $4,070; hot CPI Tue is the exit, not a hold-through; horizon to Tue CPI only",
+      "status": "signal_only"
+    }
+  },
+  {
+    "id": "trade:2026-11-09-7",
+    "type": "trade",
+    "short": "Slot 4",
+    "label": "2026-11-09 slot 4 short BTC",
+    "props": {
+      "slot": 4,
+      "direction": "short",
+      "entry": 75000.0,
+      "target": 73078.0,
+      "stop": 76200.0,
+      "kill": "exit on a reclaim and hold above $76,200. BOUNCE SHORT ONLY: short into $75,000-75,500 on rejection; no bounce, no trade; never chase at the low. NOTE: watch.py short logic is breakdown-based (triggers at price <= entry), so for this slot the file's working alerts are the kill at $76,200 and the target at $73,078; the bounce into the zone is called by Bobby from the price feed.",
+      "status": "signal_only"
+    }
+  },
+  {
+    "id": "trade:2026-11-09-8",
+    "type": "trade",
+    "short": "Slot 5",
+    "label": "2026-11-09 slot 5 long DUOL",
+    "props": {
+      "slot": 5,
+      "direction": "long",
+      "entry": 161.5,
+      "target": 175.0,
+      "stop": 153.97,
+      "kill": "exit under $153.97 (Fri low); reclaim must hold above $161.50, never chase a gap that cannot hold it",
+      "status": "signal_only"
+    }
+  }
 ];
 var EDGES = [
- {from:"news:2026-11-06-payrolls-hot",to:"theme:jobs_hot",type:"mentions",evidence:"Discord #opone-capital brief 2026-11-06; Reuters/BLS"},
- {from:"news:2026-11-06-payrolls-hot",to:"theme:rates_hawkish",type:"mentions",evidence:"Discord #opone-capital brief 2026-11-06; Reuters/BLS"},
- {from:"news:2026-11-06-amd-10q",to:"theme:earnings_power",type:"mentions",evidence:"AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026"},
- {from:"news:2026-11-06-amd-10q",to:"theme:ai_capex",type:"mentions",evidence:"AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026"},
- {from:"news:2026-11-06-qcom-10k",to:"theme:earnings_power",type:"mentions",evidence:"Qualcomm 10-K accession 0000804328-26-000128; 8-K Ex-99.1 Nov 4, 2026"},
- {from:"news:2026-11-06-mu-valuation",to:"theme:earnings_power",type:"mentions",evidence:"Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026"},
- {from:"news:2026-11-06-mu-valuation",to:"theme:ai_capex",type:"mentions",evidence:"Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026"},
- {from:"news:2026-11-06-duol-q3",to:"theme:earnings_power",type:"mentions",evidence:"Midday packages 2026-11-06; Invezz/TipRanks Nov 6, 2026"},
- {from:"news:2026-11-06-chip-rebound",to:"theme:ai_regulation",type:"mentions",evidence:"Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026"},
- {from:"news:2026-11-06-chip-rebound",to:"theme:rates_hawkish",type:"mentions",evidence:"Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026"},
- {from:"trade:2026-11-06-2",to:"asset:AMD",type:"decides",evidence:"brief-2026-11-06"},
- {from:"trade:2026-11-06-3",to:"asset:BTC",type:"decides",evidence:"brief-2026-11-06"},
- {from:"trade:2026-11-06-5",to:"asset:DIA",type:"decides",evidence:"brief-2026-11-06"},
- {from:"trade:2026-11-06-6",to:"asset:AMD",type:"decides",evidence:"trade-packages-2026-11-06-amd-qcom.md"},
- {from:"trade:2026-11-06-7",to:"asset:QCOM",type:"decides",evidence:"trade-packages-2026-11-06-amd-qcom.md"},
- {from:"trade:2026-11-06-8",to:"asset:MU",type:"decides",evidence:"midday-packages-2026-11-06; real order via Robinhood MCP"},
- {from:"trade:2026-11-06-9",to:"asset:QCOM",type:"decides",evidence:"midday-packages-2026-11-06; real order via Robinhood MCP"},
- {from:"trade:2026-11-06-10",to:"asset:GLD",type:"decides",evidence:"midday-packages-2026-11-06; real order via Robinhood MCP"},
- {from:"trade:2026-11-06-11",to:"asset:AMD",type:"decides",evidence:"midday-packages-2026-11-06"},
- {from:"trade:2026-11-06-12",to:"asset:DUOL",type:"decides",evidence:"midday-packages-2026-11-06"}
+  {
+    "from": "news:2026-11-04-midterms",
+    "to": "theme:dollar_strength",
+    "type": "mentions",
+    "evidence": "Discord #opone-capital brief 2026-11-04, messages 1567580778856980571-1567580847773585522",
+    "date": "2026-11-04"
+  },
+  {
+    "from": "news:2026-11-04-anet-earnings",
+    "to": "theme:ai_earnings_momentum",
+    "type": "mentions",
+    "evidence": "Discord #opone-capital brief 2026-11-04",
+    "date": "2026-11-04"
+  },
+  {
+    "from": "news:2026-11-04-anet-earnings",
+    "to": "theme:ai_capex",
+    "type": "mentions",
+    "evidence": "Discord #opone-capital brief 2026-11-04",
+    "date": "2026-11-04"
+  },
+  {
+    "from": "news:2026-11-05-qcom-earnings",
+    "to": "theme:semis_contagion",
+    "type": "mentions",
+    "evidence": "Discord #opone-capital brief 2026-11-05, messages 1567871184853409818-1567871204168310865",
+    "date": "2026-11-05"
+  },
+  {
+    "from": "news:2026-11-06-payrolls-hot",
+    "to": "theme:jobs_hot",
+    "type": "mentions",
+    "evidence": "Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-payrolls-hot",
+    "to": "theme:rates_hawkish",
+    "type": "mentions",
+    "evidence": "Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-amd-10q",
+    "to": "theme:earnings_power",
+    "type": "mentions",
+    "evidence": "AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-amd-10q",
+    "to": "theme:ai_capex",
+    "type": "mentions",
+    "evidence": "AMD 10-Q accession 0000002488-26-000191; 8-K Ex-99.1 Nov 3, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-qcom-10k",
+    "to": "theme:earnings_power",
+    "type": "mentions",
+    "evidence": "Qualcomm 10-K accession 0000804328-26-000128; 8-K Ex-99.1 Nov 4, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-mu-valuation",
+    "to": "theme:earnings_power",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-mu-valuation",
+    "to": "theme:ai_capex",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; Invezz/Fool Nov 6, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-duol-q3",
+    "to": "theme:earnings_beat",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; Invezz/TipRanks Nov 6, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-duol-q3",
+    "to": "theme:earnings_power",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; Invezz/TipRanks Nov 6, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-chip-rebound",
+    "to": "theme:ai_regulation",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-chip-rebound",
+    "to": "theme:breadth_rotation",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "news:2026-11-06-chip-rebound",
+    "to": "theme:rates_hawkish",
+    "type": "mentions",
+    "evidence": "Midday packages 2026-11-06; CoinDesk/CNBC Nov 6, 2026",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "trade:2026-11-06-1",
+    "to": "asset:NVDA",
+    "type": "decides",
+    "evidence": "brief-2026-11-06",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "trade:2026-11-06-2",
+    "to": "asset:AMD",
+    "type": "decides",
+    "evidence": "brief-2026-11-06",
+    "date": "2026-11-06"
+  },
+  {
+    "from": "trade:2026-11-07-1",
+    "to": "asset:MU",
+    "type": "decides",
+    "evidence": "trade-packages-2026-11-07-leaps-mu",
+    "date": "2026-11-07"
+  },
+  {
+    "from": "trade:2026-11-07-2",
+    "to": "asset:BE",
+    "type": "decides",
+    "evidence": "trade-packages-2026-11-07-leaps-be",
+    "date": "2026-11-07"
+  },
+  {
+    "from": "trade:2026-11-07-3",
+    "to": "asset:MRVL",
+    "type": "decides",
+    "evidence": "trade-packages-2026-11-07-leaps-mrvl",
+    "date": "2026-11-07"
+  },
+  {
+    "from": "trade:2026-11-07-4",
+    "to": "asset:VST",
+    "type": "decides",
+    "evidence": "trade-packages-2026-11-07-leaps-vst",
+    "date": "2026-11-07"
+  },
+  {
+    "from": "trade:2026-11-09-1",
+    "to": "asset:NVDA",
+    "type": "decides",
+    "evidence": "Milly word Nov 9 + Aristotle cross-check",
+    "date": "2026-11-09"
+  },
+  {
+    "from": "trade:2026-11-09-2",
+    "to": "asset:IWM",
+    "type": "decides",
+    "evidence": "Milly word Nov 9 + Aristotle cross-check",
+    "date": "2026-11-09"
+  },
+  {
+    "from": "trade:2026-11-09-3",
+    "to": "asset:IWM",
+    "type": "decides",
+    "evidence": "Milly exact-trade word Nov 9 (deposit $160 + widget choice + typed buy)",
+    "date": "2026-11-09"
+  },
+  {
+    "from": "trade:2026-11-09-4",
+    "to": "asset:AMD",
+    "type": "decides",
+    "evidence": "brief-2026-11-09",
+    "date": "2026-11-09"
+  },
+  {
+    "from": "trade:2026-11-09-5",
+    "to": "asset:NVDA",
+    "type": "decides",
+    "evidence": "brief-2026-11-09",
+    "date": "2026-11-09"
+  },
+  {
+    "from": "trade:2026-11-09-6",
+    "to": "asset:GOLD",
+    "type": "decides",
+    "evidence": "brief-2026-11-09",
+    "date": "2026-11-09"
+  },
+  {
+    "from": "trade:2026-11-09-7",
+    "to": "asset:BTC",
+    "type": "decides",
+    "evidence": "brief-2026-11-09",
+    "date": "2026-11-09"
+  },
+  {
+    "from": "trade:2026-11-09-8",
+    "to": "asset:DUOL",
+    "type": "decides",
+    "evidence": "brief-2026-11-09",
+    "date": "2026-11-09"
+  }
 ];
+/* === END GRAPH SYNC === */
 var nodeById={}; NODES.forEach(function(n){ nodeById[n.id]=n; });
 var graphFilter="all", selectedId=null;
 
@@ -1284,7 +2414,7 @@ function renderDetail(){
   var conns=EDGES.filter(function(e){return e.from===selectedId||e.to===selectedId;});
   var ch = conns.length ? conns.map(function(e){
     var other = e.from===selectedId? e.to : e.from;
-    return '<div class="conn"><span class="mono">'+esc(e.from)+'</span> '+esc(e.type)+' <span class="mono">'+esc(e.to)+'</span><span class="ev">Evidence: '+esc(e.evidence)+' · Nov 6, 2026 · connects to '+esc(other)+'</span></div>';
+    return '<div class="conn"><span class="mono">'+esc(e.from)+'</span> '+esc(e.type)+' <span class="mono">'+esc(e.to)+'</span><span class="ev">Evidence: '+esc(e.evidence)+' · '+(e.date||'')+' · connects to '+esc(other)+'</span></div>';
   }).join("") : '<div class="conn">No edges touch this node in the live subset. It is in the graph, and the subset draws no line for it.</div>';
   box.innerHTML='<div class="id">'+esc(n.id)+' &nbsp;·&nbsp; type: '+esc(n.type)+'</div><h4>'+esc(n.label)+'</h4><div class="props">'+propsText(n)+'</div><div class="conns">'+ch+'</div>';
 }
@@ -1311,8 +2441,8 @@ renderGraph(); renderDetail();
 /* ---- Ask the graph: local retrieval ---- */
 var CORPUS=[];
 POSITIONS.forEach(function(p){
-  CORPUS.push({ title:p.symbol+" live position", ids:["asset:"+p.symbol, p.symbol==="MU"?"trade:2026-11-06-8":p.symbol==="QCOM"?"trade:2026-11-06-9":"trade:2026-11-06-10"],
-    body:"Filled "+p.qty+" shares at $"+fmt(p.fill)+". Last $"+fmt(p.last)+". P and L $"+fmt(p.pnl)+". Stop $"+fmt(p.stop)+". Targets "+p.targets.map(function(t){return "$"+fmt(t, (t%1===0?0:2));}).join(" then ")+". Position value $"+fmt(p.qty*p.last)+".",
+  CORPUS.push({ title:p.symbol+" live position", ids:["asset:"+p.symbol].concat(p.symbol==="MU"?["trade:2026-11-06-8"]:p.symbol==="QCOM"?["trade:2026-11-06-9"]:p.symbol==="GLD"?["trade:2026-11-06-10"]:[]),
+    body:"Filled "+p.qty+" shares at $"+fmt(p.fill)+". Last $"+fmt(p.last)+". P and L $"+fmt(p.pnl)+". Stop "+((typeof p.stop==="number")? "$"+fmt(p.stop) : "set by program rules (see the position card)")+". Targets "+((p.targets&&p.targets.length)? p.targets.map(function(t){return "$"+fmt(t, (t%1===0?0:2));}).join(" then ") : "none set")+". Position value $"+fmt(p.qty*p.last)+".",
     kill:p.kill, text:(p.symbol+" "+p.name+" position fill last stop target filled order live").toLowerCase()+" "+p.kill.toLowerCase() });
 });
 CONDITIONALS.forEach(function(p){
@@ -1354,7 +2484,7 @@ PATTERNS.forEach(function(pt){
     kill:null, text:("pattern "+pt.theme+" candidate live win rate outcomes decay").toLowerCase() });
 });
 CORPUS.push({ title:"Graph size", ids:["graph:full"],
-  body:"Full graph: 118 nodes and 117 edges. This page maps the live subset: 33 nodes and 20 edges. Live patterns: 0. Pattern candidates: 3. Connector candidates waiting: 16. A candidate is not a connector until it is confirmed.",
+  body:"Full graph: "+(GRAPHMETA.nodes||0)+" nodes and "+(GRAPHMETA.edges||0)+" edges. This page maps the live subset: "+(GRAPHMETA.subset_nodes||0)+" nodes and "+(GRAPHMETA.subset_edges||0)+" edges. Live patterns: "+(GRAPHMETA.live_patterns||0)+". Pattern candidates: "+(GRAPHMETA.pattern_candidates||0)+". Connector candidates waiting: "+(GRAPHMETA.connector_candidates||0)+". A candidate is not a connector until it is confirmed.",
   kill:null, text:"graph size nodes edges how many connectors candidates patterns full subset" });
 
 var STOPW={"what":1,"is":1,"the":1,"a":1,"an":1,"of":1,"to":1,"in":1,"on":1,"for":1,"and":1,"or":1,"do":1,"does":1,"did":1,"show":1,"me":1,"tell":1,"about":1,"how":1,"why":1,"when":1,"which":1,"with":1,"from":1,"it":1,"its":1,"are":1,"was":1,"were":1,"be":1,"can":1,"you":1,"our":1,"we":1,"i":1,"should":1,"would":1,"any":1,"there":1,"this":1,"that":1};
@@ -1459,13 +2589,13 @@ document.getElementById("askForm").addEventListener("submit",function(e){ e.prev
 <script>
 /* ---- Live layer: fetch /api/desk-data on load and every 60 seconds ---- */
 var LIVE_URL="/api/desk-data";
-var SNAPSHOT_ASOF="Nov 6, 2026, 1:50 PM CT";
+var SNAPSHOT_ASOF="the last daily book sync";
 var liveState={ checked:false, live:false, fails:0, lastOkAsOf:null, lastCheck:null, nextIn:60, feed:"yahoo-live" };
-var BOOK={ total:78.08, cash:31.25, equity:46.83, count:3, symbols:"MU, QCOM, GLD", paperTotal:105.44, paperOpen:0, paperClosed:0,
-  attention:"Gold is $6 from its $4,090 target. Nothing else needs you." };
+var BOOK={ total:302.00, cash:293.41, equity:8.59, count:5, symbols:"ABBV, BAC, CVX, GOOGL, SPY", paperTotal:105.44, paperOpen:0, paperClosed:0,
+  attention:"Book synced from the ledger by sync_book.py. Nothing else needs you.", cashAsOf:"" };
 /* === RECORD SYNC (generated; do not hand-edit) === */
 var RECORD = {
-  "as_of": "2026-11-11",
+  "as_of": "2026-11-12",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -1705,6 +2835,20 @@ var RECORD = {
         "status": "holding",
         "last_checked": "2026-11-11"
       }
+    },
+    {
+      "id": "L-012",
+      "date": "2026-11-12",
+      "title": "Day-trade slots are how we get cheaper money",
+      "status": "in_force",
+      "the_rule": "Day-trade slots are working capital, not decoration. When a slot opens inside its entry zone or crosses its written trigger, Bobby surfaces it immediately as a live decision and presses for Milly's trigger pull in the first minutes. He does not let a qualifying slot ride silently to its target and then call it validation. If Milly pre-authorizes a class of paper slots, Bobby executes that class exactly as written. The point of the slots is to compound small edges and recycle the proceeds into cheaper money for the firm.",
+      "what_happened": "The Nov 12 ANET day-trade slot opened at $192, inside its entry zone, crossed the $193 trigger, and ran to the $206 target, printing $206.20. That was about a 14-point ride, roughly 7.4%. No paper position was opened. Bobby had framed the slot as conditional on a first-30-minute hold and did not press for Milly's trigger pull when the trigger crossed. Bobby first called it a signal that worked. Milly corrected that plainly: they opened at 192, that is a 14-point ride, how is that not a miss? He then named the principle: we absolutely need to take advantage of day trade slots, because that is also how we get cheaper money.",
+      "drift_watch": {
+        "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-12"
+      }
     }
   ],
   "drift": {
@@ -1817,6 +2961,12 @@ var INDEX = {
       "date": "2026-11-11",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-11: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "book_value": 302.0,
+      "date": "2026-11-12",
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-12: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
@@ -1989,7 +3139,7 @@ function setBadge(){
     b.className="livebadge snap"; t.textContent="SNAPSHOT";
     a.innerHTML="Snapshot <b>Fri "+SNAPSHOT_ASOF+"</b>. Live data is unreachable.";
     var extra = liveState.fails>=3 ? " Live data has failed "+liveState.fails+" times in a row." : "";
-    f.innerHTML="<b>Snapshot, not live.</b>"+extra+" Showing the embedded Nov 6, 2026 snapshot ("+SNAPSHOT_ASOF+"). The page keeps checking every 60 seconds and switches to live on its own when the feed answers.";
+    f.innerHTML="<b>Snapshot, not live.</b>"+extra+" Showing the embedded snapshot ("+SNAPSHOT_ASOF+"). The page keeps checking every 60 seconds and switches to live on its own when the feed answers.";
   }
   if(rm){ rm.textContent = liveState.lastCheck ? ("Last checked "+liveState.lastCheck+" CT · next check in "+liveState.nextIn+"s") : "First check running."; }
   if(pu){ pu.textContent = liveState.live ? ("Prices updated "+(liveState.lastOkTime||liveState.lastOkAsOf||"")+" CT") : (liveState.checked ? "Live feed unreachable. Showing the snapshot; prices below are not current." : "Checking the live feed."); }
@@ -1999,7 +3149,7 @@ function updateCorpusPositions(){
   POSITIONS.forEach(function(p){
     CORPUS.forEach(function(it){
       if(it.title===p.symbol+" live position"){
-        it.body="Filled "+p.qty+" shares at $"+fmt(p.fill)+". Last $"+fmt(p.last)+". P and L $"+fmt(p.pnl)+". Stop $"+fmt(p.stop)+". Targets "+p.targets.map(function(t){return "$"+fmt(t,(t%1===0?0:2));}).join(" then ")+". Position value $"+fmt(p.qty*p.last)+"."+(liveState.live? " Prices live as of "+(liveState.lastOkAsOf||"")+".":"");
+        it.body="Filled "+p.qty+" shares at $"+fmt(p.fill)+". Last $"+fmt(p.last)+". P and L $"+fmt(p.pnl)+". Stop "+((typeof p.stop==="number")? "$"+fmt(p.stop) : "set by program rules")+". Targets "+((p.targets&&p.targets.length)? p.targets.map(function(t){return "$"+fmt(t,(t%1===0?0:2));}).join(" then ") : "none set")+". Position value $"+fmt(p.qty*p.last)+"."+(liveState.live? " Prices live as of "+(liveState.lastOkAsOf||"")+".":"");
       }
     });
   });
@@ -2036,12 +3186,36 @@ function applyLive(data){
   for(var pi=POSITIONS.length-1; pi>=0; pi--){ if(!liveSyms[POSITIONS[pi].symbol]) POSITIONS.splice(pi,1); }
   data.positions.forEach(function(lp){
     var p=null; POSITIONS.forEach(function(x){ if(x.symbol===lp.symbol) p=x; });
-    if(!p) return;
+    if(!p){
+      /* A position the feed lists but the page's baked snapshot never
+         had gets a card built from the feed data. (Nov 12, 2026 fix:
+         the old merge only pruned closed names and returned here, so
+         the five DCA names bought Nov 11 never rendered and the Open
+         list showed zero cards.) */
+      p={ symbol:lp.symbol, name:(typeof lp.name==="string"&&lp.name)?lp.name:lp.symbol,
+          bucket:(typeof lp.bucket==="string"&&lp.bucket)?lp.bucket:"swing",
+          qty:(typeof lp.qty==="number")?lp.qty:0, fill:(typeof lp.fill==="number")?lp.fill:0,
+          last:(typeof lp.last==="number")?lp.last:0, pnl:(typeof lp.pnl==="number")?lp.pnl:0,
+          stop:(typeof lp.stop==="number")?lp.stop:null,
+          targets:(typeof lp.target==="number")?[lp.target]:[],
+          kill:(typeof lp.kill==="string"&&lp.kill)?lp.kill:null,
+          order_id:lp.order_id||"", filled:(typeof lp.filled_at==="string")?lp.filled_at:"",
+          scaleMin:0, scaleMax:0, marks:[] };
+      if(p.bucket==="dca_core" && !p.kill) p.kill="DCA program protection, judged on official closes: dip-buying continues to -25% vs average cost; two closes at or below -25% rotate out at the next open; a close at or below -40% or a tripped belief-breaker exits at the next open.";
+      var vs=[p.fill,p.last].concat(p.stop!=null?[p.stop]:[]).concat(p.targets);
+      var lo=Math.min.apply(null,vs), hi=Math.max.apply(null,vs);
+      var pd=Math.max((hi-lo)*0.08, p.fill*0.02, 1);
+      p.scaleMin=Math.floor(lo-pd); p.scaleMax=Math.ceil(hi+pd);
+      POSITIONS.push(p);
+    }
     if(typeof lp.last==="number") p.last=lp.last;
     if(typeof lp.pnl==="number") p.pnl=lp.pnl;
     if(typeof lp.qty==="number") p.qty=lp.qty;
     if(typeof lp.fill==="number") p.fill=lp.fill;
     if(typeof lp.stop==="number") p.stop=lp.stop;
+    if(typeof lp.bucket==="string" && lp.bucket) p.bucket=lp.bucket;
+    if(typeof lp.name==="string" && lp.name) p.name=lp.name;
+    if(!Array.isArray(p.targets)) p.targets=[];
     var tg = Array.isArray(lp.targets) ? lp.targets : (typeof lp.target==="number" ? [lp.target] : null);
     if(tg && tg.length){
       var extra=p.targets.filter(function(t){ return tg.indexOf(t)<0 && t>tg[tg.length-1]; });
@@ -2050,6 +3224,11 @@ function applyLive(data){
     if(p.last>p.scaleMax) p.scaleMax=Math.ceil(p.last*1.04);
     if(p.last<p.scaleMin) p.scaleMin=Math.floor(p.last*0.96);
   });
+  if(Array.isArray(data.leaps_paper)) LEAPS_PAPER=data.leaps_paper;
+  if(Array.isArray(data.day_trading)) DAY_TRADING=data.day_trading;
+  if(Array.isArray(data.buckets)) BUCKETS=data.buckets;
+  if(Array.isArray(data.options)) LIVE_OPTIONS=data.options;
+  if(typeof data.cash_as_of==="string") CASH_AS_OF=data.cash_as_of;
   /* Gold comes from the feed's gold object directly. It used to merge
      only while looping a GLD position; GLD closed Nov 9, 2026 and left
      the positions list, so that merge never ran and the card froze on
@@ -2094,11 +3273,11 @@ function fetchLive(){
     applyLive(data);
   }).catch(function(){
     liveState.checked=true; liveState.live=false; liveState.fails++;
-    renderGlance(); setBadge();
+    renderGlance(); renderPositions(); setBadge();
   });
 }
 document.getElementById("refreshBtn").addEventListener("click",function(){ fetchLive(); });
-renderGlance(); renderRecord(); renderIndex(); setBadge(); fetchLive();
+renderGlance(); renderPositions(); renderWire(); renderRecord(); renderIndex(); setBadge(); fetchLive();
 function marketOpenCT(){
   try{
     var parts=new Intl.DateTimeFormat("en-US",{timeZone:"America/Chicago",weekday:"short",hour:"numeric",minute:"numeric",hour12:false}).formatToParts(new Date());
@@ -2129,9 +3308,9 @@ setInterval(function(){
    from the recorded Nov 6 packages and graph facts. Anything not in
    the record is labeled "not yet checked" or "not recorded". */
 var NR_SYMBOLS = [
-  { sym:"MU", name:"Micron Technology", group:"Live positions" },
-  { sym:"QCOM", name:"Qualcomm", group:"Live positions" },
-  { sym:"GLD", name:"SPDR Gold Shares", group:"Live positions" },
+  { sym:"MU", name:"Micron Technology", group:"Watchlist" },
+  { sym:"QCOM", name:"Qualcomm", group:"Watchlist" },
+  { sym:"GLD", name:"SPDR Gold Shares", group:"Watchlist" },
   { sym:"AMD", name:"Advanced Micro Devices", group:"Conditionals" },
   { sym:"DUOL", name:"Duolingo", group:"Conditionals" },
   { sym:"NVDA", name:"NVIDIA", group:"Watchlist" },
@@ -2395,59 +3574,92 @@ var NR_WORTH_ASSET = {
   AMD:"For AMD, worth is $384 at 40 times and $480 at 50 times the $9.60 run-rate EPS. Price is $457.05. A 20 percent margin of safety would need worth of at least $571. There is none.",
   QCOM:"For QCOM, worth is $158.10 at 15 times and $189.72 at 18 times FY2026 non-GAAP EPS of $10.54. On the Q1 FY2027 guide, worth falls to $135 to $162. Price is $160.85. No 20 percent margin of safety."
 };
+/* === NEWSROOM SYNC (generated; do not hand-edit) === */
 var INSIGHTS = [
-  { date:"2026-11-06", tag:"Payrolls", title:"Hot payrolls stood the chip legs down at the open",
-    body:"October payrolls came in at +165,000 against about 65,000 expected, unemployment 4.1 percent, wages +0.4 percent. The 10-year yield rose to about 4.87 to 4.89 percent and December hike odds moved to about 77 to 80 percent. The NVDA and AMD long legs stood down at the open on the print.",
-    evidence:"Discord #opone-capital brief 2026-11-06; Reuters/BLS. Graph: news:2026-11-06-payrolls-hot.",
-    lesson:"Chasing a gap into a hawkish print is how you buy the top. The stand-down was right at the open. It does not stay stood down all day when the bounce proves itself." },
-  { date:"2026-11-06", tag:"Policy", title:"Thursday was a policy scare, not an earnings scare",
-    body:"The Democratic midterm sweep raised fears of slower AI data-center buildouts. The Nasdaq fell 5.5 percent, its worst day since April 2025, and the PHLX Semiconductor Index fell 12.25 percent. Friday opened split: chips rebounded, the Dow fell 518.",
-    evidence:"Midday packages 2026-11-06. Graph: news:2026-11-06-chip-rebound, theme:ai_regulation.",
-    lesson:"Know what kind of rout it is before you buy it. A policy scare reprices a theme. An earnings scare reprices a company. The trade is different either way." },
-  { date:"2026-11-06", tag:"MU", title:"Micron is the cheapest earnings on the crash board",
-    body:"Fiscal Q4 revenue $54.23B, up 379 percent. Q1 fiscal 2027 guide: revenue $61.5B, non-GAAP EPS $38.15. At the Thursday close it traded at 3.7 times estimated fiscal 2027 earnings. Take-or-pay deals cover more than 35 percent of forecast revenue through 2030, with about $32B in cash deposits.",
-    evidence:"Midday packages 2026-11-06. Graph: news:2026-11-06-mu-valuation.",
-    lesson:"A record quarter does not make a price cheap, but a 3.7 multiple with contracted revenue does make a bounce worth taking with a kill underneath it." },
-  { date:"2026-11-06", tag:"AMD", title:"AMD grew 45 percent and still fails the margin of safety",
-    body:"Q3 revenue $13,377m, up 45 percent. Data Center $8,546m, up 97 percent. Net income $2,428m, up 95 percent. Worth is $384 at 40 times and $480 at 50 times the $9.60 run-rate EPS. Price $457.05. A 20 percent margin of safety would need worth of at least $571.",
-    evidence:"AMD 10-Q filed Nov 4, 2026, accession 0000002488-26-000191. Graph: news:2026-11-06-amd-10q.",
-    lesson:"The business can be strong and the trade still be a bounce, because the price already carries the growth. The margin of safety is the test, not the headline." },
-  { date:"2026-11-06", tag:"QCOM", title:"Qualcomm's profit jump is a tax benefit, not earnings",
-    body:"FY2026 GAAP net income of $13,628m, up 146 percent, is almost entirely a $5.7bn one-off income tax benefit. Non-GAAP net income fell 15 percent to $11,311m. Buybacks plus dividends of $11,671m ran about $3,020m ahead of free cash flow of $8,651m.",
-    evidence:"Qualcomm 10-K filed Nov 4, 2026, accession 0000804328-26-000128. Graph: news:2026-11-06-qcom-10k.",
-    lesson:"A low multiple is not a margin of safety when the earnings behind it are falling. Read the clean numbers, not the headline." },
-  { date:"2026-11-06", tag:"DUOL", title:"A breakout that fails to hold is information",
-    body:"Duolingo Q3 revenue $309M, up 14 percent. Daily active users up 29 percent to 64.9M. The stock jumped 37 percent intraday November 4 and closed at $161.27. It is now below that close. The pullback watch at $160 was set when the stock was gapping. A touch of $160 is no longer the trigger. A reclaim is.",
-    evidence:"Midday packages 2026-11-06. Graph: news:2026-11-06-duol-q3.",
-    lesson:"You do not buy the level a breakout failed at. You buy the reclaim." },
-  { date:"2026-11-06", tag:"Gold", title:"Gold held its entry against a stronger dollar",
-    body:"Hot payrolls pushed the dollar index up 0.63 percent to 102.12 and hike odds to about 77 to 80 percent. Gold still held above its $4,040 entry. Spot was about $4,072 at midday. Target $4,090, stop $4,000.",
-    evidence:"Midday packages 2026-11-06. Graph: trade:2026-11-06-4, trade:2026-11-06-10.",
-    lesson:"The stop is what lets you hold a winner through a hot print. Without it, every headline is a decision. With it, only the level is." },
-  { date:"2026-11-05", tag:"Kills", title:"Three kills fired on Nov 5, and all three worked",
-    body:"DIA killed at $528. QCOM killed at $152.50. AMD killed at $468. Each was a signal only, no position was opened, and each kill kept a losing idea from becoming a losing trade.",
-    evidence:"Graph outcomes: outcome:2026-11-05-dia, outcome:2026-11-05-qcom, outcome:2026-11-05-amd. Feed: yahoo_snapshot.",
-    lesson:"A kill that fires is not a loss. It is the rule working. The loss is the trade you hold through the level." },
-  { date:"2026-11-04", tag:"ANET", title:"A beat does not save a trade that breaks its kill",
-    body:"ANET Q3 revenue $3.66B beat the $3.33B consensus, and Q4 guide of $3.9 to 4.0B beat $3.57B. The Nov 4 signal still stopped out at its $184 kill, down 2.0 percent, signal only.",
-    evidence:"Discord #opone-capital brief 2026-11-04. Graph: news:2026-11-04-anet-earnings, outcome:2026-11-04-anet.",
-    lesson:"Earnings and price are two different trades. The beat belongs to the company. The kill belongs to the trade." },
-  { date:"2026-11-05", tag:"Asia", title:"Kospi halted twice in two days",
-    body:"Kospi fell 4.8 percent November 5 with a sidecar halt, then halted again after falling 8.55 percent on November 6. The chip-heavy Korean market led the Asia move both days.",
-    evidence:"Discord #opone-capital briefs 2026-11-05 and 2026-11-06. Graph intake: intake:2026-11-05-asia-split, intake:2026-11-06-asia-falling.",
-    lesson:"Asia opens before the US does. When the chip-heavy market halts twice, that is a leading indicator until it proves otherwise. The question is still open." }
+  {
+    "date": "2026-11-12",
+    "tag": "Scan",
+    "title": "Whole-market scan 2026-11-12: 1137 passed",
+    "body": "Universe 11,804 quoted. 1,137 passed the full screen: gem zone 399, deep 374, crash 364. Top of the screen: TSM, META, AMD, XOM, PLTR, UNH, GE, HD, HSBC, MS.",
+    "evidence": "Graph: scan:2026-11-12. Source: market_scan.py, scans/scan-2026-11-12.csv (feed: yahoo_quote).",
+    "lesson": "The scan is the whole market (L-002). Finalists come from the merged pool, never the watchlist alone."
+  },
+  {
+    "date": "2026-11-12",
+    "tag": "Dossiers",
+    "title": "25 EDGAR dossiers on file; 10 refreshed 2026-11-12",
+    "body": "Newest dossiers: ABT, APH, AXP, BHP, C, GS, MCD, PEP, PLTR, SHOP. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
+    "evidence": "Graph: dossier nodes dated 2026-11-12.",
+    "lesson": "A dossier is not a check. The full process (management, employees, cash, worth) still runs before any package."
+  },
+  {
+    "date": "2026-11-11",
+    "tag": "DCA core",
+    "title": "DCA core week 1 filled: five names under the adopted program",
+    "body": "DCA program week 1: bought 0.007386 sh ABBV at $291.0737 for $2.15 per dca-program.md standing instruction. Position open. Order 6af49fc2-9e0e-4103-8a46-aba7c6c8383a. DCA program week 1: bought 0.042398 sh BAC at $50.7099 for $2.15 per dca-program.md standing instruction. Position open. Order 6af49fc7-de1e-4eb1-b29b-8787290bbd0e. DCA program week 1: bought 0.005039 sh CVX at $212.3045 for $1.07 (half weight) per dca-program.md standing instruction. Position open. Order 6af49fcc-0351-44d3-b43a-e257885b14a1. DCA program week 1: bought 0.007323 sh GOOGL at $293.5821 for $2.15 per dca-program.md standing instruction. Position open. Order 6af49fbd-f7f1-4dde-8f09-9c0cbd4b89d9. DCA program week 1: bought 0.001406 sh SPY at $760.4899 for $1.07 (CAT's converted share) per dca-program.md standing instruction. Position open. Order 6af49fd3-91a7-4c4b-9102-0a3d03b9b77a.",
+    "evidence": "Graph: outcome:2026-11-11-dca-abbv-fill, outcome:2026-11-11-dca-bac-fill, outcome:2026-11-11-dca-cvx-fill, outcome:2026-11-11-dca-googl-fill, outcome:2026-11-11-dca-spy-fill.",
+    "lesson": "Buys run on the program cadence (dca-program.md). Protection is judged on official closes, never intraday prints."
+  },
+  {
+    "date": "2026-11-11",
+    "tag": "MU",
+    "title": "MU: closed target",
+    "body": "Sold remaining 0.01129 sh at $786.6229, target 2 was $780 (crossed 08:53 CT at $782.21). Realized +$1.07 vs $691.7347 entry on this half; total MU realized +$1.62. Position closed. Order 6af48291-2bd6-43cb-b42b-33b516ebbd71.",
+    "evidence": "Graph: outcome:2026-11-11-mu-exit. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-011 \u2014 see the Record tab for the full entry."
+  },
+  {
+    "date": "2026-11-11",
+    "tag": "QCOM",
+    "title": "QCOM: closed target",
+    "body": "Sold remaining 0.046983 sh at $181.1201, target 2 was $180 (levels watch crossed 11:18 CT at $180.77). Realized +$0.70 vs $166.23 entry on this half; total QCOM realized +$1.16. Position closed. Order 6af4a457-b19d-424e-9188-0814ac008bd7.",
+    "evidence": "Graph: outcome:2026-11-11-qcom-exit. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-007 \u2014 see the Record tab for the full entry."
+  },
+  {
+    "date": "2026-11-10",
+    "tag": "IWM",
+    "title": "IWM: closed stop",
+    "body": "Sold IWM Nov 13 285 call x1 at $0.71 on Milly's word after the $0.70 premium stop was crossed at 08:33 CT. Cost $140.04, proceeds $71.00 less $0.04 fees; realized -$69.08. Position closed. Order 6af33178-546f-453d-999d-d5f8a09a2008.",
+    "evidence": "Graph: outcome:2026-11-10-iwm-call-exit. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-001 \u2014 see the Record tab for the full entry."
+  },
+  {
+    "date": "2026-11-10",
+    "tag": "MU",
+    "title": "MU: partial exit target1",
+    "body": "Trimmed half (0.01129 sh) at $740.3701 after target 1 $740 was passed; MU printed a $745.64 high today. Realized +$0.55 vs $691.7347 entry. Remaining 0.01129 sh rides to target 2 $780, stop $656.39. Order 6af3331f-32fe-4a10-8cd4-ea8c70145710.",
+    "evidence": "Graph: outcome:2026-11-10-mu-trim. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-007 \u2014 see the Record tab for the full entry."
+  },
+  {
+    "date": "2026-11-09",
+    "tag": "QCOM",
+    "title": "QCOM: partial exit target1",
+    "body": "Trimmed half (0.046983 sh) at $176.1201 after target 1 $172 was passed. Realized +$0.46 vs $166.23 entry. Remaining half rides to target 2 $180, stop $156.75. Order 6af1ee53-042d-4b08-b582-3234d1ce4066.",
+    "evidence": "Graph: outcome:2026-11-09-qcom-trim. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-007 \u2014 see the Record tab for the full entry."
+  }
 ];
 var OPENQ = [
-  { q:"DUOL: watchlist slot if it touches $160 with a kill under it, or pipeline only?",
-    a:"The Nov 6 midday package proposes the answer: a slot with a kill, only on a reclaim above $161.27. That is Bobby's read, not Milly's answer. The question stays open until Milly confirms it." },
-  { q:"QCOM: bounce continuation candidate now, or dead after the Nov 5 kill at $152.50?",
-    a:"The Nov 6 package says bounce only, live, with the kill at $152.50. That is Bobby's read, not Milly's answer. The question stays open until Milly confirms it." },
-  { q:"Kospi: should Asia and Korea be a leading indicator each morning, or just context?",
-    a:"Kospi fell 4.8 percent Nov 5 and halted again after 8.55 percent Nov 6. No answer is recorded." },
-  { q:"IREN and neoclouds: track as a group, or only when one earns a slot on its own numbers?",
-    a:"IREN fell with the neoclouds Nov 4. Earnings were due after the close Nov 5, with no outcome recorded. No answer is recorded." }
+  {
+    "q": "This showed up on 2026-11-04 and again later on shared themes ['pipeline_watch']. Do you want it as a watchlist item with a level and a kill, or keep it as intake only?",
+    "a": "First seen 2026-11-04. Shares ['pipeline_watch'] with 4 later items. Recurring tickers: ['DUOL']. No answer is recorded."
+  },
+  {
+    "q": "This showed up on 2026-11-04 and again later on shared themes ['ai_regulation', 'semis_contagion']. Do you want it as a watchlist item with a level and a kill, or keep it as intake only?",
+    "a": "First seen 2026-11-04. Shares ['ai_regulation', 'semis_contagion'] with 8 later items. Recurring tickers: ['IREN']. No answer is recorded."
+  },
+  {
+    "q": "This showed up on 2026-11-04 and again later on shared themes ['earnings_beat', 'pipeline_watch']. Do you want it as a watchlist item with a level and a kill, or keep it as intake only?",
+    "a": "First seen 2026-11-04. Shares ['earnings_beat', 'pipeline_watch'] with 6 later items. Recurring tickers: ['QCOM']. No answer is recorded."
+  },
+  {
+    "q": "This showed up on 2026-11-04 and again later on shared themes ['breadth_rotation']. Do you want it as a watchlist item with a level and a kill, or keep it as intake only?",
+    "a": "First seen 2026-11-04. Shares ['breadth_rotation'] with 4 later items. Recurring tickers: ['QQQ']. No answer is recorded."
+  }
 ];
-
+/* === END NEWSROOM SYNC === */
 /* ---- Newsroom state and chart ---- */
 var nrState = { sym:"MU", range:"3mo", data:null, lastGood:null, failed:false, selIdx:-1, showSma:true };
 function nrSymName(sym){ var f=null; NR_SYMBOLS.forEach(function(s){ if(s.sym===sym) f=s; }); return f; }
@@ -2977,7 +4189,7 @@ function renderInsights(){
 }
 function nrRenderPicker(){
   var p=document.getElementById("nrPicker"); p.innerHTML="";
-  var groups=["Live positions","Conditionals","Watchlist"];
+  var groups=["Conditionals","Watchlist"];
   groups.forEach(function(g){
     var gd=document.createElement("div"); gd.className="nr-group";
     var lab=document.createElement("span"); lab.className="glab"; lab.textContent=g; gd.appendChild(lab);
