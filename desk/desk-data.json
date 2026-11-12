@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-11T15:16:57.009319-06:00",
+ "generated": "2026-11-12T13:22:28.985803-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -20,6 +20,8 @@
  "positions": [
   {
    "symbol": "GOOGL",
+   "name": "Alphabet",
+   "bucket": "dca_core",
    "qty": 0.007323,
    "fill": 293.5821,
    "last": 293.5821,
@@ -33,6 +35,8 @@
   },
   {
    "symbol": "ABBV",
+   "name": "AbbVie",
+   "bucket": "dca_core",
    "qty": 0.007386,
    "fill": 291.0737,
    "last": 291.0737,
@@ -46,6 +50,8 @@
   },
   {
    "symbol": "BAC",
+   "name": "Bank of America",
+   "bucket": "dca_core",
    "qty": 0.042398,
    "fill": 50.7099,
    "last": 50.7099,
@@ -59,6 +65,8 @@
   },
   {
    "symbol": "CVX",
+   "name": "Chevron",
+   "bucket": "dca_core",
    "qty": 0.005039,
    "fill": 212.3045,
    "last": 212.3045,
@@ -72,6 +80,8 @@
   },
   {
    "symbol": "SPY",
+   "name": "SPDR S&P 500 ETF",
+   "bucket": "dca_core",
    "qty": 0.001406,
    "fill": 760.4899,
    "last": 760.4899,
@@ -198,9 +208,136 @@
   "kill": "Position closed Nov 9, 2026 at target. No open gold position.",
   "as_of": "closed Nov 9, 2026: GLD sold at $377.56, realized +$0.20"
  },
+ "buckets": [
+  {
+   "id": "dca_core",
+   "label": "DCA Core",
+   "target_pct": 20,
+   "structure": "20% sleeve of the 60/20/20 structure. Weekly cadence buys under the adopted DCA program."
+  },
+  {
+   "id": "leaps_options",
+   "label": "LEAPS & Options",
+   "target_pct": 20,
+   "structure": "20% sleeve of the 60/20/20 structure. Real options count at cost; paper LEAPS are shown at their marks and never enter the book total."
+  },
+  {
+   "id": "day_trading",
+   "label": "Day Trading",
+   "target_pct": null,
+   "structure": "Intraday slots (L-012). Flat by 3:00 PM CT. An armed slot is not a position until it fills."
+  },
+  {
+   "id": "swing",
+   "label": "Swing",
+   "target_pct": null,
+   "structure": "Package-backed real positions held past the day. Each carries its stop, targets, and kill from its package."
+  },
+  {
+   "id": "cash_reserve",
+   "label": "Cash Reserve",
+   "target_pct": 60,
+   "structure": "60% reserve of the 60/20/20 structure. Verified cash from the last portfolio read."
+  }
+ ],
+ "leaps_paper": [
+  {
+   "symbol": "MU",
+   "name": "Micron Technology",
+   "bucket": "leaps_options",
+   "paper": true,
+   "kind": "leaps_call",
+   "strike": 700.0,
+   "expiry": "2028-01-21",
+   "qty_contracts": 1,
+   "entry_premium": 189.38,
+   "mark_current": 208.8,
+   "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+   "return_pct": 10.3,
+   "stop_premium": 94.69,
+   "target_premium_1": 248.32,
+   "target_premium_2": 378.76,
+   "kill": "MU break below 656.39, or weekly close below 600, or take-or-pay renegotiation headline",
+   "entry_date": "2026-11-07"
+  },
+  {
+   "symbol": "BE",
+   "name": "Bloom Energy",
+   "bucket": "leaps_options",
+   "paper": true,
+   "kind": "leaps_call",
+   "strike": 175.0,
+   "expiry": "2028-01-21",
+   "qty_contracts": 1,
+   "entry_premium": 64.53,
+   "mark_current": 72.25,
+   "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+   "return_pct": 12.0,
+   "stop_premium": 32.27,
+   "target_premium_1": 114.74,
+   "target_premium_2": 129.06,
+   "kill": "BE break below 167.52, or FY2026 guidance cut, or return to quarterly net loss, or Q4 OCF negative again",
+   "entry_date": "2026-11-07"
+  },
+  {
+   "symbol": "MRVL",
+   "name": "Marvell Technology",
+   "bucket": "leaps_options",
+   "paper": true,
+   "kind": "leaps_call",
+   "strike": 140.0,
+   "expiry": "2028-01-21",
+   "qty_contracts": 1,
+   "entry_premium": 43.65,
+   "mark_current": 53.55,
+   "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+   "return_pct": 22.7,
+   "stop_premium": 21.82,
+   "target_premium_1": 74.59,
+   "target_premium_2": 87.3,
+   "kill": "MRVL break below 133.55, or Lumentum deal break, or Q3 FY2027 guide cut",
+   "entry_date": "2026-11-07"
+  },
+  {
+   "symbol": "VST",
+   "name": "Vistra",
+   "bucket": "leaps_options",
+   "paper": true,
+   "kind": "leaps_call",
+   "strike": 125.0,
+   "expiry": "2028-01-21",
+   "qty_contracts": 1,
+   "entry_premium": 30.55,
+   "mark_current": 33.6,
+   "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
+   "return_pct": 10.0,
+   "stop_premium": 15.28,
+   "target_premium_1": 52.66,
+   "target_premium_2": 61.1,
+   "kill": "VST break below 112.89, or FCFbG guide cut, or leverage event",
+   "entry_date": "2026-11-07"
+  }
+ ],
+ "day_trading": [
+  {
+   "symbol": "VST",
+   "name": "Vistra",
+   "bucket": "day_trading",
+   "armed": true,
+   "filled": false,
+   "date": "2026-11-12",
+   "status": "pre-authorized-real",
+   "entry": 136.85,
+   "stop": 133.35,
+   "target": 143.3,
+   "size": 60.0,
+   "kill": "REAL MONEY day trade, pre-authorized by Milly on voice Nov 12 ~13:05 CT ('I'll take that' / 'not paper, real' / auto-purchase on trigger). Buy ~$60 at market on cross+hold above $136.65 day high (entry print >= $136.85), only before 14:15 CT. Pre-worded exits: stop cross below $133.35 = sell all; kill = loss of $131.30 open or break of $130.01 day low = sell all; target $143.30 = sell all; flat by 15:00 CT regardless. Package trade-package-2026-11-12-VST.md. Never converts to a hold (margin test fails at this price; hold passing price $128)."
+  }
+ ],
+ "cash_as_of": "2026-11-11T15:15:00-06:00",
  "quotes_as_of": "static snapshot at fill prices; live prices come from /api/desk-data",
  "record": {
-  "as_of": "2026-11-11",
+  "as_of": "2026-11-12",
   "scoreboard": {
    "exits": 6,
    "wins": 5,
@@ -440,6 +577,20 @@
      "status": "holding",
      "last_checked": "2026-11-11"
     }
+   },
+   {
+    "id": "L-012",
+    "date": "2026-11-12",
+    "title": "Day-trade slots are how we get cheaper money",
+    "status": "in_force",
+    "the_rule": "Day-trade slots are working capital, not decoration. When a slot opens inside its entry zone or crosses its written trigger, Bobby surfaces it immediately as a live decision and presses for Milly's trigger pull in the first minutes. He does not let a qualifying slot ride silently to its target and then call it validation. If Milly pre-authorizes a class of paper slots, Bobby executes that class exactly as written. The point of the slots is to compound small edges and recycle the proceeds into cheaper money for the firm.",
+    "what_happened": "The Nov 12 ANET day-trade slot opened at $192, inside its entry zone, crossed the $193 trigger, and ran to the $206 target, printing $206.20. That was about a 14-point ride, roughly 7.4%. No paper position was opened. Bobby had framed the slot as conditional on a first-30-minute hold and did not press for Milly's trigger pull when the trigger crossed. Bobby first called it a signal that worked. Milly corrected that plainly: they opened at 192, that is a 14-point ride, how is that not a miss? He then named the principle: we absolutely need to take advantage of day trade slots, because that is also how we get cheaper money.",
+    "drift_watch": {
+     "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
+     "relapses_since_lesson": 0,
+     "status": "holding",
+     "last_checked": "2026-11-12"
+    }
    }
   ],
   "drift": {
@@ -550,6 +701,12 @@
     "date": "2026-11-11",
     "index": 73.56,
     "source": "sync_book.py run 2026-11-11: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+   },
+   {
+    "book_value": 302.0,
+    "date": "2026-11-12",
+    "index": 73.56,
+    "source": "sync_book.py run 2026-11-12: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
    }
   ],
   "deposits": [
@@ -579,5 +736,229 @@
    }
   ],
   "method": "Unitized NAV, base 100 at inception. Deposits buy units at the prevailing index level, so contributions never move the index; only trading profit and loss and position marks do. Points are verified snapshots from the firm's record; a date with no verified snapshot is omitted."
+ },
+ "wire": [
+  {
+   "time": "2026-11-12",
+   "headline": "Whole-market scan 2026-11-12: 1137 passed",
+   "verdict": "Universe 11,804 quoted; 1,137 passed (gem 399, deep 374, crash 364). Top of the screen: TSM, META, AMD, XOM, PLTR, UNH, GE, HD.",
+   "refs": [
+    "scan:2026-11-12"
+   ]
+  },
+  {
+   "time": "2026-11-12",
+   "headline": "ABT EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Pharmaceutical Preparations. Latest annual 10-K filed 2026-02-20; latest quarterly 10-Q filed 2026-11-04.",
+   "refs": [
+    "dossier:ABT"
+   ]
+  },
+  {
+   "time": "2026-11-12",
+   "headline": "APH EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Electronic Connectors. Latest annual 10-K filed 2026-02-11; latest quarterly 10-Q filed 2026-10-30.",
+   "refs": [
+    "dossier:APH"
+   ]
+  },
+  {
+   "time": "2026-11-12",
+   "headline": "AXP EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Finance Services. Latest annual 10-K filed 2026-02-06; latest quarterly 10-Q filed 2026-10-23.",
+   "refs": [
+    "dossier:AXP"
+   ]
+  },
+  {
+   "time": "2026-11-11",
+   "headline": "Whole-market scan 2026-11-11: 1152 passed",
+   "verdict": "Universe 11,805 quoted; 1,152 passed (gem 401, deep 389, crash 362). Top of the screen: TSM, META, XOM, CVX, UNH, GE, HD, HSBC.",
+   "refs": [
+    "scan:2026-11-11"
+   ]
+  },
+  {
+   "time": "2026-11-11",
+   "headline": "Sold remaining 0.01129 sh at $786.6229, target 2 was $780 (crossed 08:53 CT at $782.21). Realized +$1.07 vs $691.7347 entry on this half; total MU realized +$1.62. Position closed. Order 6af48291-2bd6-43cb-b42b-33b516ebbd71.",
+   "verdict": "Result: closed_target (real_fill, feed robinhood_mcp).",
+   "refs": [
+    "outcome:2026-11-11-mu-exit"
+   ]
+  },
+  {
+   "time": "2026-11-11",
+   "headline": "Sold remaining 0.046983 sh at $181.1201, target 2 was $180 (levels watch crossed 11:18 CT at $180.77). Realized +$0.70 vs $166.23 entry on this half; total QCOM realized +$1.16. Position closed. Order 6af4a457-b19d-424e-9188-0814ac008bd7.",
+   "verdict": "Result: closed_target (real_fill, feed robinhood_mcp).",
+   "refs": [
+    "outcome:2026-11-11-qcom-exit"
+   ]
+  },
+  {
+   "time": "2026-11-11",
+   "headline": "DCA program week 1: bought 0.007323 sh GOOGL at $293.5821 for $2.15 per dca-program.md standing instruction. Position open. Order 6af49fbd-f7f1-4dde-8f09-9c0cbd4b89d9.",
+   "verdict": "Result: filled_open (real_fill, feed robinhood_mcp).",
+   "refs": [
+    "outcome:2026-11-11-dca-googl-fill"
+   ]
+  },
+  {
+   "time": "2026-11-10",
+   "headline": "Whole-market scan 2026-11-10: 1170 passed",
+   "verdict": "Universe 11,805 quoted; 1,170 passed (gem 417, deep 394, crash 359). Top of the screen: TSM, META, XOM, CVX, UNH, HD, GE, HSBC.",
+   "refs": [
+    "scan:2026-11-10"
+   ]
+  },
+  {
+   "time": "2026-11-06",
+   "headline": "October nonfarm payrolls +165k vs ~65k consensus, unemployment 4.1% vs 4.2%, wages +0.4% MoM",
+   "verdict": "On the record: Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS.",
+   "refs": [
+    "theme:jobs_hot",
+    "theme:rates_hawkish",
+    "news:2026-11-06-payrolls-hot"
+   ]
+  }
+ ],
+ "brief": {
+  "slots": [
+   {
+    "slot": 1,
+    "symbol": "NVDA",
+    "call": "none_real / hold paper put, disarm-recommended",
+    "note": "none_real / hold paper put \u00b7 entry None \u00b7 target 164.32 \u00b7 stop 156.0. RECOMMEND DISARM of armed package pkg-2026-11-10-nvda ($31, both tranches) pending Milly's word: Reuters/WSJ Nov 11-12 report the board is preparing to oust CEO Jensen Huang after two extramarital affairs, incl. one with a suspected Chin..."
+   },
+   {
+    "slot": 2,
+    "symbol": "ANET",
+    "call": "long, conditional",
+    "note": "long \u00b7 entry 193.0 \u00b7 target 206.0 \u00b7 stop 187.88. No trade if ANET loses $192.35 (50-day) in the first 30 min or closes below $187.88. Trigger C standing authorization NOT complete: Nov 11 had no dip into 181-188 (low $193.88), so no auto-buy. Day trade only today; package Trigger A/B u..."
+   },
+   {
+    "slot": 3,
+    "symbol": "MU",
+    "call": "long, conditional",
+    "note": "long \u00b7 entry 763.0 \u00b7 target 811.0 \u00b7 stop 745.0. Exit under $745 intraday; no entry if MU cannot hold $763.05 (Nov 11 low) after the open. Day trade only, bounce only (no full check verdict for MU; never a hold). Paper LEAPS MU Jan28 700C HOLD: stop premium $94.69, kill weekly close be..."
+   },
+   {
+    "slot": 4,
+    "symbol": "BTC",
+    "call": "short, conditional",
+    "note": "short \u00b7 entry 73500 \u00b7 target 70500 \u00b7 stop 74900. Exit above $74,900; kill on a daily close above $75,877 (short-term holder cost basis). Paper spot only; MSCI removes Strategy (MSTR) from indexes after Nov 30 close is the fundamental headwind."
+   },
+   {
+    "slot": 5,
+    "symbol": "GOLD",
+    "call": "short, conditional",
+    "note": "short \u00b7 entry 3965 \u00b7 target 3880 \u00b7 stop 4040. Exit on a reclaim and hold above $4,040 (21-day avg zone). Spot paper only. Driver: 10Y at 4.99%, DXY ~102.9 (highest since Apr 2025), Dec hike priced ~91% for +25bp after hot Oct CPI."
+   },
+   {
+    "slot": 6,
+    "symbol": "VST",
+    "call": "long, pre-authorized-real",
+    "note": "long \u00b7 entry 136.85 \u00b7 target 143.3 \u00b7 stop 133.35. REAL MONEY day trade, pre-authorized by Milly on voice Nov 12 ~13:05 CT ('I'll take that' / 'not paper, real' / auto-purchase on trigger). Buy ~$60 at market on cross+hold above $136.65 day high (entry print >= $136.85), only before 14:1..."
+   }
+  ],
+  "meta": {
+   "date": "2026-11-12",
+   "overall": "OpOne daily brief Thu Nov 12, 2026 (06:00 CT), written before the 08:30 CT open per L-004. NVDA board/ouster reports (WSJ via Reuters) are the day's driver; CSCO + AMAT report after the close; jobless claims 07:30 CT; PPI Friday."
+  }
+ },
+ "graph": {
+  "generated": "2026-11-12",
+  "nodes": 186,
+  "edges": 153,
+  "live_patterns": 0,
+  "pattern_candidates": 6,
+  "connector_candidates": 16,
+  "subset_nodes": 43,
+  "subset_edges": 30
+ },
+ "newsroom": {
+  "insights": [
+   {
+    "date": "2026-11-12",
+    "tag": "Scan",
+    "title": "Whole-market scan 2026-11-12: 1137 passed",
+    "body": "Universe 11,804 quoted. 1,137 passed the full screen: gem zone 399, deep 374, crash 364. Top of the screen: TSM, META, AMD, XOM, PLTR, UNH, GE, HD, HSBC, MS.",
+    "evidence": "Graph: scan:2026-11-12. Source: market_scan.py, scans/scan-2026-11-12.csv (feed: yahoo_quote).",
+    "lesson": "The scan is the whole market (L-002). Finalists come from the merged pool, never the watchlist alone."
+   },
+   {
+    "date": "2026-11-12",
+    "tag": "Dossiers",
+    "title": "25 EDGAR dossiers on file; 10 refreshed 2026-11-12",
+    "body": "Newest dossiers: ABT, APH, AXP, BHP, C, GS, MCD, PEP, PLTR, SHOP. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
+    "evidence": "Graph: dossier nodes dated 2026-11-12.",
+    "lesson": "A dossier is not a check. The full process (management, employees, cash, worth) still runs before any package."
+   },
+   {
+    "date": "2026-11-11",
+    "tag": "DCA core",
+    "title": "DCA core week 1 filled: five names under the adopted program",
+    "body": "DCA program week 1: bought 0.007386 sh ABBV at $291.0737 for $2.15 per dca-program.md standing instruction. Position open. Order 6af49fc2-9e0e-4103-8a46-aba7c6c8383a. DCA program week 1: bought 0.042398 sh BAC at $50.7099 for $2.15 per dca-program.md standing instruction. Position open. Order 6af49fc7-de1e-4eb1-b29b-8787290bbd0e. DCA program week 1: bought 0.005039 sh CVX at $212.3045 for $1.07 (half weight) per dca-program.md standing instruction. Position open. Order 6af49fcc-0351-44d3-b43a-e257885b14a1. DCA program week 1: bought 0.007323 sh GOOGL at $293.5821 for $2.15 per dca-program.md standing instruction. Position open. Order 6af49fbd-f7f1-4dde-8f09-9c0cbd4b89d9. DCA program week 1: bought 0.001406 sh SPY at $760.4899 for $1.07 (CAT's converted share) per dca-program.md standing instruction. Position open. Order 6af49fd3-91a7-4c4b-9102-0a3d03b9b77a.",
+    "evidence": "Graph: outcome:2026-11-11-dca-abbv-fill, outcome:2026-11-11-dca-bac-fill, outcome:2026-11-11-dca-cvx-fill, outcome:2026-11-11-dca-googl-fill, outcome:2026-11-11-dca-spy-fill.",
+    "lesson": "Buys run on the program cadence (dca-program.md). Protection is judged on official closes, never intraday prints."
+   },
+   {
+    "date": "2026-11-11",
+    "tag": "MU",
+    "title": "MU: closed target",
+    "body": "Sold remaining 0.01129 sh at $786.6229, target 2 was $780 (crossed 08:53 CT at $782.21). Realized +$1.07 vs $691.7347 entry on this half; total MU realized +$1.62. Position closed. Order 6af48291-2bd6-43cb-b42b-33b516ebbd71.",
+    "evidence": "Graph: outcome:2026-11-11-mu-exit. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-011 \u2014 see the Record tab for the full entry."
+   },
+   {
+    "date": "2026-11-11",
+    "tag": "QCOM",
+    "title": "QCOM: closed target",
+    "body": "Sold remaining 0.046983 sh at $181.1201, target 2 was $180 (levels watch crossed 11:18 CT at $180.77). Realized +$0.70 vs $166.23 entry on this half; total QCOM realized +$1.16. Position closed. Order 6af4a457-b19d-424e-9188-0814ac008bd7.",
+    "evidence": "Graph: outcome:2026-11-11-qcom-exit. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-007 \u2014 see the Record tab for the full entry."
+   },
+   {
+    "date": "2026-11-10",
+    "tag": "IWM",
+    "title": "IWM: closed stop",
+    "body": "Sold IWM Nov 13 285 call x1 at $0.71 on Milly's word after the $0.70 premium stop was crossed at 08:33 CT. Cost $140.04, proceeds $71.00 less $0.04 fees; realized -$69.08. Position closed. Order 6af33178-546f-453d-999d-d5f8a09a2008.",
+    "evidence": "Graph: outcome:2026-11-10-iwm-call-exit. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-001 \u2014 see the Record tab for the full entry."
+   },
+   {
+    "date": "2026-11-10",
+    "tag": "MU",
+    "title": "MU: partial exit target1",
+    "body": "Trimmed half (0.01129 sh) at $740.3701 after target 1 $740 was passed; MU printed a $745.64 high today. Realized +$0.55 vs $691.7347 entry. Remaining 0.01129 sh rides to target 2 $780, stop $656.39. Order 6af3331f-32fe-4a10-8cd4-ea8c70145710.",
+    "evidence": "Graph: outcome:2026-11-10-mu-trim. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-007 \u2014 see the Record tab for the full entry."
+   },
+   {
+    "date": "2026-11-09",
+    "tag": "QCOM",
+    "title": "QCOM: partial exit target1",
+    "body": "Trimmed half (0.046983 sh) at $176.1201 after target 1 $172 was passed. Realized +$0.46 vs $166.23 entry. Remaining half rides to target 2 $180, stop $156.75. Order 6af1ee53-042d-4b08-b582-3234d1ce4066.",
+    "evidence": "Graph: outcome:2026-11-09-qcom-trim. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-007 \u2014 see the Record tab for the full entry."
+   }
+  ],
+  "openq": [
+   {
+    "q": "This showed up on 2026-11-04 and again later on shared themes ['pipeline_watch']. Do you want it as a watchlist item with a level and a kill, or keep it as intake only?",
+    "a": "First seen 2026-11-04. Shares ['pipeline_watch'] with 4 later items. Recurring tickers: ['DUOL']. No answer is recorded."
+   },
+   {
+    "q": "This showed up on 2026-11-04 and again later on shared themes ['ai_regulation', 'semis_contagion']. Do you want it as a watchlist item with a level and a kill, or keep it as intake only?",
+    "a": "First seen 2026-11-04. Shares ['ai_regulation', 'semis_contagion'] with 8 later items. Recurring tickers: ['IREN']. No answer is recorded."
+   },
+   {
+    "q": "This showed up on 2026-11-04 and again later on shared themes ['earnings_beat', 'pipeline_watch']. Do you want it as a watchlist item with a level and a kill, or keep it as intake only?",
+    "a": "First seen 2026-11-04. Shares ['earnings_beat', 'pipeline_watch'] with 6 later items. Recurring tickers: ['QCOM']. No answer is recorded."
+   },
+   {
+    "q": "This showed up on 2026-11-04 and again later on shared themes ['breadth_rotation']. Do you want it as a watchlist item with a level and a kill, or keep it as intake only?",
+    "a": "First seen 2026-11-04. Shares ['breadth_rotation'] with 4 later items. Recurring tickers: ['QQQ']. No answer is recorded."
+   }
+  ]
  }
 }
