@@ -1,0 +1,3940 @@
+{
+ "symbol": "QQQ",
+ "company": "Invesco QQQ Trust",
+ "as_of": "2026-11-13T15:31:03.130513+00:00",
+ "source": "Yahoo Finance v8 chart, 1y daily candles",
+ "bars": 252,
+ "price": {
+  "last": 674.57,
+  "prev_close": 688.17,
+  "change_pct": -1.98,
+  "fifty_two_week_high": 762.86,
+  "fifty_two_week_low": 555.6,
+  "pct_from_52w_high": -11.6,
+  "last_bar_date": "2026-11-13"
+ },
+ "verdict": {
+  "trend": "bearish",
+  "one_line": "Bearish trend. Last close $674.57, -11.6 percent from the 52-week high $762.86."
+ },
+ "sections": {
+  "trend": {
+   "title": "Trend",
+   "findings": [
+    {
+     "name": "Trend verdict",
+     "status": "confirmed",
+     "direction": "bearish",
+     "definition": "The trend is the dominant direction of price over months, read from swing highs and lows, the slope of the lines through them, and where price sits against its long averages. Bullish means higher highs and higher lows. Bearish means lower highs and lower lows. Range-bound means neither side is winning.",
+     "meaning": "The trend verdict is bearish. Swing structure is lower highs and lower lows (0 higher highs, 0 higher lows, 2 lower highs, 2 lower lows across the last 6 swings). The two trend lines form a diverging lines (expanding, broadening shape). Price $674.57 sits below its 50-day average and below its 200-day average.",
+     "confirms": "The verdict strengthens if price breaks the last swing point in the trend direction and holds it on a close.",
+     "invalidates": "A close through the last swing point against the trend, held for two sessions, ends this verdict and the structure gets re-read.",
+     "evidence": {
+      "structure": "lower highs and lower lows",
+      "channel": "diverging lines (expanding, broadening shape)",
+      "resistance_line": {
+       "slope_per_bar": -0.362,
+       "a": {
+        "i": 234,
+        "t": 1792589400,
+        "p": 727.95
+       },
+       "b": {
+        "i": 239,
+        "t": 1793194200,
+        "p": 726.14
+       },
+       "from_date": "2026-10-21",
+       "to_date": "2026-10-28"
+      },
+      "support_line": {
+       "slope_per_bar": -6.0122,
+       "a": {
+        "i": 236,
+        "t": 1792762200,
+        "p": 701.16
+       },
+       "b": {
+        "i": 245,
+        "t": 1793889000,
+        "p": 647.05
+       },
+       "from_date": "2026-10-23",
+       "to_date": "2026-11-05"
+      },
+      "swing_supports": [
+       661.14,
+       647.05,
+       610.15
+      ],
+      "swing_resistances": [
+       721.89,
+       722.03,
+       724.13
+      ],
+      "traffic_support_shelves": [
+       {
+        "level": 671.87,
+        "days": 9,
+        "side": "support"
+       },
+       {
+        "level": 668.41,
+        "days": 8,
+        "side": "support"
+       },
+       {
+        "level": 661.5,
+        "days": 8,
+        "side": "support"
+       }
+      ],
+      "traffic_resistance_shelves": [
+       {
+        "level": 675.32,
+        "days": 10,
+        "side": "resistance"
+       },
+       {
+        "level": 678.78,
+        "days": 12,
+        "side": "resistance"
+       },
+       {
+        "level": 682.23,
+        "days": 14,
+        "side": "resistance"
+       }
+      ],
+      "score": -5
+     }
+    }
+   ]
+  },
+  "moving_averages": {
+   "title": "Moving averages",
+   "findings": [
+    {
+     "name": "Moving average stack",
+     "status": "forming",
+     "direction": "neutral",
+     "definition": "Moving averages smooth price over a set number of days. When the short averages sit above the long ones in order, buyers have been in control at every horizon. The reverse stack means sellers have.",
+     "meaning": "The averages are not in a clean stack, so the timeframes disagree. Price is below the 50-day, below the 200-day.",
+     "confirms": "The stack holding while price rides the shortest average confirms it.",
+     "invalidates": "Averages crossing out of order ends the stack read.",
+     "evidence": {
+      "sma": {
+       "10": {
+        "value": 676.87,
+        "slope_per_day": -3.153,
+        "price_vs": "below"
+       },
+       "20": {
+        "value": 695.18,
+        "slope_per_day": -2.491,
+        "price_vs": "below"
+       },
+       "50": {
+        "value": 717.76,
+        "slope_per_day": -0.642,
+        "price_vs": "below"
+       },
+       "100": {
+        "value": 714.4,
+        "slope_per_day": -0.436,
+        "price_vs": "below"
+       },
+       "200": {
+        "value": 682.21,
+        "slope_per_day": 0.265,
+        "price_vs": "below"
+       }
+      },
+      "price": 674.57
+     }
+    },
+    {
+     "name": "Golden cross (SMA 50 over SMA 200)",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "A cross of the 50-day average through the 200-day average. It marks the moment the medium trend overtook the long trend. It is a slow signal: it confirms a turn more often than it starts one.",
+     "meaning": "No such cross in the last year of data. The 50-day is at $717.76 and the 200-day at $682.21",
+     "confirms": "The 50-day crossing the 200-day is the event itself.",
+     "invalidates": "Nothing to invalidate: the event has not happened.",
+     "evidence": {
+      "sma50": 717.76,
+      "sma200": 682.21
+     }
+    },
+    {
+     "name": "Death cross (SMA 50 under SMA 200)",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "A cross of the 50-day average through the 200-day average. It marks the moment the medium trend overtook the long trend. It is a slow signal: it confirms a turn more often than it starts one.",
+     "meaning": "No such cross in the last year of data. The 50-day is at $717.76 and the 200-day at $682.21",
+     "confirms": "The 50-day crossing the 200-day is the event itself.",
+     "invalidates": "Nothing to invalidate: the event has not happened.",
+     "evidence": {
+      "sma50": 717.76,
+      "sma200": 682.21
+     }
+    }
+   ]
+  },
+  "indicators": {
+   "title": "Indicators",
+   "findings": [
+    {
+     "name": "RSI 14",
+     "status": "confirmed",
+     "direction": "neutral",
+     "definition": "The Relative Strength Index measures the speed of recent gains against recent losses, on a 0 to 100 scale. Above 70 is called overbought, below 30 oversold. It describes momentum, not value.",
+     "meaning": "RSI is 41.3, neutral. Divergence check against the last two swing lows: none.",
+     "confirms": "For a reversal read, RSI crossing back through 30 from below, or a divergence that price then confirms with a higher low.",
+     "invalidates": "RSI staying pinned at an extreme while price trends through it: in a strong trend, extremes can persist and the mean-reversion read fails.",
+     "evidence": {
+      "rsi": 41.3,
+      "state": "neutral",
+      "divergence": "none"
+     }
+    },
+    {
+     "name": "MACD 12, 26, 9",
+     "status": "forming",
+     "direction": "bearish",
+     "definition": "MACD compares two exponential averages of price. The MACD line crossing its signal line marks momentum changing hands. The histogram is the gap between them: widening means the move is accelerating, narrowing means it is tiring.",
+     "meaning": "MACD is -13.34, signal -12.91, histogram -0.43 and narrowing. No cross in the last 10 sessions.",
+     "confirms": "A fresh cross in the trend direction, with the histogram expanding.",
+     "invalidates": "A cross back the other way, or the histogram flipping sign.",
+     "evidence": {
+      "macd": -13.34,
+      "signal": -12.91,
+      "histogram": -0.43,
+      "last_cross": null
+     }
+    },
+    {
+     "name": "Bollinger Bands 20, 2",
+     "status": "confirmed",
+     "direction": "neutral",
+     "definition": "Bollinger Bands wrap price in a channel two standard deviations wide around its 20-day average. Percent B says where price sits inside that channel: 1 is the top band, 0 the bottom, outside either means price is walking the band in a strong trend. Bandwidth measures volatility: a squeeze, bandwidth at its lowest quarter of the year, often precedes a large move.",
+     "meaning": "Price is inside the bands: upper $739.35, middle $695.18, lower $651.02, percent B 0.27, bandwidth 12.7 percent. Squeeze: no.",
+     "confirms": "A band walk that keeps closing outside the band confirms trend strength. A squeeze confirms when price breaks the range it built.",
+     "invalidates": "Two closes back inside the band end a band walk read.",
+     "evidence": {
+      "upper": 739.35,
+      "mid": 695.18,
+      "lower": 651.02,
+      "pct_b": 0.27,
+      "bandwidth_pct": 12.7,
+      "squeeze": false
+     }
+    },
+    {
+     "name": "Stochastic 14, 3",
+     "status": "forming",
+     "direction": "neutral",
+     "definition": "The stochastic oscillator places today's close inside the last 14 days' range. Percent K is the fast line, percent D its average. Crosses under 20 are read as momentum turning up from washed-out; crosses over 80 as momentum turning down from stretched.",
+     "meaning": "Percent K is 47.2, percent D 45.9. No cross in the last 5 sessions.",
+     "confirms": "The cross itself is the confirmation; price then has to take out the prior day's high to follow through.",
+     "invalidates": "Percent K falling back under percent D after a bullish cross kills it.",
+     "evidence": {
+      "pct_k": 47.2,
+      "pct_d": 45.9,
+      "cross": null
+     }
+    }
+   ]
+  },
+  "candlesticks": {
+   "title": "Candlesticks and gaps",
+   "findings": [
+    {
+     "name": "Hammer",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "One candle with a small body at the top and a long lower tail, at least twice the body, after a decline. Sellers pushed price down and buyers took it back before the close.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
+     "evidence": {
+      "window": "last 10 sessions"
+     }
+    },
+    {
+     "name": "Inverted hammer",
+     "status": "confirmed",
+     "direction": "bullish",
+     "definition": "One candle with a small body at the bottom and a long upper tail, after a decline. Buyers probed up and could not hold it; it only matters if the next day confirms.",
+     "meaning": "Printed on 2026-11-03, 8 session(s) ago, on a candle that ran $683.18 to $688.69 and closed at $685.28.",
+     "confirms": "The next session trading in the pattern's direction, through the pattern candle's extreme, confirms it.",
+     "invalidates": "A close back through the pattern candle's other extreme kills it.",
+     "evidence": {
+      "date": "2026-11-03",
+      "sessions_ago": 8,
+      "open": 684.39,
+      "high": 688.69,
+      "low": 683.18,
+      "close": 685.28
+     }
+    },
+    {
+     "name": "Shooting star",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "One candle with a small body at the bottom and a long upper tail, after a rise. Buyers pushed price up and sellers took it back before the close.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
+     "evidence": {
+      "window": "last 10 sessions"
+     }
+    },
+    {
+     "name": "Hanging man",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "One candle with a small body at the top and a long lower tail, after a rise. It looks like a hammer but sits at a high, where it warns instead of promising.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
+     "evidence": {
+      "window": "last 10 sessions"
+     }
+    },
+    {
+     "name": "Bullish engulfing",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "A green candle whose body fully covers the prior red candle's body. Buyers took back in one day everything sellers won the day before.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
+     "evidence": {
+      "window": "last 10 sessions"
+     }
+    },
+    {
+     "name": "Bearish engulfing",
+     "status": "confirmed",
+     "direction": "bearish",
+     "definition": "A red candle whose body fully covers the prior green candle's body. Sellers took back in one day everything buyers won the day before.",
+     "meaning": "Printed on 2026-11-13, 0 session(s) ago, on a candle that ran $672.30 to $688.75 and closed at $674.57.",
+     "confirms": "The next session trading in the pattern's direction, through the pattern candle's extreme, confirms it.",
+     "invalidates": "A close back through the pattern candle's other extreme kills it.",
+     "evidence": {
+      "date": "2026-11-13",
+      "sessions_ago": 0,
+      "open": 688.51,
+      "high": 688.75,
+      "low": 672.3007,
+      "close": 674.57
+     }
+    },
+    {
+     "name": "Doji",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "A candle where open and close are nearly the same. Neither side won the day. At an extreme it marks indecision that can precede a turn.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
+     "evidence": {
+      "window": "last 10 sessions"
+     }
+    },
+    {
+     "name": "Bullish marubozu",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "A long green candle with almost no tails. Buyers controlled the whole session, open to close.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
+     "evidence": {
+      "window": "last 10 sessions"
+     }
+    },
+    {
+     "name": "Bearish marubozu",
+     "status": "confirmed",
+     "direction": "bearish",
+     "definition": "A long red candle with almost no tails. Sellers controlled the whole session, open to close.",
+     "meaning": "Printed on 2026-11-05, 6 session(s) ago, on a candle that ran $647.05 to $683.65 and closed at $647.05.",
+     "confirms": "The next session trading in the pattern's direction, through the pattern candle's extreme, confirms it.",
+     "invalidates": "A close back through the pattern candle's other extreme kills it.",
+     "evidence": {
+      "date": "2026-11-05",
+      "sessions_ago": 6,
+      "open": 683.12,
+      "high": 683.65,
+      "low": 647.05,
+      "close": 647.05
+     }
+    },
+    {
+     "name": "Morning star",
+     "status": "confirmed",
+     "direction": "bullish",
+     "definition": "Three candles: a long red one, a small indecision candle that gaps or holds low, then a long green one closing past the midpoint of the first. A bottoming shape.",
+     "meaning": "Printed on 2026-11-09, 4 session(s) ago, on a candle that ran $662.02 to $682.48 and closed at $679.35.",
+     "confirms": "The next session trading in the pattern's direction, through the pattern candle's extreme, confirms it.",
+     "invalidates": "A close back through the pattern candle's other extreme kills it.",
+     "evidence": {
+      "date": "2026-11-09",
+      "sessions_ago": 4,
+      "open": 662.64,
+      "high": 682.48,
+      "low": 662.02,
+      "close": 679.35
+     }
+    },
+    {
+     "name": "Evening star",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "Three candles: a long green one, a small indecision candle at the top, then a long red one closing past the midpoint of the first. A topping shape.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
+     "evidence": {
+      "window": "last 10 sessions"
+     }
+    },
+    {
+     "name": "Three white soldiers",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "Three long green candles in a row, each closing higher and opening inside the prior body. Sustained buying, day after day.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
+     "evidence": {
+      "window": "last 10 sessions"
+     }
+    },
+    {
+     "name": "Three black crows",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "Three long red candles in a row, each closing lower and opening inside the prior body. Sustained selling, day after day.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
+     "evidence": {
+      "window": "last 10 sessions"
+     }
+    },
+    {
+     "name": "Gap down on 2026-10-22",
+     "status": "confirmed",
+     "direction": "bearish",
+     "definition": "A gap is a jump between one day's close and the next day's range, leaving empty price space. Breakaway gaps leave a base, runaway gaps sit mid-move, exhaustion gaps print at the end of a move and stall. An unfilled gap is open price space price often revisits.",
+     "meaning": "On 2026-10-22 the stock gapped down: the gap zone is $715.43 to $719.71. Class: breakaway (it left a flat base). It is filled.",
+     "confirms": "An unfilled gap in the trend direction that price refuses to revisit confirms the move's urgency.",
+     "invalidates": "A filled gap loses its information; the zone becomes ordinary price.",
+     "evidence": {
+      "date": "2026-10-22",
+      "zone_low": 715.43,
+      "zone_high": 719.71,
+      "filled": true,
+      "class": "breakaway (it left a flat base)"
+     }
+    },
+    {
+     "name": "Gap down on 2026-10-30",
+     "status": "confirmed",
+     "direction": "bearish",
+     "definition": "A gap is a jump between one day's close and the next day's range, leaving empty price space. Breakaway gaps leave a base, runaway gaps sit mid-move, exhaustion gaps print at the end of a move and stall. An unfilled gap is open price space price often revisits.",
+     "meaning": "On 2026-10-30 the stock gapped down: the gap zone is $698.63 to $711.62. Class: breakaway (it left a flat base). It is still open.",
+     "confirms": "An unfilled gap in the trend direction that price refuses to revisit confirms the move's urgency.",
+     "invalidates": "A filled gap loses its information; the zone becomes ordinary price.",
+     "evidence": {
+      "date": "2026-10-30",
+      "zone_low": 698.63,
+      "zone_high": 711.62,
+      "filled": false,
+      "class": "breakaway (it left a flat base)"
+     }
+    },
+    {
+     "name": "Gap down on 2026-11-05",
+     "status": "confirmed",
+     "direction": "bearish",
+     "definition": "A gap is a jump between one day's close and the next day's range, leaving empty price space. Breakaway gaps leave a base, runaway gaps sit mid-move, exhaustion gaps print at the end of a move and stall. An unfilled gap is open price space price often revisits.",
+     "meaning": "On 2026-11-05 the stock gapped down: the gap zone is $683.65 to $687.87. Class: breakaway (it left a flat base). It is filled.",
+     "confirms": "An unfilled gap in the trend direction that price refuses to revisit confirms the move's urgency.",
+     "invalidates": "A filled gap loses its information; the zone becomes ordinary price.",
+     "evidence": {
+      "date": "2026-11-05",
+      "zone_low": 683.65,
+      "zone_high": 687.87,
+      "filled": true,
+      "class": "breakaway (it left a flat base)"
+     }
+    }
+   ]
+  },
+  "volume": {
+   "title": "Volume",
+   "findings": [
+    {
+     "name": "Climax volume day",
+     "status": "confirmed",
+     "direction": "bearish",
+     "definition": "A climax day trades at least twice the normal volume. It marks a crowd event: capitulation at a low or blow-off at a high. One climax day does not end a move, but it says the move just spent real energy.",
+     "meaning": "Climax days in the last 10 sessions: 2026-11-05 at 2.6x average on a down day.",
+     "confirms": "A climax at a low that price then holds, with a higher low after it, is the classic capitulation sequence.",
+     "invalidates": "Price slicing through the climax day's low on ordinary volume makes the climax just another down day.",
+     "evidence": {
+      "avg20_volume": 50564715,
+      "last_volume": 12236180,
+      "last_ratio": 0.24,
+      "climax_days": [
+       {
+        "date": "2026-11-05",
+        "ratio": 2.58,
+        "day": "down"
+       }
+      ]
+     }
+    },
+    {
+     "name": "Distribution signature",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "Distribution is institutions selling into strength over weeks: down days carry clearly more volume than up days.",
+     "meaning": "Down days carry 52 percent of the last 20 sessions' volume, inside the neutral band. Neither side owns the tape.",
+     "confirms": "Down-day share rising past 58 percent would start it.",
+     "invalidates": "Nothing to invalidate: the signature is not present.",
+     "evidence": {
+      "down_volume_share_pct": 51.6,
+      "window": "20 sessions"
+     }
+    },
+    {
+     "name": "Accumulation signature",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "Accumulation is institutions buying patiently over weeks: up days carry clearly more volume than down days, often while price still looks quiet.",
+     "meaning": "No accumulation signature: up-day volume share is inside the neutral band.",
+     "confirms": "Up-day volume share holding above 58 percent while price bases.",
+     "invalidates": "Down-day volume taking over ends it.",
+     "evidence": {
+      "up_volume_share_pct": 48.4,
+      "window": "20 sessions"
+     }
+    }
+   ]
+  },
+  "dow_theory": {
+   "title": "Dow Theory",
+   "findings": [
+    {
+     "name": "Dow Theory read",
+     "status": "forming",
+     "direction": "bearish",
+     "definition": "Dow Theory, the oldest trend framework: a primary trend is a sequence of higher highs and higher lows (up) or lower highs and lower lows (down). It is confirmed when price closes beyond the last swing point in the trend direction, and volume should expand in the direction of the primary trend. Secondary reactions against it are noise until they break the sequence.",
+     "meaning": "Primary trend: down (lower highs and lower lows). Confirmation event: none. Volume confirmation: yes, volume expands in the primary direction.",
+     "confirms": "Each new swing extending the sequence, on expanding volume, confirms it.",
+     "invalidates": "A close beyond the last swing point against the primary trend, followed by a failed retest, ends the Dow read.",
+     "evidence": {
+      "primary_trend": "down (lower highs and lower lows)",
+      "confirmation": "none",
+      "volume_confirms": true,
+      "last_swing_high": 726.14,
+      "last_swing_low": 647.05
+     }
+    }
+   ]
+  },
+  "elliott_wave": {
+   "title": "Elliott Wave (interpretation)",
+   "findings": [
+    {
+     "name": "Elliott Wave count",
+     "status": "forming",
+     "direction": "bullish",
+     "definition": "Elliott Wave theory says moves unfold in counted waves: five in the trend direction (the impulse), three against it (the correction, labeled A, B, C). The C leg often measures a Fibonacci extension of the A leg. It is an interpretation framework, never a fact: the same swings can carry more than one honest count.",
+     "meaning": "INTERPRETATION, not fact: the five swings from 2026-07-29 can be counted as an impulse up: 2026-07-29 $661.14, 2026-08-17 $734.58, 2026-09-16 $700.00, 2026-10-06 $762.86, 2026-11-05 $647.05. If the count is right, that directional move is a complete or nearly complete impulse and a three-wave correction follows or is underway.",
+     "confirms": "A three-wave correction after this impulse, turning at a Fibonacci extension, supports the count.",
+     "invalidates": "A close back through the wave 4 point at $762.86 breaks this count.",
+     "evidence": {
+      "count": "impulse up",
+      "label": "interpretation",
+      "points": [
+       {
+        "date": "2026-07-29",
+        "p": 661.14,
+        "kind": "L"
+       },
+       {
+        "date": "2026-08-17",
+        "p": 734.58,
+        "kind": "H"
+       },
+       {
+        "date": "2026-09-16",
+        "p": 700.0,
+        "kind": "L"
+       },
+       {
+        "date": "2026-10-06",
+        "p": 762.86,
+        "kind": "H"
+       },
+       {
+        "date": "2026-11-05",
+        "p": 647.05,
+        "kind": "L"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "fibonacci": {
+   "title": "Fibonacci",
+   "findings": [
+    {
+     "name": "Fibonacci retracement of the major advance",
+     "status": "confirmed",
+     "direction": "neutral",
+     "definition": "Fibonacci retracement divides a completed move by fixed ratios (23.6, 38.2, 50, 61.8, 78.6 percent) to map where a pullback often pauses. It is a level map, not a signal: the levels matter because many traders watch the same ones, and because they land on real shelves.",
+     "meaning": "Measured from the low $555.60 on 2026-03-30 to the high $762.86 on 2026-10-06. Price at $674.57 has retraced 42.6 percent of the advance. Levels price has touched and reacted at: 0.236 ($713.95, 2026-10-15), 0.382 ($683.69, 2026-10-30), 0.5 ($659.23, 2026-11-09). Confluences: 0.382 at $683.69 meets the shelf near $678.78; 0.382 at $683.69 meets the shelf near $682.23; 0.5 at $659.23 meets the shelf near $661.50.",
+     "confirms": "A level confirms itself when price touches it and reverses with a candle or volume signature.",
+     "invalidates": "A level that price closes through twice stops being a level on this map and the next one down takes over.",
+     "evidence": {
+      "from_low": 555.6,
+      "from_low_date": "2026-03-30",
+      "to_high": 762.86,
+      "to_high_date": "2026-10-06",
+      "levels": {
+       "0.236": 713.95,
+       "0.382": 683.69,
+       "0.5": 659.23,
+       "0.618": 634.77,
+       "0.786": 599.95
+      },
+      "reacted": [
+       {
+        "ratio": "0.236",
+        "level": 713.95,
+        "date": "2026-10-15"
+       },
+       {
+        "ratio": "0.382",
+        "level": 683.69,
+        "date": "2026-10-30"
+       },
+       {
+        "ratio": "0.5",
+        "level": 659.23,
+        "date": "2026-11-09"
+       }
+      ],
+      "confluences": [
+       "0.382 at $683.69 meets the shelf near $678.78",
+       "0.382 at $683.69 meets the shelf near $682.23",
+       "0.5 at $659.23 meets the shelf near $661.50"
+      ],
+      "fib_anchor_a": {
+       "i": 92,
+       "t": 1774877400,
+       "p": 555.6
+      },
+      "fib_anchor_b": {
+       "i": 223,
+       "t": 1791293400,
+       "p": 762.86
+      }
+     }
+    },
+    {
+     "name": "Fibonacci retracement of the current decline (bounce map)",
+     "status": "forming",
+     "direction": "neutral",
+     "definition": "The same ratios applied to the current decline, run upward: they map where a bounce most often stalls. A bounce that dies at the 38.2 or 50 percent line is behaving like a countertrend rally, not a reversal.",
+     "meaning": "The decline from $762.86 (2026-10-06) to $647.05 (2026-11-05) measures 15.2 percent. Bounce stall lines: 0.236 at $674.38, 0.382 at $691.29, 0.5 at $704.95, 0.618 at $718.62, 0.786 at $738.08.",
+     "confirms": "A bounce closing through the 61.8 percent line upgrades it from countertrend rally to reversal candidate.",
+     "invalidates": "New lows extend the leg and every line on this map moves down.",
+     "evidence": {
+      "leg_high": 762.86,
+      "leg_high_date": "2026-10-06",
+      "leg_low": 647.05,
+      "leg_low_date": "2026-11-05",
+      "bounce_levels": {
+       "0.236": 674.38,
+       "0.382": 691.29,
+       "0.5": 704.95,
+       "0.618": 718.62,
+       "0.786": 738.08
+      }
+     }
+    }
+   ]
+  },
+  "harmonics": {
+   "title": "Harmonic patterns",
+   "findings": [
+    {
+     "name": "Harmonic Gartley",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "Harmonic patterns measure a five-point swing (X, A, B, C, D) against fixed Fibonacci ratios. When the ratios fit, the zone where D completes, the potential reversal zone, is where the pattern says exhaustion is likeliest. Ratios that do not fit mean the pattern is not there, whatever the shape suggests.",
+     "meaning": "No swing set in the window fits this pattern's first two ratios (AB/XA and BC/AB) inside tolerance, so there is no honest path to a D point. The shape may look close; the numbers say no.",
+     "confirms": "A swing set landing AB/XA and BC/AB inside their windows, with price then reaching the projected zone.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {
+      "windows": {
+       "ab": [
+        0.55,
+        0.68
+       ],
+       "bc": [
+        0.382,
+        0.886
+       ],
+       "cd": [
+        1.272,
+        1.618
+       ],
+       "ad": [
+        0.72,
+        0.85
+       ]
+      }
+     }
+    },
+    {
+     "name": "Harmonic Bat",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "Harmonic patterns measure a five-point swing (X, A, B, C, D) against fixed Fibonacci ratios. When the ratios fit, the zone where D completes, the potential reversal zone, is where the pattern says exhaustion is likeliest. Ratios that do not fit mean the pattern is not there, whatever the shape suggests.",
+     "meaning": "No swing set in the window fits this pattern's first two ratios (AB/XA and BC/AB) inside tolerance, so there is no honest path to a D point. The shape may look close; the numbers say no.",
+     "confirms": "A swing set landing AB/XA and BC/AB inside their windows, with price then reaching the projected zone.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {
+      "windows": {
+       "ab": [
+        0.382,
+        0.55
+       ],
+       "bc": [
+        0.382,
+        0.886
+       ],
+       "cd": [
+        1.618,
+        2.618
+       ],
+       "ad": [
+        0.82,
+        0.95
+       ]
+      }
+     }
+    },
+    {
+     "name": "Harmonic Butterfly",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "Harmonic patterns measure a five-point swing (X, A, B, C, D) against fixed Fibonacci ratios. When the ratios fit, the zone where D completes, the potential reversal zone, is where the pattern says exhaustion is likeliest. Ratios that do not fit mean the pattern is not there, whatever the shape suggests.",
+     "meaning": "No swing set in the window fits this pattern's first two ratios (AB/XA and BC/AB) inside tolerance, so there is no honest path to a D point. The shape may look close; the numbers say no.",
+     "confirms": "A swing set landing AB/XA and BC/AB inside their windows, with price then reaching the projected zone.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {
+      "windows": {
+       "ab": [
+        0.72,
+        0.85
+       ],
+       "bc": [
+        0.382,
+        0.886
+       ],
+       "cd": [
+        1.618,
+        2.618
+       ],
+       "ad": [
+        1.2,
+        1.7
+       ]
+      }
+     }
+    },
+    {
+     "name": "Harmonic Crab",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "Harmonic patterns measure a five-point swing (X, A, B, C, D) against fixed Fibonacci ratios. When the ratios fit, the zone where D completes, the potential reversal zone, is where the pattern says exhaustion is likeliest. Ratios that do not fit mean the pattern is not there, whatever the shape suggests.",
+     "meaning": "No swing set in the window fits this pattern's first two ratios (AB/XA and BC/AB) inside tolerance, so there is no honest path to a D point. The shape may look close; the numbers say no.",
+     "confirms": "A swing set landing AB/XA and BC/AB inside their windows, with price then reaching the projected zone.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {
+      "windows": {
+       "ab": [
+        0.382,
+        0.68
+       ],
+       "bc": [
+        0.382,
+        0.886
+       ],
+       "cd": [
+        2.24,
+        3.618
+       ],
+       "ad": [
+        1.5,
+        1.7
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "patterns": {
+   "title": "Classic pattern library",
+   "findings": [
+    {
+     "name": "Bearish double top",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "Two peaks at nearly the same price with a dip between them. Buyers tried twice at the same ceiling and failed twice. It confirms when price closes below the dip between the peaks, the neckline.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bullish double bottom",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "Two lows at nearly the same price with a bounce between them. Sellers tried twice at the same floor and failed twice. It confirms when price closes above the bounce high between the lows, the neckline.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bearish triple top",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "Three peaks at nearly the same price. A ceiling tested three times that buyers could not pass. It confirms on a close below the lowest dip between the peaks.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bullish triple bottom",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "Three lows at nearly the same price. A floor tested three times that sellers could not pass. It confirms on a close above the highest bounce between the lows.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bearish head and shoulders",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "Three peaks: a shoulder, a higher head, then a shoulder near the first one's height. The rising trend ran out of buyers at the top. It confirms on a close below the line joining the two dips, the neckline.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bullish inverse head and shoulders",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "Three lows: a shoulder, a lower head, then a shoulder near the first one's depth. The falling trend ran out of sellers at the bottom. It confirms on a close above the line joining the two rallies, the neckline.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bearish rising wedge",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "Price rises inside two converging lines, the lower line rising faster, so the rise narrows as it climbs. Rallies get weaker as they get higher. It is a bearish shape because the narrowing rise usually breaks down.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bullish falling wedge",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "Price falls inside two converging lines, the upper line falling faster, so the decline narrows as it drops. Sell-offs get weaker as they get lower. It is a bullish shape because the narrowing decline usually breaks up.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bearish expanding triangle",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "Price swings wider and wider: higher highs and lower lows, the two boundary lines diverging. A broadening, unstable shape. After a rise it is a distribution pattern and breaks down more often than up.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bullish expanding triangle",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "Price swings wider and wider: higher highs and lower lows, the two boundary lines diverging. After a decline, a broadening that breaks upward reads as accumulation shaking out the last sellers.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Descending triangle",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "A flat floor of support with falling highs pressing down on it. Sellers get more aggressive while buyers defend one price. It usually breaks down through the floor.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Ascending triangle",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "A flat ceiling of resistance with rising lows pressing up on it. Buyers get more aggressive while sellers defend one price. It usually breaks up through the ceiling.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Symmetrical triangle",
+     "status": "absent",
+     "direction": "neutral",
+     "definition": "Highs falling and lows rising into a point, after a directional move. Energy coils; the direction of the break, not the shape, gives the trade. Until the break it is neutral.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bearish flag",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "A sharp drop (the pole) followed by a short, tight drift upward or sideways (the flag). A pause inside a decline, not a bottom. It confirms when price breaks the flag's low.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bearish pennant",
+     "status": "absent",
+     "direction": "bearish",
+     "definition": "A sharp drop followed by a small converging triangle, highs falling and lows rising into a point. A coiling pause inside a decline. It confirms when price breaks the pennant's low.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bullish flag",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "A sharp rise (the pole) followed by a short, tight drift downward or sideways (the flag). A pause inside a rise, not a top. It confirms when price breaks the flag's high.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Bullish pennant",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "A sharp rise followed by a small converging triangle, highs falling and lows rising into a point. A coiling pause inside a rise. It confirms when price breaks the pennant's high.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Cup and handle",
+     "status": "absent",
+     "direction": "bullish",
+     "definition": "A long rounded base: price falls from a rim, rounds a bottom over weeks, climbs back to the same rim, then dips slightly (the handle) before breaking out. A base-building pattern of strong stocks.",
+     "meaning": "The swing structure on this chart does not form this pattern. Reporting it anyway would be forcing a shape onto the data.",
+     "confirms": "The swing points described in the definition lining up is the event.",
+     "invalidates": "Nothing to invalidate: the pattern is not there.",
+     "evidence": {}
+    },
+    {
+     "name": "Rectangle (horizontal channel)",
+     "status": "confirmed",
+     "direction": "bearish",
+     "definition": "Price boxed between a flat ceiling and a flat floor, touching each at least twice. A balance zone. The break out of the box, either way, is the signal; inside the box there is no edge.",
+     "meaning": "A box between $700.00 and $754.54, touched 6 times at the top and 12 times at the bottom, from 2026-08-07. It broke down on 2026-11-13.",
+     "confirms": "A close outside the box, held a second session, confirms the break.",
+     "invalidates": "A failed break that closes back inside the box within two sessions kills it.",
+     "evidence": {
+      "top": 754.54,
+      "bottom": 700.0,
+      "touches_top": 6,
+      "touches_bottom": 12
+     }
+    },
+    {
+     "name": "Island reversal",
+     "status": "confirmed",
+     "direction": "bearish",
+     "definition": "A gap one way, a few isolated sessions, then a gap back, leaving a small island of price stranded. A violent about-face: everyone who traded the island is trapped on the wrong side.",
+     "meaning": "An island top: the gap into it printed on 2026-10-06 and the gap back out on 2026-10-13, stranding the sessions between.",
+     "confirms": "The pattern is complete at the second gap; follow-through in the same direction confirms it.",
+     "invalidates": "Price closing back through the island fills it and ends the read.",
+     "evidence": {
+      "kind": "top",
+      "gap_in": "2026-10-06",
+      "gap_out": "2026-10-13"
+     }
+    }
+   ]
+  }
+ },
+ "shelves": {
+  "support": [
+   {
+    "level": 671.87,
+    "days": 9,
+    "side": "support"
+   },
+   {
+    "level": 668.41,
+    "days": 8,
+    "side": "support"
+   },
+   {
+    "level": 661.5,
+    "days": 8,
+    "side": "support"
+   }
+  ],
+  "resistance": [
+   {
+    "level": 675.32,
+    "days": 10,
+    "side": "resistance"
+   },
+   {
+    "level": 678.78,
+    "days": 12,
+    "side": "resistance"
+   },
+   {
+    "level": 682.23,
+    "days": 14,
+    "side": "resistance"
+   }
+  ],
+  "swing_supports": [
+   661.14,
+   647.05,
+   610.15
+  ],
+  "swing_resistances": [
+   721.89,
+   722.03,
+   724.13
+  ]
+ },
+ "scatter": {
+  "datasets": [
+   {
+    "id": "rsi_vs_fwd5",
+    "title": "RSI 14 vs the next 5-day return",
+    "x_label": "RSI 14",
+    "y_label": "Next 5-day return, percent",
+    "points": [
+     [
+      59.9,
+      0.42
+     ],
+     [
+      61.4,
+      -1.9
+     ],
+     [
+      60.2,
+      -2.2
+     ],
+     [
+      60.7,
+      -2.13
+     ],
+     [
+      62.4,
+      -4.33
+     ],
+     [
+      60.2,
+      -2.63
+     ],
+     [
+      49.4,
+      0.56
+     ],
+     [
+      47.0,
+      1.42
+     ],
+     [
+      48.1,
+      1.69
+     ],
+     [
+      40.1,
+      3.92
+     ],
+     [
+      47.3,
+      2.43
+     ],
+     [
+      52.9,
+      0.62
+     ],
+     [
+      54.3,
+      0.04
+     ],
+     [
+      56.2,
+      -1.25
+     ],
+     [
+      57.4,
+      -1.73
+     ],
+     [
+      57.4,
+      -0.95
+     ],
+     [
+      54.5,
+      0.41
+     ],
+     [
+      53.1,
+      0.74
+     ],
+     [
+      48.5,
+      1.0
+     ],
+     [
+      47.4,
+      2.21
+     ],
+     [
+      52.0,
+      1.49
+     ],
+     [
+      56.5,
+      0.45
+     ],
+     [
+      57.0,
+      -0.72
+     ],
+     [
+      53.2,
+      0.21
+     ],
+     [
+      58.4,
+      -0.86
+     ],
+     [
+      58.8,
+      -3.05
+     ],
+     [
+      57.7,
+      -1.59
+     ],
+     [
+      50.4,
+      0.2
+     ],
+     [
+      52.6,
+      0.15
+     ],
+     [
+      52.0,
+      0.68
+     ],
+     [
+      40.2,
+      3.79
+     ],
+     [
+      48.1,
+      2.75
+     ],
+     [
+      51.8,
+      1.4
+     ],
+     [
+      53.4,
+      -0.14
+     ],
+     [
+      55.6,
+      0.11
+     ],
+     [
+      59.8,
+      -2.31
+     ],
+     [
+      61.3,
+      -4.34
+     ],
+     [
+      57.2,
+      -5.15
+     ],
+     [
+      50.1,
+      -1.97
+     ],
+     [
+      53.6,
+      -1.89
+     ],
+     [
+      45.8,
+      -0.82
+     ],
+     [
+      38.9,
+      1.22
+     ],
+     [
+      34.4,
+      0.6
+     ],
+     [
+      44.4,
+      -1.27
+     ],
+     [
+      47.6,
+      -2.12
+     ],
+     [
+      45.9,
+      -0.93
+     ],
+     [
+      47.1,
+      -1.57
+     ],
+     [
+      39.9,
+      1.36
+     ],
+     [
+      40.9,
+      -0.08
+     ],
+     [
+      40.5,
+      1.09
+     ],
+     [
+      44.3,
+      1.8
+     ],
+     [
+      42.8,
+      0.96
+     ],
+     [
+      47.2,
+      -0.25
+     ],
+     [
+      42.3,
+      1.11
+     ],
+     [
+      47.4,
+      -1.03
+     ],
+     [
+      53.5,
+      -0.96
+     ],
+     [
+      48.4,
+      -0.05
+     ],
+     [
+      47.1,
+      -1.24
+     ],
+     [
+      47.7,
+      -0.05
+     ],
+     [
+      43.4,
+      1.03
+     ],
+     [
+      50.3,
+      -0.5
+     ],
+     [
+      49.0,
+      -1.91
+     ],
+     [
+      43.1,
+      -1.01
+     ],
+     [
+      48.9,
+      -1.21
+     ],
+     [
+      48.9,
+      -0.73
+     ],
+     [
+      48.8,
+      -2.1
+     ],
+     [
+      41.9,
+      -0.71
+     ],
+     [
+      39.9,
+      -1.96
+     ],
+     [
+      45.3,
+      -2.06
+     ],
+     [
+      47.6,
+      -3.2
+     ],
+     [
+      42.2,
+      -1.19
+     ],
+     [
+      41.1,
+      -3.24
+     ],
+     [
+      35.2,
+      -3.35
+     ],
+     [
+      40.2,
+      -5.05
+     ],
+     [
+      38.1,
+      -1.16
+     ],
+     [
+      41.3,
+      -0.6
+     ],
+     [
+      34.3,
+      1.95
+     ],
+     [
+      29.9,
+      4.61
+     ],
+     [
+      28.4,
+      5.43
+     ],
+     [
+      42.1,
+      5.01
+     ],
+     [
+      46.3,
+      4.43
+     ],
+     [
+      46.7,
+      4.46
+     ],
+     [
+      48.8,
+      4.91
+     ],
+     [
+      48.8,
+      6.8
+     ],
+     [
+      58.3,
+      5.17
+     ],
+     [
+      60.1,
+      4.96
+     ],
+     [
+      60.5,
+      6.18
+     ],
+     [
+      63.4,
+      4.76
+     ],
+     [
+      67.9,
+      2.5
+     ],
+     [
+      70.9,
+      2.78
+     ],
+     [
+      71.9,
+      1.71
+     ],
+     [
+      74.4,
+      2.32
+     ],
+     [
+      72.7,
+      2.7
+     ],
+     [
+      70.6,
+      2.05
+     ],
+     [
+      74.1,
+      0.99
+     ],
+     [
+      71.0,
+      2.51
+     ],
+     [
+      74.9,
+      1.55
+     ],
+     [
+      75.0,
+      1.3
+     ],
+     [
+      69.2,
+      3.66
+     ],
+     [
+      70.7,
+      5.17
+     ],
+     [
+      72.8,
+      4.07
+     ],
+     [
+      74.9,
+      5.5
+     ],
+     [
+      73.7,
+      6.01
+     ],
+     [
+      76.4,
+      3.76
+     ],
+     [
+      80.1,
+      2.72
+     ],
+     [
+      79.3,
+      3.58
+     ],
+     [
+      82.8,
+      -0.32
+     ],
+     [
+      83.2,
+      -1.04
+     ],
+     [
+      77.7,
+      -0.81
+     ],
+     [
+      79.5,
+      -0.22
+     ],
+     [
+      80.6,
+      -0.73
+     ],
+     [
+      71.4,
+      1.21
+     ],
+     [
+      69.0,
+      3.46
+     ],
+     [
+      65.6,
+      3.98
+     ],
+     [
+      69.9,
+      3.15
+     ],
+     [
+      70.3,
+      3.33
+     ],
+     [
+      71.4,
+      3.51
+     ],
+     [
+      75.3,
+      2.17
+     ],
+     [
+      74.6,
+      2.02
+     ],
+     [
+      76.4,
+      0.68
+     ],
+     [
+      77.2,
+      -4.5
+     ],
+     [
+      78.4,
+      -3.59
+     ],
+     [
+      79.4,
+      -5.14
+     ],
+     [
+      77.3,
+      -6.79
+     ],
+     [
+      73.5,
+      -3.17
+     ],
+     [
+      48.3,
+      2.31
+     ],
+     [
+      53.6,
+      3.9
+     ],
+     [
+      49.5,
+      3.11
+     ],
+     [
+      43.4,
+      4.15
+     ],
+     [
+      53.6,
+      3.28
+     ],
+     [
+      55.2,
+      2.3
+     ],
+     [
+      62.5,
+      -4.08
+     ],
+     [
+      56.3,
+      -2.64
+     ],
+     [
+      53.4,
+      -0.85
+     ],
+     [
+      59.1,
+      -4.6
+     ],
+     [
+      58.0,
+      -1.88
+     ],
+     [
+      48.8,
+      3.19
+     ],
+     [
+      47.8,
+      2.05
+     ],
+     [
+      49.9,
+      -0.53
+     ],
+     [
+      46.5,
+      2.31
+     ],
+     [
+      52.8,
+      -2.02
+     ],
+     [
+      56.6,
+      -3.39
+     ],
+     [
+      52.4,
+      -0.26
+     ],
+     [
+      48.1,
+      1.81
+     ],
+     [
+      51.6,
+      -1.53
+     ],
+     [
+      47.1,
+      1.45
+     ],
+     [
+      47.9,
+      0.89
+     ],
+     [
+      52.1,
+      -2.4
+     ],
+     [
+      52.8,
+      -4.16
+     ],
+     [
+      47.7,
+      -2.2
+     ],
+     [
+      50.7,
+      -1.49
+     ],
+     [
+      49.9,
+      -1.73
+     ],
+     [
+      45.6,
+      -1.98
+     ],
+     [
+      42.0,
+      -1.6
+     ],
+     [
+      42.3,
+      -2.0
+     ],
+     [
+      48.0,
+      -4.72
+     ],
+     [
+      46.6,
+      -6.18
+     ],
+     [
+      41.8,
+      -1.22
+     ],
+     [
+      39.3,
+      0.55
+     ],
+     [
+      38.6,
+      2.63
+     ],
+     [
+      36.4,
+      7.16
+     ],
+     [
+      32.4,
+      8.4
+     ],
+     [
+      43.2,
+      4.55
+     ],
+     [
+      45.1,
+      5.09
+     ],
+     [
+      50.0,
+      2.97
+     ],
+     [
+      58.0,
+      -0.75
+     ],
+     [
+      55.4,
+      0.89
+     ],
+     [
+      54.3,
+      2.44
+     ],
+     [
+      57.1,
+      1.11
+     ],
+     [
+      56.2,
+      1.25
+     ],
+     [
+      55.1,
+      -0.13
+     ],
+     [
+      57.1,
+      -1.05
+     ],
+     [
+      60.1,
+      -2.89
+     ],
+     [
+      59.6,
+      -2.41
+     ],
+     [
+      58.9,
+      -3.23
+     ],
+     [
+      52.2,
+      -0.95
+     ],
+     [
+      51.5,
+      -0.66
+     ],
+     [
+      48.8,
+      1.43
+     ],
+     [
+      50.1,
+      0.42
+     ],
+     [
+      46.4,
+      1.48
+     ],
+     [
+      48.9,
+      -0.43
+     ],
+     [
+      49.3,
+      -0.3
+     ],
+     [
+      54.8,
+      -0.48
+     ],
+     [
+      51.9,
+      0.35
+     ],
+     [
+      52.1,
+      0.22
+     ],
+     [
+      46.6,
+      1.23
+     ],
+     [
+      47.6,
+      -0.08
+     ],
+     [
+      52.9,
+      -0.39
+     ],
+     [
+      53.6,
+      -1.36
+     ],
+     [
+      53.2,
+      -1.92
+     ],
+     [
+      51.7,
+      -1.62
+     ],
+     [
+      46.3,
+      1.16
+     ],
+     [
+      50.8,
+      0.92
+     ],
+     [
+      46.9,
+      4.55
+     ],
+     [
+      44.0,
+      6.09
+     ],
+     [
+      44.1,
+      5.18
+     ],
+     [
+      53.0,
+      3.37
+     ],
+     [
+      55.9,
+      3.19
+     ],
+     [
+      65.7,
+      -0.67
+     ],
+     [
+      68.0,
+      -1.27
+     ],
+     [
+      63.2,
+      -0.19
+     ],
+     [
+      63.1,
+      0.13
+     ],
+     [
+      64.7,
+      0.68
+     ],
+     [
+      58.5,
+      2.67
+     ],
+     [
+      59.2,
+      2.94
+     ],
+     [
+      60.2,
+      2.43
+     ],
+     [
+      61.5,
+      0.75
+     ],
+     [
+      65.4,
+      0.23
+     ],
+     [
+      68.4,
+      -1.34
+     ],
+     [
+      69.9,
+      -2.12
+     ],
+     [
+      68.0,
+      -3.8
+     ],
+     [
+      58.8,
+      -2.62
+     ],
+     [
+      60.9,
+      -5.52
+     ],
+     [
+      56.6,
+      -3.71
+     ],
+     [
+      54.6,
+      -3.49
+     ],
+     [
+      44.7,
+      -0.51
+     ],
+     [
+      44.1,
+      -3.23
+     ],
+     [
+      35.0,
+      -0.76
+     ],
+     [
+      41.1,
+      -0.86
+     ],
+     [
+      40.8,
+      0.5
+     ],
+     [
+      46.0,
+      0.06
+     ],
+     [
+      36.5,
+      1.54
+     ],
+     [
+      36.5,
+      -1.97
+     ],
+     [
+      41.7,
+      -4.37
+     ],
+     [
+      47.2,
+      -4.99
+     ],
+     [
+      49.6,
+      -4.64
+     ],
+     [
+      44.4,
+      -9.55
+     ],
+     [
+      34.9,
+      -4.98
+     ],
+     [
+      32.1,
+      -0.26
+     ],
+     [
+      34.6,
+      -1.54
+     ],
+     [
+      38.5,
+      -0.23
+     ],
+     [
+      26.9,
+      6.35
+     ],
+     [
+      31.4,
+      2.82
+     ]
+    ]
+   },
+   {
+    "id": "range_vs_volume",
+    "title": "Daily range percent vs volume",
+    "x_label": "Daily range, percent of price",
+    "y_label": "Volume, millions of shares",
+    "points": [
+     [
+      1.98,
+      71.33
+     ],
+     [
+      2.66,
+      80.09
+     ],
+     [
+      2.09,
+      63.85
+     ],
+     [
+      1.84,
+      83.33
+     ],
+     [
+      1.93,
+      73.11
+     ],
+     [
+      5.0,
+      117.74
+     ],
+     [
+      2.75,
+      103.34
+     ],
+     [
+      1.9,
+      60.17
+     ],
+     [
+      2.13,
+      57.56
+     ],
+     [
+      0.94,
+      42.39
+     ],
+     [
+      0.63,
+      23.03
+     ],
+     [
+      1.12,
+      40.96
+     ],
+     [
+      0.99,
+      54.54
+     ],
+     [
+      0.99,
+      47.84
+     ],
+     [
+      0.87,
+      47.07
+     ],
+     [
+      0.83,
+      53.61
+     ],
+     [
+      1.15,
+      43.46
+     ],
+     [
+      0.78,
+      37.16
+     ],
+     [
+      1.31,
+      55.03
+     ],
+     [
+      1.29,
+      58.27
+     ],
+     [
+      1.98,
+      75.16
+     ],
+     [
+      1.49,
+      49.54
+     ],
+     [
+      1.08,
+      55.15
+     ],
+     [
+      2.23,
+      70.65
+     ],
+     [
+      0.99,
+      78.88
+     ],
+     [
+      0.93,
+      60.37
+     ],
+     [
+      0.63,
+      43.7
+     ],
+     [
+      0.74,
+      41.12
+     ],
+     [
+      0.41,
+      18.47
+     ],
+     [
+      0.38,
+      28.96
+     ],
+     [
+      0.65,
+      32.46
+     ],
+     [
+      0.48,
+      31.23
+     ],
+     [
+      0.96,
+      40.75
+     ],
+     [
+      2.07,
+      61.86
+     ],
+     [
+      0.66,
+      46.83
+     ],
+     [
+      0.88,
+      43.14
+     ],
+     [
+      0.86,
+      44.88
+     ],
+     [
+      0.91,
+      50.44
+     ],
+     [
+      1.41,
+      49.69
+     ],
+     [
+      1.05,
+      37.39
+     ],
+     [
+      0.92,
+      44.48
+     ],
+     [
+      1.43,
+      72.6
+     ],
+     [
+      1.49,
+      53.93
+     ],
+     [
+      1.16,
+      61.06
+     ],
+     [
+      1.32,
+      81.99
+     ],
+     [
+      2.04,
+      79.84
+     ],
+     [
+      0.75,
+      42.25
+     ],
+     [
+      1.08,
+      43.65
+     ],
+     [
+      0.88,
+      35.98
+     ],
+     [
+      0.74,
+      39.0
+     ],
+     [
+      0.76,
+      50.69
+     ],
+     [
+      2.45,
+      79.94
+     ],
+     [
+      1.44,
+      65.65
+     ],
+     [
+      1.57,
+      49.02
+     ],
+     [
+      3.09,
+      81.23
+     ],
+     [
+      2.42,
+      81.85
+     ],
+     [
+      1.68,
+      89.35
+     ],
+     [
+      2.07,
+      78.02
+     ],
+     [
+      1.85,
+      56.8
+     ],
+     [
+      0.98,
+      53.94
+     ],
+     [
+      1.6,
+      58.58
+     ],
+     [
+      2.7,
+      81.38
+     ],
+     [
+      1.67,
+      69.24
+     ],
+     [
+      1.76,
+      69.01
+     ],
+     [
+      1.49,
+      64.25
+     ],
+     [
+      0.84,
+      60.96
+     ],
+     [
+      1.83,
+      74.13
+     ],
+     [
+      1.49,
+      63.86
+     ],
+     [
+      1.52,
+      55.02
+     ],
+     [
+      0.95,
+      55.71
+     ],
+     [
+      1.91,
+      96.18
+     ],
+     [
+      1.01,
+      68.13
+     ],
+     [
+      1.96,
+      75.26
+     ],
+     [
+      2.01,
+      97.02
+     ],
+     [
+      1.55,
+      70.94
+     ],
+     [
+      1.72,
+      89.6
+     ],
+     [
+      1.28,
+      86.3
+     ],
+     [
+      2.95,
+      93.07
+     ],
+     [
+      1.29,
+      64.08
+     ],
+     [
+      1.22,
+      60.11
+     ],
+     [
+      1.19,
+      71.84
+     ],
+     [
+      1.86,
+      63.15
+     ],
+     [
+      0.79,
+      49.08
+     ],
+     [
+      0.67,
+      47.11
+     ],
+     [
+      1.45,
+      56.13
+     ],
+     [
+      1.47,
+      75.6
+     ],
+     [
+      2.17,
+      91.96
+     ],
+     [
+      1.55,
+      89.94
+     ],
+     [
+      1.03,
+      57.75
+     ],
+     [
+      0.97,
+      60.48
+     ],
+     [
+      1.95,
+      81.49
+     ],
+     [
+      1.68,
+      82.7
+     ],
+     [
+      2.23,
+      70.6
+     ],
+     [
+      2.5,
+      95.88
+     ],
+     [
+      1.25,
+      79.44
+     ],
+     [
+      2.42,
+      50.94
+     ],
+     [
+      1.01,
+      35.11
+     ],
+     [
+      1.8,
+      49.95
+     ],
+     [
+      1.28,
+      63.09
+     ],
+     [
+      1.22,
+      37.84
+     ],
+     [
+      0.67,
+      34.04
+     ],
+     [
+      3.02,
+      32.97
+     ],
+     [
+      1.35,
+      49.92
+     ],
+     [
+      1.51,
+      50.1
+     ],
+     [
+      1.08,
+      42.32
+     ],
+     [
+      0.91,
+      53.49
+     ],
+     [
+      0.96,
+      37.14
+     ],
+     [
+      1.24,
+      39.58
+     ],
+     [
+      1.04,
+      37.37
+     ],
+     [
+      1.75,
+      40.1
+     ],
+     [
+      1.2,
+      45.56
+     ],
+     [
+      0.56,
+      32.72
+     ],
+     [
+      0.89,
+      34.15
+     ],
+     [
+      0.78,
+      31.72
+     ],
+     [
+      1.7,
+      40.62
+     ],
+     [
+      1.06,
+      39.17
+     ],
+     [
+      1.16,
+      34.54
+     ],
+     [
+      0.77,
+      37.1
+     ],
+     [
+      1.36,
+      38.78
+     ],
+     [
+      1.36,
+      43.78
+     ],
+     [
+      1.65,
+      44.32
+     ],
+     [
+      0.8,
+      36.02
+     ],
+     [
+      1.91,
+      45.87
+     ],
+     [
+      1.65,
+      40.01
+     ],
+     [
+      1.09,
+      33.33
+     ],
+     [
+      1.35,
+      51.79
+     ],
+     [
+      1.87,
+      49.83
+     ],
+     [
+      1.6,
+      46.83
+     ],
+     [
+      1.31,
+      36.78
+     ],
+     [
+      1.45,
+      36.42
+     ],
+     [
+      0.86,
+      33.12
+     ],
+     [
+      0.96,
+      34.25
+     ],
+     [
+      1.08,
+      35.15
+     ],
+     [
+      1.39,
+      32.84
+     ],
+     [
+      0.86,
+      37.54
+     ],
+     [
+      1.3,
+      33.89
+     ],
+     [
+      0.97,
+      30.09
+     ],
+     [
+      1.03,
+      40.27
+     ],
+     [
+      1.47,
+      40.78
+     ],
+     [
+      3.88,
+      99.61
+     ],
+     [
+      1.39,
+      47.4
+     ],
+     [
+      5.55,
+      91.93
+     ],
+     [
+      2.65,
+      65.33
+     ],
+     [
+      3.26,
+      71.8
+     ],
+     [
+      1.76,
+      51.17
+     ],
+     [
+      0.99,
+      46.71
+     ],
+     [
+      2.0,
+      45.35
+     ],
+     [
+      2.05,
+      51.67
+     ],
+     [
+      1.26,
+      50.15
+     ],
+     [
+      1.5,
+      43.52
+     ],
+     [
+      1.61,
+      53.35
+     ],
+     [
+      2.18,
+      52.48
+     ],
+     [
+      3.01,
+      49.67
+     ],
+     [
+      1.8,
+      47.08
+     ],
+     [
+      2.68,
+      44.94
+     ],
+     [
+      1.86,
+      42.12
+     ],
+     [
+      1.01,
+      40.8
+     ],
+     [
+      3.27,
+      50.96
+     ],
+     [
+      1.06,
+      30.22
+     ],
+     [
+      1.61,
+      42.48
+     ],
+     [
+      1.6,
+      35.6
+     ],
+     [
+      1.26,
+      33.65
+     ],
+     [
+      1.29,
+      26.42
+     ],
+     [
+      1.22,
+      36.55
+     ],
+     [
+      1.1,
+      29.45
+     ],
+     [
+      1.97,
+      32.63
+     ],
+     [
+      1.56,
+      39.4
+     ],
+     [
+      2.23,
+      54.11
+     ],
+     [
+      1.48,
+      29.69
+     ],
+     [
+      1.02,
+      33.73
+     ],
+     [
+      0.85,
+      23.69
+     ],
+     [
+      1.57,
+      44.03
+     ],
+     [
+      1.48,
+      42.88
+     ],
+     [
+      2.4,
+      42.68
+     ],
+     [
+      1.71,
+      51.4
+     ],
+     [
+      2.86,
+      57.23
+     ],
+     [
+      1.73,
+      66.75
+     ],
+     [
+      2.28,
+      50.54
+     ],
+     [
+      2.25,
+      44.97
+     ],
+     [
+      2.5,
+      59.78
+     ],
+     [
+      1.62,
+      33.54
+     ],
+     [
+      1.51,
+      33.04
+     ],
+     [
+      0.98,
+      31.07
+     ],
+     [
+      0.6,
+      26.24
+     ],
+     [
+      1.09,
+      29.29
+     ],
+     [
+      0.6,
+      29.07
+     ],
+     [
+      1.36,
+      31.6
+     ],
+     [
+      0.83,
+      23.79
+     ],
+     [
+      0.73,
+      26.45
+     ],
+     [
+      0.87,
+      49.0
+     ],
+     [
+      1.24,
+      35.8
+     ],
+     [
+      0.9,
+      33.4
+     ],
+     [
+      0.91,
+      33.4
+     ],
+     [
+      1.0,
+      37.44
+     ],
+     [
+      0.93,
+      23.87
+     ],
+     [
+      0.71,
+      20.39
+     ],
+     [
+      0.95,
+      28.72
+     ],
+     [
+      1.26,
+      34.11
+     ],
+     [
+      0.62,
+      32.24
+     ],
+     [
+      1.08,
+      35.24
+     ],
+     [
+      0.66,
+      23.48
+     ],
+     [
+      1.29,
+      29.45
+     ],
+     [
+      0.74,
+      32.87
+     ],
+     [
+      0.88,
+      28.34
+     ],
+     [
+      0.79,
+      26.76
+     ],
+     [
+      0.73,
+      31.41
+     ],
+     [
+      0.56,
+      26.65
+     ],
+     [
+      1.44,
+      35.22
+     ],
+     [
+      0.84,
+      26.63
+     ],
+     [
+      1.69,
+      35.69
+     ],
+     [
+      0.66,
+      37.27
+     ],
+     [
+      0.92,
+      48.48
+     ],
+     [
+      2.08,
+      46.73
+     ],
+     [
+      0.99,
+      40.13
+     ],
+     [
+      1.21,
+      33.19
+     ],
+     [
+      1.08,
+      29.0
+     ],
+     [
+      0.84,
+      30.28
+     ],
+     [
+      1.33,
+      41.77
+     ],
+     [
+      0.71,
+      27.05
+     ],
+     [
+      0.76,
+      29.82
+     ],
+     [
+      1.13,
+      35.73
+     ],
+     [
+      0.94,
+      34.5
+     ],
+     [
+      1.04,
+      25.6
+     ],
+     [
+      0.49,
+      26.51
+     ],
+     [
+      0.86,
+      25.47
+     ],
+     [
+      1.87,
+      49.69
+     ],
+     [
+      0.6,
+      21.16
+     ],
+     [
+      0.66,
+      25.15
+     ],
+     [
+      0.72,
+      28.74
+     ],
+     [
+      1.94,
+      52.38
+     ],
+     [
+      1.92,
+      49.83
+     ],
+     [
+      2.64,
+      66.93
+     ],
+     [
+      1.11,
+      37.2
+     ],
+     [
+      1.72,
+      30.52
+     ],
+     [
+      1.14,
+      32.48
+     ],
+     [
+      1.92,
+      64.55
+     ],
+     [
+      1.16,
+      30.22
+     ],
+     [
+      1.36,
+      33.11
+     ],
+     [
+      1.29,
+      30.94
+     ],
+     [
+      0.8,
+      30.51
+     ],
+     [
+      0.9,
+      38.25
+     ],
+     [
+      2.2,
+      85.24
+     ],
+     [
+      2.8,
+      54.74
+     ],
+     [
+      0.8,
+      37.52
+     ],
+     [
+      1.96,
+      62.37
+     ],
+     [
+      5.66,
+      130.68
+     ],
+     [
+      1.6,
+      70.69
+     ],
+     [
+      3.01,
+      54.91
+     ],
+     [
+      2.06,
+      38.85
+     ],
+     [
+      1.74,
+      44.87
+     ],
+     [
+      2.14,
+      36.72
+     ],
+     [
+      2.44,
+      12.24
+     ]
+    ]
+   },
+   {
+    "id": "pctb_vs_fwd5",
+    "title": "Bollinger percent B vs the next 5-day return",
+    "x_label": "Percent B (0 is the lower band, 1 the upper)",
+    "y_label": "Next 5-day return, percent",
+    "points": [
+     [
+      0.76,
+      -2.63
+     ],
+     [
+      0.51,
+      0.56
+     ],
+     [
+      0.45,
+      1.42
+     ],
+     [
+      0.47,
+      1.69
+     ],
+     [
+      0.22,
+      3.92
+     ],
+     [
+      0.39,
+      2.43
+     ],
+     [
+      0.54,
+      0.62
+     ],
+     [
+      0.57,
+      0.04
+     ],
+     [
+      0.65,
+      -1.25
+     ],
+     [
+      0.69,
+      -1.73
+     ],
+     [
+      0.67,
+      -0.95
+     ],
+     [
+      0.56,
+      0.41
+     ],
+     [
+      0.5,
+      0.74
+     ],
+     [
+      0.33,
+      1.0
+     ],
+     [
+      0.3,
+      2.21
+     ],
+     [
+      0.49,
+      1.49
+     ],
+     [
+      0.7,
+      0.45
+     ],
+     [
+      0.72,
+      -0.72
+     ],
+     [
+      0.6,
+      0.21
+     ],
+     [
+      0.84,
+      -0.86
+     ],
+     [
+      0.85,
+      -3.05
+     ],
+     [
+      0.78,
+      -1.59
+     ],
+     [
+      0.52,
+      0.2
+     ],
+     [
+      0.59,
+      0.15
+     ],
+     [
+      0.54,
+      0.68
+     ],
+     [
+      -0.17,
+      3.79
+     ],
+     [
+      0.28,
+      2.75
+     ],
+     [
+      0.51,
+      1.4
+     ],
+     [
+      0.61,
+      -0.14
+     ],
+     [
+      0.75,
+      0.11
+     ],
+     [
+      0.98,
+      -2.31
+     ],
+     [
+      0.99,
+      -4.34
+     ],
+     [
+      0.8,
+      -5.15
+     ],
+     [
+      0.47,
+      -1.97
+     ],
+     [
+      0.64,
+      -1.89
+     ],
+     [
+      0.2,
+      -0.82
+     ],
+     [
+      -0.12,
+      1.22
+     ],
+     [
+      -0.19,
+      0.6
+     ],
+     [
+      0.2,
+      -1.27
+     ],
+     [
+      0.35,
+      -2.12
+     ],
+     [
+      0.29,
+      -0.93
+     ],
+     [
+      0.35,
+      -1.57
+     ],
+     [
+      0.07,
+      1.36
+     ],
+     [
+      0.14,
+      -0.08
+     ],
+     [
+      0.17,
+      1.09
+     ],
+     [
+      0.28,
+      1.8
+     ],
+     [
+      0.25,
+      0.96
+     ],
+     [
+      0.38,
+      -0.25
+     ],
+     [
+      0.24,
+      1.11
+     ],
+     [
+      0.4,
+      -1.03
+     ],
+     [
+      0.64,
+      -0.96
+     ],
+     [
+      0.47,
+      -0.05
+     ],
+     [
+      0.44,
+      -1.24
+     ],
+     [
+      0.49,
+      -0.05
+     ],
+     [
+      0.25,
+      1.03
+     ],
+     [
+      0.7,
+      -0.5
+     ],
+     [
+      0.6,
+      -1.91
+     ],
+     [
+      0.12,
+      -1.01
+     ],
+     [
+      0.54,
+      -1.21
+     ],
+     [
+      0.56,
+      -0.73
+     ],
+     [
+      0.57,
+      -2.1
+     ],
+     [
+      0.03,
+      -0.71
+     ],
+     [
+      -0.07,
+      -1.96
+     ],
+     [
+      0.26,
+      -2.06
+     ],
+     [
+      0.4,
+      -3.2
+     ],
+     [
+      0.06,
+      -1.19
+     ],
+     [
+      0.04,
+      -3.24
+     ],
+     [
+      -0.17,
+      -3.35
+     ],
+     [
+      0.07,
+      -5.05
+     ],
+     [
+      0.03,
+      -1.16
+     ],
+     [
+      0.17,
+      -0.6
+     ],
+     [
+      -0.09,
+      1.95
+     ],
+     [
+      -0.16,
+      4.61
+     ],
+     [
+      -0.1,
+      5.43
+     ],
+     [
+      0.25,
+      5.01
+     ],
+     [
+      0.39,
+      4.43
+     ],
+     [
+      0.42,
+      4.46
+     ],
+     [
+      0.49,
+      4.91
+     ],
+     [
+      0.51,
+      6.8
+     ],
+     [
+      0.86,
+      5.17
+     ],
+     [
+      0.93,
+      4.96
+     ],
+     [
+      0.91,
+      6.18
+     ],
+     [
+      0.96,
+      4.76
+     ],
+     [
+      1.04,
+      2.5
+     ],
+     [
+      1.06,
+      2.78
+     ],
+     [
+      1.01,
+      1.71
+     ],
+     [
+      1.0,
+      2.32
+     ],
+     [
+      0.92,
+      2.7
+     ],
+     [
+      0.85,
+      2.05
+     ],
+     [
+      0.9,
+      0.99
+     ],
+     [
+      0.83,
+      2.51
+     ],
+     [
+      0.88,
+      1.55
+     ],
+     [
+      0.85,
+      1.3
+     ],
+     [
+      0.78,
+      3.66
+     ],
+     [
+      0.79,
+      5.17
+     ],
+     [
+      0.82,
+      4.07
+     ],
+     [
+      0.85,
+      5.5
+     ],
+     [
+      0.82,
+      6.01
+     ],
+     [
+      0.89,
+      3.76
+     ],
+     [
+      0.99,
+      2.72
+     ],
+     [
+      0.94,
+      3.58
+     ],
+     [
+      1.05,
+      -0.32
+     ],
+     [
+      1.01,
+      -1.04
+     ],
+     [
+      0.9,
+      -0.81
+     ],
+     [
+      0.93,
+      -0.22
+     ],
+     [
+      0.93,
+      -0.73
+     ],
+     [
+      0.79,
+      1.21
+     ],
+     [
+      0.73,
+      3.46
+     ],
+     [
+      0.67,
+      3.98
+     ],
+     [
+      0.77,
+      3.15
+     ],
+     [
+      0.76,
+      3.33
+     ],
+     [
+      0.77,
+      3.51
+     ],
+     [
+      0.88,
+      2.17
+     ],
+     [
+      0.85,
+      2.02
+     ],
+     [
+      0.9,
+      0.68
+     ],
+     [
+      0.91,
+      -4.5
+     ],
+     [
+      0.93,
+      -3.59
+     ],
+     [
+      0.96,
+      -5.14
+     ],
+     [
+      0.9,
+      -6.79
+     ],
+     [
+      0.81,
+      -3.17
+     ],
+     [
+      0.21,
+      2.31
+     ],
+     [
+      0.39,
+      3.9
+     ],
+     [
+      0.26,
+      3.11
+     ],
+     [
+      0.05,
+      4.15
+     ],
+     [
+      0.43,
+      3.28
+     ],
+     [
+      0.5,
+      2.3
+     ],
+     [
+      0.83,
+      -4.08
+     ],
+     [
+      0.59,
+      -2.64
+     ],
+     [
+      0.45,
+      -0.85
+     ],
+     [
+      0.74,
+      -4.6
+     ],
+     [
+      0.67,
+      -1.88
+     ],
+     [
+      0.26,
+      3.19
+     ],
+     [
+      0.23,
+      2.05
+     ],
+     [
+      0.34,
+      -0.53
+     ],
+     [
+      0.21,
+      2.31
+     ],
+     [
+      0.5,
+      -2.02
+     ],
+     [
+      0.71,
+      -3.39
+     ],
+     [
+      0.54,
+      -0.26
+     ],
+     [
+      0.34,
+      1.81
+     ],
+     [
+      0.55,
+      -1.53
+     ],
+     [
+      0.28,
+      1.45
+     ],
+     [
+      0.33,
+      0.89
+     ],
+     [
+      0.55,
+      -2.4
+     ],
+     [
+      0.57,
+      -4.16
+     ],
+     [
+      0.25,
+      -2.2
+     ],
+     [
+      0.44,
+      -1.49
+     ],
+     [
+      0.42,
+      -1.73
+     ],
+     [
+      0.15,
+      -1.98
+     ],
+     [
+      -0.01,
+      -1.6
+     ],
+     [
+      0.04,
+      -2.0
+     ],
+     [
+      0.35,
+      -4.72
+     ],
+     [
+      0.28,
+      -6.18
+     ],
+     [
+      0.02,
+      -1.22
+     ],
+     [
+      -0.04,
+      0.55
+     ],
+     [
+      0.0,
+      2.63
+     ],
+     [
+      -0.01,
+      7.16
+     ],
+     [
+      -0.11,
+      8.4
+     ],
+     [
+      0.23,
+      4.55
+     ],
+     [
+      0.31,
+      5.09
+     ],
+     [
+      0.5,
+      2.97
+     ],
+     [
+      0.83,
+      -0.75
+     ],
+     [
+      0.73,
+      0.89
+     ],
+     [
+      0.71,
+      2.44
+     ],
+     [
+      0.83,
+      1.11
+     ],
+     [
+      0.79,
+      1.25
+     ],
+     [
+      0.76,
+      -0.13
+     ],
+     [
+      0.82,
+      -1.05
+     ],
+     [
+      0.89,
+      -2.89
+     ],
+     [
+      0.84,
+      -2.41
+     ],
+     [
+      0.79,
+      -3.23
+     ],
+     [
+      0.64,
+      -0.95
+     ],
+     [
+      0.61,
+      -0.66
+     ],
+     [
+      0.54,
+      1.43
+     ],
+     [
+      0.55,
+      0.42
+     ],
+     [
+      0.45,
+      1.48
+     ],
+     [
+      0.48,
+      -0.43
+     ],
+     [
+      0.43,
+      -0.3
+     ],
+     [
+      0.61,
+      -0.48
+     ],
+     [
+      0.45,
+      0.35
+     ],
+     [
+      0.43,
+      0.22
+     ],
+     [
+      0.14,
+      1.23
+     ],
+     [
+      0.22,
+      -0.08
+     ],
+     [
+      0.5,
+      -0.39
+     ],
+     [
+      0.55,
+      -1.36
+     ],
+     [
+      0.53,
+      -1.92
+     ],
+     [
+      0.47,
+      -1.62
+     ],
+     [
+      0.23,
+      1.16
+     ],
+     [
+      0.47,
+      0.92
+     ],
+     [
+      0.25,
+      4.55
+     ],
+     [
+      0.02,
+      6.09
+     ],
+     [
+      0.09,
+      5.18
+     ],
+     [
+      0.72,
+      3.37
+     ],
+     [
+      0.89,
+      3.19
+     ],
+     [
+      1.33,
+      -0.67
+     ],
+     [
+      1.23,
+      -1.27
+     ],
+     [
+      0.99,
+      -0.19
+     ],
+     [
+      0.92,
+      0.13
+     ],
+     [
+      0.93,
+      0.68
+     ],
+     [
+      0.76,
+      2.67
+     ],
+     [
+      0.76,
+      2.94
+     ],
+     [
+      0.76,
+      2.43
+     ],
+     [
+      0.77,
+      0.75
+     ],
+     [
+      0.86,
+      0.23
+     ],
+     [
+      0.91,
+      -1.34
+     ],
+     [
+      0.9,
+      -2.12
+     ],
+     [
+      0.84,
+      -3.8
+     ],
+     [
+      0.67,
+      -2.62
+     ],
+     [
+      0.71,
+      -5.52
+     ],
+     [
+      0.61,
+      -3.71
+     ],
+     [
+      0.54,
+      -3.49
+     ],
+     [
+      0.18,
+      -0.51
+     ],
+     [
+      0.1,
+      -3.23
+     ],
+     [
+      -0.24,
+      -0.76
+     ],
+     [
+      0.03,
+      -0.86
+     ],
+     [
+      0.08,
+      0.5
+     ],
+     [
+      0.24,
+      0.06
+     ],
+     [
+      -0.03,
+      1.54
+     ],
+     [
+      0.05,
+      -1.97
+     ],
+     [
+      0.19,
+      -4.37
+     ],
+     [
+      0.33,
+      -4.99
+     ],
+     [
+      0.4,
+      -4.64
+     ],
+     [
+      0.28,
+      -9.55
+     ],
+     [
+      0.02,
+      -4.98
+     ],
+     [
+      -0.02,
+      -0.26
+     ],
+     [
+      0.08,
+      -1.54
+     ],
+     [
+      0.18,
+      -0.23
+     ],
+     [
+      -0.18,
+      6.35
+     ],
+     [
+      -0.01,
+      2.82
+     ]
+    ]
+   }
+  ]
+ },
+ "note": "Technical analysis is analysis, never an order. Every trade still runs the full firm process in BRIEF.md and needs Milly's word per trade."
+}
