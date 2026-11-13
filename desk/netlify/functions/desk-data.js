@@ -586,7 +586,7 @@ const RECORD = {
         "watching_for": "Any order placed, real or paper, without a full package and a completed lessons check first.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -600,7 +600,7 @@ const RECORD = {
         "watching_for": "Any opportunity hunt scoped to the watchlist instead of the whole-market scan.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -614,7 +614,7 @@ const RECORD = {
         "watching_for": "Any decision that relies on a feed with no proven delivery (the Discord pipe, the Finnhub stream) instead of a working source.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -628,7 +628,7 @@ const RECORD = {
         "watching_for": "Any trading day where today-slots.json is written after 08:30 CT, or a signal window passes unloaded.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -642,7 +642,7 @@ const RECORD = {
         "watching_for": "Any stop crossing on an options position where the alert and the ask are not one immediate message.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -656,7 +656,7 @@ const RECORD = {
         "watching_for": "Any book state reported to Milly without a read-back verification against the live record.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -670,7 +670,7 @@ const RECORD = {
         "watching_for": "Any exit executed without its pre-written plan (target, trim, or stop set before entry).",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -684,7 +684,7 @@ const RECORD = {
         "watching_for": "A package whose driver section names only macro/sector causes while the name is moving >2 pts against its complex on the day, or any package built without a same-day name-specific news sweep.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -698,7 +698,7 @@ const RECORD = {
         "watching_for": "Any package finalized without a stakeholder-scan section, or any report that softens a stakeholder scandal into corporate euphemism.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -712,7 +712,7 @@ const RECORD = {
         "watching_for": "Any completed business check or qualifying setup that goes a full session without a same-day surface to Milly, or any entry-condition vs margin-math disagreement left unflagged.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -726,7 +726,7 @@ const RECORD = {
         "watching_for": "Any plan-covered level (target, stop, trim) reported to Milly as 'needs your word' when the plan already worded it, or any cross on a pre-worded leg not executed and reported in the same watch cycle.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -740,7 +740,7 @@ const RECORD = {
         "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -754,7 +754,7 @@ const RECORD = {
         "watching_for": "Any package, brief slot, or armed setup that reaches Milly without all four prices, or any report that treats the disaster price as a stop or walk-away line.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -768,7 +768,7 @@ const RECORD = {
         "watching_for": "A daily brief whose slots do not lead with full economics or are not the day's takeable slots; a qualifying L-012 slot not flagged as a live decision; a crawler day with no slot section or no slot-shaped flags; a qualifying slot missed; a stale or missing today-slots.json at the 08:30 open; any slot published in the brief, the candidates file, or today-slots.json missing its stop, kill, max loss in dollars, or flat-by-3:00 PM CT term. Any slot written without a target 2, or a target-1 hit handled without presenting the exit-or-ride decision, or a ride taken without Milly's word or without the stop ratcheting to target 1.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -782,7 +782,7 @@ const RECORD = {
         "watching_for": "A day where a core or packaged name passes all three checks and is not flagged buy-time in that day's brief or crawler outputs; a scan run that does not report the three checks for the core and packaged names; a buy-time flag raised on fewer than three checks. A check 2 passed on a single day's print, or on a crash-day oversold print during an active event.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-12"
+        "last_checked": "2026-11-13"
       }
     },
     {
@@ -792,7 +792,12 @@ const RECORD = {
       "status": "in_force",
       "the_rule": "Every market day at the open, run the Yahoo market-wide sweep (day gainers, day losers, most actives) alongside our packaged names and the slot hunt. Movers without a package or written levels are pipeline, never slots; slot-shaped movers get a fast package built the same morning (driver, structure levels, stop, target 1, target 2, kill, max loss, ride terms) so a qualifying name can become a live decision the same day. Missing the board is the failure this lesson exists to prevent. Extends L-012.",
       "what_happened": "Nov 13, 2026, ~08:43-08:45 CT voice call. After the ANET miss of Nov 12, Milly granted/confirmed standing permission to use Yahoo across the whole market and ordered the sweep run every day: 'This is the only way for us to get cheap money, so we have to do this every day.' First live sweep the same morning (Yahoo day gainers/losers/most actives): MOD +33.6%, CBRS +11.9%, NU +7.4%, NBIS -10.65%, IREN -7.1%, CRWV -6.0%, NVDA most active -2.27%. None carried a package or written levels, so none were takeable; Milly ordered the crawlers to build fast packages on the slot-shaped movers (NBIS crash, MOD gap) the same morning.",
-      "drift_watch": "holding"
+      "drift_watch": {
+        "watching_for": "A market day with no Yahoo market-wide sweep at the open, or a slot-shaped mover left without a fast package built the same morning.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-13"
+      }
     }
   ],
   "drift": {
@@ -914,8 +919,8 @@ const INDEX = {
       "source": "sync_book.py run 2026-11-12: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
     },
     {
-      "date": "2026-11-13",
       "book_value": 302.0,
+      "date": "2026-11-13",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-13: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
     }
