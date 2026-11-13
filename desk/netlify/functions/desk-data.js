@@ -25,7 +25,7 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
   "cash": 293.41,
-  "cash_as_of": "2026-11-12T15:18:20-06:00",
+  "cash_as_of": "2026-11-13T15:15:42-06:00",
   "fills": [
     {
       "symbol": "GOOGL",
@@ -317,22 +317,7 @@ const BOOK = {
       "entry_date": "2026-11-07"
     }
   ],
-  "day_trading": [
-    {
-      "symbol": "VST",
-      "name": "Vistra",
-      "bucket": "day_trading",
-      "armed": true,
-      "filled": false,
-      "date": "2026-11-12",
-      "status": "pre-authorized-real",
-      "entry": 136.85,
-      "stop": 133.35,
-      "target": 143.3,
-      "size": 60.0,
-      "kill": "REAL MONEY day trade, pre-authorized by Milly on voice Nov 12 ~13:05 CT ('I'll take that' / 'not paper, real' / auto-purchase on trigger). Buy ~$60 at market on cross+hold above $136.65 day high (entry print >= $136.85), only before 14:15 CT. Pre-worded exits: stop cross below $133.35 = sell all; kill = loss of $131.30 open or break of $130.01 day low = sell all; target $143.30 = sell all; flat by 15:00 CT regardless. Package trade-package-2026-11-12-VST.md. Never converts to a hold (margin test fails at this price; hold passing price $128)."
-    }
-  ],
+  "day_trading": [],
   "ladders": [
     {
       "symbol": "VST",
@@ -799,6 +784,15 @@ const RECORD = {
         "status": "holding",
         "last_checked": "2026-11-12"
       }
+    },
+    {
+      "id": "L-016",
+      "date": "2026-11-13",
+      "title": "The market-wide sweep is daily: cheap money is found by looking at the whole board every open, not only our names",
+      "status": "in_force",
+      "the_rule": "Every market day at the open, run the Yahoo market-wide sweep (day gainers, day losers, most actives) alongside our packaged names and the slot hunt. Movers without a package or written levels are pipeline, never slots; slot-shaped movers get a fast package built the same morning (driver, structure levels, stop, target 1, target 2, kill, max loss, ride terms) so a qualifying name can become a live decision the same day. Missing the board is the failure this lesson exists to prevent. Extends L-012.",
+      "what_happened": "Nov 13, 2026, ~08:43-08:45 CT voice call. After the ANET miss of Nov 12, Milly granted/confirmed standing permission to use Yahoo across the whole market and ordered the sweep run every day: 'This is the only way for us to get cheap money, so we have to do this every day.' First live sweep the same morning (Yahoo day gainers/losers/most actives): MOD +33.6%, CBRS +11.9%, NU +7.4%, NBIS -10.65%, IREN -7.1%, CRWV -6.0%, NVDA most active -2.27%. None carried a package or written levels, so none were takeable; Milly ordered the crawlers to build fast packages on the slot-shaped movers (NBIS crash, MOD gap) the same morning.",
+      "drift_watch": "holding"
     }
   ],
   "drift": {
@@ -918,6 +912,12 @@ const INDEX = {
       "date": "2026-11-12",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-12: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "date": "2026-11-13",
+      "book_value": 302.0,
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-13: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
