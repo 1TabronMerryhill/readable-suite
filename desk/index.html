@@ -4524,10 +4524,11 @@ function renderTAFull(){
       +'<p class="ta-none" style="margin-top:10px">No full workup is on file for '+esc(sym)+' yet. The workup is built by the TA engine (ta_engine.py) from a year of daily candles: trend, moving averages, RSI, MACD, Bollinger Bands, stochastic, candlesticks, volume, Dow Theory, Elliott Wave, Fibonacci, harmonics, the classic pattern library, and scatter data. Once the engine runs for this symbol, the full read appears here with a definition on every finding.</p>';
     return;
   }
-  var vc = w.trend_verdict==="bearish" ? "var(--bad)" : (w.trend_verdict==="bullish" ? "var(--pos)" : "var(--gold)");
+  var tv = (w.verdict && w.verdict.trend) || "range-bound";
+  var vc = tv==="bearish" ? "var(--bad)" : (tv==="bullish" ? "var(--pos)" : "var(--gold)");
   var h='<div class="taf-head"><span class="taf-title">Full technical workup · '+esc(sym)+'</span>'
-    +'<span class="taf-verdict" style="color:'+vc+'">'+esc(w.trend_verdict.toUpperCase())+'</span></div>'
-    +'<div class="taf-oneline">'+esc(w.one_line)+'</div>'
+    +'<span class="taf-verdict" style="color:'+vc+'">'+esc(tv.toUpperCase())+'</span></div>'
+    +'<div class="taf-oneline">'+esc((w.verdict && w.verdict.one_line) || "")+'</div>'
     +'<div class="taf-src">Built '+esc(w.as_of)+' · Source: '+esc(w.source)+' · Analysis only, never an order.</div>';
   TA_SECTIONS.forEach(function(pair){
     var sec=w.sections[pair[0]];
