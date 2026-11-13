@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="desk-version" content="v1.3" />
+<meta name="desk-version" content="v1.4" />
 <meta name="desk-updated" content="2026-11-12T18:27:44-06:00" />
-<!-- desk-build v1.3 updated 2026-11-12T18:27:44-06:00 -->
+<!-- desk-build v1.4 updated 2026-11-13T09:31:24-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -325,6 +325,34 @@
   .nr-verdict{margin-top:14px;border:1px solid var(--line2);border-radius:7px;padding:11px 13px;background:var(--panel2)}
   .nr-verdict .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
   .nr-verdict .v{font-size:14px;font-weight:600;line-height:1.5;margin-top:3px}
+  .nr-charttype{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .nr-charttype .ctlab{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-right:2px}
+  .nr-charttype select{background:var(--panel);color:var(--text);border:1px solid var(--line2);border-radius:6px;padding:5px 8px;font-size:12.5px;max-width:100%}
+  .nr-tafull{margin-top:14px}
+  .nr-tafull .taf-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px}
+  .nr-tafull .taf-title{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+  .nr-tafull .taf-verdict{font-size:16px;font-weight:700}
+  .nr-tafull .taf-oneline{color:var(--muted);font-size:13px;line-height:1.65;margin-top:8px}
+  .nr-tafull .taf-src{font-size:11.5px;color:var(--faint);margin-top:4px}
+  .ta-sec{margin-top:14px}
+  .ta-sec>h4{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin:0 0 4px}
+  .ta-finding{border-top:1px solid var(--line);padding:9px 0}
+  .ta-finding:first-of-type{border-top:none}
+  .ta-fhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .ta-fname{font-size:13.5px;font-weight:600;color:var(--text)}
+  .ta-chip{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line2);border-radius:20px;padding:2px 8px;color:var(--muted)}
+  .ta-chip.confirmed{border-color:currentColor;font-weight:700}
+  .ta-chip.forming{color:var(--gold)}
+  .ta-dir{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+  .ta-dir.bullish{color:var(--pos)} .ta-dir.bearish{color:var(--bad)} .ta-dir.neutral{color:var(--faint)}
+  .ta-meaning{font-size:13px;color:var(--muted);line-height:1.65;margin-top:4px}
+  .ta-finding details{margin-top:5px}
+  .ta-finding summary{cursor:pointer;font-size:12px;color:var(--faint);font-family:var(--mono);letter-spacing:.06em}
+  .ta-detail{font-size:12.5px;color:var(--muted);line-height:1.65;margin-top:5px}
+  .ta-detail b{color:var(--text)}
+  .ta-absent-toggle{margin-top:10px}
+  .ta-absent-toggle summary{cursor:pointer;font-size:12px;color:var(--faint);font-family:var(--mono);letter-spacing:.06em}
+  .ta-none{color:var(--muted);font-size:13px;line-height:1.65}
   .nr-check{margin-top:12px;display:grid;gap:10px}
   .nr-check .step{border-top:1px solid var(--line);padding-top:10px}
   .nr-check .step:first-child{border-top:none;padding-top:0}
@@ -705,6 +733,13 @@
         <button class="fbtn" data-drawact="undo" type="button">Undo</button>
         <button class="fbtn" data-drawact="clear" type="button">Clear all</button>
       </div>
+      <div class="nr-charttype" role="group" aria-label="Chart type">
+        <span class="ctlab">Chart</span>
+        <button class="fbtn on" data-charttype="candles" type="button">Candles</button>
+        <button class="fbtn" data-charttype="line" type="button">Line</button>
+        <button class="fbtn" data-charttype="scatter" type="button">Scatter</button>
+        <select id="nrScatterSel" hidden aria-label="Scatter dataset"></select>
+      </div>
       <p class="nr-drawnote" id="nrDrawNote">Drawings are shared on the firm server: Milly's lines are amber, Bobby's are blue. This device keeps an offline copy.</p>
       <div class="nr-canvas-wrap"><canvas id="nrCanvas" height="300"></canvas></div>
       <div class="nr-candle" id="nrCandle">Tap a candle to read its open, high, low, close, and volume.</div>
@@ -718,6 +753,7 @@
       <div class="nr-card" id="nrTA"></div>
       <div class="nr-card" id="nrFA"></div>
     </div>
+    <div class="nr-card nr-tafull" id="nrTAFull"></div>
     <div class="nr-learn" id="nrLearn" hidden></div>
     <div class="cond-head">
       <h3>Research insights</h3>
@@ -850,7 +886,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.3 · Updated Nov 12, 2026, 6:27 PM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.4 · Updated Nov 13, 2026, 9:31 AM CT</span></p>
   </footer>
 </div>
 <script>
@@ -3541,6 +3577,8 @@ var NR_SYMBOLS = [
   { sym:"AMD", name:"Advanced Micro Devices", group:"Conditionals" },
   { sym:"DUOL", name:"Duolingo", group:"Conditionals" },
   { sym:"NVDA", name:"NVIDIA", group:"Watchlist" },
+  { sym:"NBIS", name:"Nebius Group", group:"Watchlist" },
+  { sym:"QQQ", name:"Invesco QQQ Trust", group:"Watchlist" },
   { sym:"DIA", name:"SPDR Dow Jones Industrial Average ETF", group:"Watchlist" },
   { sym:"SPY", name:"SPDR S&P 500 ETF", group:"Watchlist" },
   { sym:"IWM", name:"iShares Russell 2000 ETF", group:"Watchlist" },
@@ -3888,7 +3926,8 @@ var OPENQ = [
 ];
 /* === END NEWSROOM SYNC === */
 /* ---- Newsroom state and chart ---- */
-var nrState = { sym:"MU", range:"3mo", data:null, lastGood:null, failed:false, selIdx:-1, showSma:true };
+var nrState = { sym:"MU", range:"3mo", data:null, lastGood:null, failed:false, selIdx:-1, showSma:true, chartType:"candles" };
+var taState = { workup:null, scatterId:null };
 function nrSymName(sym){ var f=null; NR_SYMBOLS.forEach(function(s){ if(s.sym===sym) f=s; }); return f; }
 function nrLevels(sym){
   var fa = NR_FA[sym]; if(!fa) return [];
@@ -3953,6 +3992,7 @@ function nrGeom(){
 function nrDraw(){
   var d=nrState.data;
   if(!d || !d.candles.length){ nrDrawEmpty(); return; }
+  if(nrState.chartType==="scatter"){ nrDrawScatter(); return; }
   var g=nrGeom();
   var cv=document.getElementById("nrCanvas");
   var dpr=window.devicePixelRatio||1;
@@ -3990,8 +4030,12 @@ function nrDraw(){
     var vh=vmax? (c.v/vmax)*volH : 0;
     ctx.fillRect(X(i)-bw/2, volTop+volH-vh, bw, vh);
   });
-  // candles
-  cs.forEach(function(c,i){
+  // candles, or a close line in line mode
+  if(nrState.chartType==="line"){
+    ctx.strokeStyle="#eceef1"; ctx.lineWidth=1.6; ctx.beginPath();
+    cs.forEach(function(c,i){ var x=X(i), y=Y(c.c); if(i===0){ ctx.moveTo(x,y); } else { ctx.lineTo(x,y); } });
+    ctx.stroke(); ctx.lineWidth=1;
+  } else cs.forEach(function(c,i){
     var up=c.c>=c.o;
     var col=up?"#3fb96f":"#e5534b";
     var x=X(i);
@@ -4430,6 +4474,126 @@ function nrRenderPicker(){
     p.appendChild(gd);
   });
 }
+function nrFetchTA(){
+  var sym=nrState.sym;
+  taState.workup=null; taState.scatterId=null;
+  renderTAFull();
+  fetch("/ta/"+encodeURIComponent(sym)+".json", {cache:"no-store"})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(w){
+      if(nrState.sym!==sym) return;
+      taState.workup=w||null;
+      if(w && w.scatter && w.scatter.datasets && w.scatter.datasets.length) taState.scatterId=w.scatter.datasets[0].id;
+      renderTAFull();
+      if(nrState.chartType==="scatter") nrDraw();
+    })
+    .catch(function(){ if(nrState.sym===sym){ taState.workup=null; renderTAFull(); } });
+}
+var TA_SECTIONS=[["trend","Trend"],["moving_averages","Moving averages"],["indicators","Indicators"],["candlesticks","Candlesticks and price action"],["volume","Volume"],["dow_theory","Dow Theory"],["elliott_wave","Elliott Wave (interpretation)"],["fibonacci","Fibonacci levels"],["harmonics","Harmonic patterns"],["patterns","Pattern library"]];
+function taFindingHtml(f){
+  var h='<div class="ta-finding"><div class="ta-fhead"><span class="ta-fname">'+esc(f.name)+'</span>'
+    +'<span class="ta-chip '+esc(f.status)+'">'+esc(f.status)+'</span>'
+    +'<span class="ta-dir '+esc(f.direction)+'">'+esc(f.direction)+'</span></div>'
+    +'<div class="ta-meaning">'+esc(f.meaning)+'</div>'
+    +'<details><summary>Definition, confirms, invalidates</summary>'
+    +'<div class="ta-detail"><b>What it is.</b> '+esc(f.definition)+'</div>'
+    +'<div class="ta-detail"><b>Confirms.</b> '+esc(f.confirms)+'</div>'
+    +'<div class="ta-detail"><b>Invalidates.</b> '+esc(f.invalidates)+'</div>'
+    +'</details></div>';
+  return h;
+}
+function renderTAFull(){
+  var el=document.getElementById("nrTAFull");
+  if(!el) return;
+  var sym=nrState.sym, w=taState.workup;
+  var sel=document.getElementById("nrScatterSel");
+  if(sel){
+    sel.innerHTML="";
+    if(w && w.scatter && w.scatter.datasets){
+      w.scatter.datasets.forEach(function(ds){
+        var o=document.createElement("option");
+        o.value=ds.id; o.textContent=ds.title;
+        if(ds.id===taState.scatterId) o.selected=true;
+        sel.appendChild(o);
+      });
+    }
+    sel.hidden = nrState.chartType!=="scatter";
+  }
+  if(!w){
+    el.innerHTML='<div class="taf-head"><span class="taf-title">Full technical workup · '+esc(sym)+'</span></div>'
+      +'<p class="ta-none" style="margin-top:10px">No full workup is on file for '+esc(sym)+' yet. The workup is built by the TA engine (ta_engine.py) from a year of daily candles: trend, moving averages, RSI, MACD, Bollinger Bands, stochastic, candlesticks, volume, Dow Theory, Elliott Wave, Fibonacci, harmonics, the classic pattern library, and scatter data. Once the engine runs for this symbol, the full read appears here with a definition on every finding.</p>';
+    return;
+  }
+  var vc = w.trend_verdict==="bearish" ? "var(--bad)" : (w.trend_verdict==="bullish" ? "var(--pos)" : "var(--gold)");
+  var h='<div class="taf-head"><span class="taf-title">Full technical workup · '+esc(sym)+'</span>'
+    +'<span class="taf-verdict" style="color:'+vc+'">'+esc(w.trend_verdict.toUpperCase())+'</span></div>'
+    +'<div class="taf-oneline">'+esc(w.one_line)+'</div>'
+    +'<div class="taf-src">Built '+esc(w.as_of)+' · Source: '+esc(w.source)+' · Analysis only, never an order.</div>';
+  TA_SECTIONS.forEach(function(pair){
+    var sec=w.sections[pair[0]];
+    if(!sec) return;
+    var live=sec.findings.filter(function(f){ return f.status!=="absent"; });
+    var absent=sec.findings.filter(function(f){ return f.status==="absent"; });
+    h+='<div class="ta-sec"><h4>'+esc(pair[1])+'</h4>';
+    if(live.length){ live.forEach(function(f){ h+=taFindingHtml(f); }); }
+    else { h+='<div class="ta-meaning">Nothing live in this section right now.</div>'; }
+    if(absent.length){
+      h+='<details class="ta-absent-toggle"><summary>'+absent.length+' checked and absent</summary>';
+      absent.forEach(function(f){ h+=taFindingHtml(f); });
+      h+='</details>';
+    }
+    h+='</div>';
+  });
+  el.innerHTML=h;
+}
+function nrDrawScatter(){
+  var cv=document.getElementById("nrCanvas");
+  var dpr=window.devicePixelRatio||1;
+  var W=cv.clientWidth||cv.parentNode.clientWidth||900;
+  var H=300;
+  if(cv.width!==Math.round(W*dpr) || cv.height!==Math.round(H*dpr)){ cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); cv.style.height=H+"px"; }
+  var ctx=cv.getContext("2d");
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle="#12161c"; ctx.fillRect(0,0,W,H);
+  ctx.font="10px ui-monospace,Menlo,monospace";
+  var w=taState.workup;
+  var ds=null;
+  if(w && w.scatter && w.scatter.datasets){
+    ds=w.scatter.datasets.filter(function(x){ return x.id===taState.scatterId; })[0] || w.scatter.datasets[0];
+  }
+  if(!ds || !ds.points.length){
+    ctx.fillStyle="#9aa3ad"; ctx.font="12.5px system-ui,sans-serif";
+    ctx.fillText("No scatter data for "+nrState.sym+" yet. Run a TA workup for this symbol and the scatter views appear here.", 16, 30);
+    return;
+  }
+  var xs=ds.points.map(function(p){return p[0];}), ys=ds.points.map(function(p){return p[1];});
+  var xmin=Math.min.apply(null,xs), xmax=Math.max.apply(null,xs), ymin=Math.min.apply(null,ys), ymax=Math.max.apply(null,ys);
+  if(ymin>0) ymin=0; if(ymax<0) ymax=0;
+  var xpad=(xmax-xmin)*0.06||1, ypad=(ymax-ymin)*0.08||1;
+  xmin-=xpad; xmax+=xpad; ymin-=ypad; ymax+=ypad;
+  var L=52, R=12, T=30, B=26;
+  function X(v){ return L+(v-xmin)/(xmax-xmin)*(W-L-R); }
+  function Y(v){ return T+(ymax-v)/(ymax-ymin)*(H-T-B); }
+  ctx.strokeStyle="#232a33"; ctx.fillStyle="#7d8590"; ctx.lineWidth=1;
+  for(var gi=0; gi<=4; gi++){
+    var gx=L+(W-L-R)*gi/4, gy=T+(H-T-B)*gi/4;
+    ctx.beginPath(); ctx.moveTo(gx,T); ctx.lineTo(gx,H-B); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(L,gy); ctx.lineTo(W-R,gy); ctx.stroke();
+    var xv=xmin+(xmax-xmin)*gi/4, yv=ymax-(ymax-ymin)*gi/4;
+    ctx.fillText(xv.toFixed(1), gx-8, H-B+14);
+    ctx.fillText(yv.toFixed(1), 8, gy+3);
+  }
+  if(ymin<0 && ymax>0){ ctx.strokeStyle="#39424e"; ctx.beginPath(); ctx.moveTo(L,Y(0)); ctx.lineTo(W-R,Y(0)); ctx.stroke(); }
+  if(xmin<0 && xmax>0){ ctx.strokeStyle="#39424e"; ctx.beginPath(); ctx.moveTo(X(0),T); ctx.lineTo(X(0),H-B); ctx.stroke(); }
+  ctx.fillStyle="rgba(217,164,65,.78)";
+  ds.points.forEach(function(p){ ctx.beginPath(); ctx.arc(X(p[0]), Y(p[1]), 2.3, 0, 6.2832); ctx.fill(); });
+  ctx.fillStyle="#c9d1d9"; ctx.font="12px system-ui,sans-serif";
+  ctx.fillText(ds.title+"  ·  n="+ds.points.length, L, 16);
+  ctx.fillStyle="#7d8590"; ctx.font="10px ui-monospace,Menlo,monospace";
+  ctx.fillText(ds.y_label, L, 27);
+  var xl=ds.x_label; ctx.fillText(xl, Math.max(L, W-R-ctx.measureText(xl).width), H-6);
+}
 function selectSymbol(sym){
   if(!nrSymName(sym)) return;
   nrState.sym=sym; nrState.selIdx=-1;
@@ -4444,13 +4608,28 @@ function selectSymbol(sym){
   var inp=document.getElementById("askInput"); if(inp) inp.value=q;
   document.getElementById("nrAskNote").textContent="Loaded in Ask below.";
   renderFA();
-  nrFetch();
+  nrFetch(); nrFetchTA();
 }
 document.querySelectorAll(".nr-tf .fbtn").forEach(function(b){
   b.addEventListener("click",function(){
     document.querySelectorAll(".nr-tf .fbtn").forEach(function(x){x.classList.remove("on");});
     b.classList.add("on"); nrState.range=b.getAttribute("data-range"); nrFetch();
   });
+});
+document.querySelectorAll("[data-charttype]").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("[data-charttype]").forEach(function(x){x.classList.remove("on");});
+    b.classList.add("on");
+    nrState.chartType=b.getAttribute("data-charttype");
+    var sel=document.getElementById("nrScatterSel");
+    if(sel) sel.hidden = nrState.chartType!=="scatter";
+    nrDraw();
+  });
+});
+var nrScatterSelEl=document.getElementById("nrScatterSel");
+if(nrScatterSelEl) nrScatterSelEl.addEventListener("change",function(){
+  taState.scatterId=nrScatterSelEl.value;
+  if(nrState.chartType==="scatter") nrDraw();
 });
 document.getElementById("nrSmaToggle").addEventListener("change",function(e){
   nrState.showSma=e.target.checked; nrDraw();
@@ -5227,7 +5406,7 @@ function deskInitTabs(){
 nrRenderPicker(); renderInsights(); renderFA(); deskInitTabs();
 document.getElementById("nrAskBtn").textContent="Ask the graph about MU";
 document.getElementById("nrAskNote").textContent="";
-nrFetch();
+nrFetch(); nrFetchTA();
 </script>
 <script>
 /* === AMBIENT LIGHTING CONTROL (Nov 11, 2026) ===
