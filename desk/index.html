@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="desk-version" content="v1.3" />
-<meta name="desk-updated" content="2026-11-12T15:47:38-06:00" />
-<!-- desk-build v1.3 updated 2026-11-12T15:47:38-06:00 -->
+<meta name="desk-updated" content="2026-11-12T18:07:20-06:00" />
+<!-- desk-build v1.3 updated 2026-11-12T18:07:20-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -850,7 +850,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.3 · Updated Nov 12, 2026, 3:47 PM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.3 · Updated Nov 12, 2026, 6:07 PM CT</span></p>
   </footer>
 </div>
 <script>
@@ -2779,7 +2779,7 @@ var BOOK={ total:302.00, cash:293.41, equity:8.59, count:5, symbols:"ABBV, BAC, 
   attention:"Book synced from the ledger by sync_book.py. Nothing else needs you.", cashAsOf:"" };
 /* === RECORD SYNC (generated; do not hand-edit) === */
 var RECORD = {
-  "as_of": "2026-11-12",
+  "as_of": "2026-11-13",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -3043,6 +3043,20 @@ var RECORD = {
       "what_happened": "On the Nov 12 afternoon voice call, after the VST close, Milly set the price architecture for the firm: for everything we are trading or thinking about trading, we have to know the disaster price. He defined it himself: the disaster price is how low the company can actually go. Load the boat is the companion rule: if a company we like goes into that disaster zone, we have to load the boat. Then the early entry, then the swing trade. Bobby's first spoken recap had wrongly glossed the disaster price as where we walk away; Milly's definition is the opposite anchor: the disaster price is the business's own floor, and the disaster zone is where liked names get bought heaviest.",
       "drift_watch": {
         "watching_for": "Any package, brief slot, or armed setup that reaches Milly without all four prices, or any report that treats the disaster price as a stop or walk-away line.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-12"
+      }
+    },
+    {
+      "id": "L-014",
+      "date": "2026-11-12",
+      "title": "The slot hunt is a standing daily priority: slots out the gate, full economics, never missed",
+      "status": "in_force",
+      "the_rule": "The day-trade slot hunt runs every day as a standing priority. The crawlers carry it out the gate: the market scan flags slot-shaped names, and the connection loop publishes a Day-trade slots section in the candidates file and leaves a today-dated today-slots.json in place before the open. The Discord brief's trade briefs are the day's takeable slots, each leading with full economics (entry trigger or zone, stop, target, kill, size, capital that must be put up, expected profit at target after fees, percent return), and every slot qualifying under L-012 is flagged LIVE DECISION FOR THE OPEN. Slots are built only from the crawler candidates, the packages, and the four-prices ladders (L-013); a name without defined levels in the record is pipeline, never a slot. PROTECTION IS HALF THE POINT AND IS MANDATORY, NOT OPTIONAL: the opportunity is there every day and the risk is defined before entry, with the guardrails unmoved \u2014 no slot goes out the gate in the brief, the candidates slot section, or today-slots.json without its stop, its kill, its max loss in dollars, and its flat-by-3:00 PM CT term all present. A slot missing any protection field is not a slot, and the morning check fails it. Missing a qualifying slot, or publishing slots without their economics and protection up front, is the failure.",
+      "what_happened": "On the Nov 12 evening voice call, reviewing the day (ANET missed under L-012; VST armed correctly and never triggered), Milly named the standing priority plainly: these day trades are there every single day, we should not miss them at all; the hunt for them has to be a thing we prioritize; and the crawlers and the Discord research team should have this information out the gate, because these things are available and we cannot miss them.",
+      "drift_watch": {
+        "watching_for": "A daily brief whose slots do not lead with full economics or are not the day's takeable slots; a qualifying L-012 slot not flagged as a live decision; a crawler day with no slot section or no slot-shaped flags; a qualifying slot missed; a stale or missing today-slots.json at the 08:30 open; any slot published in the brief, the candidates file, or today-slots.json missing its stop, kill, max loss in dollars, or flat-by-3:00 PM CT term.",
         "relapses_since_lesson": 0,
         "status": "holding",
         "last_checked": "2026-11-12"
