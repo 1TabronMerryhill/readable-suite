@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-12T18:08:42.459897-06:00",
+ "generated": "2026-11-12T18:19:49.535402-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -767,6 +767,20 @@
     "what_happened": "On the Nov 12 evening voice call, reviewing the day (ANET missed under L-012; VST armed correctly and never triggered), Milly named the standing priority plainly: these day trades are there every single day, we should not miss them at all; the hunt for them has to be a thing we prioritize; and the crawlers and the Discord research team should have this information out the gate, because these things are available and we cannot miss them.",
     "drift_watch": {
      "watching_for": "A daily brief whose slots do not lead with full economics or are not the day's takeable slots; a qualifying L-012 slot not flagged as a live decision; a crawler day with no slot section or no slot-shaped flags; a qualifying slot missed; a stale or missing today-slots.json at the 08:30 open; any slot published in the brief, the candidates file, or today-slots.json missing its stop, kill, max loss in dollars, or flat-by-3:00 PM CT term. Any slot written without a target 2, or a target-1 hit handled without presenting the exit-or-ride decision, or a ride taken without Milly's word or without the stop ratcheting to target 1.",
+     "relapses_since_lesson": 0,
+     "status": "holding",
+     "last_checked": "2026-11-12"
+    }
+   },
+   {
+    "id": "L-015",
+    "date": "2026-11-12",
+    "title": "The three-check buy signal: crash zone, not overbought, below worth \u2014 all three or it is not buy time",
+    "status": "in_force",
+    "the_rule": "A name we like is a BUY TIME for dollar-cost averaging only when all three of Milly's checks pass at once: (1) CRASH ZONE \u2014 price 20% or more below its 52-week high (10% down is his volatile watch zone; 20% is the crash line and his buy-in mark); (2) NOT OVERBOUGHT \u2014 the tape check says not overextended (RSI and distance from the 50-day and 200-day moving averages; a name stretched above its averages fails even inside the crash zone); (3) BELOW WORTH \u2014 price trades below what the filings say it is worth, per the name's package worth and margin line, with the full pass at the 20% margin bar. A crash alone is a flag, not a buy; a partial pass (BAC, Nov 12) is not a buy-time signal. Every daily surface reports the three checks together: the market scan prints the three-check status for the DCA core names and the packaged watch names, the connection loop flags any qualifying name BUY TIME in the candidates file, and the brief carries the three-check table for core and packaged names every day with any BUY TIME name out the gate alongside the slots; a qualifying name not flagged fails the brief and the morning check. In the DCA program, a core name passing all three on a day's close gets its next weekly buy doubled (dip-rule mechanics) and Bobby surfaces the name to Milly the same day as a buy-time decision; the flag never overrides the protection rules, which still govern exits.",
+    "what_happened": "On the Nov 12 evening voice call Milly stated his buy-time rules for dollar-cost averaging and the day itself proved the gap: GOOGL passed all three checks at the Nov 12 close (26.9% below its 52-week high; RSI 38 and below its 50-day and 200-day averages, so not overbought; close $298.70 against package worth $368-$419, about 19% under the low end) and nobody surfaced it, because no daily process was checking the three rules together. BAC was the worked partial the same day: crash zone and not overbought passed, below-worth only partial (about 16% under worth, short of the 20% margin bar), so not a buy-time flag.",
+    "drift_watch": {
+     "watching_for": "A day where a core or packaged name passes all three checks and is not flagged buy-time in that day's brief or crawler outputs; a scan run that does not report the three checks for the core and packaged names; a buy-time flag raised on fewer than three checks.",
      "relapses_since_lesson": 0,
      "status": "holding",
      "last_checked": "2026-11-12"
