@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="desk-version" content="v1.4" />
-<meta name="desk-updated" content="2026-11-13T15:20:35-06:00" />
-<!-- desk-build v1.4 updated 2026-11-13T15:20:35-06:00 -->
+<meta name="desk-version" content="v1.5" />
+<meta name="desk-updated" content="2026-11-14T07:56:35-06:00" />
+<!-- desk-build v1.5 updated 2026-11-14T07:56:35-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -99,6 +99,20 @@
   .opone-index .oi-chart svg{display:block;width:100%;height:auto}
   .opone-index .oi-table{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--faint);line-height:1.8;overflow-x:auto;white-space:nowrap}
   .opone-index .oi-table b{color:var(--muted);font-weight:500}
+
+  /* 30% weekly compounding ladder (added Nov 14, 2026, Desk v1.5,
+     owner's word): sits beside the OpOne Index in Glance. The ladder
+     is the target map; the Index is the truth. Same mood variables as
+     the Index block, so all six lighting moods carry it. The table
+     scrolls inside its own fitted box so the 52 rows never shift the
+     page layout. */
+  .cl-scroll{margin-top:10px;max-height:342px;overflow-y:auto;overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+  .cl-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .cl-table th{position:sticky;top:0;background:var(--panel2);color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;text-align:right;padding:8px 12px;white-space:nowrap}
+  .cl-table td{padding:6px 12px;text-align:right;color:var(--muted);border-top:1px solid var(--line);white-space:nowrap}
+  .cl-table th:first-child,.cl-table td:first-child{text-align:left}
+  .cl-table td.wk{color:var(--text)}
+  .cl-table td.end{color:var(--text);font-weight:600}
 
   /* feed strip */
   .feed{margin-top:22px;border:1px solid var(--line);border-radius:10px;background:var(--bg2);padding:16px 20px}
@@ -635,6 +649,15 @@
       <div class="oi-table" id="oiTable"></div>
     </div>
 
+    <div class="opone-index opone-ladder" aria-label="30 percent weekly compounding ladder">
+      <div class="oi-head">
+        <span class="k">30% Weekly Ladder</span>
+        <span class="oi-latest" id="clMeta"></span>
+      </div>
+      <p class="oi-note">The target map, set by Milly on Nov 14, 2026: each week adds 30% to the balance it starts with, and the ending balance becomes the next week's start. Anchored to the live book. The ladder is the target; the OpOne Index above is the truth. Private to this Desk.</p>
+      <div class="cl-scroll"><div id="clTable"></div></div>
+    </div>
+
     <div class="feed" aria-label="Feed and system status">
       <div class="row1">
         <span class="k">Feed</span>
@@ -800,9 +823,9 @@
     <div class="sec-head">
       <span class="sec-num">05</span>
       <h2 class="sec-title">The Brief</h2>
-      <p class="sec-note" id="briefDateLine">2026-11-13. The overall read first, then the day's slots in order. Refreshed with the daily book sync.</p>
+      <p class="sec-note" id="briefDateLine">2026-11-14. The overall read first, then the day's slots in order. Refreshed with the daily book sync.</p>
     </div>
-    <p class="brief-overall" id="briefOverall">OpOne daily brief Fri Nov 13, 2026 (06:00 CT), written before the 08:30 CT open per L-004. Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json, outcomes.json, track-record.json, candidates-2026-11-12.md. PPI 07:30 CT today is the gate event; CSCO and AMAT reported after the Nov 12 close (both beat and raised); NVDA package DISARMED Nov 12; NVDA reports Nov 17.</p>
+    <p class="brief-overall" id="briefOverall">OpOne daily brief Sat Nov 14, 2026 (06:00 CT, weekend). Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json, outcomes.json, track-record.json, candidates-2026-11-13.md, Fri Nov 13 verified closes (Finnhub/watch), DCA close state Nov 13.</p>
     <div class="slots" id="slotList"></div>
     <button class="tab-next" data-next="glance" type="button"><span class="nx">Next: Glance.</span> Start the loop at step 1.</button>
   </section>
@@ -886,7 +909,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.4 · Updated Nov 13, 2026, 3:20 PM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 14, 2026, 7:56 AM CT</span></p>
   </footer>
 </div>
 <script>
@@ -1296,7 +1319,332 @@ var LADDERS = [
     "basis": "Ladder pending. The Nov 7 check records no true-worth estimate and no four prices under the L-013 definitions. Disaster $14.41 and load the boat $18.01 built Nov 12, 2026 (L-013): FY2024 trough FCF/share $1.20 x 12 = $14.41; the GAAP EPS leg is negative (-$1.08) and unusable, so the floor rests on trough cash generation. This is a trough floor, NOT a worth estimate \u2014 the Nov 7 check records no true-worth estimate for MRVL. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   }
 ];
-var CASH_AS_OF = "2026-11-13T15:15:42-06:00";
+var COMPOUNDING = {
+  "rate_pct": 30,
+  "anchor_date": "2026-11-14",
+  "anchor": "Set by Milly, Nov 14, 2026. Anchored to the live Robinhood book verified Nov 14, 2026, 07:16 CT (cash $163.41 + equity $8.65, pending deposits $0).",
+  "rows": [
+    {
+      "step": 0,
+      "start": null,
+      "interest": null,
+      "end": 172.06
+    },
+    {
+      "step": 1,
+      "start": 172.06,
+      "interest": 51.62,
+      "end": 223.68
+    },
+    {
+      "step": 2,
+      "start": 223.68,
+      "interest": 67.1,
+      "end": 290.78
+    },
+    {
+      "step": 3,
+      "start": 290.78,
+      "interest": 87.23,
+      "end": 378.02
+    },
+    {
+      "step": 4,
+      "start": 378.02,
+      "interest": 113.4,
+      "end": 491.42
+    },
+    {
+      "step": 5,
+      "start": 491.42,
+      "interest": 147.43,
+      "end": 638.85
+    },
+    {
+      "step": 6,
+      "start": 638.85,
+      "interest": 191.65,
+      "end": 830.5
+    },
+    {
+      "step": 7,
+      "start": 830.5,
+      "interest": 249.15,
+      "end": 1079.65
+    },
+    {
+      "step": 8,
+      "start": 1079.65,
+      "interest": 323.9,
+      "end": 1403.55
+    },
+    {
+      "step": 9,
+      "start": 1403.55,
+      "interest": 421.06,
+      "end": 1824.61
+    },
+    {
+      "step": 10,
+      "start": 1824.61,
+      "interest": 547.38,
+      "end": 2371.99
+    },
+    {
+      "step": 11,
+      "start": 2371.99,
+      "interest": 711.6,
+      "end": 3083.59
+    },
+    {
+      "step": 12,
+      "start": 3083.59,
+      "interest": 925.08,
+      "end": 4008.67
+    },
+    {
+      "step": 13,
+      "start": 4008.67,
+      "interest": 1202.6,
+      "end": 5211.27
+    },
+    {
+      "step": 14,
+      "start": 5211.27,
+      "interest": 1563.38,
+      "end": 6774.65
+    },
+    {
+      "step": 15,
+      "start": 6774.65,
+      "interest": 2032.39,
+      "end": 8807.04
+    },
+    {
+      "step": 16,
+      "start": 8807.04,
+      "interest": 2642.11,
+      "end": 11449.16
+    },
+    {
+      "step": 17,
+      "start": 11449.16,
+      "interest": 3434.75,
+      "end": 14883.91
+    },
+    {
+      "step": 18,
+      "start": 14883.91,
+      "interest": 4465.17,
+      "end": 19349.08
+    },
+    {
+      "step": 19,
+      "start": 19349.08,
+      "interest": 5804.72,
+      "end": 25153.8
+    },
+    {
+      "step": 20,
+      "start": 25153.8,
+      "interest": 7546.14,
+      "end": 32699.94
+    },
+    {
+      "step": 21,
+      "start": 32699.94,
+      "interest": 9809.98,
+      "end": 42509.92
+    },
+    {
+      "step": 22,
+      "start": 42509.92,
+      "interest": 12752.98,
+      "end": 55262.9
+    },
+    {
+      "step": 23,
+      "start": 55262.9,
+      "interest": 16578.87,
+      "end": 71841.77
+    },
+    {
+      "step": 24,
+      "start": 71841.77,
+      "interest": 21552.53,
+      "end": 93394.3
+    },
+    {
+      "step": 25,
+      "start": 93394.3,
+      "interest": 28018.29,
+      "end": 121412.59
+    },
+    {
+      "step": 26,
+      "start": 121412.59,
+      "interest": 36423.78,
+      "end": 157836.37
+    },
+    {
+      "step": 27,
+      "start": 157836.37,
+      "interest": 47350.91,
+      "end": 205187.28
+    },
+    {
+      "step": 28,
+      "start": 205187.28,
+      "interest": 61556.18,
+      "end": 266743.46
+    },
+    {
+      "step": 29,
+      "start": 266743.46,
+      "interest": 80023.04,
+      "end": 346766.5
+    },
+    {
+      "step": 30,
+      "start": 346766.5,
+      "interest": 104029.95,
+      "end": 450796.45
+    },
+    {
+      "step": 31,
+      "start": 450796.45,
+      "interest": 135238.94,
+      "end": 586035.39
+    },
+    {
+      "step": 32,
+      "start": 586035.39,
+      "interest": 175810.62,
+      "end": 761846.0
+    },
+    {
+      "step": 33,
+      "start": 761846.0,
+      "interest": 228553.8,
+      "end": 990399.8
+    },
+    {
+      "step": 34,
+      "start": 990399.8,
+      "interest": 297119.94,
+      "end": 1287519.74
+    },
+    {
+      "step": 35,
+      "start": 1287519.74,
+      "interest": 386255.92,
+      "end": 1673775.66
+    },
+    {
+      "step": 36,
+      "start": 1673775.66,
+      "interest": 502132.7,
+      "end": 2175908.36
+    },
+    {
+      "step": 37,
+      "start": 2175908.36,
+      "interest": 652772.51,
+      "end": 2828680.87
+    },
+    {
+      "step": 38,
+      "start": 2828680.87,
+      "interest": 848604.26,
+      "end": 3677285.14
+    },
+    {
+      "step": 39,
+      "start": 3677285.14,
+      "interest": 1103185.54,
+      "end": 4780470.68
+    },
+    {
+      "step": 40,
+      "start": 4780470.68,
+      "interest": 1434141.2,
+      "end": 6214611.88
+    },
+    {
+      "step": 41,
+      "start": 6214611.88,
+      "interest": 1864383.56,
+      "end": 8078995.44
+    },
+    {
+      "step": 42,
+      "start": 8078995.44,
+      "interest": 2423698.63,
+      "end": 10502694.08
+    },
+    {
+      "step": 43,
+      "start": 10502694.08,
+      "interest": 3150808.22,
+      "end": 13653502.3
+    },
+    {
+      "step": 44,
+      "start": 13653502.3,
+      "interest": 4096050.69,
+      "end": 17749552.99
+    },
+    {
+      "step": 45,
+      "start": 17749552.99,
+      "interest": 5324865.9,
+      "end": 23074418.88
+    },
+    {
+      "step": 46,
+      "start": 23074418.88,
+      "interest": 6922325.67,
+      "end": 29996744.55
+    },
+    {
+      "step": 47,
+      "start": 29996744.55,
+      "interest": 8999023.36,
+      "end": 38995767.91
+    },
+    {
+      "step": 48,
+      "start": 38995767.91,
+      "interest": 11698730.37,
+      "end": 50694498.29
+    },
+    {
+      "step": 49,
+      "start": 50694498.29,
+      "interest": 15208349.49,
+      "end": 65902847.77
+    },
+    {
+      "step": 50,
+      "start": 65902847.77,
+      "interest": 19770854.33,
+      "end": 85673702.11
+    },
+    {
+      "step": 51,
+      "start": 85673702.11,
+      "interest": 25702110.63,
+      "end": 111375812.74
+    },
+    {
+      "step": 52,
+      "start": 111375812.74,
+      "interest": 33412743.82,
+      "end": 144788556.56
+    }
+  ]
+};
+var CASH_AS_OF = "2026-11-14T07:16:00-06:00";
 /* === END POSITIONS SYNC === */
 /* Gold state. The GLD position closed Nov 9, 2026, so GLD is NOT a live
    position and never gets a position card with a per-share price. Gold
@@ -1507,9 +1855,9 @@ var WIRE = [
 var SLOTS = [
   {
     "slot": 1,
-    "symbol": "NVDA paper Nov 13 175 put \u2014 EXPIRY TODAY; NVDA long package DISARMED",
-    "call": "short via paper put (existing position, hold to expiry), paper_open_expiry_today",
-    "note": "short via paper put (existing position, hold to expiry) \u00b7 entry 4.8 \u00b7 target 9.6 \u00b7 stop 2.4. NVDA reclaims and holds above $181.60 exits regardless of premium (per weeklies-paper.json). Long package: DISARMED Nov 12, 2026 \u2014 escalation kill fired (Huang departs leg). Nothing re-arms without Milly's word after a re-underwrite from..."
+    "symbol": "NVDA paper Nov 13 175 put \u2014 SETTLED at expiry; NVDA long package DISARMED",
+    "call": "short via paper put (existing position, now closed at expiry), paper_closed_target_hit_at_expiry",
+    "note": "short via paper put (existing position, now closed at expiry) \u00b7 entry 4.8 \u00b7 target 9.6 \u00b7 stop 2.4. Put kill (reclaim above $181.60) never fired; Fri high $170.00, close $162.85. Long package DISARMED Nov 12 (escalation kill fired, Huang departure). Nothing re-arms without Milly's word after a re-underwrite from the Nov 17 print (guida..."
   },
   {
     "slot": 2,
@@ -1521,7 +1869,7 @@ var SLOTS = [
     "slot": 3,
     "symbol": "QQQ",
     "call": "long (contingent, longer-horizon package trade \u2014 NOT a day trade; both triggers judge on daily closes), conditional_package_not_armed",
-    "note": "long (contingent, longer-horizon package trade \u2014 NOT a day trade; both triggers judge on daily closes) \u00b7 entry 701.0 \u00b7 target 730.0 \u00b7 stop 664.0. Any two of: a 50bp FOMC move, Dec 10 core CPI >= +0.3% again, four weeks of negative index revisions, the NVDA Nov 17 kill fires. T2 stop: daily close below $610. Short leg in the package fires only on a close below $647 WITH credit conf..."
+    "note": "long (contingent, longer-horizon package trade \u2014 NOT a day trade; both triggers judge on daily closes) \u00b7 entry 701.0 \u00b7 target 730.0 \u00b7 stop 664.0. Any two of: a 50bp FOMC move, Dec 10 core CPI >= +0.3% again, four weeks of negative index revisions, the NVDA Nov 17 kill fires. T2 stop: daily close below $610. Short leg fires only on a close below $647 WITH credit confirmation (HY OA..."
   },
   {
     "slot": 4,
@@ -1531,20 +1879,14 @@ var SLOTS = [
   },
   {
     "slot": 5,
-    "symbol": "VST \u2014 PIPELINE ONLY, NOT A SLOT (authorization expired)",
+    "symbol": "VST \u2014 PIPELINE ONLY, NOT A SLOT (authorization expired Nov 12)",
     "call": "long (pipeline), pipeline_not_slot_authorization_expired",
-    "note": "long (pipeline) \u00b7 entry 136.85 \u00b7 target 143.3 \u00b7 stop 133.35. Expired Nov 12 terms, for the record: intraday loss of the $131.30 open or a break of the $130.01 day low = sell all; flat by 15:00 CT. Hold verdict remains BOUNCE-ONLY (checks.json, Nov 7); the $128 passing price is the hold line and th..."
-  },
-  {
-    "slot": 6,
-    "symbol": "NBIS (Nebius Group) day-trade long bounce, CONDITIONAL, Milly's word Nov 13 ~08:53 CT",
-    "call": "long (conditional, bounce at the Nov 5 support; Bobby verifies the written mark personally), ",
-    "note": "long (conditional, bounce at the Nov 5 support; Bobby verifies the written mark personally) \u00b7 entry 116.0 \u00b7 target 123.97 \u00b7 stop 110.9. Any 5-minute close below $113.30 kills the trade outright, exit at market, do not wait for the stop. Any fresh company headline (offering/ATM filing, another guidance cut, named customer loss) kills it. If $113.30 breaks on a 5-minute cl..."
+    "note": "long (pipeline) \u00b7 entry 136.85 \u00b7 target 143.3 \u00b7 stop 133.35. Expired Nov 12 terms, for the record: intraday loss of the $131.30 open or a break of the $130.01 day low = sell all; flat by 15:00 CT. Hold verdict remains BOUNCE-ONLY (checks.json, Nov 7); the $128 passing price is the hold line."
   }
 ];
 var BRIEF_META = {
-  "date": "2026-11-13",
-  "overall": "OpOne daily brief Fri Nov 13, 2026 (06:00 CT), written before the 08:30 CT open per L-004. Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json, outcomes.json, track-record.json, candidates-2026-11-12.md. PPI 07:30 CT today is the gate event; CSCO and AMAT reported after the Nov 12 close (both beat and raised); NVDA package DISARMED Nov 12; NVDA reports Nov 17."
+  "date": "2026-11-14",
+  "overall": "OpOne daily brief Sat Nov 14, 2026 (06:00 CT, weekend). Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json, outcomes.json, track-record.json, candidates-2026-11-13.md, Fri Nov 13 verified closes (Finnhub/watch), DCA close state Nov 13."
 };
 /* === END WIRE SYNC === */
 /* === GRAPHMETA SYNC (generated; do not hand-edit) === */
@@ -2800,7 +3142,7 @@ var BOOK={ total:302.00, cash:293.41, equity:8.59, count:5, symbols:"ABBV, BAC, 
   attention:"Book synced from the ledger by sync_book.py. Nothing else needs you.", cashAsOf:"" };
 /* === RECORD SYNC (generated; do not hand-edit) === */
 var RECORD = {
-  "as_of": "2026-11-13",
+  "as_of": "2026-11-14",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -3196,8 +3538,8 @@ var RECORD = {
 var INDEX = {
   "inception": "2026-11-06",
   "base": 100.0,
-  "units": 4.105513,
-  "total_contributions": 368.11,
+  "units": 2.338248,
+  "total_contributions": 238.11,
   "points": [
     {
       "book_value": 78.11,
@@ -3218,22 +3560,28 @@ var INDEX = {
       "source": "Book sync Nov 10, 2026 15:15 CT (memory/2026-11-10.md): cash $154.61 verified live, total $170.99, MU half + QCOM half open"
     },
     {
-      "book_value": 302.0,
+      "book_value": 172.0,
       "date": "2026-11-11",
       "index": 73.56,
-      "source": "sync_book.py run 2026-11-11: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+      "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
     },
     {
-      "book_value": 302.0,
+      "book_value": 172.0,
       "date": "2026-11-12",
       "index": 73.56,
-      "source": "sync_book.py run 2026-11-12: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+      "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
     },
     {
-      "book_value": 302.0,
+      "book_value": 172.0,
       "date": "2026-11-13",
       "index": 73.56,
-      "source": "sync_book.py run 2026-11-13: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+      "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
+    },
+    {
+      "date": "2026-11-14",
+      "book_value": 172.0,
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-14: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
@@ -3258,6 +3606,8 @@ var INDEX = {
       "date": "2026-11-11",
       "index_at_issue": 73.56,
       "pre_book_value": 172.0,
+      "reversal_note": "Instant Deposit reversed by Robinhood (never settled; instant credit pulled before its Nov 18 completion date). Live read Nov 14, 2026, 07:16 CT: cash is exactly the pre-deposit $163.41. Units un-issued and contributions reduced by the book sync formalization on Nov 14, 2026: a financing reversal, not trading P&L.",
+      "reversed": "2026-11-14",
       "source": "Instant Deposit Nov 11, 2026 (Robinhood email 18:15 UTC; settles Nov 18); pre-deposit book $172.00 = cash $163.41 + equity $8.59, live read 11:23 CT (ledger.json cash_verified)",
       "units_issued": 1.767274
     }
@@ -3345,6 +3695,28 @@ function renderIndex(){
     var rows=pts.map(function(p){ return "<b>"+esc(dlbl(p.date,true))+"</b> book $"+fmt(p.book_value)+" · index "+fmt(p.index); });
     tbl.innerHTML="Verified snapshots · "+rows.join(" &nbsp;·&nbsp; ");
   }
+}
+/* ---- 30% weekly compounding ladder: rendered from COMPOUNDING (the
+   sync block above, or the live feed's compounding object, which the
+   book sync generates from compounding-ladder-30pct.csv). The ladder
+   is the target map; the Index is the truth. ---- */
+function renderCompounding(){
+  var meta=document.getElementById("clMeta");
+  var wrap=document.getElementById("clTable"); if(!wrap) return;
+  var C=(typeof COMPOUNDING!=="undefined" && COMPOUNDING) ? COMPOUNDING : null;
+  var rows=(C && Array.isArray(C.rows)) ? C.rows : [];
+  if(!rows.length){ wrap.innerHTML="<p class='oi-note'>No ladder on record yet.</p>"; if(meta) meta.innerHTML=""; return; }
+  if(meta) meta.innerHTML="Start <b>$"+fmt(rows[0].end)+"</b> · Nov 14, 2026 · "+(rows.length-1)+" weeks at +"+(C.rate_pct||30)+"%";
+  var h="<table class='cl-table'><tr><th>Week</th><th>Starts at</th><th>Interest (+30%)</th><th>Ends at</th></tr>";
+  rows.forEach(function(r){
+    if(r.step===0){
+      h+="<tr><td class='wk'>Start</td><td>&mdash;</td><td>&mdash;</td><td class='end'>$"+fmt(r.end)+"</td></tr>";
+    } else {
+      h+="<tr><td class='wk'>Week "+r.step+"</td><td>$"+fmt(r.start)+"</td><td>+$"+fmt(r.interest)+"</td><td class='end'>$"+fmt(r.end)+"</td></tr>";
+    }
+  });
+  h+="</table>";
+  wrap.innerHTML=h;
 }
 function recMoney(n){ if(typeof n!=="number" || !isFinite(n)) return "—"; return (n<0?"-$":"$")+fmt(Math.abs(n)); }
 function renderRecord(){
@@ -3527,8 +3899,9 @@ function applyLive(data){
   try{ liveState.lastOkTime=new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true}); }catch(e){ liveState.lastOkTime=null; }
   if(data.record) RECORD=data.record;
   if(data.index) INDEX=data.index;
+  if(data.compounding) COMPOUNDING=data.compounding;
   if(Array.isArray(data.closed)) CLOSED=data.closed;
-  renderGlance(); renderPositions(); renderRecord(); renderClosed(); renderIndex(); updateCorpusPositions(); setBadge();
+  renderGlance(); renderPositions(); renderRecord(); renderClosed(); renderIndex(); renderCompounding(); updateCorpusPositions(); setBadge();
 }
 function fetchLive(){
   liveState.nextIn=Math.round(pollDelay()/1000);
@@ -3545,7 +3918,7 @@ function fetchLive(){
   });
 }
 document.getElementById("refreshBtn").addEventListener("click",function(){ fetchLive(); });
-renderGlance(); renderPositions(); renderWire(); renderRecord(); renderIndex(); setBadge(); fetchLive();
+renderGlance(); renderPositions(); renderWire(); renderRecord(); renderIndex(); renderCompounding(); setBadge(); fetchLive();
 function marketOpenCT(){
   try{
     var parts=new Intl.DateTimeFormat("en-US",{timeZone:"America/Chicago",weekday:"short",hour:"numeric",minute:"numeric",hour12:false}).formatToParts(new Date());
