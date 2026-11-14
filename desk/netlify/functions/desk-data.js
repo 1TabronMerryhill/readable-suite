@@ -24,8 +24,8 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 293.41,
-  "cash_as_of": "2026-11-13T15:15:42-06:00",
+  "cash": 163.41,
+  "cash_as_of": "2026-11-14T07:16:00-06:00",
   "fills": [
     {
       "symbol": "GOOGL",
@@ -470,6 +470,331 @@ const BOOK = {
       "basis": "Ladder pending. The Nov 7 check records no true-worth estimate and no four prices under the L-013 definitions. Disaster $14.41 and load the boat $18.01 built Nov 12, 2026 (L-013): FY2024 trough FCF/share $1.20 x 12 = $14.41; the GAAP EPS leg is negative (-$1.08) and unusable, so the floor rests on trough cash generation. This is a trough floor, NOT a worth estimate \u2014 the Nov 7 check records no true-worth estimate for MRVL. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
     }
   ],
+  "compounding": {
+    "rate_pct": 30,
+    "anchor_date": "2026-11-14",
+    "anchor": "Set by Milly, Nov 14, 2026. Anchored to the live Robinhood book verified Nov 14, 2026, 07:16 CT (cash $163.41 + equity $8.65, pending deposits $0).",
+    "rows": [
+      {
+        "step": 0,
+        "start": null,
+        "interest": null,
+        "end": 172.06
+      },
+      {
+        "step": 1,
+        "start": 172.06,
+        "interest": 51.62,
+        "end": 223.68
+      },
+      {
+        "step": 2,
+        "start": 223.68,
+        "interest": 67.1,
+        "end": 290.78
+      },
+      {
+        "step": 3,
+        "start": 290.78,
+        "interest": 87.23,
+        "end": 378.02
+      },
+      {
+        "step": 4,
+        "start": 378.02,
+        "interest": 113.4,
+        "end": 491.42
+      },
+      {
+        "step": 5,
+        "start": 491.42,
+        "interest": 147.43,
+        "end": 638.85
+      },
+      {
+        "step": 6,
+        "start": 638.85,
+        "interest": 191.65,
+        "end": 830.5
+      },
+      {
+        "step": 7,
+        "start": 830.5,
+        "interest": 249.15,
+        "end": 1079.65
+      },
+      {
+        "step": 8,
+        "start": 1079.65,
+        "interest": 323.9,
+        "end": 1403.55
+      },
+      {
+        "step": 9,
+        "start": 1403.55,
+        "interest": 421.06,
+        "end": 1824.61
+      },
+      {
+        "step": 10,
+        "start": 1824.61,
+        "interest": 547.38,
+        "end": 2371.99
+      },
+      {
+        "step": 11,
+        "start": 2371.99,
+        "interest": 711.6,
+        "end": 3083.59
+      },
+      {
+        "step": 12,
+        "start": 3083.59,
+        "interest": 925.08,
+        "end": 4008.67
+      },
+      {
+        "step": 13,
+        "start": 4008.67,
+        "interest": 1202.6,
+        "end": 5211.27
+      },
+      {
+        "step": 14,
+        "start": 5211.27,
+        "interest": 1563.38,
+        "end": 6774.65
+      },
+      {
+        "step": 15,
+        "start": 6774.65,
+        "interest": 2032.39,
+        "end": 8807.04
+      },
+      {
+        "step": 16,
+        "start": 8807.04,
+        "interest": 2642.11,
+        "end": 11449.16
+      },
+      {
+        "step": 17,
+        "start": 11449.16,
+        "interest": 3434.75,
+        "end": 14883.91
+      },
+      {
+        "step": 18,
+        "start": 14883.91,
+        "interest": 4465.17,
+        "end": 19349.08
+      },
+      {
+        "step": 19,
+        "start": 19349.08,
+        "interest": 5804.72,
+        "end": 25153.8
+      },
+      {
+        "step": 20,
+        "start": 25153.8,
+        "interest": 7546.14,
+        "end": 32699.94
+      },
+      {
+        "step": 21,
+        "start": 32699.94,
+        "interest": 9809.98,
+        "end": 42509.92
+      },
+      {
+        "step": 22,
+        "start": 42509.92,
+        "interest": 12752.98,
+        "end": 55262.9
+      },
+      {
+        "step": 23,
+        "start": 55262.9,
+        "interest": 16578.87,
+        "end": 71841.77
+      },
+      {
+        "step": 24,
+        "start": 71841.77,
+        "interest": 21552.53,
+        "end": 93394.3
+      },
+      {
+        "step": 25,
+        "start": 93394.3,
+        "interest": 28018.29,
+        "end": 121412.59
+      },
+      {
+        "step": 26,
+        "start": 121412.59,
+        "interest": 36423.78,
+        "end": 157836.37
+      },
+      {
+        "step": 27,
+        "start": 157836.37,
+        "interest": 47350.91,
+        "end": 205187.28
+      },
+      {
+        "step": 28,
+        "start": 205187.28,
+        "interest": 61556.18,
+        "end": 266743.46
+      },
+      {
+        "step": 29,
+        "start": 266743.46,
+        "interest": 80023.04,
+        "end": 346766.5
+      },
+      {
+        "step": 30,
+        "start": 346766.5,
+        "interest": 104029.95,
+        "end": 450796.45
+      },
+      {
+        "step": 31,
+        "start": 450796.45,
+        "interest": 135238.94,
+        "end": 586035.39
+      },
+      {
+        "step": 32,
+        "start": 586035.39,
+        "interest": 175810.62,
+        "end": 761846.0
+      },
+      {
+        "step": 33,
+        "start": 761846.0,
+        "interest": 228553.8,
+        "end": 990399.8
+      },
+      {
+        "step": 34,
+        "start": 990399.8,
+        "interest": 297119.94,
+        "end": 1287519.74
+      },
+      {
+        "step": 35,
+        "start": 1287519.74,
+        "interest": 386255.92,
+        "end": 1673775.66
+      },
+      {
+        "step": 36,
+        "start": 1673775.66,
+        "interest": 502132.7,
+        "end": 2175908.36
+      },
+      {
+        "step": 37,
+        "start": 2175908.36,
+        "interest": 652772.51,
+        "end": 2828680.87
+      },
+      {
+        "step": 38,
+        "start": 2828680.87,
+        "interest": 848604.26,
+        "end": 3677285.14
+      },
+      {
+        "step": 39,
+        "start": 3677285.14,
+        "interest": 1103185.54,
+        "end": 4780470.68
+      },
+      {
+        "step": 40,
+        "start": 4780470.68,
+        "interest": 1434141.2,
+        "end": 6214611.88
+      },
+      {
+        "step": 41,
+        "start": 6214611.88,
+        "interest": 1864383.56,
+        "end": 8078995.44
+      },
+      {
+        "step": 42,
+        "start": 8078995.44,
+        "interest": 2423698.63,
+        "end": 10502694.08
+      },
+      {
+        "step": 43,
+        "start": 10502694.08,
+        "interest": 3150808.22,
+        "end": 13653502.3
+      },
+      {
+        "step": 44,
+        "start": 13653502.3,
+        "interest": 4096050.69,
+        "end": 17749552.99
+      },
+      {
+        "step": 45,
+        "start": 17749552.99,
+        "interest": 5324865.9,
+        "end": 23074418.88
+      },
+      {
+        "step": 46,
+        "start": 23074418.88,
+        "interest": 6922325.67,
+        "end": 29996744.55
+      },
+      {
+        "step": 47,
+        "start": 29996744.55,
+        "interest": 8999023.36,
+        "end": 38995767.91
+      },
+      {
+        "step": 48,
+        "start": 38995767.91,
+        "interest": 11698730.37,
+        "end": 50694498.29
+      },
+      {
+        "step": 49,
+        "start": 50694498.29,
+        "interest": 15208349.49,
+        "end": 65902847.77
+      },
+      {
+        "step": 50,
+        "start": 65902847.77,
+        "interest": 19770854.33,
+        "end": 85673702.11
+      },
+      {
+        "step": 51,
+        "start": 85673702.11,
+        "interest": 25702110.63,
+        "end": 111375812.74
+      },
+      {
+        "step": 52,
+        "start": 111375812.74,
+        "interest": 33412743.82,
+        "end": 144788556.56
+      }
+    ]
+  },
   "paper": {
     "total": 105.44,
     "cash": 105.44,
@@ -488,7 +813,7 @@ const BOOK = {
 
 // === RECORD SYNC (generated; do not hand-edit) ===
 const RECORD = {
-  "as_of": "2026-11-13",
+  "as_of": "2026-11-14",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -885,8 +1210,8 @@ const RECORD = {
 const INDEX = {
   "inception": "2026-11-06",
   "base": 100.0,
-  "units": 4.105513,
-  "total_contributions": 368.11,
+  "units": 2.338248,
+  "total_contributions": 238.11,
   "points": [
     {
       "book_value": 78.11,
@@ -907,22 +1232,28 @@ const INDEX = {
       "source": "Book sync Nov 10, 2026 15:15 CT (memory/2026-11-10.md): cash $154.61 verified live, total $170.99, MU half + QCOM half open"
     },
     {
-      "book_value": 302.0,
+      "book_value": 172.0,
       "date": "2026-11-11",
       "index": 73.56,
-      "source": "sync_book.py run 2026-11-11: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+      "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
     },
     {
-      "book_value": 302.0,
+      "book_value": 172.0,
       "date": "2026-11-12",
       "index": 73.56,
-      "source": "sync_book.py run 2026-11-12: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+      "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
     },
     {
-      "book_value": 302.0,
+      "book_value": 172.0,
       "date": "2026-11-13",
       "index": 73.56,
-      "source": "sync_book.py run 2026-11-13: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+      "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
+    },
+    {
+      "date": "2026-11-14",
+      "book_value": 172.0,
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-14: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
@@ -947,6 +1278,8 @@ const INDEX = {
       "date": "2026-11-11",
       "index_at_issue": 73.56,
       "pre_book_value": 172.0,
+      "reversal_note": "Instant Deposit reversed by Robinhood (never settled; instant credit pulled before its Nov 18 completion date). Live read Nov 14, 2026, 07:16 CT: cash is exactly the pre-deposit $163.41. Units un-issued and contributions reduced by the book sync formalization on Nov 14, 2026: a financing reversal, not trading P&L.",
+      "reversed": "2026-11-14",
       "source": "Instant Deposit Nov 11, 2026 (Robinhood email 18:15 UTC; settles Nov 18); pre-deposit book $172.00 = cash $163.41 + equity $8.59, live read 11:23 CT (ledger.json cash_verified)",
       "units_issued": 1.767274
     }
@@ -1078,6 +1411,7 @@ exports.handler = async () => {
     leaps_paper: BOOK.leaps_paper || [],
     day_trading: BOOK.day_trading || [],
     ladders: BOOK.ladders || [],
+    compounding: BOOK.compounding || null,
     cash_as_of: BOOK.cash_as_of || "",
     record: RECORD,
     index: INDEX,
