@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="desk-version" content="v1.5" />
-<meta name="desk-updated" content="2026-11-14T07:56:35-06:00" />
-<!-- desk-build v1.5 updated 2026-11-14T07:56:35-06:00 -->
+<meta name="desk-updated" content="2026-11-14T07:58:31-06:00" />
+<!-- desk-build v1.5 updated 2026-11-14T07:58:31-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -627,8 +627,8 @@
   <!-- 01 GLANCE -->
   <section class="glance desk-sec" id="sec-glance" data-tab="glance" aria-label="The firm at a glance">
     <div class="glance-grid">
-      <div class="stat"><div class="k">Real book</div><div class="v" id="gTotal">$302.00</div><div class="s">Total value, live book</div></div>
-      <div class="stat"><div class="k">Cash</div><div class="v" id="gCash">$293.41</div><div class="s">Ready to deploy</div></div>
+      <div class="stat"><div class="k">Real book</div><div class="v" id="gTotal">$172.00</div><div class="s">Total value, live book</div></div>
+      <div class="stat"><div class="k">Cash</div><div class="v" id="gCash">$163.41</div><div class="s">Ready to deploy</div></div>
       <div class="stat"><div class="k">In positions</div><div class="v" id="gEquity">$8.59</div><div class="s">Equity across the book</div></div>
       <div class="stat"><div class="k">Open positions</div><div class="v" id="gCount">5</div><div class="s" id="gSymbols">ABBV, BAC, CVX, GOOGL, SPY</div></div>
     </div>
@@ -909,7 +909,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 14, 2026, 7:56 AM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 14, 2026, 7:58 AM CT</span></p>
   </footer>
 </div>
 <script>
@@ -3138,7 +3138,7 @@ document.getElementById("askForm").addEventListener("submit",function(e){ e.prev
 var LIVE_URL="/api/desk-data";
 var SNAPSHOT_ASOF="the last daily book sync";
 var liveState={ checked:false, live:false, fails:0, lastOkAsOf:null, lastCheck:null, nextIn:60, feed:"yahoo-live" };
-var BOOK={ total:302.00, cash:293.41, equity:8.59, count:5, symbols:"ABBV, BAC, CVX, GOOGL, SPY", paperTotal:105.44, paperOpen:0, paperClosed:0,
+var BOOK={ total:172.00, cash:163.41, equity:8.59, count:5, symbols:"ABBV, BAC, CVX, GOOGL, SPY", paperTotal:105.44, paperOpen:0, paperClosed:0,
   attention:"Book synced from the ledger by sync_book.py. Nothing else needs you.", cashAsOf:"" };
 /* === RECORD SYNC (generated; do not hand-edit) === */
 var RECORD = {
