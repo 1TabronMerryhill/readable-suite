@@ -1,10 +1,10 @@
 {
- "generated": "2026-11-13T15:20:35.464491-06:00",
+ "generated": "2026-11-14T07:56:35.133242-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
-   "total": 302.0,
-   "cash": 293.41,
+   "total": 172.0,
+   "cash": 163.41,
    "equity": 8.59,
    "options_at_cost": 0,
    "positions": 5
@@ -471,10 +471,335 @@
    "basis": "Ladder pending. The Nov 7 check records no true-worth estimate and no four prices under the L-013 definitions. Disaster $14.41 and load the boat $18.01 built Nov 12, 2026 (L-013): FY2024 trough FCF/share $1.20 x 12 = $14.41; the GAAP EPS leg is negative (-$1.08) and unusable, so the floor rests on trough cash generation. This is a trough floor, NOT a worth estimate \u2014 the Nov 7 check records no true-worth estimate for MRVL. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
   }
  ],
- "cash_as_of": "2026-11-13T15:15:42-06:00",
+ "compounding": {
+  "rate_pct": 30,
+  "anchor_date": "2026-11-14",
+  "anchor": "Set by Milly, Nov 14, 2026. Anchored to the live Robinhood book verified Nov 14, 2026, 07:16 CT (cash $163.41 + equity $8.65, pending deposits $0).",
+  "rows": [
+   {
+    "step": 0,
+    "start": null,
+    "interest": null,
+    "end": 172.06
+   },
+   {
+    "step": 1,
+    "start": 172.06,
+    "interest": 51.62,
+    "end": 223.68
+   },
+   {
+    "step": 2,
+    "start": 223.68,
+    "interest": 67.1,
+    "end": 290.78
+   },
+   {
+    "step": 3,
+    "start": 290.78,
+    "interest": 87.23,
+    "end": 378.02
+   },
+   {
+    "step": 4,
+    "start": 378.02,
+    "interest": 113.4,
+    "end": 491.42
+   },
+   {
+    "step": 5,
+    "start": 491.42,
+    "interest": 147.43,
+    "end": 638.85
+   },
+   {
+    "step": 6,
+    "start": 638.85,
+    "interest": 191.65,
+    "end": 830.5
+   },
+   {
+    "step": 7,
+    "start": 830.5,
+    "interest": 249.15,
+    "end": 1079.65
+   },
+   {
+    "step": 8,
+    "start": 1079.65,
+    "interest": 323.9,
+    "end": 1403.55
+   },
+   {
+    "step": 9,
+    "start": 1403.55,
+    "interest": 421.06,
+    "end": 1824.61
+   },
+   {
+    "step": 10,
+    "start": 1824.61,
+    "interest": 547.38,
+    "end": 2371.99
+   },
+   {
+    "step": 11,
+    "start": 2371.99,
+    "interest": 711.6,
+    "end": 3083.59
+   },
+   {
+    "step": 12,
+    "start": 3083.59,
+    "interest": 925.08,
+    "end": 4008.67
+   },
+   {
+    "step": 13,
+    "start": 4008.67,
+    "interest": 1202.6,
+    "end": 5211.27
+   },
+   {
+    "step": 14,
+    "start": 5211.27,
+    "interest": 1563.38,
+    "end": 6774.65
+   },
+   {
+    "step": 15,
+    "start": 6774.65,
+    "interest": 2032.39,
+    "end": 8807.04
+   },
+   {
+    "step": 16,
+    "start": 8807.04,
+    "interest": 2642.11,
+    "end": 11449.16
+   },
+   {
+    "step": 17,
+    "start": 11449.16,
+    "interest": 3434.75,
+    "end": 14883.91
+   },
+   {
+    "step": 18,
+    "start": 14883.91,
+    "interest": 4465.17,
+    "end": 19349.08
+   },
+   {
+    "step": 19,
+    "start": 19349.08,
+    "interest": 5804.72,
+    "end": 25153.8
+   },
+   {
+    "step": 20,
+    "start": 25153.8,
+    "interest": 7546.14,
+    "end": 32699.94
+   },
+   {
+    "step": 21,
+    "start": 32699.94,
+    "interest": 9809.98,
+    "end": 42509.92
+   },
+   {
+    "step": 22,
+    "start": 42509.92,
+    "interest": 12752.98,
+    "end": 55262.9
+   },
+   {
+    "step": 23,
+    "start": 55262.9,
+    "interest": 16578.87,
+    "end": 71841.77
+   },
+   {
+    "step": 24,
+    "start": 71841.77,
+    "interest": 21552.53,
+    "end": 93394.3
+   },
+   {
+    "step": 25,
+    "start": 93394.3,
+    "interest": 28018.29,
+    "end": 121412.59
+   },
+   {
+    "step": 26,
+    "start": 121412.59,
+    "interest": 36423.78,
+    "end": 157836.37
+   },
+   {
+    "step": 27,
+    "start": 157836.37,
+    "interest": 47350.91,
+    "end": 205187.28
+   },
+   {
+    "step": 28,
+    "start": 205187.28,
+    "interest": 61556.18,
+    "end": 266743.46
+   },
+   {
+    "step": 29,
+    "start": 266743.46,
+    "interest": 80023.04,
+    "end": 346766.5
+   },
+   {
+    "step": 30,
+    "start": 346766.5,
+    "interest": 104029.95,
+    "end": 450796.45
+   },
+   {
+    "step": 31,
+    "start": 450796.45,
+    "interest": 135238.94,
+    "end": 586035.39
+   },
+   {
+    "step": 32,
+    "start": 586035.39,
+    "interest": 175810.62,
+    "end": 761846.0
+   },
+   {
+    "step": 33,
+    "start": 761846.0,
+    "interest": 228553.8,
+    "end": 990399.8
+   },
+   {
+    "step": 34,
+    "start": 990399.8,
+    "interest": 297119.94,
+    "end": 1287519.74
+   },
+   {
+    "step": 35,
+    "start": 1287519.74,
+    "interest": 386255.92,
+    "end": 1673775.66
+   },
+   {
+    "step": 36,
+    "start": 1673775.66,
+    "interest": 502132.7,
+    "end": 2175908.36
+   },
+   {
+    "step": 37,
+    "start": 2175908.36,
+    "interest": 652772.51,
+    "end": 2828680.87
+   },
+   {
+    "step": 38,
+    "start": 2828680.87,
+    "interest": 848604.26,
+    "end": 3677285.14
+   },
+   {
+    "step": 39,
+    "start": 3677285.14,
+    "interest": 1103185.54,
+    "end": 4780470.68
+   },
+   {
+    "step": 40,
+    "start": 4780470.68,
+    "interest": 1434141.2,
+    "end": 6214611.88
+   },
+   {
+    "step": 41,
+    "start": 6214611.88,
+    "interest": 1864383.56,
+    "end": 8078995.44
+   },
+   {
+    "step": 42,
+    "start": 8078995.44,
+    "interest": 2423698.63,
+    "end": 10502694.08
+   },
+   {
+    "step": 43,
+    "start": 10502694.08,
+    "interest": 3150808.22,
+    "end": 13653502.3
+   },
+   {
+    "step": 44,
+    "start": 13653502.3,
+    "interest": 4096050.69,
+    "end": 17749552.99
+   },
+   {
+    "step": 45,
+    "start": 17749552.99,
+    "interest": 5324865.9,
+    "end": 23074418.88
+   },
+   {
+    "step": 46,
+    "start": 23074418.88,
+    "interest": 6922325.67,
+    "end": 29996744.55
+   },
+   {
+    "step": 47,
+    "start": 29996744.55,
+    "interest": 8999023.36,
+    "end": 38995767.91
+   },
+   {
+    "step": 48,
+    "start": 38995767.91,
+    "interest": 11698730.37,
+    "end": 50694498.29
+   },
+   {
+    "step": 49,
+    "start": 50694498.29,
+    "interest": 15208349.49,
+    "end": 65902847.77
+   },
+   {
+    "step": 50,
+    "start": 65902847.77,
+    "interest": 19770854.33,
+    "end": 85673702.11
+   },
+   {
+    "step": 51,
+    "start": 85673702.11,
+    "interest": 25702110.63,
+    "end": 111375812.74
+   },
+   {
+    "step": 52,
+    "start": 111375812.74,
+    "interest": 33412743.82,
+    "end": 144788556.56
+   }
+  ]
+ },
+ "cash_as_of": "2026-11-14T07:16:00-06:00",
  "quotes_as_of": "static snapshot at fill prices; live prices come from /api/desk-data",
  "record": {
-  "as_of": "2026-11-13",
+  "as_of": "2026-11-14",
   "scoreboard": {
    "exits": 6,
    "wins": 5,
@@ -868,8 +1193,8 @@
  "index": {
   "inception": "2026-11-06",
   "base": 100.0,
-  "units": 4.105513,
-  "total_contributions": 368.11,
+  "units": 2.338248,
+  "total_contributions": 238.11,
   "points": [
    {
     "book_value": 78.11,
@@ -890,22 +1215,28 @@
     "source": "Book sync Nov 10, 2026 15:15 CT (memory/2026-11-10.md): cash $154.61 verified live, total $170.99, MU half + QCOM half open"
    },
    {
-    "book_value": 302.0,
+    "book_value": 172.0,
     "date": "2026-11-11",
     "index": 73.56,
-    "source": "sync_book.py run 2026-11-11: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+    "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
    },
    {
-    "book_value": 302.0,
+    "book_value": 172.0,
     "date": "2026-11-12",
     "index": 73.56,
-    "source": "sync_book.py run 2026-11-12: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+    "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
    },
    {
-    "book_value": 302.0,
+    "book_value": 172.0,
     "date": "2026-11-13",
     "index": 73.56,
-    "source": "sync_book.py run 2026-11-13: cash_verified $293.41 + open positions at fill $8.59 + options at cost $0.00"
+    "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
+   },
+   {
+    "date": "2026-11-14",
+    "book_value": 172.0,
+    "index": 73.56,
+    "source": "sync_book.py run 2026-11-14: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
    }
   ],
   "deposits": [
@@ -930,6 +1261,8 @@
     "date": "2026-11-11",
     "index_at_issue": 73.56,
     "pre_book_value": 172.0,
+    "reversal_note": "Instant Deposit reversed by Robinhood (never settled; instant credit pulled before its Nov 18 completion date). Live read Nov 14, 2026, 07:16 CT: cash is exactly the pre-deposit $163.41. Units un-issued and contributions reduced by the book sync formalization on Nov 14, 2026: a financing reversal, not trading P&L.",
+    "reversed": "2026-11-14",
     "source": "Instant Deposit Nov 11, 2026 (Robinhood email 18:15 UTC; settles Nov 18); pre-deposit book $172.00 = cash $163.41 + equity $8.59, live read 11:23 CT (ledger.json cash_verified)",
     "units_issued": 1.767274
    }
@@ -1024,9 +1357,9 @@
   "slots": [
    {
     "slot": 1,
-    "symbol": "NVDA paper Nov 13 175 put \u2014 EXPIRY TODAY; NVDA long package DISARMED",
-    "call": "short via paper put (existing position, hold to expiry), paper_open_expiry_today",
-    "note": "short via paper put (existing position, hold to expiry) \u00b7 entry 4.8 \u00b7 target 9.6 \u00b7 stop 2.4. NVDA reclaims and holds above $181.60 exits regardless of premium (per weeklies-paper.json). Long package: DISARMED Nov 12, 2026 \u2014 escalation kill fired (Huang departs leg). Nothing re-arms without Milly's word after a re-underwrite from..."
+    "symbol": "NVDA paper Nov 13 175 put \u2014 SETTLED at expiry; NVDA long package DISARMED",
+    "call": "short via paper put (existing position, now closed at expiry), paper_closed_target_hit_at_expiry",
+    "note": "short via paper put (existing position, now closed at expiry) \u00b7 entry 4.8 \u00b7 target 9.6 \u00b7 stop 2.4. Put kill (reclaim above $181.60) never fired; Fri high $170.00, close $162.85. Long package DISARMED Nov 12 (escalation kill fired, Huang departure). Nothing re-arms without Milly's word after a re-underwrite from the Nov 17 print (guida..."
    },
    {
     "slot": 2,
@@ -1038,7 +1371,7 @@
     "slot": 3,
     "symbol": "QQQ",
     "call": "long (contingent, longer-horizon package trade \u2014 NOT a day trade; both triggers judge on daily closes), conditional_package_not_armed",
-    "note": "long (contingent, longer-horizon package trade \u2014 NOT a day trade; both triggers judge on daily closes) \u00b7 entry 701.0 \u00b7 target 730.0 \u00b7 stop 664.0. Any two of: a 50bp FOMC move, Dec 10 core CPI >= +0.3% again, four weeks of negative index revisions, the NVDA Nov 17 kill fires. T2 stop: daily close below $610. Short leg in the package fires only on a close below $647 WITH credit conf..."
+    "note": "long (contingent, longer-horizon package trade \u2014 NOT a day trade; both triggers judge on daily closes) \u00b7 entry 701.0 \u00b7 target 730.0 \u00b7 stop 664.0. Any two of: a 50bp FOMC move, Dec 10 core CPI >= +0.3% again, four weeks of negative index revisions, the NVDA Nov 17 kill fires. T2 stop: daily close below $610. Short leg fires only on a close below $647 WITH credit confirmation (HY OA..."
    },
    {
     "slot": 4,
@@ -1048,20 +1381,14 @@
    },
    {
     "slot": 5,
-    "symbol": "VST \u2014 PIPELINE ONLY, NOT A SLOT (authorization expired)",
+    "symbol": "VST \u2014 PIPELINE ONLY, NOT A SLOT (authorization expired Nov 12)",
     "call": "long (pipeline), pipeline_not_slot_authorization_expired",
-    "note": "long (pipeline) \u00b7 entry 136.85 \u00b7 target 143.3 \u00b7 stop 133.35. Expired Nov 12 terms, for the record: intraday loss of the $131.30 open or a break of the $130.01 day low = sell all; flat by 15:00 CT. Hold verdict remains BOUNCE-ONLY (checks.json, Nov 7); the $128 passing price is the hold line and th..."
-   },
-   {
-    "slot": 6,
-    "symbol": "NBIS (Nebius Group) day-trade long bounce, CONDITIONAL, Milly's word Nov 13 ~08:53 CT",
-    "call": "long (conditional, bounce at the Nov 5 support; Bobby verifies the written mark personally), ",
-    "note": "long (conditional, bounce at the Nov 5 support; Bobby verifies the written mark personally) \u00b7 entry 116.0 \u00b7 target 123.97 \u00b7 stop 110.9. Any 5-minute close below $113.30 kills the trade outright, exit at market, do not wait for the stop. Any fresh company headline (offering/ATM filing, another guidance cut, named customer loss) kills it. If $113.30 breaks on a 5-minute cl..."
+    "note": "long (pipeline) \u00b7 entry 136.85 \u00b7 target 143.3 \u00b7 stop 133.35. Expired Nov 12 terms, for the record: intraday loss of the $131.30 open or a break of the $130.01 day low = sell all; flat by 15:00 CT. Hold verdict remains BOUNCE-ONLY (checks.json, Nov 7); the $128 passing price is the hold line."
    }
   ],
   "meta": {
-   "date": "2026-11-13",
-   "overall": "OpOne daily brief Fri Nov 13, 2026 (06:00 CT), written before the 08:30 CT open per L-004. Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json, outcomes.json, track-record.json, candidates-2026-11-12.md. PPI 07:30 CT today is the gate event; CSCO and AMAT reported after the Nov 12 close (both beat and raised); NVDA package DISARMED Nov 12; NVDA reports Nov 17."
+   "date": "2026-11-14",
+   "overall": "OpOne daily brief Sat Nov 14, 2026 (06:00 CT, weekend). Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json, outcomes.json, track-record.json, candidates-2026-11-13.md, Fri Nov 13 verified closes (Finnhub/watch), DCA close state Nov 13."
   }
  },
  "graph": {
