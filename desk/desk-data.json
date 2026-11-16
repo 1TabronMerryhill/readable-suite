@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-14T07:56:35.133242-06:00",
+ "generated": "2026-11-16T08:01:19.007229-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -799,7 +799,7 @@
  "cash_as_of": "2026-11-14T07:16:00-06:00",
  "quotes_as_of": "static snapshot at fill prices; live prices come from /api/desk-data",
  "record": {
-  "as_of": "2026-11-14",
+  "as_of": "2026-11-16",
   "scoreboard": {
    "exits": 6,
    "wins": 5,
@@ -1233,10 +1233,16 @@
     "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
    },
    {
-    "date": "2026-11-14",
     "book_value": 172.0,
+    "date": "2026-11-14",
     "index": 73.56,
     "source": "sync_book.py run 2026-11-14: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
+   },
+   {
+    "date": "2026-11-16",
+    "book_value": 172.0,
+    "index": 73.56,
+    "source": "sync_book.py run 2026-11-16: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
    }
   ],
   "deposits": [
@@ -1271,6 +1277,38 @@
  },
  "wire": [
   {
+   "time": "2026-11-16",
+   "headline": "Whole-market scan 2026-11-16: 1153 passed",
+   "verdict": "Universe 11,807 quoted; 1,153 passed (gem 417, deep 374, crash 362). Top of the screen: TSM, META, AMD, UNH, HD, GE, HSBC, MS.",
+   "refs": [
+    "scan:2026-11-16"
+   ]
+  },
+  {
+   "time": "2026-11-16",
+   "headline": "ADI EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Semiconductors & Related Devices. Latest annual 10-K filed 2025-11-25; latest quarterly 10-Q filed 2026-08-19.",
+   "refs": [
+    "dossier:ADI"
+   ]
+  },
+  {
+   "time": "2026-11-16",
+   "headline": "BBVA EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Commercial Banks, NEC. Latest annual 20-F filed 2026-02-20; latest quarterly  filed .",
+   "refs": [
+    "dossier:BBVA"
+   ]
+  },
+  {
+   "time": "2026-11-16",
+   "headline": "BP EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Petroleum Refining. Latest annual 20-F filed 2026-03-06; latest quarterly  filed .",
+   "refs": [
+    "dossier:BP"
+   ]
+  },
+  {
    "time": "2026-11-13",
    "headline": "Whole-market scan 2026-11-13: 1162 passed",
    "verdict": "Universe 11,803 quoted; 1,162 passed (gem 423, deep 369, crash 370). Top of the screen: TSM, AMD, PLTR, UNH, HD, GE, HSBC, MS.",
@@ -1284,30 +1322,6 @@
    "verdict": "Result: target_hit (signal_only, feed finnhub).",
    "refs": [
     "outcome:2026-11-13-nvda-put-expiry"
-   ]
-  },
-  {
-   "time": "2026-11-13",
-   "headline": "ACN EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Services-Business Services, NEC. Latest annual 10-K filed 2026-10-16; latest quarterly 10-Q filed 2026-06-18.",
-   "refs": [
-    "dossier:ACN"
-   ]
-  },
-  {
-   "time": "2026-11-13",
-   "headline": "CRM EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Services-Prepackaged Software. Latest annual 10-K filed 2026-03-02; latest quarterly 10-Q filed 2026-08-27.",
-   "refs": [
-    "dossier:CRM"
-   ]
-  },
-  {
-   "time": "2026-11-13",
-   "headline": "CRWD EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Services-Prepackaged Software. Latest annual 10-K filed 2026-03-05; latest quarterly 10-Q filed 2026-08-27.",
-   "refs": [
-    "dossier:CRWD"
    ]
   },
   {
@@ -1332,14 +1346,6 @@
    "verdict": "Result: triggered_marked_to_close (signal_only, feed finnhub).",
    "refs": [
     "outcome:2026-11-12-mu-slot"
-   ]
-  },
-  {
-   "time": "2026-11-11",
-   "headline": "Whole-market scan 2026-11-11: 1152 passed",
-   "verdict": "Universe 11,805 quoted; 1,152 passed (gem 401, deep 389, crash 362). Top of the screen: TSM, META, XOM, CVX, UNH, GE, HD, HSBC.",
-   "refs": [
-    "scan:2026-11-11"
    ]
   },
   {
@@ -1387,14 +1393,14 @@
    }
   ],
   "meta": {
-   "date": "2026-11-14",
-   "overall": "OpOne daily brief Sat Nov 14, 2026 (06:00 CT, weekend). Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json, outcomes.json, track-record.json, candidates-2026-11-13.md, Fri Nov 13 verified closes (Finnhub/watch), DCA close state Nov 13."
+   "date": "2026-11-16",
+   "overall": "OpOne daily brief Sun Nov 15, 2026 (06:00 CT, weekend). Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json (cash_verified Nov 14), outcomes.json (44 rows incl. IWM 281C stop filed Nov 14), track-record.json, index-state.json (73.56, contributions $238.11 after reversal un-issue), candidates-2026-11-13.md, three-check-pull-2026-11-14.md, Fri Nov 13 verified closes, BTC Finnhub print Sun Nov 15 05:56 CT."
   }
  },
  "graph": {
-  "generated": "2026-11-13",
-  "nodes": 203,
-  "edges": 159,
+  "generated": "2026-11-16",
+  "nodes": 215,
+  "edges": 160,
   "live_patterns": 0,
   "pattern_candidates": 6,
   "connector_candidates": 16,
@@ -1404,19 +1410,19 @@
  "newsroom": {
   "insights": [
    {
-    "date": "2026-11-13",
+    "date": "2026-11-16",
     "tag": "Scan",
-    "title": "Whole-market scan 2026-11-13: 1162 passed",
-    "body": "Universe 11,803 quoted. 1,162 passed the full screen: gem zone 423, deep 369, crash 370. Top of the screen: TSM, AMD, PLTR, UNH, HD, GE, HSBC, MS, AZN, RTX.",
-    "evidence": "Graph: scan:2026-11-13. Source: market_scan.py, scans/scan-2026-11-13.csv (feed: yahoo_quote).",
+    "title": "Whole-market scan 2026-11-16: 1153 passed",
+    "body": "Universe 11,807 quoted. 1,153 passed the full screen: gem zone 417, deep 374, crash 362. Top of the screen: TSM, META, AMD, UNH, HD, GE, HSBC, MS, AZN, RTX.",
+    "evidence": "Graph: scan:2026-11-16. Source: market_scan.py, scans/scan-2026-11-16.csv (feed: yahoo_quote).",
     "lesson": "The scan is the whole market (L-002). Finalists come from the merged pool, never the watchlist alone."
    },
    {
-    "date": "2026-11-13",
+    "date": "2026-11-16",
     "tag": "Dossiers",
-    "title": "35 EDGAR dossiers on file; 10 refreshed 2026-11-13",
-    "body": "Newest dossiers: ACN, CRM, CRWD, NEE, SAN, SCHW, SMFG, SONY, UBS, UL. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
-    "evidence": "Graph: dossier nodes dated 2026-11-13.",
+    "title": "45 EDGAR dossiers on file; 10 refreshed 2026-11-16",
+    "body": "Newest dossiers: ADI, BBVA, BP, IBKR, LMT, MFG, NEM, PH, PLD, VZ. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
+    "evidence": "Graph: dossier nodes dated 2026-11-16.",
     "lesson": "A dossier is not a check. The full process (management, employees, cash, worth) still runs before any package."
    },
    {
