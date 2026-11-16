@@ -813,7 +813,7 @@ const BOOK = {
 
 // === RECORD SYNC (generated; do not hand-edit) ===
 const RECORD = {
-  "as_of": "2026-11-14",
+  "as_of": "2026-11-16",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -1250,10 +1250,16 @@ const INDEX = {
       "source": "Formalized Nov 14, 2026: the Nov 11 $130 Instant Deposit reversed (never settled), so its credit and units are un-issued. cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00 = $172.00. Index level unchanged: the deposit bought units at 73.56, so removing both sides of it does not move the index."
     },
     {
-      "date": "2026-11-14",
       "book_value": 172.0,
+      "date": "2026-11-14",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-14: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "date": "2026-11-16",
+      "book_value": 172.0,
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-16: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
