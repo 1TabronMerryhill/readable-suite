@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="desk-version" content="v1.5" />
-<meta name="desk-updated" content="2026-11-16T15:15:45-06:00" />
-<!-- desk-build v1.5 updated 2026-11-16T15:15:45-06:00 -->
+<meta name="desk-updated" content="2026-11-17T15:14:43-06:00" />
+<!-- desk-build v1.5 updated 2026-11-17T15:14:43-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -823,7 +823,7 @@
     <div class="sec-head">
       <span class="sec-num">05</span>
       <h2 class="sec-title">The Brief</h2>
-      <p class="sec-note" id="briefDateLine">2026-11-16. The overall read first, then the day's slots in order. Refreshed with the daily book sync.</p>
+      <p class="sec-note" id="briefDateLine">2026-11-17. The overall read first, then the day's slots in order. Refreshed with the daily book sync.</p>
     </div>
     <p class="brief-overall" id="briefOverall">OpOne daily brief Sun Nov 15, 2026 (06:00 CT, weekend). Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json (cash_verified Nov 14), outcomes.json (44 rows incl. IWM 281C stop filed Nov 14), track-record.json, index-state.json (73.56, contributions $238.11 after reversal un-issue), candidates-2026-11-13.md, three-check-pull-2026-11-14.md, Fri Nov 13 verified closes, BTC Finnhub print Sun Nov 15 05:56 CT.</p>
     <div class="slots" id="slotList"></div>
@@ -839,8 +839,8 @@
     </div>
     <p class="tab-skill"><b>Graph trains the memory.</b></p>
     <div class="graph-stats">
-      <div class="gstat"><div class="v" id="gsNodes">215</div><div class="k">Nodes in the full graph</div></div>
-      <div class="gstat"><div class="v" id="gsEdges">160</div><div class="k">Edges in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsNodes">226</div><div class="k">Nodes in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsEdges">161</div><div class="k">Edges in the full graph</div></div>
       <div class="gstat"><div class="v" id="gsLive">0</div><div class="k">Live patterns. None has earned it yet</div></div>
       <div class="gstat"><div class="v" id="gsConn">16</div><div class="k">Connector candidates waiting</div></div>
     </div>
@@ -909,7 +909,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 16, 2026, 3:15 PM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 17, 2026, 3:14 PM CT</span></p>
   </footer>
 </div>
 <script>
@@ -1644,7 +1644,7 @@ var COMPOUNDING = {
     }
   ]
 };
-var CASH_AS_OF = "2026-11-14T07:16:00-06:00";
+var CASH_AS_OF = "2026-11-17T15:14:37-06:00";
 /* === END POSITIONS SYNC === */
 /* Gold state. The GLD position closed Nov 9, 2026, so GLD is NOT a live
    position and never gets a position card with a per-share price. Gold
@@ -1770,35 +1770,43 @@ var CONDITIONALS = [
 /* === WIRE SYNC (generated; do not hand-edit) === */
 var WIRE = [
   {
+    "time": "2026-11-17",
+    "headline": "Whole-market scan 2026-11-17: 1174 passed",
+    "verdict": "Universe 11,805 quoted; 1,174 passed (gem 401, deep 397, crash 376). Top of the screen: AMZN, META, XOM, UNH, HD, GE, HSBC, AZN.",
+    "refs": [
+      "scan:2026-11-17"
+    ]
+  },
+  {
+    "time": "2026-11-17",
+    "headline": "AMZN EDGAR dossier refreshed",
+    "verdict": "EDGAR dossier on file. Sector: Retail-Catalog & Mail-Order Houses. Latest annual 10-K filed 2026-02-06; latest quarterly 10-Q filed 2026-10-30.",
+    "refs": [
+      "dossier:AMZN"
+    ]
+  },
+  {
+    "time": "2026-11-17",
+    "headline": "ANET EDGAR dossier refreshed",
+    "verdict": "EDGAR dossier on file. Sector: Computer Communications Equipment. Latest annual 10-K filed 2026-02-17; latest quarterly 10-Q filed 2026-11-04.",
+    "refs": [
+      "dossier:ANET"
+    ]
+  },
+  {
+    "time": "2026-11-17",
+    "headline": "CNQ EDGAR dossier refreshed",
+    "verdict": "EDGAR dossier on file. Sector: Crude Petroleum & Natural Gas. Latest annual 40-F filed 2026-03-26; latest quarterly  filed .",
+    "refs": [
+      "dossier:CNQ"
+    ]
+  },
+  {
     "time": "2026-11-16",
     "headline": "Whole-market scan 2026-11-16: 1153 passed",
     "verdict": "Universe 11,807 quoted; 1,153 passed (gem 417, deep 374, crash 362). Top of the screen: TSM, META, AMD, UNH, HD, GE, HSBC, MS.",
     "refs": [
       "scan:2026-11-16"
-    ]
-  },
-  {
-    "time": "2026-11-16",
-    "headline": "ADI EDGAR dossier refreshed",
-    "verdict": "EDGAR dossier on file. Sector: Semiconductors & Related Devices. Latest annual 10-K filed 2025-11-25; latest quarterly 10-Q filed 2026-08-19.",
-    "refs": [
-      "dossier:ADI"
-    ]
-  },
-  {
-    "time": "2026-11-16",
-    "headline": "BBVA EDGAR dossier refreshed",
-    "verdict": "EDGAR dossier on file. Sector: Commercial Banks, NEC. Latest annual 20-F filed 2026-02-20; latest quarterly  filed .",
-    "refs": [
-      "dossier:BBVA"
-    ]
-  },
-  {
-    "time": "2026-11-16",
-    "headline": "BP EDGAR dossier refreshed",
-    "verdict": "EDGAR dossier on file. Sector: Petroleum Refining. Latest annual 20-F filed 2026-03-06; latest quarterly  filed .",
-    "refs": [
-      "dossier:BP"
     ]
   },
   {
@@ -1815,14 +1823,6 @@ var WIRE = [
     "verdict": "Result: target_hit (signal_only, feed finnhub).",
     "refs": [
       "outcome:2026-11-13-nvda-put-expiry"
-    ]
-  },
-  {
-    "time": "2026-11-12",
-    "headline": "Whole-market scan 2026-11-12: 1137 passed",
-    "verdict": "Universe 11,804 quoted; 1,137 passed (gem 399, deep 374, crash 364). Top of the screen: TSM, META, AMD, XOM, PLTR, UNH, GE, HD.",
-    "refs": [
-      "scan:2026-11-12"
     ]
   },
   {
@@ -1885,15 +1885,15 @@ var SLOTS = [
   }
 ];
 var BRIEF_META = {
-  "date": "2026-11-16",
+  "date": "2026-11-17",
   "overall": "OpOne daily brief Sun Nov 15, 2026 (06:00 CT, weekend). Reconciliation: packages, dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json (cash_verified Nov 14), outcomes.json (44 rows incl. IWM 281C stop filed Nov 14), track-record.json, index-state.json (73.56, contributions $238.11 after reversal un-issue), candidates-2026-11-13.md, three-check-pull-2026-11-14.md, Fri Nov 13 verified closes, BTC Finnhub print Sun Nov 15 05:56 CT."
 };
 /* === END WIRE SYNC === */
 /* === GRAPHMETA SYNC (generated; do not hand-edit) === */
 var GRAPHMETA = {
-  "generated": "2026-11-16",
-  "nodes": 215,
-  "edges": 160,
+  "generated": "2026-11-17",
+  "nodes": 226,
+  "edges": 161,
   "live_patterns": 0,
   "pattern_candidates": 6,
   "connector_candidates": 16,
@@ -3142,7 +3142,7 @@ var BOOK={ total:172.00, cash:163.41, equity:8.59, count:5, symbols:"ABBV, BAC, 
   attention:"Book synced from the ledger by sync_book.py. Nothing else needs you.", cashAsOf:"" };
 /* === RECORD SYNC (generated; do not hand-edit) === */
 var RECORD = {
-  "as_of": "2026-11-16",
+  "as_of": "2026-11-17",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -3240,7 +3240,7 @@ var RECORD = {
         "watching_for": "Any order placed, real or paper, without a full package and a completed lessons check first.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3254,7 +3254,7 @@ var RECORD = {
         "watching_for": "Any opportunity hunt scoped to the watchlist instead of the whole-market scan.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3268,7 +3268,7 @@ var RECORD = {
         "watching_for": "Any decision that relies on a feed with no proven delivery (the Discord pipe, the Finnhub stream) instead of a working source.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3282,7 +3282,7 @@ var RECORD = {
         "watching_for": "Any trading day where today-slots.json is written after 08:30 CT, or a signal window passes unloaded.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3296,7 +3296,7 @@ var RECORD = {
         "watching_for": "Any stop crossing on an options position where the alert and the ask are not one immediate message.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3310,7 +3310,7 @@ var RECORD = {
         "watching_for": "Any book state reported to Milly without a read-back verification against the live record.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3324,7 +3324,7 @@ var RECORD = {
         "watching_for": "Any exit executed without its pre-written plan (target, trim, or stop set before entry).",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3338,7 +3338,7 @@ var RECORD = {
         "watching_for": "A package whose driver section names only macro/sector causes while the name is moving >2 pts against its complex on the day, or any package built without a same-day name-specific news sweep.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3352,7 +3352,7 @@ var RECORD = {
         "watching_for": "Any package finalized without a stakeholder-scan section, or any report that softens a stakeholder scandal into corporate euphemism.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3366,7 +3366,7 @@ var RECORD = {
         "watching_for": "Any completed business check or qualifying setup that goes a full session without a same-day surface to Milly, or any entry-condition vs margin-math disagreement left unflagged.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3380,7 +3380,7 @@ var RECORD = {
         "watching_for": "Any plan-covered level (target, stop, trim) reported to Milly as 'needs your word' when the plan already worded it, or any cross on a pre-worded leg not executed and reported in the same watch cycle.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3394,7 +3394,7 @@ var RECORD = {
         "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3408,7 +3408,7 @@ var RECORD = {
         "watching_for": "Any package, brief slot, or armed setup that reaches Milly without all four prices, or any report that treats the disaster price as a stop or walk-away line.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3422,7 +3422,7 @@ var RECORD = {
         "watching_for": "A daily brief whose slots do not lead with full economics or are not the day's takeable slots; a qualifying L-012 slot not flagged as a live decision; a crawler day with no slot section or no slot-shaped flags; a qualifying slot missed; a stale or missing today-slots.json at the 08:30 open; any slot published in the brief, the candidates file, or today-slots.json missing its stop, kill, max loss in dollars, or flat-by-3:00 PM CT term. Any slot written without a target 2, or a target-1 hit handled without presenting the exit-or-ride decision, or a ride taken without Milly's word or without the stop ratcheting to target 1.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3436,7 +3436,7 @@ var RECORD = {
         "watching_for": "A day where a core or packaged name passes all three checks and is not flagged buy-time in that day's brief or crawler outputs; a scan run that does not report the three checks for the core and packaged names; a buy-time flag raised on fewer than three checks. A check 2 passed on a single day's print, or on a crash-day oversold print during an active event.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     },
     {
@@ -3450,7 +3450,7 @@ var RECORD = {
         "watching_for": "A market day with no Yahoo market-wide sweep at the open, or a slot-shaped mover left without a fast package built the same morning.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-16"
+        "last_checked": "2026-11-17"
       }
     }
   ],
@@ -3588,6 +3588,12 @@ var INDEX = {
       "date": "2026-11-16",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-16: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "date": "2026-11-17",
+      "book_value": 172.0,
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-17: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
@@ -4226,19 +4232,19 @@ var NR_WORTH_ASSET = {
 /* === NEWSROOM SYNC (generated; do not hand-edit) === */
 var INSIGHTS = [
   {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "tag": "Scan",
-    "title": "Whole-market scan 2026-11-16: 1153 passed",
-    "body": "Universe 11,807 quoted. 1,153 passed the full screen: gem zone 417, deep 374, crash 362. Top of the screen: TSM, META, AMD, UNH, HD, GE, HSBC, MS, AZN, RTX.",
-    "evidence": "Graph: scan:2026-11-16. Source: market_scan.py, scans/scan-2026-11-16.csv (feed: yahoo_quote).",
+    "title": "Whole-market scan 2026-11-17: 1174 passed",
+    "body": "Universe 11,805 quoted. 1,174 passed the full screen: gem zone 401, deep 397, crash 376. Top of the screen: AMZN, META, XOM, UNH, HD, GE, HSBC, AZN, SHEL, TXN.",
+    "evidence": "Graph: scan:2026-11-17. Source: market_scan.py, scans/scan-2026-11-17.csv (feed: yahoo_quote).",
     "lesson": "The scan is the whole market (L-002). Finalists come from the merged pool, never the watchlist alone."
   },
   {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "tag": "Dossiers",
-    "title": "45 EDGAR dossiers on file; 10 refreshed 2026-11-16",
-    "body": "Newest dossiers: ADI, BBVA, BP, IBKR, LMT, MFG, NEM, PH, PLD, VZ. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
-    "evidence": "Graph: dossier nodes dated 2026-11-16.",
+    "title": "55 EDGAR dossiers on file; 10 refreshed 2026-11-17",
+    "body": "Newest dossiers: AMZN, ANET, CNQ, ENB, EQNR, GD, GSK, MPC, PSX, VLO. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
+    "evidence": "Graph: dossier nodes dated 2026-11-17.",
     "lesson": "A dossier is not a check. The full process (management, employees, cash, worth) still runs before any package."
   },
   {
