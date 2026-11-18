@@ -468,6 +468,16 @@ const BOOK = {
       "early_entry": null,
       "swing_trade": null,
       "basis": "Ladder pending. The Nov 7 check records no true-worth estimate and no four prices under the L-013 definitions. Disaster $14.41 and load the boat $18.01 built Nov 12, 2026 (L-013): FY2024 trough FCF/share $1.20 x 12 = $14.41; the GAAP EPS leg is negative (-$1.08) and unusable, so the floor rests on trough cash generation. This is a trough floor, NOT a worth estimate \u2014 the Nov 7 check records no true-worth estimate for MRVL. Full trough inputs and balance-sheet cross-check in the package's Four Prices section."
+    },
+    {
+      "symbol": "TTWO",
+      "name": "Take-Two Interactive",
+      "status": "package built Nov 18, 2026; NO SLOT, pipeline / event watch into the Nov 19 GTA VI launch; nothing armed",
+      "disaster": 7,
+      "load_the_boat": 7.7,
+      "early_entry": 58,
+      "swing_trade": 203.93,
+      "basis": "trade-package-2026-11-18-TTWO.md: disaster $7 built Nov 18, 2026 (L-013) from two filing legs that land together: tangible book $6.78/share (10-Q Sep 30, 2026: equity $3,673.6M - goodwill $1,060.2M - intangibles net $1,344.3M = $1,269.1M on 187.2M shares) and trough positive FCF capitalized, FY22 FCF $99.4M = $0.85/share at a 12% trough cash yield = $7.09. GAAP EPS trough (-$25.58 FY25) and negative FY23-25 GAAP FCF cannot carry a floor and were not used. Load the boat $7.70 = disaster x 1.10. Early entry $58 = the package's passing price (0.8 x central worth $73; worth conservative $35 / central $73, section 4). Swing trade $203.93 = post-launch flush into the $196-204 pre-pop base closing back above the Nov 17 close (section 11); not armed. Full method in the package's Four Prices section."
     }
   ],
   "compounding": {
@@ -813,7 +823,7 @@ const BOOK = {
 
 // === RECORD SYNC (generated; do not hand-edit) ===
 const RECORD = {
-  "as_of": "2026-11-17",
+  "as_of": "2026-11-18",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -911,7 +921,7 @@ const RECORD = {
         "watching_for": "Any order placed, real or paper, without a full package and a completed lessons check first.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -925,7 +935,7 @@ const RECORD = {
         "watching_for": "Any opportunity hunt scoped to the watchlist instead of the whole-market scan.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -939,7 +949,7 @@ const RECORD = {
         "watching_for": "Any decision that relies on a feed with no proven delivery (the Discord pipe, the Finnhub stream) instead of a working source.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -953,7 +963,7 @@ const RECORD = {
         "watching_for": "Any trading day where today-slots.json is written after 08:30 CT, or a signal window passes unloaded.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -967,7 +977,7 @@ const RECORD = {
         "watching_for": "Any stop crossing on an options position where the alert and the ask are not one immediate message.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -981,7 +991,7 @@ const RECORD = {
         "watching_for": "Any book state reported to Milly without a read-back verification against the live record.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -995,7 +1005,7 @@ const RECORD = {
         "watching_for": "Any exit executed without its pre-written plan (target, trim, or stop set before entry).",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -1009,7 +1019,7 @@ const RECORD = {
         "watching_for": "A package whose driver section names only macro/sector causes while the name is moving >2 pts against its complex on the day, or any package built without a same-day name-specific news sweep.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -1023,7 +1033,7 @@ const RECORD = {
         "watching_for": "Any package finalized without a stakeholder-scan section, or any report that softens a stakeholder scandal into corporate euphemism.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -1037,7 +1047,7 @@ const RECORD = {
         "watching_for": "Any completed business check or qualifying setup that goes a full session without a same-day surface to Milly, or any entry-condition vs margin-math disagreement left unflagged.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -1051,7 +1061,7 @@ const RECORD = {
         "watching_for": "Any plan-covered level (target, stop, trim) reported to Milly as 'needs your word' when the plan already worded it, or any cross on a pre-worded leg not executed and reported in the same watch cycle.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -1065,7 +1075,7 @@ const RECORD = {
         "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -1079,7 +1089,7 @@ const RECORD = {
         "watching_for": "Any package, brief slot, or armed setup that reaches Milly without all four prices, or any report that treats the disaster price as a stop or walk-away line.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -1093,7 +1103,7 @@ const RECORD = {
         "watching_for": "A daily brief whose slots do not lead with full economics or are not the day's takeable slots; a qualifying L-012 slot not flagged as a live decision; a crawler day with no slot section or no slot-shaped flags; a qualifying slot missed; a stale or missing today-slots.json at the 08:30 open; any slot published in the brief, the candidates file, or today-slots.json missing its stop, kill, max loss in dollars, or flat-by-3:00 PM CT term. Any slot written without a target 2, or a target-1 hit handled without presenting the exit-or-ride decision, or a ride taken without Milly's word or without the stop ratcheting to target 1.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -1107,7 +1117,7 @@ const RECORD = {
         "watching_for": "A day where a core or packaged name passes all three checks and is not flagged buy-time in that day's brief or crawler outputs; a scan run that does not report the three checks for the core and packaged names; a buy-time flag raised on fewer than three checks. A check 2 passed on a single day's print, or on a crash-day oversold print during an active event.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
       }
     },
     {
@@ -1121,7 +1131,35 @@ const RECORD = {
         "watching_for": "A market day with no Yahoo market-wide sweep at the open, or a slot-shaped mover left without a fast package built the same morning.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-17"
+        "last_checked": "2026-11-18"
+      }
+    },
+    {
+      "id": "L-017",
+      "date": "2026-11-18",
+      "title": "Capital is never a silent blocker: when a qualifying trade outruns the book, Bobby asks Milly to fund it",
+      "status": "in_force",
+      "the_rule": "When a fully packaged, fully protected opportunity qualifies under the process but the book's cash cannot cover the capital the trade requires, Bobby surfaces it to Milly at the moment it qualifies, with the full economics and the exact dollar amount needed, and asks him to fund the account. A small book is a funding question, never a silent reason to let a qualifying trade pass unmentioned. The guardrails do not move: package first, protection complete, sizing and exits per the rules, and Milly's word on the trade itself; the funding ask runs alongside the trigger decision, not instead of it. Extends L-010 and L-012.",
+      "what_happened": "Nov 18, 2026 ~06:51 CT voice call. Reviewing the missed Nov 17 Aristotle SPY put (followers in at $420 for one SPXW contract, ~$4,300 in SPY puts; OpOne book $171.85, cash $163.41), Bobby treated the small book as a hard blocker: 'we could not have bought the trade.' Milly corrected it plainly: he has more money than the book and can raise capital for trades. His order: when an opportunity comes that Bobby is confident in but the book cannot cover, Bobby must tell him, say the trade cannot be covered, and ask him to upload money. 'This is a process that needs to take place.'",
+      "drift_watch": {
+        "watching_for": "A qualifying, fully protected opportunity that passes or dies silently because the book could not cover it, without a funding ask reaching Milly the same day.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-18"
+      }
+    },
+    {
+      "id": "L-018",
+      "date": "2026-11-18",
+      "title": "Target 1 is a decision presented both ways: the banked double and the full-ride case, Milly chooses",
+      "status": "in_force",
+      "the_rule": "When an options position reaches target 1 (+100%), the alert to Milly presents BOTH cases with real numbers: (1) the banked double \u2014 exit now, the exact profit locked; and (2) the full-ride case \u2014 what holding through pays at the remaining written targets/levels, and what it risks, stated plainly (the premium can go to zero; a same-day contract expires worthless if the underlying closes back through the strike). Milly decides. If he says hold, the trade rides with the stop ratcheted to the entry premium per L-014. No answer still defaults to the planned exit at target 1 (L-014 unchanged). Presenting only the double, or only the ride, is a defect.",
+      "what_happened": "Nov 18, 2026 voice call. Scoring the missed Nov 17 SPXW 7310 put (one contract $420 in, $38.45 / +$3,425 at the intraday low print, expired worthless at the close with SPX at ~7,346), Bobby stated the desk's version under the +100% target-1 rule: bank +$420 and out. Milly's ruling: 'We should go both ways next time. We want to do the double, but you should also tell what's possible if we hold through, for the amount that we can make, and then we can decide from there... If we get to the point and it convinces me that we should hold, then we wouldn't do the double. We would actually have followed all the way through.'",
+      "drift_watch": {
+        "watching_for": "Any options position that reaches target 1 (+100%) where the alert to Milly presents only the banked double or only the full-ride case, without both cases stated in real numbers for his decision.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-18"
       }
     }
   ],
@@ -1262,10 +1300,16 @@ const INDEX = {
       "source": "sync_book.py run 2026-11-16: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
     },
     {
-      "date": "2026-11-17",
       "book_value": 172.0,
+      "date": "2026-11-17",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-17: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "book_value": 172.0,
+      "date": "2026-11-18",
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-18: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
