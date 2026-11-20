@@ -25,7 +25,7 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
   "cash": 163.41,
-  "cash_as_of": "2026-11-19T15:14:12-06:00",
+  "cash_as_of": "2026-11-20T15:13:53-06:00",
   "fills": [
     {
       "symbol": "GOOGL",
@@ -823,7 +823,7 @@ const BOOK = {
 
 // === RECORD SYNC (generated; do not hand-edit) ===
 const RECORD = {
-  "as_of": "2026-11-19",
+  "as_of": "2026-11-20",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -1316,6 +1316,12 @@ const INDEX = {
       "date": "2026-11-19",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-19: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "date": "2026-11-20",
+      "book_value": 172.0,
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-20: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
