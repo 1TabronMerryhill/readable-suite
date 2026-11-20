@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-19T15:15:59.628953-06:00",
+ "generated": "2026-11-20T15:14:15.076216-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -806,10 +806,10 @@
    }
   ]
  },
- "cash_as_of": "2026-11-19T15:14:12-06:00",
+ "cash_as_of": "2026-11-20T15:13:53-06:00",
  "quotes_as_of": "static snapshot at fill prices; live prices come from /api/desk-data",
  "record": {
-  "as_of": "2026-11-19",
+  "as_of": "2026-11-20",
   "scoreboard": {
    "exits": 6,
    "wins": 5,
@@ -1299,6 +1299,12 @@
     "date": "2026-11-19",
     "index": 73.56,
     "source": "sync_book.py run 2026-11-19: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
+   },
+   {
+    "date": "2026-11-20",
+    "book_value": 172.0,
+    "index": 73.56,
+    "source": "sync_book.py run 2026-11-20: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
    }
   ],
   "deposits": [
@@ -1333,35 +1339,59 @@
  },
  "wire": [
   {
+   "time": "2026-11-20",
+   "headline": "Whole-market scan 2026-11-20: 1309 passed",
+   "verdict": "Universe 11,826 quoted; 1,309 passed (gem 444, deep 441, crash 424). Top of the screen: MSFT, AMZN, ANT, SNDK, JPM, XOM, CVX, HD.",
+   "refs": [
+    "scan:2026-11-20"
+   ]
+  },
+  {
+   "time": "2026-11-20",
+   "headline": "ANET Trigger C starter recommendation never taken: it required Milly's word today (standing authorization no longer carried it) and no word or fill is on record - Robinhood read this run shows cash $163.41 unchanged and equity $8.09 (DCA sleeve only). Finnhub Nov 20: open $185.09, high $185.82, low $165.41, close $167.62 - the daily close below the $172 package stop ends the setup unfilled. A signal that never triggers scores as no trade. Signal only, no position.",
+   "verdict": "Result: no_trade (signal_only, feed finnhub).",
+   "refs": [
+    "outcome:2026-11-20-anet-slot"
+   ]
+  },
+  {
+   "time": "2026-11-20",
+   "headline": "QQQ INDEXPUT breakdown signal hit its target: Finnhub Nov 20 open $638.84 and day high $643.28 - the entire session traded below the $646.64 shelf, so the first 30-min bar closed below it before 11:00 CT (trigger printed); the kill (30-min close back above $646.64) never fired; the target-2 shelf $642.21 was crossed with day low $606.23, close $609.88. Signal only, never a trade: the $400-$500 premium could not be funded from verified cash $163.41 (funding ask L-017 carried in the slot record) and no fill exists in the ledger.",
+   "verdict": "Result: target_hit (signal_only, feed finnhub).",
+   "refs": [
+    "outcome:2026-11-20-qqq-indexput-slot"
+   ]
+  },
+  {
+   "time": "2026-11-20",
+   "headline": "ABNB EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Services-To Dwellings & Other Buildings. Latest annual 10-K filed 2026-02-12; latest quarterly 10-Q filed 2026-11-05.",
+   "refs": [
+    "dossier:ABNB"
+   ]
+  },
+  {
+   "time": "2026-11-20",
+   "headline": "ANT EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Services-Prepackaged Software. Latest annual  filed ; latest quarterly  filed .",
+   "refs": [
+    "dossier:ANT"
+   ]
+  },
+  {
+   "time": "2026-11-20",
+   "headline": "BNS EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: State Commercial Banks. Latest annual 40-F filed 2025-12-02; latest quarterly  filed .",
+   "refs": [
+    "dossier:BNS"
+   ]
+  },
+  {
    "time": "2026-11-19",
    "headline": "Whole-market scan 2026-11-19: 1230 passed",
    "verdict": "Universe 11,821 quoted; 1,230 passed (gem 416, deep 418, crash 396). Top of the screen: AMD, JPM, XOM, CVX, MRK, GE, HD, PM.",
    "refs": [
     "scan:2026-11-19"
-   ]
-  },
-  {
-   "time": "2026-11-19",
-   "headline": "BNY EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: State Commercial Banks. Latest annual 10-K filed 2026-02-25; latest quarterly 10-Q filed 2026-10-30.",
-   "refs": [
-    "dossier:BNY"
-   ]
-  },
-  {
-   "time": "2026-11-19",
-   "headline": "COP EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Petroleum Refining. Latest annual 10-K filed 2026-02-17; latest quarterly 10-Q filed 2026-11-05.",
-   "refs": [
-    "dossier:COP"
-   ]
-  },
-  {
-   "time": "2026-11-19",
-   "headline": "HCA EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Services-General Medical & Surgical Hospitals, NEC. Latest annual 10-K filed 2026-02-10; latest quarterly 10-Q filed 2026-10-29.",
-   "refs": [
-    "dossier:HCA"
    ]
   },
   {
@@ -1381,30 +1411,6 @@
    ]
   },
   {
-   "time": "2026-11-17",
-   "headline": "Whole-market scan 2026-11-17: 1174 passed",
-   "verdict": "Universe 11,805 quoted; 1,174 passed (gem 401, deep 397, crash 376). Top of the screen: AMZN, META, XOM, UNH, HD, GE, HSBC, AZN.",
-   "refs": [
-    "scan:2026-11-17"
-   ]
-  },
-  {
-   "time": "2026-11-13",
-   "headline": "NVDA paper Nov 13 175 put expired today: Finnhub NVDA close $162.85 gives intrinsic value $12.15 vs the $4.80 entry premium, above the $9.60 target; kill (reclaim above $181.60, day high $170.00) never fired. Paper weeklies position only, no real position; settles on intrinsic value at expiry per today-slots slot 1.",
-   "verdict": "Result: target_hit (signal_only, feed finnhub).",
-   "refs": [
-    "outcome:2026-11-13-nvda-put-expiry"
-   ]
-  },
-  {
-   "time": "2026-11-12",
-   "headline": "ANET long opened $193.15 inside its entry zone, crossed the $193 trigger, and hit the $206 target (Finnhub day high $207.17, close $206.63; stop $187.88 never approached, low $190.82). Signal only, no position opened. The slot was not surfaced as a live decision in the first minutes; that miss is L-012, logged today.",
-   "verdict": "Result: target_hit (signal_only, feed finnhub).",
-   "refs": [
-    "outcome:2026-11-12-anet-slot"
-   ]
-  },
-  {
    "time": "2026-11-06",
    "headline": "October nonfarm payrolls +165k vs ~65k consensus, unemployment 4.1% vs 4.2%, wages +0.4% MoM",
    "verdict": "On the record: Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS.",
@@ -1420,43 +1426,43 @@
    {
     "slot": 1,
     "symbol": "ANET",
-    "call": "long (longer-horizon package trade \u2014 NOT a day trade), trigger_c_complete_starter_due_at_open_standing_authorization",
-    "note": "long (longer-horizon package trade \u2014 NOT a day trade) \u00b7 entry 193.94 \u00b7 target 217.41 \u00b7 stop 172.0. daily close below $172, or package kill list firing"
+    "call": "long (longer-horizon package trade - NOT a day trade), recommendation_pending_millys_word_starter_never_executed",
+    "note": "long (longer-horizon package trade - NOT a day trade) \u00b7 entry 189.59 \u00b7 target 217.41 \u00b7 stop 172.0. package kill list: MSFT/META capex digestion or named titan socket lost to Spectrum-X/Broadcom; guidance cut; non-GAAP GM guided below 62%; weekly close below $156"
    },
    {
     "slot": 2,
-    "symbol": "QQQ weekly put \u2014 INDEXPUT package (trade-package-2026-11-18-INDEXPUT)",
-    "call": "long put (day trade), conditional_day_trade_trigger_not_yet_printed",
-    "note": "long put (day trade) \u00b7 entry None \u00b7 target +100% of premium \u00b7 stop premium mark <= 50% of entry premium. package trade kill \u2014 underlying invalidation, exit at market whatever the premium"
+    "symbol": "QQQ weekly put - INDEXPUT package (trade-package-2026-11-18-INDEXPUT)",
+    "call": "long put (day trade), conditional_day_trade_trigger_not_yet_printed_today",
+    "note": "long put (day trade) \u00b7 entry None \u00b7 target +100% of premium \u00b7 stop premium mark <= 50% of entry premium. package trade kill - 30-min close back above $646.64 (breakdown trade) or above $682.59 (failed-reclaim trade): exit at market whatever the premium"
    },
    {
     "slot": 3,
-    "symbol": "GOOGL \u2014 DCA core, BUY TIME (L-015)",
+    "symbol": "GOOGL - DCA core, BUY TIME (L-015)",
     "call": "long (DCA cadence), buy_time_flag_next_weekly_buy_doubles_not_a_day_trade_slot",
-    "note": "long (DCA cadence) \u00b7 entry 292.8 \u00b7 target 365.0 \u00b7 stop program protections: rotation exit on two consecutive closes <=25% under program average cost; package belief-breakers. package belief-breakers; rotation exit per dca-program.md"
+    "note": "long (DCA cadence) \u00b7 entry 272.66 \u00b7 target 365.0 \u00b7 stop program protections: rotation exit on two consecutive closes <=25% under program average cost ($220.19); disaster exit on one close <=40% under cost ($176.15); package belief-breakers. package belief-breakers; rotation/disaster exits per dca-program.md"
    },
    {
     "slot": 4,
-    "symbol": "TTWO \u2014 pipeline / event watch, GTA VI launch day",
+    "symbol": "TTWO - pipeline / event watch, GTA VI day two",
     "call": "none, pipeline_only_no_slot_package_terms",
-    "note": "none \u00b7 entry None \u00b7 target None \u00b7 stop None. pipeline thesis kill: launch failure or guidance cut (FY27 bookings guide $8.0-$8.2B reiterated Nov 9, not raised)"
+    "note": "none \u00b7 entry None \u00b7 target None \u00b7 stop None. pipeline thesis kill: launch failure or guidance cut (FY27 bookings guide $8.0-$8.2B reiterated Nov 9, not raised); package close-below $183.86 line"
    },
    {
     "slot": 5,
-    "symbol": "NVDA \u2014 pipeline only, long package DISARMED",
+    "symbol": "NVDA - pipeline only, long package DISARMED",
     "call": "none, pipeline_only_no_slot_kill_governs",
     "note": "none \u00b7 entry None \u00b7 target None \u00b7 stop None. governance kill already fired and governing; re-entry only via fresh re-underwrite package and Milly's word"
    }
   ],
   "meta": {
-   "date": "2026-11-19",
-   "overall": "OpOne daily brief Thu Nov 19, 2026 (06:00 CT). Reconciliation: BRIEF.md, trade packages (ANET, INDEXPUT, QQQ, NVDA, TTWO, GOOGL), dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json, outcomes.json (incl. ANET Trigger C completion Nov 18), track-record.json, index-state.json (73.56, book $172.00, sync Nov 18), candidates-2026-11-18.md (0 takeable day-trade slots; NVDA protection-incomplete), sector-board-data.json (Nov 18 file, 279 names), Wed Nov 18 verified closes via finance/news search (SPY 730.20, QQQ 659.51, NVDA 150.96, ANET 193.94, GOOGL 282.44, BAC 48.91, CVX ~205.8, ABBV 285.96, TTWO 216.61), Thu premarket futures +1.1% S&P / +1.9% Nasdaq on Anthropic ANT debut ($83 IPO)."
+   "date": "2026-11-20",
+   "overall": "OpOne daily brief Fri Nov 20, 2026 (06:00 CT). Reconciliation: BRIEF.md, trade packages (ANET incl. Nov 16 refresh, INDEXPUT, QQQ, NVDA, TTWO, GOOGL), dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json (cash_verified $163.41, Nov 19), outcomes.json (incl. ANET Trigger C completion Nov 18; book sync Nov 19 verified the starter NEVER EXECUTED - no order, no position, no cash movement), track-record.json (6 exits, 5W/1L, net -$66.10), index-state.json (73.56, book $172.00), candidates-2026-11-19.md (0 takeable day-trade slots; NVDA/TTWO protection-incomplete), sector-board-data.json (Nov 19 file, 283 names), Thu Nov 19 verified closes via finance/news search (SPY 715.87, QQQ 645.04, NVDA 145.98, ANET 189.59, GOOGL 272.66, BAC 48.56, CVX 206.39, ABBV 283.54, TTWO 208.65, VIX 28.44), Fri premarket futures lower (Nasdaq-100 -1.1% to -1.6%)."
   }
  },
  "graph": {
-  "generated": "2026-11-19",
-  "nodes": 249,
-  "edges": 162,
+  "generated": "2026-11-20",
+  "nodes": 262,
+  "edges": 164,
   "live_patterns": 0,
   "pattern_candidates": 6,
   "connector_candidates": 16,
@@ -1466,19 +1472,19 @@
  "newsroom": {
   "insights": [
    {
-    "date": "2026-11-19",
+    "date": "2026-11-20",
     "tag": "Scan",
-    "title": "Whole-market scan 2026-11-19: 1230 passed",
-    "body": "Universe 11,821 quoted. 1,230 passed the full screen: gem zone 416, deep 418, crash 396. Top of the screen: AMD, JPM, XOM, CVX, MRK, GE, HD, PM, AZN, TXN.",
-    "evidence": "Graph: scan:2026-11-19. Source: market_scan.py, scans/scan-2026-11-19.csv (feed: yahoo_quote).",
+    "title": "Whole-market scan 2026-11-20: 1309 passed",
+    "body": "Universe 11,826 quoted. 1,309 passed the full screen: gem zone 444, deep 441, crash 424. Top of the screen: MSFT, AMZN, ANT, SNDK, JPM, XOM, CVX, HD, GE, MRK.",
+    "evidence": "Graph: scan:2026-11-20. Source: market_scan.py, scans/scan-2026-11-20.csv (feed: yahoo_quote).",
     "lesson": "The scan is the whole market (L-002). Finalists come from the merged pool, never the watchlist alone."
    },
    {
-    "date": "2026-11-19",
+    "date": "2026-11-20",
     "tag": "Dossiers",
-    "title": "75 EDGAR dossiers on file; 10 refreshed 2026-11-19",
-    "body": "Newest dossiers: BNY, COP, HCA, MRK, NET, PFE, PM, TD, TJX, USB. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
-    "evidence": "Graph: dossier nodes dated 2026-11-19.",
+    "title": "85 EDGAR dossiers on file; 10 refreshed 2026-11-20",
+    "body": "Newest dossiers: ABNB, ANT, BNS, ING, MSFT, NVS, PANW, PNC, SNDK, UPS. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
+    "evidence": "Graph: dossier nodes dated 2026-11-20.",
     "lesson": "A dossier is not a check. The full process (management, employees, cash, worth) still runs before any package."
    },
    {
