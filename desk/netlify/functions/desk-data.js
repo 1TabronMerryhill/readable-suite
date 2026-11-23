@@ -24,8 +24,8 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 163.41,
-  "cash_as_of": "2026-11-20T15:13:53-06:00",
+  "cash": 163.42,
+  "cash_as_of": "2026-11-23T15:15:40-06:00",
   "fills": [
     {
       "symbol": "GOOGL",
@@ -823,7 +823,7 @@ const BOOK = {
 
 // === RECORD SYNC (generated; do not hand-edit) ===
 const RECORD = {
-  "as_of": "2026-11-20",
+  "as_of": "2026-11-23",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -1161,6 +1161,20 @@ const RECORD = {
         "status": "holding",
         "last_checked": "2026-11-20"
       }
+    },
+    {
+      "id": "L-019",
+      "date": "2026-11-23",
+      "title": "Crash names must surface as buy-the-dip candidates with the turn watched and orders staged \u2014 a crash tier buried in counts is a miss",
+      "status": "in_force",
+      "the_rule": "The daily scan's crash tier is surfaced to Milly as a NAMED candidate list with the bounce case stated \u2014 never left as a tier count in a receipt. For crash names, the process runs fast the same morning (package or fast package, four prices, the three-check read), levels are watched for the turn on the desk's own studies (RSI/MACD stabilization, a held higher low, a shelf reclaim), and Bobby stages prepared draft orders on qualifying setups so Milly's decision is a yes/no at the moment, not a build after the fact. The gates do not move: a crash alone is still a flag, not a buy (L-015); no package, no trade (L-001); drafts execute only on Milly's per-trade word. Visibility, readiness, and speed are what this lesson adds. Extends L-010, L-012, L-016.",
+      "what_happened": "Mon Nov 23, 2026 was a bounce day after Friday's crash closes, and the desk watched it from the sidelines. Every name on Aristotle's accumulation list ripped: NVDA opened 136.14 (Fri close 125.53; the swing began ~07:50 CT per Milly's chart read), MRVL opened 128.69 and traded to ~147, NBIS opened 87 and reached 98.52, ORCL and HOOD bounced with them, and QQQ ran from 627.91 premarket to ~652. The morning scan HAD the facts \u2014 445 crash-tier passes, NVDA flagged \u221214.0% premarket \u2014 but no surface turned them into named buy-the-dip candidates with levels watched for the turn, and no orders were staged for Milly's yes/no. The NVDA leg also rode a headline Milly saw (board reinstates Jensen Huang as CEO) that the desk had not caught as news; Aristotle's 09:54 CT post carried the same claim, which the desk had flagged unverified against its record. Milly's stated pattern, restated from Nov 18 with today as his evidence: in a panic, names down 20%+ tend to bounce, and money put to work in them during the crash is cheaper capital. His order on the call, verbatim in substance: 'It has to be a lesson in this. And it needs to be marked as a lesson.'",
+      "drift_watch": {
+        "watching_for": "A market day where crash-tier names bounce hard and none were surfaced to Milly as named candidates with levels watched or a staged draft order before the move.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-23"
+      }
     }
   ],
   "drift": {
@@ -1322,6 +1336,12 @@ const INDEX = {
       "date": "2026-11-20",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-20: cash_verified $163.41 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "date": "2026-11-23",
+      "book_value": 172.01,
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-23: cash_verified $163.42 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
