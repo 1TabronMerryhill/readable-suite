@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="desk-version" content="v1.5" />
-<meta name="desk-updated" content="2026-11-23T15:18:21-06:00" />
-<!-- desk-build v1.5 updated 2026-11-23T15:18:21-06:00 -->
+<meta name="desk-updated" content="2026-11-24T08:01:05-06:00" />
+<!-- desk-build v1.5 updated 2026-11-24T08:01:05-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -823,9 +823,9 @@
     <div class="sec-head">
       <span class="sec-num">05</span>
       <h2 class="sec-title">The Brief</h2>
-      <p class="sec-note" id="briefDateLine">2026-11-23. The overall read first, then the day's slots in order. Refreshed with the daily book sync.</p>
+      <p class="sec-note" id="briefDateLine">2026-11-24. The overall read first, then the day's slots in order. Refreshed with the daily book sync.</p>
     </div>
-    <p class="brief-overall" id="briefOverall">OpOne daily brief Mon Nov 23, 2026. Reconciliation: BRIEF.md, trade packages (ANET incl. Trigger A/B/C, INDEXPUT incl. Nov 23 addendum agreed Nov 20, GOOGL, BAC, ABBV, CVX, TTWO, NVDA), dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json (cash_verified $163.41, Nov 20 live read; total $171.50), outcomes.json, track-record.json (6 exits, 5W/1L, net -$66.10), index-state.json (73.56), candidates-2026-11-20.md (0 takeable day-trade slots; NVDA/TTWO protection-incomplete), sector-board-data.json (Nov 20, 289 names). TA: ta_engine.py run Nov 23 on Friday closes. Premarket: Finnhub via finance search Nov 23 ~05:47 CT.</p>
+    <p class="brief-overall" id="briefOverall">OpOne daily brief Tue Nov 24, 2026. Reconciliation: BRIEF.md, trade packages (ANET incl. Trigger A/B/C, INDEXPUT incl. Nov 23 addendum, GOOGL, BAC stock+options, ABBV, CVX, TTWO, NVDA disarmed), field-orders.md (FO-1 fielded, FO-4 watching), dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json (cash_verified $163.42, Nov 23 15:15 live read; total $171.72), outcomes.json (Mon Nov 23: INDEXPUT no_trade, ANET no_trade), track-record.json (6 exits, 5W/1L, net -$66.10), candidates-2026-11-23.md (0 takeable day-trade slots; NVDA/TTWO protection-incomplete), sector-board-data.json (Nov 23, Fri closes). TA: ta_engine workups on Friday Nov 20 bars (latest on file); Monday closes from Finnhub/MarketBeat/Barchart verified pulls Nov 24 premarket. News: Reuters, Barchart, CoinCentral, ATFX, Daily Market Report, Nov 24.</p>
     <div class="slots" id="slotList"></div>
     <button class="tab-next" data-next="glance" type="button"><span class="nx">Next: Glance.</span> Start the loop at step 1.</button>
   </section>
@@ -839,7 +839,7 @@
     </div>
     <p class="tab-skill"><b>Graph trains the memory.</b></p>
     <div class="graph-stats">
-      <div class="gstat"><div class="v" id="gsNodes">275</div><div class="k">Nodes in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsNodes">284</div><div class="k">Nodes in the full graph</div></div>
       <div class="gstat"><div class="v" id="gsEdges">166</div><div class="k">Edges in the full graph</div></div>
       <div class="gstat"><div class="v" id="gsLive">0</div><div class="k">Live patterns. None has earned it yet</div></div>
       <div class="gstat"><div class="v" id="gsConn">16</div><div class="k">Connector candidates waiting</div></div>
@@ -909,7 +909,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 23, 2026, 3:18 PM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 24, 2026, 8:01 AM CT</span></p>
   </footer>
 </div>
 <script>
@@ -1780,6 +1780,38 @@ var CONDITIONALS = [
 /* === WIRE SYNC (generated; do not hand-edit) === */
 var WIRE = [
   {
+    "time": "2026-11-24",
+    "headline": "Whole-market scan 2026-11-24: 1278 passed",
+    "verdict": "Universe 11,844 quoted; 1,278 passed (gem 422, deep 456, crash 400). Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, MRK, GE.",
+    "refs": [
+      "scan:2026-11-24"
+    ]
+  },
+  {
+    "time": "2026-11-24",
+    "headline": "AMT EDGAR dossier refreshed",
+    "verdict": "EDGAR dossier on file. Sector: Real Estate Investment Trusts. Latest annual 10-K filed 2026-02-24; latest quarterly 10-Q filed 2026-10-27.",
+    "refs": [
+      "dossier:AMT"
+    ]
+  },
+  {
+    "time": "2026-11-24",
+    "headline": "BAM EDGAR dossier refreshed",
+    "verdict": "EDGAR dossier on file. Sector: Investment Advice. Latest annual 10-K filed 2026-03-02; latest quarterly 10-Q filed 2026-11-09.",
+    "refs": [
+      "dossier:BAM"
+    ]
+  },
+  {
+    "time": "2026-11-24",
+    "headline": "CVX EDGAR dossier refreshed",
+    "verdict": "EDGAR dossier on file. Sector: Petroleum Refining. Latest annual 10-K filed 2026-02-24; latest quarterly 10-Q filed 2026-11-05.",
+    "refs": [
+      "dossier:CVX"
+    ]
+  },
+  {
     "time": "2026-11-23",
     "headline": "Whole-market scan 2026-11-23: 1341 passed",
     "verdict": "Universe 11,825 quoted; 1,341 passed (gem 425, deep 471, crash 445). Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, MRK, PM.",
@@ -1804,30 +1836,6 @@ var WIRE = [
     ]
   },
   {
-    "time": "2026-11-23",
-    "headline": "AMGN EDGAR dossier refreshed",
-    "verdict": "EDGAR dossier on file. Sector: Biological Products, (No Diagnostic Substances). Latest annual 10-K filed 2026-02-13; latest quarterly 10-Q filed 2026-11-04.",
-    "refs": [
-      "dossier:AMGN"
-    ]
-  },
-  {
-    "time": "2026-11-23",
-    "headline": "BLK EDGAR dossier refreshed",
-    "verdict": "EDGAR dossier on file. Sector: Security Brokers, Dealers & Flotation Companies. Latest annual 10-K filed 2026-02-25; latest quarterly 10-Q filed 2026-11-04.",
-    "refs": [
-      "dossier:BLK"
-    ]
-  },
-  {
-    "time": "2026-11-23",
-    "headline": "ELV EDGAR dossier refreshed",
-    "verdict": "EDGAR dossier on file. Sector: Hospital & Medical Service Plans. Latest annual 10-K filed 2026-02-06; latest quarterly 10-Q filed 2026-10-21.",
-    "refs": [
-      "dossier:ELV"
-    ]
-  },
-  {
     "time": "2026-11-20",
     "headline": "Whole-market scan 2026-11-20: 1309 passed",
     "verdict": "Universe 11,826 quoted; 1,309 passed (gem 444, deep 441, crash 424). Top of the screen: MSFT, AMZN, ANT, SNDK, JPM, XOM, CVX, HD.",
@@ -1844,14 +1852,6 @@ var WIRE = [
     ]
   },
   {
-    "time": "2026-11-19",
-    "headline": "Whole-market scan 2026-11-19: 1230 passed",
-    "verdict": "Universe 11,821 quoted; 1,230 passed (gem 416, deep 418, crash 396). Top of the screen: AMD, JPM, XOM, CVX, MRK, GE, HD, PM.",
-    "refs": [
-      "scan:2026-11-19"
-    ]
-  },
-  {
     "time": "2026-11-06",
     "headline": "October nonfarm payrolls +165k vs ~65k consensus, unemployment 4.1% vs 4.2%, wages +0.4% MoM",
     "verdict": "On the record: Discord #opone-capital brief 2026-11-06, messages 1568233760355520513-1568233802281656331; Reuters/BLS.",
@@ -1865,44 +1865,44 @@ var WIRE = [
 var SLOTS = [
   {
     "slot": 1,
-    "symbol": "SPY or QQQ weekly options - INDEXPUT package (trade-package-2026-11-18-INDEXPUT, Nov 23 addendum)",
-    "call": "long put on breakdown, or long call on the call shape (two-sided per Milly's Nov 20 ruling), conditional_day_trade_for_monday_nov_23_trigger_not_yet_printed",
-    "note": "long put on breakdown, or long call on the call shape (two-sided per Milly's Nov 20 ruling) \u00b7 entry None \u00b7 target +100% of premium \u00b7 stop premium mark <= 50% of entry premium. package trade kill: 30-min close back above the broken shelf on a breakdown trade (thesis done); stand-down: two closes back above the broken shelf = based, thesis done"
+    "symbol": "QQQ 590 put, Fri Nov 27 expiry - INDEXPUT package, field order FO-1 (Milly's word Nov 23)",
+    "call": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape, conditional_day_trade_for_tuesday_nov_24_trigger_not_yet_printed",
+    "note": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape \u00b7 entry None \u00b7 target +100% of premium \u00b7 stop premium mark <= 50% of entry premium. FO-1 kill: after a breakdown entry, a 30-min close back above 655 ends the thesis. Package stand-down: two closes back above the broken shelf = based, thesis done (Monday was close one)."
   },
   {
     "slot": 2,
     "symbol": "ANET",
-    "call": "long (longer-horizon package trade - NOT a day trade), package_conditional_trigger_a_test_on_mondays_close_not_a_day_trade",
+    "call": "long (longer-horizon package trade - NOT a day trade), package_conditional_trigger_a_test_on_tuesdays_close_not_a_day_trade",
     "note": "long (longer-horizon package trade - NOT a day trade) \u00b7 entry None \u00b7 target 217.41 \u00b7 stop 156.0. package kill list: MSFT/META capex digestion or named titan socket lost to Spectrum-X/Broadcom; guidance cut; non-GAAP GM guided below 62%; weekly close below $156"
   },
   {
     "slot": 3,
-    "symbol": "GOOGL and BAC - DCA core, BUY TIME (L-015)",
-    "call": "long (DCA cadence), buy_time_flags_for_next_weekly_cycle_not_day_trade_slots_googl_pause_term_tripped",
+    "symbol": "GOOGL and BAC - DCA core (L-015 three-check)",
+    "call": "long (DCA cadence), googl_buy_time_pause_gated_bac_flag_lapsed_to_partial_not_day_trade_slots",
     "note": "long (DCA cadence) \u00b7 entry None \u00b7 target 365.0 \u00b7 stop program protections per name: rotation exit on two consecutive closes <=25% under program average cost (GOOGL $220.19, BAC $38.03); disaster exit on one close <=40% under cost (GOOGL $176.15, BAC $30.43); package belief-breakers. package belief-breakers per name; rotation/disaster exits per dca-program.md"
   },
   {
     "slot": 4,
-    "symbol": "TTWO - pipeline / event watch, GTA VI launch week",
-    "call": "none, pipeline_only_no_slot_package_terms",
-    "note": "none \u00b7 entry None \u00b7 target None \u00b7 stop None. pipeline thesis kill: launch failure or guidance cut (FY27 bookings guide $8.0-$8.2B); package close-below $183.86 line"
+    "symbol": "CRWD - field order FO-4, pipeline / event watch (Zscaler deal)",
+    "call": "none, pipeline_only_confirmation_not_verified_four_prices_not_built",
+    "note": "none \u00b7 entry None \u00b7 target None \u00b7 stop None. FO-4 kill: a 30-min close below $200.53 - the base failed, setup dead, no averaging down"
   },
   {
     "slot": 5,
     "symbol": "NVDA - pipeline only, long package DISARMED",
-    "call": "none, pipeline_only_no_slot_kill_governs",
+    "call": "none, pipeline_only_no_slot_kill_governs_reunderwrite_recommended",
     "note": "none \u00b7 entry None \u00b7 target None \u00b7 stop None. governance kill already fired and governing; re-entry only via fresh re-underwrite package and Milly's word"
   }
 ];
 var BRIEF_META = {
-  "date": "2026-11-23",
-  "overall": "OpOne daily brief Mon Nov 23, 2026. Reconciliation: BRIEF.md, trade packages (ANET incl. Trigger A/B/C, INDEXPUT incl. Nov 23 addendum agreed Nov 20, GOOGL, BAC, ABBV, CVX, TTWO, NVDA), dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json (cash_verified $163.41, Nov 20 live read; total $171.50), outcomes.json, track-record.json (6 exits, 5W/1L, net -$66.10), index-state.json (73.56), candidates-2026-11-20.md (0 takeable day-trade slots; NVDA/TTWO protection-incomplete), sector-board-data.json (Nov 20, 289 names). TA: ta_engine.py run Nov 23 on Friday closes. Premarket: Finnhub via finance search Nov 23 ~05:47 CT."
+  "date": "2026-11-24",
+  "overall": "OpOne daily brief Tue Nov 24, 2026. Reconciliation: BRIEF.md, trade packages (ANET incl. Trigger A/B/C, INDEXPUT incl. Nov 23 addendum, GOOGL, BAC stock+options, ABBV, CVX, TTWO, NVDA disarmed), field-orders.md (FO-1 fielded, FO-4 watching), dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json (cash_verified $163.42, Nov 23 15:15 live read; total $171.72), outcomes.json (Mon Nov 23: INDEXPUT no_trade, ANET no_trade), track-record.json (6 exits, 5W/1L, net -$66.10), candidates-2026-11-23.md (0 takeable day-trade slots; NVDA/TTWO protection-incomplete), sector-board-data.json (Nov 23, Fri closes). TA: ta_engine workups on Friday Nov 20 bars (latest on file); Monday closes from Finnhub/MarketBeat/Barchart verified pulls Nov 24 premarket. News: Reuters, Barchart, CoinCentral, ATFX, Daily Market Report, Nov 24."
 };
 /* === END WIRE SYNC === */
 /* === GRAPHMETA SYNC (generated; do not hand-edit) === */
 var GRAPHMETA = {
-  "generated": "2026-11-23",
-  "nodes": 275,
+  "generated": "2026-11-24",
+  "nodes": 284,
   "edges": 166,
   "live_patterns": 0,
   "pattern_candidates": 6,
@@ -3152,7 +3152,7 @@ var BOOK={ total:172.00, cash:163.41, equity:8.59, count:5, symbols:"ABBV, BAC, 
   attention:"Book synced from the ledger by sync_book.py. Nothing else needs you.", cashAsOf:"" };
 /* === RECORD SYNC (generated; do not hand-edit) === */
 var RECORD = {
-  "as_of": "2026-11-23",
+  "as_of": "2026-11-24",
   "scoreboard": {
     "exits": 6,
     "wins": 5,
@@ -3670,6 +3670,12 @@ var INDEX = {
       "date": "2026-11-23",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-23: cash_verified $163.42 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "date": "2026-11-24",
+      "book_value": 172.01,
+      "index": 73.56,
+      "source": "sync_book.py run 2026-11-24: cash_verified $163.42 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
@@ -4308,19 +4314,19 @@ var NR_WORTH_ASSET = {
 /* === NEWSROOM SYNC (generated; do not hand-edit) === */
 var INSIGHTS = [
   {
-    "date": "2026-11-23",
+    "date": "2026-11-24",
     "tag": "Scan",
-    "title": "Whole-market scan 2026-11-23: 1341 passed",
-    "body": "Universe 11,825 quoted. 1,341 passed the full screen: gem zone 425, deep 471, crash 445. Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, MRK, PM, NVS, AZN.",
-    "evidence": "Graph: scan:2026-11-23. Source: market_scan.py, scans/scan-2026-11-23.csv (feed: yahoo_quote).",
+    "title": "Whole-market scan 2026-11-24: 1278 passed",
+    "body": "Universe 11,844 quoted. 1,278 passed the full screen: gem zone 422, deep 456, crash 400. Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, MRK, GE, PANW, NVS.",
+    "evidence": "Graph: scan:2026-11-24. Source: market_scan.py, scans/scan-2026-11-24.csv (feed: yahoo_quote).",
     "lesson": "The scan is the whole market (L-002). Finalists come from the merged pool, never the watchlist alone."
   },
   {
-    "date": "2026-11-23",
+    "date": "2026-11-24",
     "tag": "Dossiers",
-    "title": "95 EDGAR dossiers on file; 10 refreshed 2026-11-23",
-    "body": "Newest dossiers: AMGN, BLK, ELV, EMR, EQIX, MCO, MNST, SHW, TTE, WMB. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
-    "evidence": "Graph: dossier nodes dated 2026-11-23.",
+    "title": "103 EDGAR dossiers on file; 10 refreshed 2026-11-24",
+    "body": "Newest dossiers: AMT, BAM, CVX, EOG, EPD, JCI, NGG, RCL, TT, XOM. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
+    "evidence": "Graph: dossier nodes dated 2026-11-24.",
     "lesson": "A dossier is not a check. The full process (management, employees, cash, worth) still runs before any package."
   },
   {
