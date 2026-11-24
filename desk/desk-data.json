@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-24T08:01:05.979047-06:00",
+ "generated": "2026-11-24T15:15:21.308504-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -806,7 +806,7 @@
    }
   ]
  },
- "cash_as_of": "2026-11-23T15:15:40-06:00",
+ "cash_as_of": "2026-11-24T15:15:21-06:00",
  "quotes_as_of": "static snapshot at fill prices; live prices come from /api/desk-data",
  "record": {
   "as_of": "2026-11-24",
@@ -1327,8 +1327,8 @@
     "source": "sync_book.py run 2026-11-23: cash_verified $163.42 + open positions at fill $8.59 + options at cost $0.00"
    },
    {
-    "date": "2026-11-24",
     "book_value": 172.01,
+    "date": "2026-11-24",
     "index": 73.56,
     "source": "sync_book.py run 2026-11-24: cash_verified $163.42 + open positions at fill $8.59 + options at cost $0.00"
    }
@@ -1374,6 +1374,22 @@
   },
   {
    "time": "2026-11-24",
+   "headline": "INDEXPUT QQQ 590 put (FO-1, Milly's word Nov 23) failed-reclaim trigger printed only on the closing bar Tue Nov 24: Finnhub QQQ open $640.04 and high $648.00 inside the 640-655 shelf, close $638.10 - the final 30-min bar closed back below $640, which is the FO-1(b) print. The breakdown trigger (30-min close below Friday's low $606.23) never approached (day low $631.15), and the kill (30-min close back above $655) never fired (high $648.00). The trigger completing at the 15:00 CT close left no entry window before FO-1's own flat-by, and no order was placed and no fill exists in the ledger (Robinhood read this run: cash $163.42 unchanged, latest equity order still Nov 11). Package stand-down not completed: it needs two closes in/above the shelf and today's close fell back below it. Signal only, never a trade; no premium was ever quoted, so no r_multiple is scored.",
+   "verdict": "Result: triggered (signal_only, feed finnhub).",
+   "refs": [
+    "outcome:2026-11-24-qqq-indexput-slot"
+   ]
+  },
+  {
+   "time": "2026-11-24",
+   "headline": "ANET Trigger A did not complete Tue Nov 24: the pattern requires an intraday flush into $168-$172 with a daily close back above $170.40, and Finnhub ANET open $173.375, high $175.4147, low $164.90, close $168.56 - price flushed through the zone (low below its $168 floor) but the close $168.56 stayed below the $170.40 reclaim line, so the pattern never completed. No order placed, no fill in the ledger. A signal whose completion condition never prints scores as no trade. Signal only, no position.",
+   "verdict": "Result: no_trade (signal_only, feed finnhub).",
+   "refs": [
+    "outcome:2026-11-24-anet-slot"
+   ]
+  },
+  {
+   "time": "2026-11-24",
    "headline": "AMT EDGAR dossier refreshed",
    "verdict": "EDGAR dossier on file. Sector: Real Estate Investment Trusts. Latest annual 10-K filed 2026-02-24; latest quarterly 10-Q filed 2026-10-27.",
    "refs": [
@@ -1413,27 +1429,11 @@
    ]
   },
   {
-   "time": "2026-11-23",
-   "headline": "ANET Trigger A never triggered Mon Nov 23: the pattern requires an intraday flush into $168-$172 with a daily close back above $170.40, and Finnhub ANET open $186.23, high $187.48, low $177.01, close $178.31 - the low never entered the $168-$172 zone (the session gapped up through the $170.40 margin line instead). No order placed, no fill in the ledger. A signal that never triggers scores as no trade. Signal only, no position.",
-   "verdict": "Result: no_trade (signal_only, feed finnhub).",
-   "refs": [
-    "outcome:2026-11-23-anet-slot"
-   ]
-  },
-  {
    "time": "2026-11-20",
    "headline": "Whole-market scan 2026-11-20: 1309 passed",
    "verdict": "Universe 11,826 quoted; 1,309 passed (gem 444, deep 441, crash 424). Top of the screen: MSFT, AMZN, ANT, SNDK, JPM, XOM, CVX, HD.",
    "refs": [
     "scan:2026-11-20"
-   ]
-  },
-  {
-   "time": "2026-11-20",
-   "headline": "ANET Trigger C starter recommendation never taken: it required Milly's word today (standing authorization no longer carried it) and no word or fill is on record - Robinhood read this run shows cash $163.41 unchanged and equity $8.09 (DCA sleeve only). Finnhub Nov 20: open $185.09, high $185.82, low $165.41, close $167.62 - the daily close below the $172 package stop ends the setup unfilled. A signal that never triggers scores as no trade. Signal only, no position.",
-   "verdict": "Result: no_trade (signal_only, feed finnhub).",
-   "refs": [
-    "outcome:2026-11-20-anet-slot"
    ]
   },
   {
@@ -1487,8 +1487,8 @@
  },
  "graph": {
   "generated": "2026-11-24",
-  "nodes": 284,
-  "edges": 166,
+  "nodes": 286,
+  "edges": 168,
   "live_patterns": 0,
   "pattern_candidates": 6,
   "connector_candidates": 16,
