@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="desk-version" content="v1.5" />
-<meta name="desk-updated" content="2026-11-24T08:10:59-06:00" />
-<!-- desk-build v1.5 updated 2026-11-24T08:10:59-06:00 -->
+<meta name="desk-updated" content="2026-11-24T15:15:21-06:00" />
+<!-- desk-build v1.5 updated 2026-11-24T15:15:21-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -839,8 +839,8 @@
     </div>
     <p class="tab-skill"><b>Graph trains the memory.</b></p>
     <div class="graph-stats">
-      <div class="gstat"><div class="v" id="gsNodes">284</div><div class="k">Nodes in the full graph</div></div>
-      <div class="gstat"><div class="v" id="gsEdges">166</div><div class="k">Edges in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsNodes">286</div><div class="k">Nodes in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsEdges">168</div><div class="k">Edges in the full graph</div></div>
       <div class="gstat"><div class="v" id="gsLive">0</div><div class="k">Live patterns. None has earned it yet</div></div>
       <div class="gstat"><div class="v" id="gsConn">16</div><div class="k">Connector candidates waiting</div></div>
     </div>
@@ -909,7 +909,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 24, 2026, 8:10 AM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 24, 2026, 3:15 PM CT</span></p>
   </footer>
 </div>
 <script>
@@ -1654,7 +1654,7 @@ var COMPOUNDING = {
     }
   ]
 };
-var CASH_AS_OF = "2026-11-23T15:15:40-06:00";
+var CASH_AS_OF = "2026-11-24T15:15:21-06:00";
 /* === END POSITIONS SYNC === */
 /* Gold state. The GLD position closed Nov 9, 2026, so GLD is NOT a live
    position and never gets a position card with a per-share price. Gold
@@ -1789,6 +1789,22 @@ var WIRE = [
   },
   {
     "time": "2026-11-24",
+    "headline": "INDEXPUT QQQ 590 put (FO-1, Milly's word Nov 23) failed-reclaim trigger printed only on the closing bar Tue Nov 24: Finnhub QQQ open $640.04 and high $648.00 inside the 640-655 shelf, close $638.10 - the final 30-min bar closed back below $640, which is the FO-1(b) print. The breakdown trigger (30-min close below Friday's low $606.23) never approached (day low $631.15), and the kill (30-min close back above $655) never fired (high $648.00). The trigger completing at the 15:00 CT close left no entry window before FO-1's own flat-by, and no order was placed and no fill exists in the ledger (Robinhood read this run: cash $163.42 unchanged, latest equity order still Nov 11). Package stand-down not completed: it needs two closes in/above the shelf and today's close fell back below it. Signal only, never a trade; no premium was ever quoted, so no r_multiple is scored.",
+    "verdict": "Result: triggered (signal_only, feed finnhub).",
+    "refs": [
+      "outcome:2026-11-24-qqq-indexput-slot"
+    ]
+  },
+  {
+    "time": "2026-11-24",
+    "headline": "ANET Trigger A did not complete Tue Nov 24: the pattern requires an intraday flush into $168-$172 with a daily close back above $170.40, and Finnhub ANET open $173.375, high $175.4147, low $164.90, close $168.56 - price flushed through the zone (low below its $168 floor) but the close $168.56 stayed below the $170.40 reclaim line, so the pattern never completed. No order placed, no fill in the ledger. A signal whose completion condition never prints scores as no trade. Signal only, no position.",
+    "verdict": "Result: no_trade (signal_only, feed finnhub).",
+    "refs": [
+      "outcome:2026-11-24-anet-slot"
+    ]
+  },
+  {
+    "time": "2026-11-24",
     "headline": "AMT EDGAR dossier refreshed",
     "verdict": "EDGAR dossier on file. Sector: Real Estate Investment Trusts. Latest annual 10-K filed 2026-02-24; latest quarterly 10-Q filed 2026-10-27.",
     "refs": [
@@ -1828,27 +1844,11 @@ var WIRE = [
     ]
   },
   {
-    "time": "2026-11-23",
-    "headline": "ANET Trigger A never triggered Mon Nov 23: the pattern requires an intraday flush into $168-$172 with a daily close back above $170.40, and Finnhub ANET open $186.23, high $187.48, low $177.01, close $178.31 - the low never entered the $168-$172 zone (the session gapped up through the $170.40 margin line instead). No order placed, no fill in the ledger. A signal that never triggers scores as no trade. Signal only, no position.",
-    "verdict": "Result: no_trade (signal_only, feed finnhub).",
-    "refs": [
-      "outcome:2026-11-23-anet-slot"
-    ]
-  },
-  {
     "time": "2026-11-20",
     "headline": "Whole-market scan 2026-11-20: 1309 passed",
     "verdict": "Universe 11,826 quoted; 1,309 passed (gem 444, deep 441, crash 424). Top of the screen: MSFT, AMZN, ANT, SNDK, JPM, XOM, CVX, HD.",
     "refs": [
       "scan:2026-11-20"
-    ]
-  },
-  {
-    "time": "2026-11-20",
-    "headline": "ANET Trigger C starter recommendation never taken: it required Milly's word today (standing authorization no longer carried it) and no word or fill is on record - Robinhood read this run shows cash $163.41 unchanged and equity $8.09 (DCA sleeve only). Finnhub Nov 20: open $185.09, high $185.82, low $165.41, close $167.62 - the daily close below the $172 package stop ends the setup unfilled. A signal that never triggers scores as no trade. Signal only, no position.",
-    "verdict": "Result: no_trade (signal_only, feed finnhub).",
-    "refs": [
-      "outcome:2026-11-20-anet-slot"
     ]
   },
   {
@@ -1902,8 +1902,8 @@ var BRIEF_META = {
 /* === GRAPHMETA SYNC (generated; do not hand-edit) === */
 var GRAPHMETA = {
   "generated": "2026-11-24",
-  "nodes": 284,
-  "edges": 166,
+  "nodes": 286,
+  "edges": 168,
   "live_patterns": 0,
   "pattern_candidates": 6,
   "connector_candidates": 16,
