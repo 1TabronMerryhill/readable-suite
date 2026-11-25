@@ -1,10 +1,10 @@
 {
- "generated": "2026-11-24T15:19:35.216937-06:00",
+ "generated": "2026-11-25T15:15:18.874037-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
-   "total": 172.01,
-   "cash": 163.42,
+   "total": 118.88,
+   "cash": 110.29,
    "equity": 8.59,
    "options_at_cost": 0,
    "positions": 5
@@ -96,6 +96,40 @@
  ],
  "options": [],
  "closed": [
+  {
+   "symbol": "NVDA",
+   "instrument": "NVDA Nov 25 2026 $135 put",
+   "qty": 1,
+   "entry_date": "2026-11-25",
+   "entry_price": 0.45,
+   "exit_date": "2026-11-25",
+   "exit_price": 0.0,
+   "capital_committed": 45.04,
+   "realized_usd": -45.04,
+   "realized_pct": -100.0,
+   "exit_event": "Expired worthless at the Nov 25 close (NVDA $149.30; no bid into the close)",
+   "lesson": "L-020",
+   "process_followed": true,
+   "entry_order_id": "6b06f5de-f50e-424b-b6be-a7847d7074ba",
+   "exit_order_id": "expiry-2026-11-25-nvda-135p"
+  },
+  {
+   "symbol": "NVDA",
+   "instrument": "NVDA Nov 25 2026 $135 put",
+   "qty": 1,
+   "entry_date": "2026-11-25",
+   "entry_price": 0.09,
+   "exit_date": "2026-11-25",
+   "exit_price": 0.01,
+   "capital_committed": 45.04,
+   "realized_usd": -45.04,
+   "realized_pct": -100.0,
+   "exit_event": "Expired worthless at the Nov 25 close (NVDA $149.30; no bid into the close)",
+   "lesson": "L-020",
+   "process_followed": true,
+   "entry_order_id": "6b06f5e1-a081-407f-8191-e1b3a6ffc366",
+   "exit_order_id": "6b0747f5-f852-47c0-96d4-29f689da565d"
+  },
   {
    "symbol": "QCOM",
    "instrument": "QCOM common stock (remaining half, 0.046983 sh)",
@@ -806,19 +840,19 @@
    }
   ]
  },
- "cash_as_of": "2026-11-24T15:15:21-06:00",
+ "cash_as_of": "2026-11-25T15:15:03-06:00",
  "quotes_as_of": "static snapshot at fill prices; live prices come from /api/desk-data",
  "record": {
-  "as_of": "2026-11-24",
+  "as_of": "2026-11-25",
   "scoreboard": {
-   "exits": 6,
+   "exits": 8,
    "wins": 5,
-   "losses": 1,
-   "win_rate_pct": 83.3,
+   "losses": 3,
+   "win_rate_pct": 62.5,
    "wins_total_usd": 2.98,
-   "losses_total_usd": -69.08,
-   "net_realized_usd": -66.1,
-   "process_followed_record": "5 wins, 0 losses",
+   "losses_total_usd": -122.2,
+   "net_realized_usd": -119.22,
+   "process_followed_record": "5 wins, 2 losses",
    "process_skipped_record": "0 wins, 1 loss"
   },
   "rows": [
@@ -893,6 +927,30 @@
     "lesson": "L-007",
     "realized_pct": 8.96,
     "illustrative_at_1m_usd": 89575
+   },
+   {
+    "date_closed": "2026-11-25",
+    "symbol": "NVDA",
+    "instrument": "NVDA Nov 25 2026 $155 call",
+    "exit_event": "Sold before expiry on Milly's word as the stabilization day killed the hedge (filled $0.01)",
+    "capital_committed": 9.04,
+    "realized_usd": -8.08,
+    "process_followed": true,
+    "lesson": "L-020",
+    "realized_pct": -89.38,
+    "illustrative_at_1m_usd": -893805
+   },
+   {
+    "date_closed": "2026-11-25",
+    "symbol": "NVDA",
+    "instrument": "NVDA Nov 25 2026 $135 put",
+    "exit_event": "Expired worthless at the Nov 25 close (NVDA $149.30; no bid into the close)",
+    "capital_committed": 45.04,
+    "realized_usd": -45.04,
+    "process_followed": true,
+    "lesson": "L-020",
+    "realized_pct": -100.0,
+    "illustrative_at_1m_usd": -1000000
    }
   ],
   "lessons": [
@@ -907,7 +965,7 @@
      "watching_for": "Any order placed, real or paper, without a full package and a completed lessons check first.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -921,7 +979,7 @@
      "watching_for": "Any opportunity hunt scoped to the watchlist instead of the whole-market scan.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -935,7 +993,7 @@
      "watching_for": "Any decision that relies on a feed with no proven delivery (the Discord pipe, the Finnhub stream) instead of a working source.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -949,7 +1007,7 @@
      "watching_for": "Any trading day where today-slots.json is written after 08:30 CT, or a signal window passes unloaded.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -963,7 +1021,7 @@
      "watching_for": "Any stop crossing on an options position where the alert and the ask are not one immediate message.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -977,7 +1035,7 @@
      "watching_for": "Any book state reported to Milly without a read-back verification against the live record.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -991,7 +1049,7 @@
      "watching_for": "Any exit executed without its pre-written plan (target, trim, or stop set before entry).",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1005,7 +1063,7 @@
      "watching_for": "A package whose driver section names only macro/sector causes while the name is moving >2 pts against its complex on the day, or any package built without a same-day name-specific news sweep.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1019,7 +1077,7 @@
      "watching_for": "Any package finalized without a stakeholder-scan section, or any report that softens a stakeholder scandal into corporate euphemism.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1033,7 +1091,7 @@
      "watching_for": "Any completed business check or qualifying setup that goes a full session without a same-day surface to Milly, or any entry-condition vs margin-math disagreement left unflagged.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1047,7 +1105,7 @@
      "watching_for": "Any plan-covered level (target, stop, trim) reported to Milly as 'needs your word' when the plan already worded it, or any cross on a pre-worded leg not executed and reported in the same watch cycle.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1061,7 +1119,7 @@
      "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1075,7 +1133,7 @@
      "watching_for": "Any package, brief slot, or armed setup that reaches Milly without all four prices, or any report that treats the disaster price as a stop or walk-away line.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1089,7 +1147,7 @@
      "watching_for": "A daily brief whose slots do not lead with full economics or are not the day's takeable slots; a qualifying L-012 slot not flagged as a live decision; a crawler day with no slot section or no slot-shaped flags; a qualifying slot missed; a stale or missing today-slots.json at the 08:30 open; any slot published in the brief, the candidates file, or today-slots.json missing its stop, kill, max loss in dollars, or flat-by-3:00 PM CT term. Any slot written without a target 2, or a target-1 hit handled without presenting the exit-or-ride decision, or a ride taken without Milly's word or without the stop ratcheting to target 1.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1103,7 +1161,7 @@
      "watching_for": "A day where a core or packaged name passes all three checks and is not flagged buy-time in that day's brief or crawler outputs; a scan run that does not report the three checks for the core and packaged names; a buy-time flag raised on fewer than three checks. A check 2 passed on a single day's print, or on a crash-day oversold print during an active event.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1117,7 +1175,7 @@
      "watching_for": "A market day with no Yahoo market-wide sweep at the open, or a slot-shaped mover left without a fast package built the same morning.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1131,7 +1189,7 @@
      "watching_for": "A qualifying, fully protected opportunity that passes or dies silently because the book could not cover it, without a funding ask reaching Milly the same day.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1145,7 +1203,7 @@
      "watching_for": "Any options position that reaches target 1 (+100%) where the alert to Milly presents only the banked double or only the full-ride case, without both cases stated in real numbers for his decision.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
     }
    },
    {
@@ -1159,7 +1217,21 @@
      "watching_for": "A market day where crash-tier names bounce hard and none were surfaced to Milly as named candidates with levels watched or a staged draft order before the move.",
      "relapses_since_lesson": 0,
      "status": "holding",
-     "last_checked": "2026-11-24"
+     "last_checked": "2026-11-25"
+    }
+   },
+   {
+    "id": "L-020",
+    "date": "2026-11-25",
+    "title": "The market can pick the middle path: a same-day hedge dies on a stabilization day, and the fill waits until the market shows itself",
+    "status": "in_force",
+    "the_rule": "For same-day swing tickets, work in 15-minute intervals and let the market show itself before the fill: watch the first 15 minutes; if there is no big swing and price is still inside the typical daily band (about 1-3% either direction across sectors), watch the next 15; repeat. The order is prepared in advance, but it fires only when a candle claims a new high or a new low \u2014 the market declaring a direction is the trigger, not the clock and not the headline. Corollary on hedges: a cheap two-sided same-day strangle is a bet on a directional break, not on turbulence in the abstract; on a stabilization day both legs die together and the full premium is the loss, so the pin risk is stated up front before the pair is bought. Momentum travel is not price travel: RSI ran from ~30 to ~70 inside the day's range without price ever reaching the call strike.",
+    "what_happened": "Wed Nov 25, 2026. NVDA gapped down premarket on a hot core PCE print and a widening Huang investigation (Senator Schumer's export-law accusation and California AG Bonta's 'Bright Red Flags' landed in the morning stakeholder scan). Milly named three paths before the open: breakdown toward 135/124, bounce back toward 155/170, or stabilization around 140. He ordered both legs of a same-day hedge fired on Bobby's book as an owner-directed plan change overriding the NVDA disarm for this trade only: Nov 25 expiry 135 put filled at $0.45 and 155 call filled at $0.09, $54.08 all-in with fees. The market picked the third path. NVDA flushed early, buyers stepped in (RSI ~30 at entry ran to ~70 intraday), and price stabilized around $146, never threatening either strike. Exit before expiry on Milly's word: the call sold at $0.01 ($1 back); the put had no bid at any price and expired worthless. Net about -$53, inside the $100 daily loss limit. Milly's verdict on the closing call: 'The market most definitely picked the middle path that I saw this morning... It was a good lesson and I don't regret it at all. So it needs to be a lesson on the books.'",
+    "drift_watch": {
+     "watching_for": "Any same-day strangle or two-sided hedge filled before the market has declared a direction on a 15-minute close (a new high or a new low claimed), or a two-sided ticket bought without the stabilization/pin risk stated up front in dollars.",
+     "relapses_since_lesson": 0,
+     "status": "holding",
+     "last_checked": "2026-11-25"
     }
    }
   ],
@@ -1331,6 +1403,12 @@
     "date": "2026-11-24",
     "index": 73.56,
     "source": "sync_book.py run 2026-11-24: cash_verified $163.42 + open positions at fill $8.59 + options at cost $0.00"
+   },
+   {
+    "date": "2026-11-25",
+    "book_value": 118.88,
+    "index": 50.84,
+    "source": "sync_book.py run 2026-11-25: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
    }
   ],
   "deposits": [
@@ -1365,6 +1443,62 @@
  },
  "wire": [
   {
+   "time": "2026-11-25",
+   "headline": "Whole-market scan 2026-11-25: 1233 passed",
+   "verdict": "Universe 11,845 quoted; 1,233 passed (gem 411, deep 425, crash 397). Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, GE, PANW.",
+   "refs": [
+    "scan:2026-11-25"
+   ]
+  },
+  {
+   "time": "2026-11-25",
+   "headline": "Bought NVDA Nov 25 135 put x1 at $0.45 (premium $45, fees $0.04) as leg 1 of Milly's owner-directed same-day hedge (disarm overridden for this trade only, L-020). Order 6b06f5de-f50e-424b-b6be-a7847d7074ba, filled 08:51 CT.",
+   "verdict": "Result: filled_open (real_fill, feed robinhood_mcp).",
+   "refs": [
+    "outcome:2026-11-25-nvda-135p-fill"
+   ]
+  },
+  {
+   "time": "2026-11-25",
+   "headline": "Bought NVDA Nov 25 155 call x1 at $0.09 (premium $9, fees $0.04) as leg 2 of Milly's owner-directed same-day hedge (L-020). Order 6b06f5e1-a081-407f-8191-e1b3a6ffc366, filled 08:51 CT.",
+   "verdict": "Result: filled_open (real_fill, feed robinhood_mcp).",
+   "refs": [
+    "outcome:2026-11-25-nvda-155c-fill"
+   ]
+  },
+  {
+   "time": "2026-11-25",
+   "headline": "Sold NVDA Nov 25 155 call x1 at $0.01 on Milly's word before expiry (order 6b0747f5-f852-47c0-96d4-29f689da565d, 14:41 CT) as NVDA stabilized ~$146 and never threatened the strike. Cost $9.04, proceeds $1.00 less $0.04 fees; realized -$8.08. Position closed.",
+   "verdict": "Result: closed_exit (real_fill, feed robinhood_mcp).",
+   "refs": [
+    "outcome:2026-11-25-nvda-155c-exit"
+   ]
+  },
+  {
+   "time": "2026-11-25",
+   "headline": "AON EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Insurance Agents, Brokers & Service. Latest annual 10-K filed 2026-02-13; latest quarterly 10-Q filed 2026-10-28.",
+   "refs": [
+    "dossier:AON"
+   ]
+  },
+  {
+   "time": "2026-11-25",
+   "headline": "AZN EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Pharmaceutical Preparations. Latest annual 20-F filed 2026-02-24; latest quarterly  filed .",
+   "refs": [
+    "dossier:AZN"
+   ]
+  },
+  {
+   "time": "2026-11-25",
+   "headline": "CI EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Hospital & Medical Service Plans. Latest annual 10-K filed 2026-02-26; latest quarterly 10-Q filed 2026-11-05.",
+   "refs": [
+    "dossier:CI"
+   ]
+  },
+  {
    "time": "2026-11-24",
    "headline": "Whole-market scan 2026-11-24: 1278 passed",
    "verdict": "Universe 11,844 quoted; 1,278 passed (gem 422, deep 456, crash 400). Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, MRK, GE.",
@@ -1373,67 +1507,11 @@
    ]
   },
   {
-   "time": "2026-11-24",
-   "headline": "INDEXPUT QQQ 590 put (FO-1, Milly's word Nov 23) failed-reclaim trigger printed only on the closing bar Tue Nov 24: Finnhub QQQ open $640.04 and high $648.00 inside the 640-655 shelf, close $638.10 - the final 30-min bar closed back below $640, which is the FO-1(b) print. The breakdown trigger (30-min close below Friday's low $606.23) never approached (day low $631.15), and the kill (30-min close back above $655) never fired (high $648.00). The trigger completing at the 15:00 CT close left no entry window before FO-1's own flat-by, and no order was placed and no fill exists in the ledger (Robinhood read this run: cash $163.42 unchanged, latest equity order still Nov 11). Package stand-down not completed: it needs two closes in/above the shelf and today's close fell back below it. Signal only, never a trade; no premium was ever quoted, so no r_multiple is scored.",
-   "verdict": "Result: triggered (signal_only, feed finnhub).",
-   "refs": [
-    "outcome:2026-11-24-qqq-indexput-slot"
-   ]
-  },
-  {
-   "time": "2026-11-24",
-   "headline": "ANET Trigger A did not complete Tue Nov 24: the pattern requires an intraday flush into $168-$172 with a daily close back above $170.40, and Finnhub ANET open $173.375, high $175.4147, low $164.90, close $168.56 - price flushed through the zone (low below its $168 floor) but the close $168.56 stayed below the $170.40 reclaim line, so the pattern never completed. No order placed, no fill in the ledger. A signal whose completion condition never prints scores as no trade. Signal only, no position.",
-   "verdict": "Result: no_trade (signal_only, feed finnhub).",
-   "refs": [
-    "outcome:2026-11-24-anet-slot"
-   ]
-  },
-  {
-   "time": "2026-11-24",
-   "headline": "AMT EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Real Estate Investment Trusts. Latest annual 10-K filed 2026-02-24; latest quarterly 10-Q filed 2026-10-27.",
-   "refs": [
-    "dossier:AMT"
-   ]
-  },
-  {
-   "time": "2026-11-24",
-   "headline": "BAM EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Investment Advice. Latest annual 10-K filed 2026-03-02; latest quarterly 10-Q filed 2026-11-09.",
-   "refs": [
-    "dossier:BAM"
-   ]
-  },
-  {
-   "time": "2026-11-24",
-   "headline": "CVX EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Petroleum Refining. Latest annual 10-K filed 2026-02-24; latest quarterly 10-Q filed 2026-11-05.",
-   "refs": [
-    "dossier:CVX"
-   ]
-  },
-  {
    "time": "2026-11-23",
    "headline": "Whole-market scan 2026-11-23: 1341 passed",
    "verdict": "Universe 11,825 quoted; 1,341 passed (gem 425, deep 471, crash 445). Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, MRK, PM.",
    "refs": [
     "scan:2026-11-23"
-   ]
-  },
-  {
-   "time": "2026-11-23",
-   "headline": "INDEXPUT QQQ 590 put (FO-1, Milly's word, trigger-gated) never triggered Mon Nov 23: Finnhub QQQ open $655.98, high $657.53, low $641.95, close $651.03 - the failed-reclaim trigger needed a 30-min close below $640 and the day low never printed below $640; the breakdown trigger needed a 30-min close below Friday's low $606.23, never approached. SPY confirmed the bounce (open $724.33, high $727.98, low $713.53, close $722.29 vs Friday low $686.75). No order placed, no fill in the ledger; Robinhood read this run shows cash $163.42 unchanged. A signal that never triggers scores as no trade. Signal only, never a trade.",
-   "verdict": "Result: no_trade (signal_only, feed finnhub).",
-   "refs": [
-    "outcome:2026-11-23-qqq-indexput-slot"
-   ]
-  },
-  {
-   "time": "2026-11-20",
-   "headline": "Whole-market scan 2026-11-20: 1309 passed",
-   "verdict": "Universe 11,826 quoted; 1,309 passed (gem 444, deep 441, crash 424). Top of the screen: MSFT, AMZN, ANT, SNDK, JPM, XOM, CVX, HD.",
-   "refs": [
-    "scan:2026-11-20"
    ]
   },
   {
@@ -1452,19 +1530,19 @@
    {
     "slot": 1,
     "symbol": "QQQ 590 put, Fri Nov 27 expiry - INDEXPUT package, field order FO-1 (Milly's word Nov 23)",
-    "call": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape, conditional_day_trade_for_tuesday_nov_24_trigger_not_yet_printed",
-    "note": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape \u00b7 entry None \u00b7 target +100% of premium \u00b7 stop premium mark <= 50% of entry premium. FO-1 kill: after a breakdown entry, a 30-min close back above 655 ends the thesis. Package stand-down: two closes back above the broken shelf = based, thesis done (Monday was close one)."
+    "call": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape, conditional_day_trade_for_wednesday_nov_25_trigger_not_yet_printed",
+    "note": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape \u00b7 entry None \u00b7 target +100% of premium \u00b7 stop premium mark <= 50% of entry premium. FO-1 kill: after a breakdown entry, a 30-min close back above 655 ends the thesis. Package stand-down: two closes back above the broken shelf = based, thesis done (Monday was close one; Tuesday fell back below, so the count reset - stand..."
    },
    {
     "slot": 2,
     "symbol": "ANET",
-    "call": "long (longer-horizon package trade - NOT a day trade), package_conditional_trigger_a_test_on_tuesdays_close_not_a_day_trade",
+    "call": "long (longer-horizon package trade - NOT a day trade), package_conditional_trigger_a_test_on_wednesdays_close_not_a_day_trade",
     "note": "long (longer-horizon package trade - NOT a day trade) \u00b7 entry None \u00b7 target 217.41 \u00b7 stop 156.0. package kill list: MSFT/META capex digestion or named titan socket lost to Spectrum-X/Broadcom; guidance cut; non-GAAP GM guided below 62%; weekly close below $156"
    },
    {
     "slot": 3,
     "symbol": "GOOGL and BAC - DCA core (L-015 three-check)",
-    "call": "long (DCA cadence), googl_buy_time_pause_gated_bac_flag_lapsed_to_partial_not_day_trade_slots",
+    "call": "long (DCA cadence), googl_buy_time_pause_gated_bac_partial_not_day_trade_slots",
     "note": "long (DCA cadence) \u00b7 entry None \u00b7 target 365.0 \u00b7 stop program protections per name: rotation exit on two consecutive closes <=25% under program average cost (GOOGL $220.19, BAC $38.03); disaster exit on one close <=40% under cost (GOOGL $176.15, BAC $30.43); package belief-breakers. package belief-breakers per name; rotation/disaster exits per dca-program.md"
    },
    {
@@ -1475,20 +1553,20 @@
    },
    {
     "slot": 5,
-    "symbol": "NVDA - pipeline only, long package DISARMED",
-    "call": "none, pipeline_only_no_slot_kill_governs_reunderwrite_recommended",
-    "note": "none \u00b7 entry None \u00b7 target None \u00b7 stop None. governance kill already fired and governing; re-entry only via fresh re-underwrite package and Milly's word"
+    "symbol": "NVDA - pipeline only, long package DISARMED, re-underwrite complete Nov 24",
+    "call": "none, pipeline_only_no_slot_reunderwrite_stay_disarmed",
+    "note": "none \u00b7 entry None \u00b7 target None \u00b7 stop None. governance/earnings kills already fired and governing per the re-underwrite; re-entry only via its five evidence items and Milly's word"
    }
   ],
   "meta": {
-   "date": "2026-11-24",
-   "overall": "OpOne daily brief Tue Nov 24, 2026. Reconciliation: BRIEF.md, trade packages (ANET incl. Trigger A/B/C, INDEXPUT incl. Nov 23 addendum, GOOGL, BAC stock+options, ABBV, CVX, TTWO, NVDA disarmed), field-orders.md (FO-1 fielded, FO-4 watching), dca-program.md, levels-watch.json, four-prices.json, checks.json, ledger.json (cash_verified $163.42, Nov 23 15:15 live read; total $171.72), outcomes.json (Mon Nov 23: INDEXPUT no_trade, ANET no_trade), track-record.json (6 exits, 5W/1L, net -$66.10), candidates-2026-11-23.md (0 takeable day-trade slots; NVDA/TTWO protection-incomplete), sector-board-data.json (Nov 23, Fri closes). TA: ta_engine workups on Friday Nov 20 bars (latest on file); Monday closes from Finnhub/MarketBeat/Barchart verified pulls Nov 24 premarket. News: Reuters, Barchart, CoinCentral, ATFX, Daily Market Report, Nov 24."
+   "date": "2026-11-25",
+   "overall": "OpOne daily brief Wed Nov 25, 2026. Reconciliation: BRIEF.md, trade packages (ANET incl. Trigger A/B/C, INDEXPUT incl. Nov 23 addendum, GOOGL, BAC stock+options, ABBV, CVX, TTWO, NVDA re-underwrite 2026-11-24 STAY DISARMED), field-orders.md (FO-1 fielded, FO-4 watching; FO-2/FO-3 expired Nov 23), dca-program.md, levels-watch.json, four-prices.json plus NVDA re-underwrite section 5 rebuild, checks.json, ledger.json (cash_verified $163.42, Nov 24 15:15 live read; total $171.79), outcomes.json (Tue Nov 24: INDEXPUT triggered-on-close-bar no entry, ANET no_trade), track-record.json (6 exits, 5W/1L, net -$66.10), candidates-2026-11-24.md (0 takeable day-trade slots; NVDA/TTWO protection-incomplete), sector-board-data.json (Nov 24, Monday closes). TA: ta_engine workups on Friday Nov 20 bars (latest on file) plus NVDA re-underwrite Nov 24 computed tape (RSI 39.0, 60d avg 44.7, 0 overbought / 11 oversold days). News: Reuters, Barchart, IBD, FXStreet, TipRanks, Finnhub/MarketBeat closes, Nov 24-25."
   }
  },
  "graph": {
-  "generated": "2026-11-24",
-  "nodes": 286,
-  "edges": 168,
+  "generated": "2026-11-25",
+  "nodes": 296,
+  "edges": 174,
   "live_patterns": 0,
   "pattern_candidates": 6,
   "connector_candidates": 16,
@@ -1498,19 +1576,19 @@
  "newsroom": {
   "insights": [
    {
-    "date": "2026-11-24",
+    "date": "2026-11-25",
     "tag": "Scan",
-    "title": "Whole-market scan 2026-11-24: 1278 passed",
-    "body": "Universe 11,844 quoted. 1,278 passed the full screen: gem zone 422, deep 456, crash 400. Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, MRK, GE, PANW, NVS.",
-    "evidence": "Graph: scan:2026-11-24. Source: market_scan.py, scans/scan-2026-11-24.csv (feed: yahoo_quote).",
+    "title": "Whole-market scan 2026-11-25: 1233 passed",
+    "body": "Universe 11,845 quoted. 1,233 passed the full screen: gem zone 411, deep 425, crash 397. Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, GE, PANW, PM, AZN.",
+    "evidence": "Graph: scan:2026-11-25. Source: market_scan.py, scans/scan-2026-11-25.csv (feed: yahoo_quote).",
     "lesson": "The scan is the whole market (L-002). Finalists come from the merged pool, never the watchlist alone."
    },
    {
-    "date": "2026-11-24",
+    "date": "2026-11-25",
     "tag": "Dossiers",
-    "title": "103 EDGAR dossiers on file; 10 refreshed 2026-11-24",
-    "body": "Newest dossiers: AMT, BAM, CVX, EOG, EPD, JCI, NGG, RCL, TT, XOM. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
-    "evidence": "Graph: dossier nodes dated 2026-11-24.",
+    "title": "106 EDGAR dossiers on file; 10 refreshed 2026-11-25",
+    "body": "Newest dossiers: AON, AZN, CI, GE, HD, MRNA, MUFG, RTX, SHEL, WFC. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
+    "evidence": "Graph: dossier nodes dated 2026-11-25.",
     "lesson": "A dossier is not a check. The full process (management, employees, cash, worth) still runs before any package."
    },
    {
@@ -1522,44 +1600,44 @@
     "lesson": "Buys run on the program cadence (dca-program.md). Protection is judged on official closes, never intraday prints."
    },
    {
+    "date": "2026-11-25",
+    "tag": "NVDA",
+    "title": "NVDA: filled open",
+    "body": "Bought NVDA Nov 25 135 put x1 at $0.45 (premium $45, fees $0.04) as leg 1 of Milly's owner-directed same-day hedge (disarm overridden for this trade only, L-020). Order 6b06f5de-f50e-424b-b6be-a7847d7074ba, filled 08:51 CT.",
+    "evidence": "Graph: outcome:2026-11-25-nvda-135p-fill. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-020 \u2014 see the Record tab for the full entry."
+   },
+   {
+    "date": "2026-11-25",
+    "tag": "NVDA",
+    "title": "NVDA: filled open",
+    "body": "Bought NVDA Nov 25 155 call x1 at $0.09 (premium $9, fees $0.04) as leg 2 of Milly's owner-directed same-day hedge (L-020). Order 6b06f5e1-a081-407f-8191-e1b3a6ffc366, filled 08:51 CT.",
+    "evidence": "Graph: outcome:2026-11-25-nvda-155c-fill. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-020 \u2014 see the Record tab for the full entry."
+   },
+   {
+    "date": "2026-11-25",
+    "tag": "NVDA",
+    "title": "NVDA: closed exit",
+    "body": "Sold NVDA Nov 25 155 call x1 at $0.01 on Milly's word before expiry (order 6b0747f5-f852-47c0-96d4-29f689da565d, 14:41 CT) as NVDA stabilized ~$146 and never threatened the strike. Cost $9.04, proceeds $1.00 less $0.04 fees; realized -$8.08. Position closed.",
+    "evidence": "Graph: outcome:2026-11-25-nvda-155c-exit. Feed: robinhood_mcp.",
+    "lesson": "Lesson L-020 \u2014 see the Record tab for the full entry."
+   },
+   {
+    "date": "2026-11-25",
+    "tag": "NVDA",
+    "title": "NVDA: expired worthless",
+    "body": "NVDA Nov 25 135 put expired worthless: no bid at any price into the close and Finnhub NVDA closed $149.30 (day range $141.17-$150.37), never threatening the $135 strike. Cost $45.04, proceeds $0; realized -$45.04. Combined hedge net -$53.12 on $54.08 all-in, inside the $100 daily loss limit. Lesson L-020.",
+    "evidence": "Graph: outcome:2026-11-25-nvda-135p-expiry. Feed: finnhub.",
+    "lesson": "Lesson L-020 \u2014 see the Record tab for the full entry."
+   },
+   {
     "date": "2026-11-11",
     "tag": "MU",
     "title": "MU: closed target",
     "body": "Sold remaining 0.01129 sh at $786.6229, target 2 was $780 (crossed 08:53 CT at $782.21). Realized +$1.07 vs $691.7347 entry on this half; total MU realized +$1.62. Position closed. Order 6af48291-2bd6-43cb-b42b-33b516ebbd71.",
     "evidence": "Graph: outcome:2026-11-11-mu-exit. Feed: robinhood_mcp.",
     "lesson": "Lesson L-011 \u2014 see the Record tab for the full entry."
-   },
-   {
-    "date": "2026-11-11",
-    "tag": "QCOM",
-    "title": "QCOM: closed target",
-    "body": "Sold remaining 0.046983 sh at $181.1201, target 2 was $180 (levels watch crossed 11:18 CT at $180.77). Realized +$0.70 vs $166.23 entry on this half; total QCOM realized +$1.16. Position closed. Order 6af4a457-b19d-424e-9188-0814ac008bd7.",
-    "evidence": "Graph: outcome:2026-11-11-qcom-exit. Feed: robinhood_mcp.",
-    "lesson": "Lesson L-007 \u2014 see the Record tab for the full entry."
-   },
-   {
-    "date": "2026-11-10",
-    "tag": "IWM",
-    "title": "IWM: closed stop",
-    "body": "Sold IWM Nov 13 285 call x1 at $0.71 on Milly's word after the $0.70 premium stop was crossed at 08:33 CT. Cost $140.04, proceeds $71.00 less $0.04 fees; realized -$69.08. Position closed. Order 6af33178-546f-453d-999d-d5f8a09a2008.",
-    "evidence": "Graph: outcome:2026-11-10-iwm-call-exit. Feed: robinhood_mcp.",
-    "lesson": "Lesson L-001 \u2014 see the Record tab for the full entry."
-   },
-   {
-    "date": "2026-11-10",
-    "tag": "MU",
-    "title": "MU: partial exit target1",
-    "body": "Trimmed half (0.01129 sh) at $740.3701 after target 1 $740 was passed; MU printed a $745.64 high today. Realized +$0.55 vs $691.7347 entry. Remaining 0.01129 sh rides to target 2 $780, stop $656.39. Order 6af3331f-32fe-4a10-8cd4-ea8c70145710.",
-    "evidence": "Graph: outcome:2026-11-10-mu-trim. Feed: robinhood_mcp.",
-    "lesson": "Lesson L-007 \u2014 see the Record tab for the full entry."
-   },
-   {
-    "date": "2026-11-09",
-    "tag": "QCOM",
-    "title": "QCOM: partial exit target1",
-    "body": "Trimmed half (0.046983 sh) at $176.1201 after target 1 $172 was passed. Realized +$0.46 vs $166.23 entry. Remaining half rides to target 2 $180, stop $156.75. Order 6af1ee53-042d-4b08-b582-3234d1ce4066.",
-    "evidence": "Graph: outcome:2026-11-09-qcom-trim. Feed: robinhood_mcp.",
-    "lesson": "Lesson L-007 \u2014 see the Record tab for the full entry."
    }
   ],
   "openq": [
