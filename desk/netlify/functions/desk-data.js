@@ -1422,8 +1422,8 @@ const INDEX = {
       "source": "sync_book.py run 2026-11-24: cash_verified $163.42 + open positions at fill $8.59 + options at cost $0.00"
     },
     {
-      "date": "2026-11-25",
       "book_value": 118.88,
+      "date": "2026-11-25",
       "index": 50.84,
       "source": "sync_book.py run 2026-11-25: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
     }
