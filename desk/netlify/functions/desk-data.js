@@ -24,8 +24,8 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 163.42,
-  "cash_as_of": "2026-11-24T15:15:21-06:00",
+  "cash": 110.29,
+  "cash_as_of": "2026-11-25T15:15:03-06:00",
   "fills": [
     {
       "symbol": "GOOGL",
@@ -95,6 +95,40 @@ const BOOK = {
   ],
   "options": [],
   "closed": [
+    {
+      "symbol": "NVDA",
+      "instrument": "NVDA Nov 25 2026 $135 put",
+      "qty": 1,
+      "entry_date": "2026-11-25",
+      "entry_price": 0.45,
+      "exit_date": "2026-11-25",
+      "exit_price": 0.0,
+      "capital_committed": 45.04,
+      "realized_usd": -45.04,
+      "realized_pct": -100.0,
+      "exit_event": "Expired worthless at the Nov 25 close (NVDA $149.30; no bid into the close)",
+      "lesson": "L-020",
+      "process_followed": true,
+      "entry_order_id": "6b06f5de-f50e-424b-b6be-a7847d7074ba",
+      "exit_order_id": "expiry-2026-11-25-nvda-135p"
+    },
+    {
+      "symbol": "NVDA",
+      "instrument": "NVDA Nov 25 2026 $135 put",
+      "qty": 1,
+      "entry_date": "2026-11-25",
+      "entry_price": 0.09,
+      "exit_date": "2026-11-25",
+      "exit_price": 0.01,
+      "capital_committed": 45.04,
+      "realized_usd": -45.04,
+      "realized_pct": -100.0,
+      "exit_event": "Expired worthless at the Nov 25 close (NVDA $149.30; no bid into the close)",
+      "lesson": "L-020",
+      "process_followed": true,
+      "entry_order_id": "6b06f5e1-a081-407f-8191-e1b3a6ffc366",
+      "exit_order_id": "6b0747f5-f852-47c0-96d4-29f689da565d"
+    },
     {
       "symbol": "QCOM",
       "instrument": "QCOM common stock (remaining half, 0.046983 sh)",
@@ -823,16 +857,16 @@ const BOOK = {
 
 // === RECORD SYNC (generated; do not hand-edit) ===
 const RECORD = {
-  "as_of": "2026-11-24",
+  "as_of": "2026-11-25",
   "scoreboard": {
-    "exits": 6,
+    "exits": 8,
     "wins": 5,
-    "losses": 1,
-    "win_rate_pct": 83.3,
+    "losses": 3,
+    "win_rate_pct": 62.5,
     "wins_total_usd": 2.98,
-    "losses_total_usd": -69.08,
-    "net_realized_usd": -66.1,
-    "process_followed_record": "5 wins, 0 losses",
+    "losses_total_usd": -122.2,
+    "net_realized_usd": -119.22,
+    "process_followed_record": "5 wins, 2 losses",
     "process_skipped_record": "0 wins, 1 loss"
   },
   "rows": [
@@ -907,6 +941,30 @@ const RECORD = {
       "lesson": "L-007",
       "realized_pct": 8.96,
       "illustrative_at_1m_usd": 89575
+    },
+    {
+      "date_closed": "2026-11-25",
+      "symbol": "NVDA",
+      "instrument": "NVDA Nov 25 2026 $155 call",
+      "exit_event": "Sold before expiry on Milly's word as the stabilization day killed the hedge (filled $0.01)",
+      "capital_committed": 9.04,
+      "realized_usd": -8.08,
+      "process_followed": true,
+      "lesson": "L-020",
+      "realized_pct": -89.38,
+      "illustrative_at_1m_usd": -893805
+    },
+    {
+      "date_closed": "2026-11-25",
+      "symbol": "NVDA",
+      "instrument": "NVDA Nov 25 2026 $135 put",
+      "exit_event": "Expired worthless at the Nov 25 close (NVDA $149.30; no bid into the close)",
+      "capital_committed": 45.04,
+      "realized_usd": -45.04,
+      "process_followed": true,
+      "lesson": "L-020",
+      "realized_pct": -100.0,
+      "illustrative_at_1m_usd": -1000000
     }
   ],
   "lessons": [
@@ -921,7 +979,7 @@ const RECORD = {
         "watching_for": "Any order placed, real or paper, without a full package and a completed lessons check first.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -935,7 +993,7 @@ const RECORD = {
         "watching_for": "Any opportunity hunt scoped to the watchlist instead of the whole-market scan.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -949,7 +1007,7 @@ const RECORD = {
         "watching_for": "Any decision that relies on a feed with no proven delivery (the Discord pipe, the Finnhub stream) instead of a working source.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -963,7 +1021,7 @@ const RECORD = {
         "watching_for": "Any trading day where today-slots.json is written after 08:30 CT, or a signal window passes unloaded.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -977,7 +1035,7 @@ const RECORD = {
         "watching_for": "Any stop crossing on an options position where the alert and the ask are not one immediate message.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -991,7 +1049,7 @@ const RECORD = {
         "watching_for": "Any book state reported to Milly without a read-back verification against the live record.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1005,7 +1063,7 @@ const RECORD = {
         "watching_for": "Any exit executed without its pre-written plan (target, trim, or stop set before entry).",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1019,7 +1077,7 @@ const RECORD = {
         "watching_for": "A package whose driver section names only macro/sector causes while the name is moving >2 pts against its complex on the day, or any package built without a same-day name-specific news sweep.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1033,7 +1091,7 @@ const RECORD = {
         "watching_for": "Any package finalized without a stakeholder-scan section, or any report that softens a stakeholder scandal into corporate euphemism.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1047,7 +1105,7 @@ const RECORD = {
         "watching_for": "Any completed business check or qualifying setup that goes a full session without a same-day surface to Milly, or any entry-condition vs margin-math disagreement left unflagged.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1061,7 +1119,7 @@ const RECORD = {
         "watching_for": "Any plan-covered level (target, stop, trim) reported to Milly as 'needs your word' when the plan already worded it, or any cross on a pre-worded leg not executed and reported in the same watch cycle.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1075,7 +1133,7 @@ const RECORD = {
         "watching_for": "Any day-trade slot that opens in its entry zone or crosses its trigger and is not surfaced to Milly as an immediate decision in the first minutes, or any missed slot later described as only a signal that worked.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1089,7 +1147,7 @@ const RECORD = {
         "watching_for": "Any package, brief slot, or armed setup that reaches Milly without all four prices, or any report that treats the disaster price as a stop or walk-away line.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1103,7 +1161,7 @@ const RECORD = {
         "watching_for": "A daily brief whose slots do not lead with full economics or are not the day's takeable slots; a qualifying L-012 slot not flagged as a live decision; a crawler day with no slot section or no slot-shaped flags; a qualifying slot missed; a stale or missing today-slots.json at the 08:30 open; any slot published in the brief, the candidates file, or today-slots.json missing its stop, kill, max loss in dollars, or flat-by-3:00 PM CT term. Any slot written without a target 2, or a target-1 hit handled without presenting the exit-or-ride decision, or a ride taken without Milly's word or without the stop ratcheting to target 1.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1117,7 +1175,7 @@ const RECORD = {
         "watching_for": "A day where a core or packaged name passes all three checks and is not flagged buy-time in that day's brief or crawler outputs; a scan run that does not report the three checks for the core and packaged names; a buy-time flag raised on fewer than three checks. A check 2 passed on a single day's print, or on a crash-day oversold print during an active event.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1131,7 +1189,7 @@ const RECORD = {
         "watching_for": "A market day with no Yahoo market-wide sweep at the open, or a slot-shaped mover left without a fast package built the same morning.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1145,7 +1203,7 @@ const RECORD = {
         "watching_for": "A qualifying, fully protected opportunity that passes or dies silently because the book could not cover it, without a funding ask reaching Milly the same day.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1159,7 +1217,7 @@ const RECORD = {
         "watching_for": "Any options position that reaches target 1 (+100%) where the alert to Milly presents only the banked double or only the full-ride case, without both cases stated in real numbers for his decision.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
       }
     },
     {
@@ -1173,7 +1231,21 @@ const RECORD = {
         "watching_for": "A market day where crash-tier names bounce hard and none were surfaced to Milly as named candidates with levels watched or a staged draft order before the move.",
         "relapses_since_lesson": 0,
         "status": "holding",
-        "last_checked": "2026-11-24"
+        "last_checked": "2026-11-25"
+      }
+    },
+    {
+      "id": "L-020",
+      "date": "2026-11-25",
+      "title": "The market can pick the middle path: a same-day hedge dies on a stabilization day, and the fill waits until the market shows itself",
+      "status": "in_force",
+      "the_rule": "For same-day swing tickets, work in 15-minute intervals and let the market show itself before the fill: watch the first 15 minutes; if there is no big swing and price is still inside the typical daily band (about 1-3% either direction across sectors), watch the next 15; repeat. The order is prepared in advance, but it fires only when a candle claims a new high or a new low \u2014 the market declaring a direction is the trigger, not the clock and not the headline. Corollary on hedges: a cheap two-sided same-day strangle is a bet on a directional break, not on turbulence in the abstract; on a stabilization day both legs die together and the full premium is the loss, so the pin risk is stated up front before the pair is bought. Momentum travel is not price travel: RSI ran from ~30 to ~70 inside the day's range without price ever reaching the call strike.",
+      "what_happened": "Wed Nov 25, 2026. NVDA gapped down premarket on a hot core PCE print and a widening Huang investigation (Senator Schumer's export-law accusation and California AG Bonta's 'Bright Red Flags' landed in the morning stakeholder scan). Milly named three paths before the open: breakdown toward 135/124, bounce back toward 155/170, or stabilization around 140. He ordered both legs of a same-day hedge fired on Bobby's book as an owner-directed plan change overriding the NVDA disarm for this trade only: Nov 25 expiry 135 put filled at $0.45 and 155 call filled at $0.09, $54.08 all-in with fees. The market picked the third path. NVDA flushed early, buyers stepped in (RSI ~30 at entry ran to ~70 intraday), and price stabilized around $146, never threatening either strike. Exit before expiry on Milly's word: the call sold at $0.01 ($1 back); the put had no bid at any price and expired worthless. Net about -$53, inside the $100 daily loss limit. Milly's verdict on the closing call: 'The market most definitely picked the middle path that I saw this morning... It was a good lesson and I don't regret it at all. So it needs to be a lesson on the books.'",
+      "drift_watch": {
+        "watching_for": "Any same-day strangle or two-sided hedge filled before the market has declared a direction on a 15-minute close (a new high or a new low claimed), or a two-sided ticket bought without the stabilization/pin risk stated up front in dollars.",
+        "relapses_since_lesson": 0,
+        "status": "holding",
+        "last_checked": "2026-11-25"
       }
     }
   ],
@@ -1348,6 +1420,12 @@ const INDEX = {
       "date": "2026-11-24",
       "index": 73.56,
       "source": "sync_book.py run 2026-11-24: cash_verified $163.42 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "date": "2026-11-25",
+      "book_value": 118.88,
+      "index": 50.84,
+      "source": "sync_book.py run 2026-11-25: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
