@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-26T08:01:05.963611-06:00",
+ "generated": "2026-11-26T15:14:01.024886-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -840,7 +840,7 @@
    }
   ]
  },
- "cash_as_of": "2026-11-25T15:15:03-06:00",
+ "cash_as_of": "2026-11-26T15:14:00-06:00",
  "quotes_as_of": "static snapshot at fill prices; live prices come from /api/desk-data",
  "record": {
   "as_of": "2026-11-26",
@@ -1411,8 +1411,8 @@
     "source": "sync_book.py run 2026-11-25: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
    },
    {
-    "date": "2026-11-26",
     "book_value": 118.88,
+    "date": "2026-11-26",
     "index": 50.84,
     "source": "sync_book.py run 2026-11-26: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
    }
