@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-25T15:15:18.874037-06:00",
+ "generated": "2026-11-26T08:01:05.963611-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -843,7 +843,7 @@
  "cash_as_of": "2026-11-25T15:15:03-06:00",
  "quotes_as_of": "static snapshot at fill prices; live prices come from /api/desk-data",
  "record": {
-  "as_of": "2026-11-25",
+  "as_of": "2026-11-26",
   "scoreboard": {
    "exits": 8,
    "wins": 5,
@@ -1405,10 +1405,16 @@
     "source": "sync_book.py run 2026-11-24: cash_verified $163.42 + open positions at fill $8.59 + options at cost $0.00"
    },
    {
-    "date": "2026-11-25",
     "book_value": 118.88,
+    "date": "2026-11-25",
     "index": 50.84,
     "source": "sync_book.py run 2026-11-25: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
+   },
+   {
+    "date": "2026-11-26",
+    "book_value": 118.88,
+    "index": 50.84,
+    "source": "sync_book.py run 2026-11-26: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
    }
   ],
   "deposits": [
@@ -1443,6 +1449,38 @@
  },
  "wire": [
   {
+   "time": "2026-11-26",
+   "headline": "Whole-market scan 2026-11-26: 462 passed",
+   "verdict": "Universe 4,782 quoted; 462 passed (gem 125, deep 142, crash 195). Top of the screen: MSFT, AMZN, PANW, TXN, PEP, ABNB, EQIX, MNST.",
+   "refs": [
+    "scan:2026-11-26"
+   ]
+  },
+  {
+   "time": "2026-11-26",
+   "headline": "FANG EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Crude Petroleum & Natural Gas. Latest annual 10-K filed 2026-02-25; latest quarterly 10-Q filed 2026-11-04.",
+   "refs": [
+    "dossier:FANG"
+   ]
+  },
+  {
+   "time": "2026-11-26",
+   "headline": "FOXA EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Television Broadcasting Stations. Latest annual 10-K filed 2026-08-06; latest quarterly 10-Q filed 2026-11-02.",
+   "refs": [
+    "dossier:FOXA"
+   ]
+  },
+  {
+   "time": "2026-11-26",
+   "headline": "GM EDGAR dossier refreshed",
+   "verdict": "EDGAR dossier on file. Sector: Motor Vehicles & Passenger Car Bodies. Latest annual 10-K filed 2026-01-27; latest quarterly 10-Q filed 2026-10-20.",
+   "refs": [
+    "dossier:GM"
+   ]
+  },
+  {
    "time": "2026-11-25",
    "headline": "Whole-market scan 2026-11-25: 1233 passed",
    "verdict": "Universe 11,845 quoted; 1,233 passed (gem 411, deep 425, crash 397). Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, GE, PANW.",
@@ -1475,43 +1513,11 @@
    ]
   },
   {
-   "time": "2026-11-25",
-   "headline": "AON EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Insurance Agents, Brokers & Service. Latest annual 10-K filed 2026-02-13; latest quarterly 10-Q filed 2026-10-28.",
-   "refs": [
-    "dossier:AON"
-   ]
-  },
-  {
-   "time": "2026-11-25",
-   "headline": "AZN EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Pharmaceutical Preparations. Latest annual 20-F filed 2026-02-24; latest quarterly  filed .",
-   "refs": [
-    "dossier:AZN"
-   ]
-  },
-  {
-   "time": "2026-11-25",
-   "headline": "CI EDGAR dossier refreshed",
-   "verdict": "EDGAR dossier on file. Sector: Hospital & Medical Service Plans. Latest annual 10-K filed 2026-02-26; latest quarterly 10-Q filed 2026-11-05.",
-   "refs": [
-    "dossier:CI"
-   ]
-  },
-  {
    "time": "2026-11-24",
    "headline": "Whole-market scan 2026-11-24: 1278 passed",
    "verdict": "Universe 11,844 quoted; 1,278 passed (gem 422, deep 456, crash 400). Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, MRK, GE.",
    "refs": [
     "scan:2026-11-24"
-   ]
-  },
-  {
-   "time": "2026-11-23",
-   "headline": "Whole-market scan 2026-11-23: 1341 passed",
-   "verdict": "Universe 11,825 quoted; 1,341 passed (gem 425, deep 471, crash 445). Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, MRK, PM.",
-   "refs": [
-    "scan:2026-11-23"
    ]
   },
   {
@@ -1530,13 +1536,13 @@
    {
     "slot": 1,
     "symbol": "QQQ 590 put, Fri Nov 27 expiry - INDEXPUT package, field order FO-1 (Milly's word Nov 23)",
-    "call": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape, conditional_day_trade_for_wednesday_nov_25_trigger_not_yet_printed",
-    "note": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape \u00b7 entry None \u00b7 target +100% of premium \u00b7 stop premium mark <= 50% of entry premium. FO-1 kill: after a breakdown entry, a 30-min close back above 655 ends the thesis. Package stand-down: two closes back above the broken shelf = based, thesis done (Monday was close one; Tuesday fell back below, so the count reset - stand..."
+    "call": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape, conditional_day_trade_for_friday_nov_27_expiry_session_trigger_not_yet_printed",
+    "note": "long put on breakdown or failed reclaim (FO-1 terms); call side only on the addendum's call shape \u00b7 entry None \u00b7 target +100% of premium \u00b7 stop premium mark <= 50% of entry premium. FO-1 kill: after a breakdown entry, a 30-min close back above 655 ends the thesis. Package stand-down: two closes back above the broken shelf = based, thesis done (Mon Nov 23 close $651.03 was close one; Tue and Wed closed back below, so..."
    },
    {
     "slot": 2,
     "symbol": "ANET",
-    "call": "long (longer-horizon package trade - NOT a day trade), package_conditional_trigger_a_test_on_wednesdays_close_not_a_day_trade",
+    "call": "long (longer-horizon package trade - NOT a day trade), package_conditional_trigger_a_test_on_fridays_close_not_a_day_trade",
     "note": "long (longer-horizon package trade - NOT a day trade) \u00b7 entry None \u00b7 target 217.41 \u00b7 stop 156.0. package kill list: MSFT/META capex digestion or named titan socket lost to Spectrum-X/Broadcom; guidance cut; non-GAAP GM guided below 62%; weekly close below $156"
    },
    {
@@ -1559,13 +1565,13 @@
    }
   ],
   "meta": {
-   "date": "2026-11-25",
-   "overall": "OpOne daily brief Wed Nov 25, 2026. Reconciliation: BRIEF.md, trade packages (ANET incl. Trigger A/B/C, INDEXPUT incl. Nov 23 addendum, GOOGL, BAC stock+options, ABBV, CVX, TTWO, NVDA re-underwrite 2026-11-24 STAY DISARMED), field-orders.md (FO-1 fielded, FO-4 watching; FO-2/FO-3 expired Nov 23), dca-program.md, levels-watch.json, four-prices.json plus NVDA re-underwrite section 5 rebuild, checks.json, ledger.json (cash_verified $163.42, Nov 24 15:15 live read; total $171.79), outcomes.json (Tue Nov 24: INDEXPUT triggered-on-close-bar no entry, ANET no_trade), track-record.json (6 exits, 5W/1L, net -$66.10), candidates-2026-11-24.md (0 takeable day-trade slots; NVDA/TTWO protection-incomplete), sector-board-data.json (Nov 24, Monday closes). TA: ta_engine workups on Friday Nov 20 bars (latest on file) plus NVDA re-underwrite Nov 24 computed tape (RSI 39.0, 60d avg 44.7, 0 overbought / 11 oversold days). News: Reuters, Barchart, IBD, FXStreet, TipRanks, Finnhub/MarketBeat closes, Nov 24-25."
+   "date": "2026-11-26",
+   "overall": "OpOne daily brief Thu Nov 26, 2026. Reconciliation: BRIEF.md, trade packages (ANET incl. Trigger A/B/C, INDEXPUT incl. Nov 23 addendum, GOOGL, BAC stock+options, ABBV, CVX, TTWO, NVDA re-underwrite 2026-11-24 STAY DISARMED), field-orders.md (FO-1 fielded into its Fri Nov 27 expiry session, FO-4 watching into the same expiry; FO-2/FO-3 expired Nov 23), dca-program.md, levels-watch.json, four-prices.json plus NVDA re-underwrite section 5 rebuild, checks.json, ledger.json (cash_verified $110.29, total $119.59, Nov 25 15:15 live read), outcomes.json (Wed Nov 25: INDEXPUT no trigger, ANET no completion, NVDA hedge fills/exits closed), track-record.json (8 exits, 5W/3L, net -$119.22), candidates-2026-11-25.md (0 takeable day-trade slots; NVDA/TTWO protection-incomplete), sector-board-data.json (Nov 25 file, Tuesday closes) with Wednesday session overlay from AP/Barchart closes. News: BEA via Reuters/FXStreet/Barron's (core PCE), AP/Barchart/Investopedia (Wed session), CoinDesk (BTC)."
   }
  },
  "graph": {
-  "generated": "2026-11-25",
-  "nodes": 296,
+  "generated": "2026-11-26",
+  "nodes": 305,
   "edges": 174,
   "live_patterns": 0,
   "pattern_candidates": 6,
@@ -1576,19 +1582,19 @@
  "newsroom": {
   "insights": [
    {
-    "date": "2026-11-25",
+    "date": "2026-11-26",
     "tag": "Scan",
-    "title": "Whole-market scan 2026-11-25: 1233 passed",
-    "body": "Universe 11,845 quoted. 1,233 passed the full screen: gem zone 411, deep 425, crash 397. Top of the screen: MSFT, AMZN, JPM, XOM, CVX, HD, GE, PANW, PM, AZN.",
-    "evidence": "Graph: scan:2026-11-25. Source: market_scan.py, scans/scan-2026-11-25.csv (feed: yahoo_quote).",
+    "title": "Whole-market scan 2026-11-26: 462 passed",
+    "body": "Universe 4,782 quoted. 462 passed the full screen: gem zone 125, deep 142, crash 195. Top of the screen: MSFT, AMZN, PANW, TXN, PEP, ABNB, EQIX, MNST, HON, ROST.",
+    "evidence": "Graph: scan:2026-11-26. Source: market_scan.py, scans/scan-2026-11-26.csv (feed: yahoo_quote).",
     "lesson": "The scan is the whole market (L-002). Finalists come from the merged pool, never the watchlist alone."
    },
    {
-    "date": "2026-11-25",
+    "date": "2026-11-26",
     "tag": "Dossiers",
-    "title": "106 EDGAR dossiers on file; 10 refreshed 2026-11-25",
-    "body": "Newest dossiers: AON, AZN, CI, GE, HD, MRNA, MUFG, RTX, SHEL, WFC. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
-    "evidence": "Graph: dossier nodes dated 2026-11-25.",
+    "title": "114 EDGAR dossiers on file; 10 refreshed 2026-11-26",
+    "body": "Newest dossiers: FANG, FOXA, GM, HON, INSM, PEP, ROST, TRI, TXN, ZS. Dossiers are the enrichment layer: filings facts on file before any name can earn a full check.",
+    "evidence": "Graph: dossier nodes dated 2026-11-26.",
     "lesson": "A dossier is not a check. The full process (management, employees, cash, worth) still runs before any package."
    },
    {
