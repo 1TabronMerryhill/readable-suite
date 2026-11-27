@@ -857,7 +857,7 @@ const BOOK = {
 
 // === RECORD SYNC (generated; do not hand-edit) ===
 const RECORD = {
-  "as_of": "2026-11-26",
+  "as_of": "2026-11-27",
   "scoreboard": {
     "exits": 8,
     "wins": 5,
@@ -1432,6 +1432,12 @@ const INDEX = {
       "date": "2026-11-26",
       "index": 50.84,
       "source": "sync_book.py run 2026-11-26: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
+    },
+    {
+      "date": "2026-11-27",
+      "book_value": 118.88,
+      "index": 50.84,
+      "source": "sync_book.py run 2026-11-27: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
     }
   ],
   "deposits": [
