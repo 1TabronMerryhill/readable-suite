@@ -1,21 +1,21 @@
 {
  "symbol": "QQQ",
  "company": "Invesco QQQ Trust",
- "as_of": "2026-11-13T15:31:03.130513+00:00",
+ "as_of": "2026-11-27T11:59:09.488298+00:00",
  "source": "Yahoo Finance v8 chart, 1y daily candles",
- "bars": 252,
+ "bars": 251,
  "price": {
-  "last": 674.57,
-  "prev_close": 688.17,
-  "change_pct": -1.98,
+  "last": 633.93,
+  "prev_close": 638.1,
+  "change_pct": -0.65,
   "fifty_two_week_high": 762.86,
   "fifty_two_week_low": 555.6,
-  "pct_from_52w_high": -11.6,
-  "last_bar_date": "2026-11-13"
+  "pct_from_52w_high": -16.9,
+  "last_bar_date": "2026-11-25"
  },
  "verdict": {
   "trend": "bearish",
-  "one_line": "Bearish trend. Last close $674.57, -11.6 percent from the 52-week high $762.86."
+  "one_line": "Bearish trend. Last close $633.93, -16.9 percent from the 52-week high $762.86."
  },
  "sections": {
   "trend": {
@@ -26,83 +26,83 @@
      "status": "confirmed",
      "direction": "bearish",
      "definition": "The trend is the dominant direction of price over months, read from swing highs and lows, the slope of the lines through them, and where price sits against its long averages. Bullish means higher highs and higher lows. Bearish means lower highs and lower lows. Range-bound means neither side is winning.",
-     "meaning": "The trend verdict is bearish. Swing structure is lower highs and lower lows (0 higher highs, 0 higher lows, 2 lower highs, 2 lower lows across the last 6 swings). The two trend lines form a diverging lines (expanding, broadening shape). Price $674.57 sits below its 50-day average and below its 200-day average.",
+     "meaning": "The trend verdict is bearish. Swing structure is lower highs and lower lows (0 higher highs, 0 higher lows, 2 lower highs, 2 lower lows across the last 6 swings). The two trend lines form a parallel descending channel. Price $633.93 sits below its 50-day average and below its 200-day average.",
      "confirms": "The verdict strengthens if price breaks the last swing point in the trend direction and holds it on a close.",
      "invalidates": "A close through the last swing point against the trend, held for two sessions, ends this verdict and the structure gets re-read.",
      "evidence": {
       "structure": "lower highs and lower lows",
-      "channel": "diverging lines (expanding, broadening shape)",
+      "channel": "parallel descending channel",
       "resistance_line": {
-       "slope_per_bar": -0.362,
+       "slope_per_bar": -3.057,
        "a": {
-        "i": 234,
-        "t": 1792589400,
-        "p": 727.95
-       },
-       "b": {
-        "i": 239,
+        "i": 230,
         "t": 1793194200,
         "p": 726.14
        },
-       "from_date": "2026-10-21",
-       "to_date": "2026-10-28"
+       "b": {
+        "i": 240,
+        "t": 1794407400,
+        "p": 695.57
+       },
+       "from_date": "2026-10-28",
+       "to_date": "2026-11-11"
       },
       "support_line": {
-       "slope_per_bar": -6.0122,
+       "slope_per_bar": -3.7109,
        "a": {
         "i": 236,
-        "t": 1792762200,
-        "p": 701.16
-       },
-       "b": {
-        "i": 245,
         "t": 1793889000,
         "p": 647.05
        },
-       "from_date": "2026-10-23",
-       "to_date": "2026-11-05"
+       "b": {
+        "i": 247,
+        "t": 1795185000,
+        "p": 606.23
+       },
+       "from_date": "2026-11-05",
+       "to_date": "2026-11-20"
       },
       "swing_supports": [
-       661.14,
-       647.05,
-       610.15
+       610.15,
+       607.05,
+       606.23
       ],
       "swing_resistances": [
-       721.89,
-       722.03,
-       724.13
+       636.6,
+       695.57,
+       721.89
       ],
       "traffic_support_shelves": [
        {
-        "level": 671.87,
-        "days": 9,
+        "level": 630.42,
+        "days": 14,
         "side": "support"
        },
        {
-        "level": 668.41,
-        "days": 8,
+        "level": 626.96,
+        "days": 24,
         "side": "support"
        },
        {
-        "level": 661.5,
-        "days": 8,
+        "level": 623.51,
+        "days": 35,
         "side": "support"
        }
       ],
       "traffic_resistance_shelves": [
        {
-        "level": 675.32,
+        "level": 644.23,
+        "days": 8,
+        "side": "resistance"
+       },
+       {
+        "level": 647.69,
         "days": 10,
         "side": "resistance"
        },
        {
-        "level": 678.78,
-        "days": 12,
-        "side": "resistance"
-       },
-       {
-        "level": 682.23,
-        "days": 14,
+        "level": 651.14,
+        "days": 8,
         "side": "resistance"
        }
       ],
@@ -125,32 +125,32 @@
      "evidence": {
       "sma": {
        "10": {
-        "value": 676.87,
-        "slope_per_day": -3.153,
+        "value": 652.28,
+        "slope_per_day": -3.422,
         "price_vs": "below"
        },
        "20": {
-        "value": 695.18,
-        "slope_per_day": -2.491,
+        "value": 666.73,
+        "slope_per_day": -3.914,
         "price_vs": "below"
        },
        "50": {
-        "value": 717.76,
-        "slope_per_day": -0.642,
+        "value": 707.05,
+        "slope_per_day": -1.462,
         "price_vs": "below"
        },
        "100": {
-        "value": 714.4,
-        "slope_per_day": -0.436,
+        "value": 708.46,
+        "slope_per_day": -0.86,
         "price_vs": "below"
        },
        "200": {
-        "value": 682.21,
-        "slope_per_day": 0.265,
+        "value": 683.5,
+        "slope_per_day": 0.138,
         "price_vs": "below"
        }
       },
-      "price": 674.57
+      "price": 633.93
      }
     },
     {
@@ -158,12 +158,12 @@
      "status": "absent",
      "direction": "bullish",
      "definition": "A cross of the 50-day average through the 200-day average. It marks the moment the medium trend overtook the long trend. It is a slow signal: it confirms a turn more often than it starts one.",
-     "meaning": "No such cross in the last year of data. The 50-day is at $717.76 and the 200-day at $682.21",
+     "meaning": "No such cross in the last year of data. The 50-day is at $707.05 and the 200-day at $683.50",
      "confirms": "The 50-day crossing the 200-day is the event itself.",
      "invalidates": "Nothing to invalidate: the event has not happened.",
      "evidence": {
-      "sma50": 717.76,
-      "sma200": 682.21
+      "sma50": 707.05,
+      "sma200": 683.5
      }
     },
     {
@@ -171,12 +171,12 @@
      "status": "absent",
      "direction": "bearish",
      "definition": "A cross of the 50-day average through the 200-day average. It marks the moment the medium trend overtook the long trend. It is a slow signal: it confirms a turn more often than it starts one.",
-     "meaning": "No such cross in the last year of data. The 50-day is at $717.76 and the 200-day at $682.21",
+     "meaning": "No such cross in the last year of data. The 50-day is at $707.05 and the 200-day at $683.50",
      "confirms": "The 50-day crossing the 200-day is the event itself.",
      "invalidates": "Nothing to invalidate: the event has not happened.",
      "evidence": {
-      "sma50": 717.76,
-      "sma200": 682.21
+      "sma50": 707.05,
+      "sma200": 683.5
      }
     }
    ]
@@ -189,11 +189,11 @@
      "status": "confirmed",
      "direction": "neutral",
      "definition": "The Relative Strength Index measures the speed of recent gains against recent losses, on a 0 to 100 scale. Above 70 is called overbought, below 30 oversold. It describes momentum, not value.",
-     "meaning": "RSI is 41.3, neutral. Divergence check against the last two swing lows: none.",
+     "meaning": "RSI is 38.6, neutral. Divergence check against the last two swing lows: none.",
      "confirms": "For a reversal read, RSI crossing back through 30 from below, or a divergence that price then confirms with a higher low.",
      "invalidates": "RSI staying pinned at an extreme while price trends through it: in a strong trend, extremes can persist and the mean-reversion read fails.",
      "evidence": {
-      "rsi": 41.3,
+      "rsi": 38.6,
       "state": "neutral",
       "divergence": "none"
      }
@@ -203,13 +203,13 @@
      "status": "forming",
      "direction": "bearish",
      "definition": "MACD compares two exponential averages of price. The MACD line crossing its signal line marks momentum changing hands. The histogram is the gap between them: widening means the move is accelerating, narrowing means it is tiring.",
-     "meaning": "MACD is -13.34, signal -12.91, histogram -0.43 and narrowing. No cross in the last 10 sessions.",
+     "meaning": "MACD is -20.16, signal -17.66, histogram -2.50 and narrowing. No cross in the last 10 sessions.",
      "confirms": "A fresh cross in the trend direction, with the histogram expanding.",
      "invalidates": "A cross back the other way, or the histogram flipping sign.",
      "evidence": {
-      "macd": -13.34,
-      "signal": -12.91,
-      "histogram": -0.43,
+      "macd": -20.16,
+      "signal": -17.66,
+      "histogram": -2.5,
       "last_cross": null
      }
     },
@@ -218,30 +218,30 @@
      "status": "confirmed",
      "direction": "neutral",
      "definition": "Bollinger Bands wrap price in a channel two standard deviations wide around its 20-day average. Percent B says where price sits inside that channel: 1 is the top band, 0 the bottom, outside either means price is walking the band in a strong trend. Bandwidth measures volatility: a squeeze, bandwidth at its lowest quarter of the year, often precedes a large move.",
-     "meaning": "Price is inside the bands: upper $739.35, middle $695.18, lower $651.02, percent B 0.27, bandwidth 12.7 percent. Squeeze: no.",
+     "meaning": "Price is inside the bands: upper $716.15, middle $666.73, lower $617.31, percent B 0.17, bandwidth 14.8 percent. Squeeze: no.",
      "confirms": "A band walk that keeps closing outside the band confirms trend strength. A squeeze confirms when price breaks the range it built.",
      "invalidates": "Two closes back inside the band end a band walk read.",
      "evidence": {
-      "upper": 739.35,
-      "mid": 695.18,
-      "lower": 651.02,
-      "pct_b": 0.27,
-      "bandwidth_pct": 12.7,
+      "upper": 716.15,
+      "mid": 666.73,
+      "lower": 617.31,
+      "pct_b": 0.17,
+      "bandwidth_pct": 14.8,
       "squeeze": false
      }
     },
     {
      "name": "Stochastic 14, 3",
-     "status": "forming",
-     "direction": "neutral",
+     "status": "confirmed",
+     "direction": "bullish",
      "definition": "The stochastic oscillator places today's close inside the last 14 days' range. Percent K is the fast line, percent D its average. Crosses under 20 are read as momentum turning up from washed-out; crosses over 80 as momentum turning down from stretched.",
-     "meaning": "Percent K is 47.2, percent D 45.9. No cross in the last 5 sessions.",
+     "meaning": "Percent K is 37.9, percent D 27.7. Signal: bullish cross out of oversold.",
      "confirms": "The cross itself is the confirmation; price then has to take out the prior day's high to follow through.",
      "invalidates": "Percent K falling back under percent D after a bullish cross kills it.",
      "evidence": {
-      "pct_k": 47.2,
-      "pct_d": 45.9,
-      "cross": null
+      "pct_k": 37.9,
+      "pct_d": 27.7,
+      "cross": "bullish cross out of oversold"
      }
     }
    ]
@@ -251,31 +251,31 @@
    "findings": [
     {
      "name": "Hammer",
+     "status": "confirmed",
+     "direction": "bullish",
+     "definition": "One candle with a small body at the top and a long lower tail, at least twice the body, after a decline. Sellers pushed price down and buyers took it back before the close.",
+     "meaning": "Printed on 2026-11-18, 5 session(s) ago, on a candle that ran $653.05 to $662.80 and closed at $659.51.",
+     "confirms": "The next session trading in the pattern's direction, through the pattern candle's extreme, confirms it.",
+     "invalidates": "A close back through the pattern candle's other extreme kills it.",
+     "evidence": {
+      "date": "2026-11-18",
+      "sessions_ago": 5,
+      "open": 661.03,
+      "high": 662.8,
+      "low": 653.05,
+      "close": 659.51
+     }
+    },
+    {
+     "name": "Inverted hammer",
      "status": "absent",
      "direction": "neutral",
-     "definition": "One candle with a small body at the top and a long lower tail, at least twice the body, after a decline. Sellers pushed price down and buyers took it back before the close.",
+     "definition": "One candle with a small body at the bottom and a long upper tail, after a decline. Buyers probed up and could not hold it; it only matters if the next day confirms.",
      "meaning": "Not printed in the last 10 sessions.",
      "confirms": "The candle shape itself printing is the event.",
      "invalidates": "Nothing to invalidate: it is not on the chart.",
      "evidence": {
       "window": "last 10 sessions"
-     }
-    },
-    {
-     "name": "Inverted hammer",
-     "status": "confirmed",
-     "direction": "bullish",
-     "definition": "One candle with a small body at the bottom and a long upper tail, after a decline. Buyers probed up and could not hold it; it only matters if the next day confirms.",
-     "meaning": "Printed on 2026-11-03, 8 session(s) ago, on a candle that ran $683.18 to $688.69 and closed at $685.28.",
-     "confirms": "The next session trading in the pattern's direction, through the pattern candle's extreme, confirms it.",
-     "invalidates": "A close back through the pattern candle's other extreme kills it.",
-     "evidence": {
-      "date": "2026-11-03",
-      "sessions_ago": 8,
-      "open": 684.39,
-      "high": 688.69,
-      "low": 683.18,
-      "close": 685.28
      }
     },
     {
@@ -319,16 +319,16 @@
      "status": "confirmed",
      "direction": "bearish",
      "definition": "A red candle whose body fully covers the prior green candle's body. Sellers took back in one day everything buyers won the day before.",
-     "meaning": "Printed on 2026-11-13, 0 session(s) ago, on a candle that ran $672.30 to $688.75 and closed at $674.57.",
+     "meaning": "Printed on 2026-11-13, 8 session(s) ago, on a candle that ran $671.68 to $688.75 and closed at $679.89.",
      "confirms": "The next session trading in the pattern's direction, through the pattern candle's extreme, confirms it.",
      "invalidates": "A close back through the pattern candle's other extreme kills it.",
      "evidence": {
       "date": "2026-11-13",
-      "sessions_ago": 0,
-      "open": 688.51,
+      "sessions_ago": 8,
+      "open": 688.54,
       "high": 688.75,
-      "low": 672.3007,
-      "close": 674.57
+      "low": 671.68,
+      "close": 679.89
      }
     },
     {
@@ -357,36 +357,26 @@
     },
     {
      "name": "Bearish marubozu",
-     "status": "confirmed",
-     "direction": "bearish",
+     "status": "absent",
+     "direction": "neutral",
      "definition": "A long red candle with almost no tails. Sellers controlled the whole session, open to close.",
-     "meaning": "Printed on 2026-11-05, 6 session(s) ago, on a candle that ran $647.05 to $683.65 and closed at $647.05.",
-     "confirms": "The next session trading in the pattern's direction, through the pattern candle's extreme, confirms it.",
-     "invalidates": "A close back through the pattern candle's other extreme kills it.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
      "evidence": {
-      "date": "2026-11-05",
-      "sessions_ago": 6,
-      "open": 683.12,
-      "high": 683.65,
-      "low": 647.05,
-      "close": 647.05
+      "window": "last 10 sessions"
      }
     },
     {
      "name": "Morning star",
-     "status": "confirmed",
-     "direction": "bullish",
+     "status": "absent",
+     "direction": "neutral",
      "definition": "Three candles: a long red one, a small indecision candle that gaps or holds low, then a long green one closing past the midpoint of the first. A bottoming shape.",
-     "meaning": "Printed on 2026-11-09, 4 session(s) ago, on a candle that ran $662.02 to $682.48 and closed at $679.35.",
-     "confirms": "The next session trading in the pattern's direction, through the pattern candle's extreme, confirms it.",
-     "invalidates": "A close back through the pattern candle's other extreme kills it.",
+     "meaning": "Not printed in the last 10 sessions.",
+     "confirms": "The candle shape itself printing is the event.",
+     "invalidates": "Nothing to invalidate: it is not on the chart.",
      "evidence": {
-      "date": "2026-11-09",
-      "sessions_ago": 4,
-      "open": 662.64,
-      "high": 682.48,
-      "low": 662.02,
-      "close": 679.35
+      "window": "last 10 sessions"
      }
     },
     {
@@ -483,17 +473,17 @@
      "status": "confirmed",
      "direction": "bearish",
      "definition": "A climax day trades at least twice the normal volume. It marks a crowd event: capitulation at a low or blow-off at a high. One climax day does not end a move, but it says the move just spent real energy.",
-     "meaning": "Climax days in the last 10 sessions: 2026-11-05 at 2.6x average on a down day.",
+     "meaning": "Climax days in the last 10 sessions: 2026-11-20 at 2.2x average on a down day.",
      "confirms": "A climax at a low that price then holds, with a higher low after it, is the classic capitulation sequence.",
      "invalidates": "Price slicing through the climax day's low on ordinary volume makes the climax just another down day.",
      "evidence": {
-      "avg20_volume": 50564715,
-      "last_volume": 12236180,
-      "last_ratio": 0.24,
+      "avg20_volume": 61079645,
+      "last_volume": 81996700,
+      "last_ratio": 1.34,
       "climax_days": [
        {
-        "date": "2026-11-05",
-        "ratio": 2.58,
+        "date": "2026-11-20",
+        "ratio": 2.21,
         "day": "down"
        }
       ]
@@ -501,14 +491,14 @@
     },
     {
      "name": "Distribution signature",
-     "status": "absent",
+     "status": "confirmed",
      "direction": "bearish",
-     "definition": "Distribution is institutions selling into strength over weeks: down days carry clearly more volume than up days.",
-     "meaning": "Down days carry 52 percent of the last 20 sessions' volume, inside the neutral band. Neither side owns the tape.",
-     "confirms": "Down-day share rising past 58 percent would start it.",
-     "invalidates": "Nothing to invalidate: the signature is not present.",
+     "definition": "Distribution is institutions selling into strength over weeks: down days carry clearly more volume than up days. It is how big holders leave without printing one obvious crash.",
+     "meaning": "Over the last 20 sessions, 72 percent of the volume traded on down days. That is a distribution signature.",
+     "confirms": "The share rising, or price making new lows on expanding volume.",
+     "invalidates": "Up-day volume taking the share back above 55 percent ends it.",
      "evidence": {
-      "down_volume_share_pct": 51.6,
+      "down_volume_share_pct": 71.9,
       "window": "20 sessions"
      }
     },
@@ -517,11 +507,11 @@
      "status": "absent",
      "direction": "bullish",
      "definition": "Accumulation is institutions buying patiently over weeks: up days carry clearly more volume than down days, often while price still looks quiet.",
-     "meaning": "No accumulation signature: up-day volume share is inside the neutral band.",
+     "meaning": "No accumulation signature: up days do not carry the volume.",
      "confirms": "Up-day volume share holding above 58 percent while price bases.",
      "invalidates": "Down-day volume taking over ends it.",
      "evidence": {
-      "up_volume_share_pct": 48.4,
+      "up_volume_share_pct": 28.1,
       "window": "20 sessions"
      }
     }
@@ -542,8 +532,8 @@
       "primary_trend": "down (lower highs and lower lows)",
       "confirmation": "none",
       "volume_confirms": true,
-      "last_swing_high": 726.14,
-      "last_swing_low": 647.05
+      "last_swing_high": 695.57,
+      "last_swing_low": 606.23
      }
     }
    ]
@@ -601,7 +591,7 @@
      "status": "confirmed",
      "direction": "neutral",
      "definition": "Fibonacci retracement divides a completed move by fixed ratios (23.6, 38.2, 50, 61.8, 78.6 percent) to map where a pullback often pauses. It is a level map, not a signal: the levels matter because many traders watch the same ones, and because they land on real shelves.",
-     "meaning": "Measured from the low $555.60 on 2026-03-30 to the high $762.86 on 2026-10-06. Price at $674.57 has retraced 42.6 percent of the advance. Levels price has touched and reacted at: 0.236 ($713.95, 2026-10-15), 0.382 ($683.69, 2026-10-30), 0.5 ($659.23, 2026-11-09). Confluences: 0.382 at $683.69 meets the shelf near $678.78; 0.382 at $683.69 meets the shelf near $682.23; 0.5 at $659.23 meets the shelf near $661.50.",
+     "meaning": "Measured from the low $555.60 on 2026-03-30 to the high $762.86 on 2026-10-06. Price at $633.93 has retraced 62.2 percent of the advance. Levels price has touched and reacted at: 0.236 ($713.95, 2026-10-15), 0.382 ($683.69, 2026-10-30), 0.5 ($659.23, 2026-11-09), 0.618 ($634.77, 2026-11-25). Confluences: 0.618 at $634.77 meets the shelf near $630.42.",
      "confirms": "A level confirms itself when price touches it and reverses with a candle or volume signature.",
      "invalidates": "A level that price closes through twice stops being a level on this map and the next one down takes over.",
      "evidence": {
@@ -631,20 +621,23 @@
         "ratio": "0.5",
         "level": 659.23,
         "date": "2026-11-09"
+       },
+       {
+        "ratio": "0.618",
+        "level": 634.77,
+        "date": "2026-11-25"
        }
       ],
       "confluences": [
-       "0.382 at $683.69 meets the shelf near $678.78",
-       "0.382 at $683.69 meets the shelf near $682.23",
-       "0.5 at $659.23 meets the shelf near $661.50"
+       "0.618 at $634.77 meets the shelf near $630.42"
       ],
       "fib_anchor_a": {
-       "i": 92,
+       "i": 83,
        "t": 1774877400,
        "p": 555.6
       },
       "fib_anchor_b": {
-       "i": 223,
+       "i": 214,
        "t": 1791293400,
        "p": 762.86
       }
@@ -655,20 +648,20 @@
      "status": "forming",
      "direction": "neutral",
      "definition": "The same ratios applied to the current decline, run upward: they map where a bounce most often stalls. A bounce that dies at the 38.2 or 50 percent line is behaving like a countertrend rally, not a reversal.",
-     "meaning": "The decline from $762.86 (2026-10-06) to $647.05 (2026-11-05) measures 15.2 percent. Bounce stall lines: 0.236 at $674.38, 0.382 at $691.29, 0.5 at $704.95, 0.618 at $718.62, 0.786 at $738.08.",
+     "meaning": "The decline from $762.86 (2026-10-06) to $606.23 (2026-11-20) measures 20.5 percent. Bounce stall lines: 0.236 at $643.19, 0.382 at $666.06, 0.5 at $684.55, 0.618 at $703.03, 0.786 at $729.34.",
      "confirms": "A bounce closing through the 61.8 percent line upgrades it from countertrend rally to reversal candidate.",
      "invalidates": "New lows extend the leg and every line on this map moves down.",
      "evidence": {
       "leg_high": 762.86,
       "leg_high_date": "2026-10-06",
-      "leg_low": 647.05,
-      "leg_low_date": "2026-11-05",
+      "leg_low": 606.23,
+      "leg_low_date": "2026-11-20",
       "bounce_levels": {
-       "0.236": 674.38,
-       "0.382": 691.29,
-       "0.5": 704.95,
-       "0.618": 718.62,
-       "0.786": 738.08
+       "0.236": 643.19,
+       "0.382": 666.06,
+       "0.5": 684.55,
+       "0.618": 703.03,
+       "0.786": 729.34
       }
      }
     }
@@ -983,11 +976,11 @@
      "status": "confirmed",
      "direction": "bearish",
      "definition": "Price boxed between a flat ceiling and a flat floor, touching each at least twice. A balance zone. The break out of the box, either way, is the signal; inside the box there is no edge.",
-     "meaning": "A box between $700.00 and $754.54, touched 6 times at the top and 12 times at the bottom, from 2026-08-07. It broke down on 2026-11-13.",
+     "meaning": "A box between $700.00 and $762.86, touched 6 times at the top and 12 times at the bottom, from 2026-08-19. It broke down on 2026-11-25.",
      "confirms": "A close outside the box, held a second session, confirms the break.",
      "invalidates": "A failed break that closes back inside the box within two sessions kills it.",
      "evidence": {
-      "top": 754.54,
+      "top": 762.86,
       "bottom": 700.0,
       "touches_top": 6,
       "touches_bottom": 12
@@ -1013,47 +1006,47 @@
  "shelves": {
   "support": [
    {
-    "level": 671.87,
-    "days": 9,
+    "level": 630.42,
+    "days": 14,
     "side": "support"
    },
    {
-    "level": 668.41,
-    "days": 8,
+    "level": 626.96,
+    "days": 24,
     "side": "support"
    },
    {
-    "level": 661.5,
-    "days": 8,
+    "level": 623.51,
+    "days": 35,
     "side": "support"
    }
   ],
   "resistance": [
    {
-    "level": 675.32,
+    "level": 644.23,
+    "days": 8,
+    "side": "resistance"
+   },
+   {
+    "level": 647.69,
     "days": 10,
     "side": "resistance"
    },
    {
-    "level": 678.78,
-    "days": 12,
-    "side": "resistance"
-   },
-   {
-    "level": 682.23,
-    "days": 14,
+    "level": 651.14,
+    "days": 8,
     "side": "resistance"
    }
   ],
   "swing_supports": [
-   661.14,
-   647.05,
-   610.15
+   610.15,
+   607.05,
+   606.23
   ],
   "swing_resistances": [
-   721.89,
-   722.03,
-   724.13
+   636.6,
+   695.57,
+   721.89
   ]
  },
  "scatter": {
@@ -1065,111 +1058,75 @@
     "y_label": "Next 5-day return, percent",
     "points": [
      [
-      59.9,
-      0.42
-     ],
-     [
-      61.4,
-      -1.9
-     ],
-     [
-      60.2,
-      -2.2
-     ],
-     [
-      60.7,
-      -2.13
-     ],
-     [
-      62.4,
-      -4.33
-     ],
-     [
-      60.2,
-      -2.63
-     ],
-     [
-      49.4,
-      0.56
-     ],
-     [
-      47.0,
-      1.42
-     ],
-     [
-      48.1,
-      1.69
-     ],
-     [
-      40.1,
+      36.3,
       3.92
      ],
      [
-      47.3,
+      46.3,
       2.43
      ],
      [
-      52.9,
+      53.4,
       0.62
      ],
      [
-      54.3,
+      55.2,
       0.04
      ],
      [
-      56.2,
+      57.5,
       -1.25
      ],
      [
-      57.4,
+      58.9,
       -1.73
      ],
      [
-      57.4,
+      58.8,
       -0.95
      ],
      [
-      54.5,
+      55.3,
       0.41
      ],
      [
-      53.1,
+      53.6,
       0.74
      ],
      [
-      48.5,
+      48.0,
       1.0
      ],
      [
-      47.4,
+      46.8,
       2.21
      ],
      [
-      52.0,
+      52.2,
       1.49
      ],
      [
-      56.5,
+      57.3,
       0.45
      ],
      [
-      57.0,
+      57.8,
       -0.72
      ],
      [
-      53.2,
+      53.5,
       0.21
      ],
      [
-      58.4,
+      59.2,
       -0.86
      ],
      [
-      58.8,
+      59.7,
       -3.05
      ],
      [
-      57.7,
+      58.4,
       -1.59
      ],
      [
@@ -1177,43 +1134,43 @@
       0.2
      ],
      [
-      52.6,
+      52.7,
       0.15
      ],
      [
-      52.0,
+      52.1,
       0.68
      ],
      [
-      40.2,
+      39.4,
       3.79
      ],
      [
-      48.1,
+      47.9,
       2.75
      ],
      [
-      51.8,
+      51.9,
       1.4
      ],
      [
-      53.4,
+      53.5,
       -0.14
      ],
      [
-      55.6,
+      55.8,
       0.11
      ],
      [
-      59.8,
+      60.2,
       -2.31
      ],
      [
-      61.3,
+      61.7,
       -4.34
      ],
      [
-      57.2,
+      57.5,
       -5.15
      ],
      [
@@ -1221,23 +1178,23 @@
       -1.97
      ],
      [
-      53.6,
+      53.7,
       -1.89
      ],
      [
-      45.8,
+      45.6,
       -0.82
      ],
      [
-      38.9,
+      38.6,
       1.22
      ],
      [
-      34.4,
+      34.1,
       0.6
      ],
      [
-      44.4,
+      44.3,
       -1.27
      ],
      [
@@ -1245,31 +1202,31 @@
       -2.12
      ],
      [
-      45.9,
+      45.8,
       -0.93
      ],
      [
-      47.1,
+      47.0,
       -1.57
      ],
      [
-      39.9,
+      39.8,
       1.36
      ],
      [
-      40.9,
+      40.8,
       -0.08
      ],
      [
-      40.5,
+      40.4,
       1.09
      ],
      [
-      44.3,
+      44.2,
       1.8
      ],
      [
-      42.8,
+      42.7,
       0.96
      ],
      [
@@ -1277,7 +1234,7 @@
       -0.25
      ],
      [
-      42.3,
+      42.2,
       1.11
      ],
      [
@@ -1333,7 +1290,7 @@
       -0.71
      ],
      [
-      39.9,
+      39.8,
       -1.96
      ],
      [
@@ -1341,7 +1298,7 @@
       -2.06
      ],
      [
-      47.6,
+      47.5,
       -3.2
      ],
      [
@@ -1349,7 +1306,7 @@
       -1.19
      ],
      [
-      41.1,
+      41.0,
       -3.24
      ],
      [
@@ -1361,11 +1318,11 @@
       -5.05
      ],
      [
-      38.1,
+      38.0,
       -1.16
      ],
      [
-      41.3,
+      41.2,
       -0.6
      ],
      [
@@ -1994,7 +1951,39 @@
      ],
      [
       31.4,
-      2.82
+      3.63
+     ],
+     [
+      41.4,
+      -2.59
+     ],
+     [
+      40.1,
+      -2.64
+     ],
+     [
+      46.1,
+      -4.47
+     ],
+     [
+      45.4,
+      -6.27
+     ],
+     [
+      42.8,
+      -10.51
+     ],
+     [
+      37.8,
+      -1.62
+     ],
+     [
+      36.5,
+      -2.87
+     ],
+     [
+      37.7,
+      -3.88
      ]
     ]
    },
@@ -2004,42 +1993,6 @@
     "x_label": "Daily range, percent of price",
     "y_label": "Volume, millions of shares",
     "points": [
-     [
-      1.98,
-      71.33
-     ],
-     [
-      2.66,
-      80.09
-     ],
-     [
-      2.09,
-      63.85
-     ],
-     [
-      1.84,
-      83.33
-     ],
-     [
-      1.93,
-      73.11
-     ],
-     [
-      5.0,
-      117.74
-     ],
-     [
-      2.75,
-      103.34
-     ],
-     [
-      1.9,
-      60.17
-     ],
-     [
-      2.13,
-      57.56
-     ],
      [
       0.94,
       42.39
@@ -3006,11 +2959,43 @@
      ],
      [
       2.14,
-      36.72
+      37.22
      ],
      [
-      2.44,
-      12.24
+      2.51,
+      42.1
+     ],
+     [
+      1.76,
+      43.58
+     ],
+     [
+      2.55,
+      55.69
+     ],
+     [
+      1.48,
+      45.15
+     ],
+     [
+      4.98,
+      71.47
+     ],
+     [
+      6.09,
+      134.75
+     ],
+     [
+      2.39,
+      85.33
+     ],
+     [
+      2.64,
+      57.68
+     ],
+     [
+      4.28,
+      82.0
      ]
     ]
    },
@@ -3020,42 +3005,6 @@
     "x_label": "Percent B (0 is the lower band, 1 the upper)",
     "y_label": "Next 5-day return, percent",
     "points": [
-     [
-      0.76,
-      -2.63
-     ],
-     [
-      0.51,
-      0.56
-     ],
-     [
-      0.45,
-      1.42
-     ],
-     [
-      0.47,
-      1.69
-     ],
-     [
-      0.22,
-      3.92
-     ],
-     [
-      0.39,
-      2.43
-     ],
-     [
-      0.54,
-      0.62
-     ],
-     [
-      0.57,
-      0.04
-     ],
-     [
-      0.65,
-      -1.25
-     ],
      [
       0.69,
       -1.73
@@ -3930,7 +3879,39 @@
      ],
      [
       -0.01,
-      2.82
+      3.63
+     ],
+     [
+      0.24,
+      -2.59
+     ],
+     [
+      0.22,
+      -2.64
+     ],
+     [
+      0.41,
+      -4.47
+     ],
+     [
+      0.4,
+      -6.27
+     ],
+     [
+      0.32,
+      -10.51
+     ],
+     [
+      0.16,
+      -1.62
+     ],
+     [
+      0.14,
+      -2.87
+     ],
+     [
+      0.2,
+      -3.88
      ]
     ]
    }
