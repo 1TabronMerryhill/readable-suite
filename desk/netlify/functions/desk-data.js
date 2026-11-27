@@ -24,8 +24,8 @@ const BUS_TOKEN = process.env.BUS_TOKEN || "";
 
 // === BOOK SYNC (generated; do not hand-edit) ===
 const BOOK = {
-  "cash": 110.29,
-  "cash_as_of": "2026-11-26T15:14:00-06:00",
+  "cash": 108.25,
+  "cash_as_of": "2026-11-27T15:14:23-06:00",
   "fills": [
     {
       "symbol": "GOOGL",
@@ -93,7 +93,21 @@ const BOOK = {
       "filled_at": ""
     }
   ],
-  "options": [],
+  "options": [
+    {
+      "symbol": "SPY",
+      "instrument": "SPY 2026-11-30 $760 call",
+      "bucket": "leaps_options",
+      "qty": 1,
+      "premium": 0.02,
+      "at_cost": 2.0,
+      "stop": 0.01,
+      "target": 0.04,
+      "kill": "see trade record",
+      "order_id": "6b09c4b8-6bff-49fb-84e3-549efef5c3c4",
+      "filled_at": "2026-11-27"
+    }
+  ],
   "closed": [
     {
       "symbol": "NVDA",
@@ -1426,10 +1440,10 @@ const INDEX = {
       "source": "sync_book.py run 2026-11-26: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
     },
     {
-      "book_value": 118.88,
+      "book_value": 118.84,
       "date": "2026-11-27",
-      "index": 50.84,
-      "source": "sync_book.py run 2026-11-27: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
+      "index": 50.82,
+      "source": "sync_book.py run 2026-11-27: cash_verified $108.25 + open positions at fill $8.59 + options at cost $2.00"
     }
   ],
   "deposits": [
