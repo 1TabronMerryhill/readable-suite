@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="desk-version" content="v1.5" />
-<meta name="desk-updated" content="2026-11-27T10:20:59-06:00" />
-<!-- desk-build v1.5 updated 2026-11-27T10:20:59-06:00 -->
+<meta name="desk-updated" content="2026-11-27T15:14:23-06:00" />
+<!-- desk-build v1.5 updated 2026-11-27T15:14:23-06:00 -->
 <meta name="color-scheme" content="dark" />
 <meta name="description" content="The Desk. OpOne Capital intelligence desk. Book, positions, wire, brief, and the knowledge graph on one screen." />
 <link rel="icon" href="data:," />
@@ -839,8 +839,8 @@
     </div>
     <p class="tab-skill"><b>Graph trains the memory.</b></p>
     <div class="graph-stats">
-      <div class="gstat"><div class="v" id="gsNodes">306</div><div class="k">Nodes in the full graph</div></div>
-      <div class="gstat"><div class="v" id="gsEdges">174</div><div class="k">Edges in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsNodes">308</div><div class="k">Nodes in the full graph</div></div>
+      <div class="gstat"><div class="v" id="gsEdges">176</div><div class="k">Edges in the full graph</div></div>
       <div class="gstat"><div class="v" id="gsLive">0</div><div class="k">Live patterns. None has earned it yet</div></div>
       <div class="gstat"><div class="v" id="gsConn">16</div><div class="k">Connector candidates waiting</div></div>
     </div>
@@ -909,7 +909,7 @@
     <p><span class="mono">SOURCE.</span> Prices, book totals, and the attention line are fetched live from /api/desk-data every 20 seconds in market hours (60 seconds outside) when the Desk site answers. When it does not answer, the page falls back to the embedded snapshot, desk-data.json, generated at the last daily book sync, and labels itself SNAPSHOT. Position fills are real orders via Robinhood. The brief, the Wire, and the graph map come from that daily snapshot. News evidence is cited on each graph node and edge. Nothing is saved.</p>
     <p><span class="mono">STACK.</span> JSON is the data contract. Python runs the graph, the watch, and the feed transport. Java runs the event bus. C++ runs the tick normalizer. Those services are scaffolded separately. This page is the visible surface only.</p>
     <p><span class="mono">NEXT.</span> Subdomain opone.tabronmerryhill.com is live. The Finnhub webhook feeds the wire in real time, and the Groq voice answers in the Ask panel with the instruction layer checks. Gold spot joins the live feed when a live spot source lands.</p>
-    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 27, 2026, 10:20 AM CT</span></p>
+    <p><span class="mono">BUILD.</span> <span id="deskStamp">Desk v1.5 · Updated Nov 27, 2026, 3:14 PM CT</span></p>
   </footer>
 </div>
 <script>
@@ -1635,7 +1635,7 @@ var COMPOUNDING = {
     }
   ]
 };
-var CASH_AS_OF = "2026-11-26T15:14:00-06:00";
+var CASH_AS_OF = "2026-11-27T15:14:23-06:00";
 /* === END POSITIONS SYNC === */
 /* Gold state. The GLD position closed Nov 9, 2026, so GLD is NOT a live
    position and never gets a position card with a per-share price. Gold
@@ -1804,6 +1804,22 @@ var WIRE = [
   },
   {
     "time": "2026-11-27",
+    "headline": "Bought SPY Nov 30 760 call x1 at $0.02 (premium $2, fees $0.04, $2.04 all-in) on Milly's direct order on Bobby's book (MCP account), out of the Dec 4 cheap-ticket hunt. Order 6b09c4b8-6bff-49fb-84e3-549efef5c3c4, filled 11:58 CT Nov 27. Position open into Monday Nov 30 expiry; exit rule not yet set (Milly to pick before Monday's open). SPY closed Nov 27 at $728.32 (Finnhub); strike needs +4.4% by Monday's close.",
+    "verdict": "Result: filled_open (real_fill, feed robinhood_mcp).",
+    "refs": [
+      "outcome:2026-11-27-spy-760c-fill"
+    ]
+  },
+  {
+    "time": "2026-11-27",
+    "headline": "ANET Trigger A completed on its daily terms Fri Nov 27 (shortened session, 12:00 CT close): Finnhub open $170.13 printed inside the $168-$172 flush zone, day low $166.86 flushed through it, and the official close $174.73 closed back above the $170.40 reclaim line (day high $175.09; prior close $163.99, so price entered the zone from below at the open). The package stop is close-judged at $156 and never approached. No order was placed by this sync: Trigger A carries 'Milly's word still required' in levels-watch.json, and the real fill, when it lands in the ledger, gets its own real_fill outcome. Signal outcome for the brief slot only.",
+    "verdict": "Result: triggered (signal_only, feed finnhub).",
+    "refs": [
+      "outcome:2026-11-27-anet-slot"
+    ]
+  },
+  {
+    "time": "2026-11-27",
     "headline": "ABT EDGAR dossier refreshed",
     "verdict": "EDGAR dossier on file. Sector: Pharmaceutical Preparations. Latest annual 10-K filed 2026-02-20; latest quarterly 10-Q filed 2026-11-04.",
     "refs": [
@@ -1848,22 +1864,6 @@ var WIRE = [
     "verdict": "Result: filled_open (real_fill, feed robinhood_mcp).",
     "refs": [
       "outcome:2026-11-25-nvda-135p-fill"
-    ]
-  },
-  {
-    "time": "2026-11-25",
-    "headline": "Bought NVDA Nov 25 155 call x1 at $0.09 (premium $9, fees $0.04) as leg 2 of Milly's owner-directed same-day hedge (L-020). Order 6b06f5e1-a081-407f-8191-e1b3a6ffc366, filled 08:51 CT.",
-    "verdict": "Result: filled_open (real_fill, feed robinhood_mcp).",
-    "refs": [
-      "outcome:2026-11-25-nvda-155c-fill"
-    ]
-  },
-  {
-    "time": "2026-11-25",
-    "headline": "Sold NVDA Nov 25 155 call x1 at $0.01 on Milly's word before expiry (order 6b0747f5-f852-47c0-96d4-29f689da565d, 14:41 CT) as NVDA stabilized ~$146 and never threatened the strike. Cost $9.04, proceeds $1.00 less $0.04 fees; realized -$8.08. Position closed.",
-    "verdict": "Result: closed_exit (real_fill, feed robinhood_mcp).",
-    "refs": [
-      "outcome:2026-11-25-nvda-155c-exit"
     ]
   },
   {
@@ -1917,8 +1917,8 @@ var BRIEF_META = {
 /* === GRAPHMETA SYNC (generated; do not hand-edit) === */
 var GRAPHMETA = {
   "generated": "2026-11-27",
-  "nodes": 306,
-  "edges": 174,
+  "nodes": 308,
+  "edges": 176,
   "live_patterns": 0,
   "pattern_candidates": 6,
   "connector_candidates": 16,
@@ -3754,10 +3754,10 @@ var INDEX = {
       "source": "sync_book.py run 2026-11-26: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
     },
     {
-      "book_value": 118.88,
+      "book_value": 118.84,
       "date": "2026-11-27",
-      "index": 50.84,
-      "source": "sync_book.py run 2026-11-27: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
+      "index": 50.82,
+      "source": "sync_book.py run 2026-11-27: cash_verified $108.25 + open positions at fill $8.59 + options at cost $2.00"
     }
   ],
   "deposits": [
@@ -4420,6 +4420,14 @@ var INSIGHTS = [
     "lesson": "Buys run on the program cadence (dca-program.md). Protection is judged on official closes, never intraday prints."
   },
   {
+    "date": "2026-11-27",
+    "tag": "SPY",
+    "title": "SPY: filled open",
+    "body": "Bought SPY Nov 30 760 call x1 at $0.02 (premium $2, fees $0.04, $2.04 all-in) on Milly's direct order on Bobby's book (MCP account), out of the Dec 4 cheap-ticket hunt. Order 6b09c4b8-6bff-49fb-84e3-549efef5c3c4, filled 11:58 CT Nov 27. Position open into Monday Nov 30 expiry; exit rule not yet set (Milly to pick before Monday's open). SPY closed Nov 27 at $728.32 (Finnhub); strike needs +4.4% by Monday's close.",
+    "evidence": "Graph: outcome:2026-11-27-spy-760c-fill. Feed: robinhood_mcp.",
+    "lesson": "Recorded in the graph at the daily book sync. The governing lessons live on the Record tab."
+  },
+  {
     "date": "2026-11-25",
     "tag": "NVDA",
     "title": "NVDA: filled open",
@@ -4450,14 +4458,6 @@ var INSIGHTS = [
     "body": "NVDA Nov 25 135 put expired worthless: no bid at any price into the close and Finnhub NVDA closed $149.30 (day range $141.17-$150.37), never threatening the $135 strike. Cost $45.04, proceeds $0; realized -$45.04. Combined hedge net -$53.12 on $54.08 all-in, inside the $100 daily loss limit. Lesson L-020.",
     "evidence": "Graph: outcome:2026-11-25-nvda-135p-expiry. Feed: finnhub.",
     "lesson": "Lesson L-020 \u2014 see the Record tab for the full entry."
-  },
-  {
-    "date": "2026-11-11",
-    "tag": "MU",
-    "title": "MU: closed target",
-    "body": "Sold remaining 0.01129 sh at $786.6229, target 2 was $780 (crossed 08:53 CT at $782.21). Realized +$1.07 vs $691.7347 entry on this half; total MU realized +$1.62. Position closed. Order 6af48291-2bd6-43cb-b42b-33b516ebbd71.",
-    "evidence": "Graph: outcome:2026-11-11-mu-exit. Feed: robinhood_mcp.",
-    "lesson": "Lesson L-011 \u2014 see the Record tab for the full entry."
   }
 ];
 var OPENQ = [
