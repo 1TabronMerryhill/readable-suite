@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-27T08:01:05.799793-06:00",
+ "generated": "2026-11-27T09:01:09.865353-06:00",
  "firm": "OpOne Capital",
  "book": {
   "real": {
@@ -295,25 +295,6 @@
    "entry_date": "2026-11-07"
   },
   {
-   "symbol": "BE",
-   "name": "Bloom Energy",
-   "bucket": "leaps_options",
-   "paper": true,
-   "kind": "leaps_call",
-   "strike": 175.0,
-   "expiry": "2028-01-21",
-   "qty_contracts": 1,
-   "entry_premium": 64.53,
-   "mark_current": 72.25,
-   "mark_asof": "2026-11-10 close (Robinhood quote pulled Nov 11 premarket)",
-   "return_pct": 12.0,
-   "stop_premium": 32.27,
-   "target_premium_1": 114.74,
-   "target_premium_2": 129.06,
-   "kill": "BE break below 167.52, or FY2026 guidance cut, or return to quarterly net loss, or Q4 OCF negative again",
-   "entry_date": "2026-11-07"
-  },
-  {
    "symbol": "MRVL",
    "name": "Marvell Technology",
    "bucket": "leaps_options",
@@ -487,12 +468,12 @@
   {
    "symbol": "BE",
    "name": "Bloom Energy",
-   "status": "paper LEAPS open (Jan 2028 $175 call); check verdict gem",
+   "status": "Baseload package built Nov 27, 2026: business GEM, package verdict NO SLOT at $155-157 (price at central worth, no margin, old kill fired). Paper LEAPS (Jan 2028 $175 call) kill fired Nov 25, 2026 \u2014 position still shows paper_open in leaps-paper.json with stale Nov 10-11 marks; flagged for ledger close. Early entry $127 (20% margin line vs central worth $159; starter size only); swing $167.84 reclaim trigger, NOT armed; disaster/load-the-boat still PENDING.",
    "disaster": null,
    "load_the_boat": null,
-   "early_entry": null,
-   "swing_trade": null,
-   "basis": "Ladder pending. The Nov 7 check carries worth $97.50-$130 and a kill below $167.52, but no four prices under the L-013 definitions; the connection loop's HOLD math (price at or below $94.79 for the 20% bar) is a margin line, not a ladder. Four Prices build Nov 12, 2026 (L-013): disaster and load the boat left PENDING, not forced. No defensible floor: trough GAAP EPS is negative in every audited year through FY2025, the only positive FCF years produce ~$0.19/share, and net cash per share is about -$0.13 with book equity ~$2.60/share - neither the earnings leg nor the balance-sheet leg supports a 'how low it can go' price for a going concern. Not forced. Full reasoning in the package's Four Prices section."
+   "early_entry": 127,
+   "swing_trade": 167.84,
+   "basis": "Nov 27, 2026 full package (trade-package-2026-11-27-BE.md), Baseload promotion build. Worth re-derived: $132-$185, central $159 = 25-35x FY2027 consensus normalized EPS $5.30 (analyst consensus, not company guidance); anchor rolled from guided FY2026 ($97.50-$130, Nov 7) with the multiple cut because the new anchor is unguided and Project Jupiter lost its air-permit date (hearing vacated Nov 6, 2026, no new date). Early entry and swing rungs built for the first time; disaster and load-the-boat remain PENDING (reason in the Nov 12 note below, updated: FY2026 is the first positive GAAP year in progress \u2014 9M diluted EPS $1.64 \u2014 but not yet a filed audited year; trough record through FY2025 still all-negative; floor metrics still liquidation-shaped: FCF ~$0.19/share in the only positive years, net cash ~-$0.13/share, book ~$2.60/share at Dec 31, 2025; $858.6M contract assets and $927.7M inventory are the assets least trustworthy at disaster value). Nov 12 note: disaster price not buildable from Bloom's record \u2014 GAAP diluted EPS negative every audited year (EDGAR companyfacts: FY2019 -2.67, FY2020 -1.14, FY2021 -0.95, FY2022 -1.62, FY2023 -1.42, FY2024 -0.13, FY2025 -0.37); only positive-FCF years give ~$0.19/share; net cash ~-$0.13/share; book equity $768.641M at Dec 31, 2025 ~ $2.60/share. Load the boat is defined as inside the disaster zone, so it cannot be set without a disaster price. Early entry is NOT the worth range ($167.52 was the LEAPS package kill, not an entry); the Nov 27 rung is set from the margin bar instead, stated on the rung."
   },
   {
    "symbol": "MRVL",
@@ -1417,8 +1398,8 @@
     "source": "sync_book.py run 2026-11-26: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
    },
    {
-    "date": "2026-11-27",
     "book_value": 118.88,
+    "date": "2026-11-27",
     "index": 50.84,
     "source": "sync_book.py run 2026-11-27: cash_verified $110.29 + open positions at fill $8.59 + options at cost $0.00"
    }
